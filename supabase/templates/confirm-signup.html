@@ -1,0 +1,18 @@
+<!--
+  Supabase "Confirm signup" email — verification by CODE ONLY, no link.
+  Paste into: Dashboard > Authentication > Emails > Templates > Confirm signup
+  Subject:    Mã xác thực của bạn / Your verification code
+
+  {{ .Token }} is the one-time code (6 digits by default; see Authentication >
+  Sign In / Providers > Email > "Email OTP Length"). The app accepts 6-10 digits.
+  Do NOT add {{ .ConfirmationURL }} anywhere: that is what produces a link.
+-->
+<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #111;">
+  <h2 style="margin-bottom: 8px;">Xác thực email / Verify your email</h2>
+  <p>Mã xác thực của bạn là / Your verification code is:</p>
+  <p style="font-size: 34px; font-weight: bold; letter-spacing: 10px; margin: 20px 0;">{{ .Token }}</p>
+  <p style="color: #555;">
+    Mã có hiệu lực trong 1 giờ. Nếu bạn không tạo tài khoản, hãy bỏ qua email này.<br />
+    This code expires in 1 hour. If you did not create an account, ignore this email.
+  </p>
+</div>

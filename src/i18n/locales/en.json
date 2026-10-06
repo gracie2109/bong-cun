@@ -16,6 +16,8 @@
     "delete": "Delete",
     "dataExisted": "{field} already exists!",
     "dataNotExisted": "{field} does not exist!",
+    "inUse": "It is still in use and cannot be deleted",
+    "noPermission": "You do not have permission to do this",
     "addNew": "Add new {field}",
     "name": "Name",
     "description": "Description",
@@ -31,6 +33,7 @@
     "login": "Login",
     "register": "Register",
     "forgotPw": "Forgot Password",
+    "resetPw": "Reset Password",
     "suppliers": "Suppliers",
     "pets": "Pets",
     "services": "Services",
@@ -52,7 +55,15 @@
       "alreadyHasAccount": "Already have an account?",
       "dontHaveAccount": "Don't have an account?",
       "createAcc": "Create Account",
-      "prefForgotPw": "Enter your email to receive a password recovery email"
+      "prefForgotPw": "Enter your email to receive a password recovery email",
+      "verifyTitle": "Verify your email",
+      "verifyDesc": "Enter the code we sent to {email}",
+      "codeLabel": "Verification code",
+      "codeInvalid": "Enter the numeric code from your email",
+      "verify": "Verify",
+      "resend": "Resend code",
+      "resendIn": "Resend code in {s}s",
+      "back": "Back"
     },
     "serviceProvider": {
       "desc": "Add information about your product supplier"

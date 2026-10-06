@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { OTP_CODE_PATTERN } from "@/config/auth";
 import { ConfirmPassSchema, EmailSChema, passWordCheck, validEmail, validMinString } from "."
 
 
@@ -19,6 +20,9 @@ export const registerSchema = z
     .merge(ConfirmPassSchema)
     .superRefine(passWordCheck);
 
-
-
-
+export const resetPasswordWithCodeSchema = z
+    .object({
+        code: z.string().regex(OTP_CODE_PATTERN, { message: "Enter the numeric code from your email" }),
+    })
+    .merge(ConfirmPassSchema)
+    .superRefine(passWordCheck);

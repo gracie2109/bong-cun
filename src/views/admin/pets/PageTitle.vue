@@ -40,7 +40,7 @@
         >
           <ChevronRight class="size-4 mr-2" />
           <div class="flex items-center h-full gap-2">
-            <Icon :icon="petInfo.icon" v-if="petInfo"/>
+            <Icon :icon="petInfo.icon ?? ''" v-if="petInfo"/>
             <h1
               class="font-semibold flex items-center gap-2 text-muted-foreground"
             >
@@ -64,22 +64,26 @@
 </template>
 
 <script setup lang="ts">
-import { COLLECTION } from "@/lib/constants";
-import { getDetailData, getTotalRecord } from "@/lib/firebaseFn";
+import { usePet, usePetsList } from "@/queries/pets";
+import { usePetService } from "@/queries/petServices";
 import router from "@/router";
 import { Header } from "@/views/admin/components";
 import clsx from "clsx";
 import { PawPrint, ChevronRight } from "lucide-vue-next";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { Icon } from "@iconify/vue";
 
-const petRecords = ref(0);
 const route = useRoute();
 const { petId, serviceId } = route.params;
 
-const petInfo = ref();
-const serviceInfo = ref();
+// Only the total is needed here, so ask for a single row.
+const { data: petPage } = usePetsList({ pageIndex: 1, pageSize: 1 });
+const petRecords = computed(() => petPage.value?.total ?? 0);
+
+const { data: petInfo } = usePet(petId ? String(petId) : undefined);
+const { data: serviceInfo } = usePetService(serviceId ? String(serviceId) : undefined);
+
 const isShowAllPets = computed(() => {
   if (route.name === "pets") return true;
   else return false;
@@ -96,33 +100,4 @@ function handleBackService() {
     name: "petService",
   });
 }
-onMounted(async () => {
-  const data = await getTotalRecord(COLLECTION.PETS);
-  petRecords.value = data;
-});
-onMounted(async () => {
-  if (petId) {
-    const pet = await getDetailData(
-      COLLECTION.PETS,
-      "__name__",
-      String(petId)
-    );
-    if (!pet.empty) {
-      petInfo.value = pet.docs[0].data();
-    }
-  }
-});
-
-onMounted(async () => {
-  if (serviceId) {
-    const service = await getDetailData(
-      COLLECTION.PETS_SERVICES,
-      "__name__",
-      String(serviceId)
-    );
-    if (!service.empty) {
-      serviceInfo.value = service.docs[0].data();
-    }
-  }
-});
 </script>

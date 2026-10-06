@@ -187,8 +187,7 @@ import FormMessage from "@/components/ui/form/FormMessage.vue";
 import Input from "@/components/ui/input/Input.vue";
 import { Textarea } from "@/components/ui/textarea";
 import type { FormContext } from "vee-validate";
-import { usePets, usePetServices } from "@/stores";
-import { storeToRefs } from "pinia";
+import { useAllPets } from "@/queries/pets";
 import {
   computed,
   getCurrentInstance,
@@ -226,8 +225,8 @@ const props = defineProps<{
 }>();
 const { locale } = useI18n();
 const emits = defineEmits(["onSubmit"]);
-const petStore = usePets();
-const { loading, pets } = storeToRefs(petStore);
+const { data: petOptions } = useAllPets();
+const pets = computed(() => petOptions.value ?? []);
 const petsSelected = ref<any[]>(props?.elSelect?.petsProfiles || props?.defaultPet || null);
 
 const onFormSubmit = props.form.handleSubmit(
@@ -241,10 +240,6 @@ const onSubmit = (values: any) => {
     onFormSubmit(values);
   }
 };
-
-onMounted(async () => {
-  await petStore.getListPets({ pageIndex: 1, pageSize: 500 });
-});
 
 watchEffect(() => {
   if(props.defaultPet) {

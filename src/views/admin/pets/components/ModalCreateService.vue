@@ -74,7 +74,7 @@ import {
 } from "@/components/ui/dialog";
 import ServiceForm from "@/views/admin/pets/services/components/ServiceForm.vue";
 import { useForm } from "vee-validate";
-import { usePetServices } from "@/stores";
+import { useCreatePetService, useUpdatePetService } from "@/queries/petServices";
 const props = defineProps<{
   title?: string;
   handleOpen?: boolean;
@@ -83,7 +83,8 @@ const props = defineProps<{
 }>();
 const open = ref(false);
 const form = useForm();
-const store = usePetServices();
+const createService = useCreatePetService();
+const updateService = useUpdatePetService();
 
 const emits = defineEmits(["updateOpen", "setElSelect"]);
 
@@ -96,19 +97,23 @@ watch(
   }
 );
 
-const handleForm = form.handleSubmit(async (values: any) => {  
-  if (!props.elSelect) {
-    await store.createNewPetService(values).then(() => {
-      open.value = !open.value;
-      form.resetForm();
-    });
-  } else {
-    await store.updatePetService(values).then(() => {
-      open.value = !open.value;
-      form.resetForm();
-      emits("setElSelect");
-      emits("updateOpen");
-    });
+const handleForm = form.handleSubmit(async (values: any) => {
+  const isEdit = !!props.elSelect;
+  try {
+    if (!isEdit) {
+      await createService.mutateAsync(values);
+    } else {
+      await updateService.mutateAsync({ id: props.elSelect.id, input: values });
+    }
+  } catch {
+    return; // the mutation already showed the failure toast; keep the dialog open
+  }
+
+  open.value = !open.value;
+  form.resetForm();
+  if (isEdit) {
+    emits("setElSelect");
+    emits("updateOpen");
   }
 });
 watch(

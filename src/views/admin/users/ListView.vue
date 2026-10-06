@@ -52,13 +52,13 @@ import { Header, ContentWrap } from "@/views/admin/components";
 import { User2 } from "lucide-vue-next";
 import InfomationForm from "./components/InfomationForm.vue";
 import { useForm } from "vee-validate";
-import { storeToRefs } from "pinia";
-import { onMounted, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { IUser } from "@/types/user.type";
 import { initAddress, type IAddress } from "@/types/location.type";
-import { useUsers } from "@/stores";
+import { useCreateUser, useUsersList } from "@/queries/users";
+import usePagedRows from "@/composables/usePagedRows";
 import type { ColumnDef, PaginationState } from "@tanstack/vue-table";
 import { HEADER_ADVANCE_FUNCTION, INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { reactive } from "vue";
@@ -82,8 +82,16 @@ const form = useForm<IUser>({
     groupIds: null,
   },
 });
-const userStore = useUsers();
-const { loading, users, pageCount } = storeToRefs(userStore);
+const pageData = ref<PaginationState>({
+  pageIndex: INITIAL_PAGE_INDEX,
+  pageSize: 5,
+});
+
+// This screen is "Customers"; the old query selected users without a role.
+const usersQuery = useUsersList(pageData, "customer");
+const { rows: users, total: pageCount } = usePagedRows(usersQuery, pageData);
+const createUser = useCreateUser();
+const loading = computed(() => createUser.isPending.value);
 const open = ref(false);
 
 const headerAdvanced = reactive<IHeaderAdvanced[]>([
@@ -103,20 +111,13 @@ function setOpen() {
   open.value = !open.value;
 }
 
-const loadDataForPage = async (page: number) => {
-  await userStore.getListUser({
-    pageIndex: page,
-    pageSize: pageData.value.pageSize,
-  });
-};
+function loadDataForPage(page: number) {
+  pageData.value.pageIndex = page;
+}
 function updatePageSize(newPs: number) {
   pageData.value.pageSize = +newPs;
+  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
 }
-
-const pageData = ref<PaginationState>({
-  pageIndex: INITIAL_PAGE_INDEX,
-  pageSize: 5,
-});
 
 const handleRese = () => {
   form.resetForm();
@@ -124,7 +125,20 @@ const handleRese = () => {
 };
 
 const submitHdl = form.handleSubmit(async (value: any) => {
-  await userStore.createNewUser({ ...value });
+  try {
+    await createUser.mutateAsync({
+      email: value.email,
+      password: value.password,
+      displayName: value.displayName,
+      fullName: value.fullName,
+      phoneNumber: value.phoneNumber,
+      gender: value.gender,
+      address: value.province,
+      photoURL: value.photoURL,
+    });
+  } catch {
+    return; // the mutation already showed the failure toast; keep the dialog open
+  }
   handleRese();
 });
 
@@ -222,21 +236,4 @@ const columns: ColumnDef<any>[] = reactive([
   //     }),
   // },
 ]);
-
-onMounted(async () => {
-  await userStore.getListUser({
-    pageIndex: pageData.value.pageIndex,
-    pageSize: pageData.value.pageSize,
-  });
-});
-
-watch(
-  () => pageData.value.pageSize,
-  async () => {
-    await userStore.getListUser({
-      pageIndex: pageData.value.pageIndex,
-      pageSize: pageData.value.pageSize,
-    });
-  }
-);
 </script>

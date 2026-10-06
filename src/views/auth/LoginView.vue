@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto grid gap-6 w-full" :class="{
+  <section v-if="!pendingVerificationEmail" class="mx-auto grid gap-6 w-full" :class="{
     'mt-5 p-5': !isExactPath
   }">
     <div class="grid gap-2 text-center">
@@ -48,6 +48,7 @@
       </div>
     </div>
   </section>
+  <VerifyEmailCode v-else @verified="finishLogin" />
   <div v-if="loading">
     <LoadingIndicator />
   </div>
@@ -63,6 +64,7 @@ import { useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import LoadingIndicator from "@/components/common/LoadingIndicator.vue";
 import InputPassword from "@/components/common/InputPassword.vue";
+import VerifyEmailCode from "@/components/common/VerifyEmailCode.vue";
 import { loginSchema } from "@/validations/auth";
 import useValidation from "@/composables/useValidation";
 
@@ -85,7 +87,7 @@ const { validate, isValid, getError, scrolltoError } = useValidation(
 );
 
 const emits = defineEmits(["directPath", "closeDialog"]);
-const { loading, isSuccess } = storeToRefs(authStore);
+const { loading, isSuccess, pendingVerificationEmail } = storeToRefs(authStore);
 
 function redirectPath(name: "register" | "forgotPw") {
   if (route.fullPath?.includes("login")) {
@@ -95,41 +97,31 @@ function redirectPath(name: "register" | "forgotPw") {
   }
 }
 
-async function handleSubmit(type?: string) {
+function finishLogin() {
+  if (route.fullPath?.includes("login")) {
+    router.push({ name: "home" });
+    setTimeout(() => {
+      router.go(0);
+    }, 500);
+  } else {
+    router.go(0);
+  }
 
+  emits("closeDialog");
+}
+
+async function handleSubmit(type?: string) {
   if (!type) {
     await validate();
     if (isValid.value) {
       await authStore.login(formSchema.value);
-      if (isSuccess.value) {
-        if (route.fullPath?.includes("login")) {
-          router.push({ name: "home" });
-          setTimeout(() => {
-            router.go(0);
-          }, 500);
-        } else {
-          router.go(0);
-        }
-
-        emits("closeDialog");
-      }
+      if (isSuccess.value) finishLogin();
     } else {
       scrolltoError(".p-invalid", { offset: 24 });
     }
   } else {
     await authStore.loginGoogle();
-    if (isSuccess.value) {
-      if (route.fullPath?.includes("login")) {
-        router.push({ name: "home" });
-        setTimeout(() => {
-          router.go(0);
-        }, 500);
-      } else {
-        router.go(0);
-      }
-
-      emits("closeDialog");
-    }
+    if (isSuccess.value) finishLogin();
   }
 }
 </script>

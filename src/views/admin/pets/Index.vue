@@ -58,25 +58,22 @@
 <script lang="ts" setup>
 import { ContentWrap } from "@/views/admin/components";
 import ServiceForm from "./components/Form.vue";
-import { h, onMounted, reactive, ref } from "vue";
-import { usePets } from "@/stores";
+import { h, reactive, ref } from "vue";
+import { useDeletePet, usePetsList } from "@/queries/pets";
+import usePagedRows from "@/composables/usePagedRows";
 import { formatDateTime } from "@/lib/utils";
 import { type IHeaderAdvanced, type T_ROW_FUNCTION } from "@/types";
 import type { ColumnDef, PaginationState } from "@tanstack/vue-table";
 
-import { storeToRefs } from "pinia";
 import { DialogConfirm, DataTable } from "@/components/common";
 import DataTableColumnHeader from "@/components/common/DataTable/DataTableColumnHeader.vue";
 import { HEADER_ADVANCE_FUNCTION, INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { watch } from "vue";
 import { Icon } from "@iconify/vue";
 import RowFunction from "./components/RowFunction.vue";
 import PageTitle from "./PageTitle.vue";
 import { useI18n } from "vue-i18n";
 import SubMenu from "./components/SubMenu.vue";
 
-const store = usePets();
-const { pets, pageCount } = storeToRefs(store);
 const selectedItem = ref();
 const mode = ref();
 const rowEditSelected = ref();
@@ -84,6 +81,10 @@ const pageData = ref<PaginationState>({
   pageIndex: INITIAL_PAGE_INDEX,
   pageSize: 5,
 });
+
+const petsQuery = usePetsList(pageData);
+const { rows: pets, total: pageCount } = usePagedRows(petsQuery, pageData);
+const deletePet = useDeletePet();
 
 const columns: ColumnDef<any>[] = reactive([
   {
@@ -188,9 +189,14 @@ function deleteItem(val: any) {
   mode.value = "delete";
 }
 async function handleDelete() {
-  await store.deleteServiceProvider(selectedItem.value.id);
-  setOpen();
-  selectedItem.value = null;
+  try {
+    await deletePet.mutateAsync(selectedItem.value.id);
+  } catch {
+    // the mutation already showed the failure toast
+  } finally {
+    setOpen();
+    selectedItem.value = null;
+  }
 }
 
 function onReset() {
@@ -205,29 +211,10 @@ function setOpen() {
 
 function updatePageSize(newPs: number) {
   pageData.value.pageSize = +newPs;
+  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
 }
 
-const loadDataForPage = async (page: number) => {
-  await store.getListPets({
-    pageIndex: page,
-    pageSize: pageData.value.pageSize,
-  });
-};
-
-onMounted(async () => {
-  await store.getListPets({
-    pageIndex: pageData.value.pageIndex,
-    pageSize: pageData.value.pageSize,
-  });
-});
-
-watch(
-  () => pageData.value.pageSize,
-  async () => {
-    await store.getListPets({
-      pageIndex: pageData.value.pageIndex,
-      pageSize: pageData.value.pageSize,
-    });
-  }
-);
+function loadDataForPage(page: number) {
+  pageData.value.pageIndex = page;
+}
 </script>

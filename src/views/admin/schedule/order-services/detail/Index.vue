@@ -62,21 +62,14 @@ import Header from "@/views/admin/components/Header.vue";
 import ContentWrap from "@/views/admin/components/ContentWrap.vue";
 import { CalendarDays } from "lucide-vue-next";
 import Calendar from "@/views/admin/schedule/order-services/detail/components/Calendar.vue";
-import { useOrderService } from "@/stores";
-import { onMounted, ref } from "vue";
+import { useOrderDetail } from "@/queries/orders";
 import { useRoute } from "vue-router";
 import { convertNumberToTime, formatPrice } from "@/lib/utils";
 
-const orderSelected = ref();
-const $store = useOrderService();
 const { params } = useRoute();
+const { data: orderSelected } = useOrderDetail(String(params.id));
 
 const handleDragStart = () => {
     
 }
-onMounted(async () => {
-    const res = await $store.getDetailServiceOrder(params.id.toString());
-    console.log('res', res)
-    orderSelected.value = res
-});
 </script>

@@ -1,14 +1,15 @@
 import { nextTick} from 'vue'
 import i18n from './index'
 import { getLocalStorage, setLocalStorage } from '@/lib/utils'
+import { env } from '@/config/env'
 
 const Trans = {
   get defaultLocale() {
-    return import.meta.env.VITE_DEFAULT_LOCALE
+    return env.defaultLocale
   },
 
   get supportedLocales() {
-    return import.meta.env.VITE_SUPPORTED_LOCALES.split(',')
+    return env.supportedLocales
   },
 
   get currentLocale() {

@@ -44,17 +44,15 @@ import Button from "@/components/ui/button/Button.vue";
 import { useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 
-// Import Firebase
-import { getAuth, GoogleAuthProvider, linkWithPopup } from "firebase/auth";
 
 
 const store = useAuthStore();
 const { currentUser } = storeToRefs(store);
 
 const profileModel = ref({
-    userName: currentUser.value.displayName ?? "",
-    email: currentUser.value.email ?? "",
-    phoneNumber: currentUser.value.phoneNumber ?? "",
+    userName: currentUser.value?.displayName ?? "",
+    email: currentUser.value?.email ?? "",
+    phoneNumber: currentUser.value?.phoneNumber ?? "",
 });
 
 const socialIcons = ref([
@@ -69,33 +67,15 @@ const socialIcons = ref([
     { key: "hubspot", name: "HubSpot", src: "https://cdn-icons-png.flaticon.com/512/5968/5968829.png" }
 ]);
 
-const providers = ref([]);
-
-const auth = getAuth();
+const providers = ref<string[]>([]);
 
 const linkProvider = async (providerKey: string) => {
-    const user = auth.currentUser; // Lấy user từ Firebase Auth
-    if (!user) {
-        console.error("Không tìm thấy user đang đăng nhập");
-        return;
-    }
-
-    let provider;
-    if (providerKey === "google") {
-        provider = new GoogleAuthProvider();
-    }
-
-    if (!provider) {
+    if (providerKey !== "google") {
         console.error("Provider không hợp lệ:", providerKey);
         return;
     }
-
-    try {
-        const result = await linkWithPopup(user, provider);
-        console.log(`Liên kết thành công với ${providerKey}:`, result);
-    } catch (error) {
-        console.error(`Lỗi khi liên kết ${providerKey}:`, error);
-    }
+    // Needs "Manual linking" enabled in the Supabase dashboard.
+    await store.linkGoogleIdentity();
 };
 </script>
 

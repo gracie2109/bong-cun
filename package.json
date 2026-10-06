@@ -8,7 +8,8 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build --force"
+    "type-check": "vue-tsc --build --force",
+    "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -17,6 +18,8 @@
     "@radix-icons/vue": "^1.0.0",
     "@schedule-x/theme-default": "^2.4.1",
     "@schedule-x/vue": "^2.3.1",
+    "@supabase/supabase-js": "^2.117.2",
+    "@tanstack/vue-query": "^5.104.1",
     "@tanstack/vue-table": "^8.20.5",
     "@vee-validate/zod": "^4.13.2",
     "@vuepic/vue-datepicker": "^9.0.3",
@@ -27,7 +30,6 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.0.0-beta.1",
     "dom-to-image-more": "^3.4.5",
-    "firebase": "^10.12.5",
     "lodash-es": "^4.17.21",
     "lucide-vue-next": "^0.427.0",
     "pinia": "^2.1.7",

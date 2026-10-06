@@ -61,11 +61,12 @@
 <script lang="ts" setup>
 import ContentWrap from "../../components/ContentWrap.vue";
 import Header from "../../components/Header.vue";
-import { h, onMounted, reactive, ref, watch } from "vue";
+import { computed, h, reactive, ref } from "vue";
 import ServiceComboForm from "./ServiceComboForm.vue";
 import { useForm } from "vee-validate";
-import { usePetCombo, usePets, usePetServices } from "@/stores";
-import { storeToRefs } from "pinia";
+import { useDeletePetCombo, usePetCombosList } from "@/queries/petCombos";
+import { useAllPets } from "@/queries/pets";
+import usePagedRows from "@/composables/usePagedRows";
 import type { ColumnDef, PaginationState } from "@tanstack/vue-table";
 import DataTableColumnHeader from "@/components/common/DataTable/DataTableColumnHeader.vue";
 import { convertNumberToTime, formatDateTime, formatPrice } from "@/lib/utils";
@@ -78,14 +79,8 @@ import RowFunction from "../components/RowFunction.vue";
 import SubMenu from "../components/SubMenu.vue";
 const { locale } = useI18n();
 
-const store = usePetCombo();
-const serviceStore = usePetServices();
-const petStore = usePets();
-
 const open = ref(false);
 const form = useForm();
-const { listCombo, pageCount } = storeToRefs(store);
-const { pets } = storeToRefs(petStore);
 
 const rowEditting = ref();
 const selectedItem = ref();
@@ -99,6 +94,12 @@ const pageData = ref<PaginationState>({
   pageIndex: INITIAL_PAGE_INDEX,
   pageSize: 500,
 });
+
+const combosQuery = usePetCombosList(pageData);
+const { rows: listCombo, total: pageCount } = usePagedRows(combosQuery, pageData);
+const { data: petOptions } = useAllPets();
+const pets = computed(() => petOptions.value ?? []);
+const deleteCombo = useDeletePetCombo();
 
 function reset() {
   open.value = !open.value;
@@ -258,6 +259,7 @@ const columns: ColumnDef<any>[] = reactive([
 
 function updatePageSize(newPs: number) {
   pageData.value.pageSize = +newPs;
+  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
 }
 
 function handleActionRow({
@@ -280,41 +282,18 @@ function handleActionRow({
   }
 }
 
-const loadDataForPage = async (page: number) => {
-  await store.getListPetCombo({
-    pageIndex: page,
-    pageSize: pageData.value.pageSize,
-  });
-};
-
-async function handleDelete() {
-  await store.deleteServiceCombo(selectedItem.value.id);
-  setOpen();
-  selectedItem.value = null;
+function loadDataForPage(page: number) {
+  pageData.value.pageIndex = page;
 }
 
-onMounted(async () => {
-  await store.getListPetCombo({
-    pageIndex: pageData.value.pageIndex,
-    pageSize: pageData.value.pageSize,
-  });
-  await serviceStore.getListPetService({
-    pageIndex: INITIAL_PAGE_INDEX,
-    pageSize: 5000,
-  });
-  await petStore.getListPets({
-    pageIndex: INITIAL_PAGE_INDEX,
-    pageSize: 5000,
-  });
-});
-
-watch(
-  () => pageData.value.pageSize,
-  async () => {
-    await store.getListPetCombo({
-      pageIndex: pageData.value.pageIndex,
-      pageSize: pageData.value.pageSize,
-    });
+async function handleDelete() {
+  try {
+    await deleteCombo.mutateAsync(selectedItem.value.id);
+  } catch {
+    // the mutation already showed the failure toast
+  } finally {
+    setOpen();
+    selectedItem.value = null;
   }
-);
+}
 </script>

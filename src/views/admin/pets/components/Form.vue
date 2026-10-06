@@ -98,7 +98,7 @@ import {
 import { useForm } from "vee-validate";
 import { PetsValid } from "@/validations/pets";
 import { toTypedSchema } from "@vee-validate/zod";
-import { usePets, useServiceProvider } from "@/stores";
+import { useCreatePet, useUpdatePet } from "@/queries/pets";
 import Multiselect from "vue-multiselect";
 import { DEFINE_PET_ICONS } from "@/lib/constants";
 import { Icon } from "@iconify/vue";
@@ -121,7 +121,8 @@ const iconValue = ref();
 
 
 const emit = defineEmits(["changeOpen"]);
-const store = usePets();
+const createPet = useCreatePet();
+const updatePet = useUpdatePet();
 
 const form = useForm({
     validationSchema: toTypedSchema(PetsValid),
@@ -129,18 +130,18 @@ const form = useForm({
 
 const onSubmit = form.handleSubmit(async (values: any) => {
     const formVals = form.values as any;
-    if (!formVals.id) {
-        await store.createNewPet(values);
+    try {
+        if (!formVals.id) {
+            await createPet.mutateAsync(values);
+        } else {
+            await updatePet.mutateAsync({ id: formVals.id, input: values });
+        }
         form.resetForm();
         emit("changeOpen");
         iconValue.value = ""
-    }else{
-        await store.updatePet(formVals);
-        form.resetForm();
-        emit("changeOpen");
-        iconValue.value = ""
+    } catch {
+        // the mutation already showed the failure toast; keep the dialog open
     }
-
 });
 
 watch(

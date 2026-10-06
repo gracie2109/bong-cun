@@ -1,6 +1,8 @@
 import type { GHNDistrict, GHNProvince, GHNWard } from "@/types/location.type";
 
-const token = import.meta.env.VITE_APP_GHN_TOKEN;
+import { env } from "@/config/env";
+
+const token = env.ghnToken;
 
 export async function getProvince() {
   try {

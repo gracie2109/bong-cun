@@ -62,30 +62,48 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
 import PermissionForm from "./components/PermissionForm.vue";
-import { onMounted, ref } from "vue";
-import { usePermissionStore } from "@/stores";
+import { computed, ref } from "vue";
+import {
+  useCreatePermission,
+  useDeletePermission,
+  usePermissionsList,
+  useUpdatePermission,
+} from "@/queries/permissions";
 import { PlusCircle } from "lucide-vue-next";
-import { storeToRefs } from "pinia";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ListPermissions from "./components/ListPermissions.vue";
 import { DialogConfirm } from "@/components/common";
 
-const store = usePermissionStore();
 const form = useForm();
-const { loading, permissions, pageCount } = storeToRefs(store);
+const permissionsQuery = usePermissionsList();
+const permissions = computed(() => permissionsQuery.data.value ?? []);
+const pageCount = computed(() => permissions.value.length);
+const createPermission = useCreatePermission();
+const updatePermission = useUpdatePermission();
+const deletePermission = useDeletePermission();
+const loading = computed(
+  () =>
+    permissionsQuery.isPending.value ||
+    createPermission.isPending.value ||
+    updatePermission.isPending.value ||
+    deletePermission.isPending.value
+);
 const elSelect = ref();
 const open = ref(false);
 const openDelete = ref(false);
 
 const handleSubmit = form.handleSubmit(async (value: any) => {
-  if (!elSelect.value) {
-    await store.createNewPermission(value);
-    form.resetForm();
-    open.value = !open.value;
-  } else {
-    await store.editPermission(value);
-    open.value = !open.value;
+  try {
+    if (!elSelect.value) {
+      await createPermission.mutateAsync(value);
+      form.resetForm();
+    } else {
+      await updatePermission.mutateAsync({ id: elSelect.value.id, input: value });
+    }
+  } catch {
+    return; // the mutation already showed the failure toast; keep the dialog open
   }
+  open.value = !open.value;
 });
 
 const closeDialog = () => {
@@ -103,13 +121,14 @@ const onDelete = (item: any) => {
   elSelect.value = item.res;
   openDelete.value = true;
 };
-const handleDelete = async (item: any) => {
-  await store.deletePermissions(elSelect.value.id);
-  openDelete.value = false;
-  elSelect.value = [];
+const handleDelete = async () => {
+  try {
+    await deletePermission.mutateAsync(elSelect.value.id);
+  } catch {
+    // the mutation already showed the failure toast
+  } finally {
+    openDelete.value = false;
+    elSelect.value = [];
+  }
 };
-
-onMounted(async () => {
-  await store.getListPermissions();
-});
 </script>

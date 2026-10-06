@@ -71,7 +71,7 @@ import {
 } from "@/components/ui/form";
 import FormLabel from "@/components/ui/form/FormLabel.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { usePetServices } from "@/stores";
+import { useUpdateGeneralPrice } from "@/queries/petServices";
 import { useForm } from "vee-validate";
 
 const props = defineProps<{
@@ -79,17 +79,17 @@ const props = defineProps<{
   open: boolean;
 }>();
 const form = useForm();
-const $store = usePetServices()
+const updateGeneralPrice = useUpdateGeneralPrice();
 const onSubmit = form.handleSubmit(async (values) => {
-    const payload = {
-        id: props.data.id,
-        generalPrice: values.generalPrice
+    const price = values.generalPrice;
+    try {
+        await updateGeneralPrice.mutateAsync({
+            id: props.data.id,
+            generalPrice: price === "" || price == null ? null : Number(price),
+        });
+    } catch {
+        // the mutation already showed the failure toast
     }
-    await $store.createPetServicePrice({
-        data:payload,
-        isAdd: false
-    })
-
 });
 const emits = defineEmits(["updateOpen"]);
 </script>

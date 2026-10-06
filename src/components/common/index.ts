@@ -19,4 +19,5 @@ export {default as SettingColumnVisible} from "./SettingColumnVisible.vue";
 export {default as UploadFields} from "./UploadFields.vue";
 export {default as LoadingSpin} from "./LoadingSpin.vue";
 export {default as ProvinceAddress} from "./ProvinceAddress.vue";
-export {default as Section} from "../Section.vue";
+export {default as Section} from "../Section.vue";export {default as VerifyEmailCode} from "./VerifyEmailCode.vue";
+export {default as ResetPasswordWithCode} from "./ResetPasswordWithCode.vue";

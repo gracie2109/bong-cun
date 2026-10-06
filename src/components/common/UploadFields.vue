@@ -1,21 +1,18 @@
 <script lang="ts" setup>
 import { useFileDialog } from "@vueuse/core";
-import {
-  getDownloadURL,
-  getStorage,
-  ref as fireStorageRef,
-  uploadBytesResumable,
-  deleteObject,
-} from "firebase/storage";
 import { Eye, PlusCircle, Trash } from "lucide-vue-next";
-import { reactive, ref, toRaw } from "vue";
+import { ref, toRaw } from "vue";
+import { storeToRefs } from "pinia";
+import { supabase } from "@/plugins/supabase";
+import { useAuthStore } from "@/stores";
+import { deleteImage, pathFromPublicUrl, uploadImage, validateImage } from "@/repositories/storage";
 import { DialogConfirm, LoadingSpin } from "@/components/common";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-icons/vue";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Zooming from "./Zooming.vue";
 
-const storage = getStorage();
+const { session } = storeToRefs(useAuthStore());
 const { open, onChange } = useFileDialog();
 
 const props = defineProps<{
@@ -35,8 +32,9 @@ const newFiles = ref();
 const progress = ref<boolean>(false);
 
 onChange(async (files: any) => {
-  newFiles.value = [...files];
-  if (files.length > props.limit) {
+  errors.value = null;
+  newFiles.value = [...(files ?? [])];
+  if (newFiles.value.length > props.limit) {
     errors.value = `Upload max ${props.limit} item!`;
   }
 
@@ -45,60 +43,47 @@ onChange(async (files: any) => {
   }
 });
 
-const uploadFile = async (file: any) => {
-  const storageRef = fireStorageRef(
-    storage,
-    `${props.folderName}/` + file.name
-  );
-  const uploadTask = uploadBytesResumable(storageRef, file);
-  uploadTask.on(
-    "state_changed",
-    (snapshot: any) => {
-      switch (snapshot.state) {
-        case "paused":
-          console.log("Upload is paused");
-          break;
-        case "running":
-          progress.value = true;
-          break;
-      }
-    },
-    (error) => {
-      switch (error.code) {
-        case "storage/unauthorized":
-          break;
-        case "storage/canceled":
-          break;
-        case "storage/unknown":
-          // Unknown error occurred, inspect error.serverResponse
-          break;
-      }
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        images.value = [...images.value, downloadURL];
-        emit("setImages", images.value);
-      });
-      progress.value = false;
-    }
-  );
+const uploadFile = async (file: File) => {
+  const invalid = validateImage(file);
+  if (invalid) {
+    errors.value = invalid;
+    return;
+  }
+  if (!session.value) {
+    errors.value = "Please sign in to upload images.";
+    return;
+  }
+
+  // Supabase uploads report no per-chunk progress, so this is a plain busy flag.
+  progress.value = true;
+  try {
+    const { url } = await uploadImage(supabase, {
+      userId: session.value.user.id,
+      folder: props.folderName,
+      file,
+    });
+    images.value = [...images.value, url];
+    emit("setImages", images.value);
+  } catch (error: any) {
+    errors.value = error?.message ?? "Upload failed.";
+  } finally {
+    progress.value = false;
+  }
 };
+
 const delImg = ref("");
-const handleDelete = (img: string) => {
-  console.log("de", img);
-  if (img) {
-    const path = decodeURIComponent(img.split("o/")[1].split("?")[0]);
-    const desertRef = fireStorageRef(storage, path);
-    deleteObject(desertRef)
-      .then(() => {
-        const newData = images.value.filter((i) => i !== img);
-        images.value = newData;
-        emit("setImages", newData);
-        delImg.value = "";
-      })
-      .catch((error: any) => {
-        errors.value = error;
-      });
+const handleDelete = async (img: string) => {
+  const path = img ? pathFromPublicUrl(img) : null;
+  if (!path) return;
+
+  try {
+    await deleteImage(supabase, path);
+    const newData = images.value.filter((i) => i !== img);
+    images.value = newData;
+    emit("setImages", newData);
+    delImg.value = "";
+  } catch (error: any) {
+    errors.value = error?.message ?? "Delete failed.";
   }
 };
 </script>

@@ -37,7 +37,7 @@
               })
             "
           >
-            <Icon :icon="i.icon" />
+            <Icon :icon="i.icon ?? ''" />
             <span class="font-bold capitalize cursor-pointer">
               {{ i.name }}
             </span>
@@ -55,7 +55,7 @@ import { Button } from "@/components/ui/button";
 
 import type { T_ROW_FUNCTION } from "@/types";
 import type { Row } from "@tanstack/vue-table";
-import { computed, onMounted, reactive } from "vue";
+import { computed, reactive } from "vue";
 import { EllipsisVertical, Settings } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -66,15 +66,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRoute } from "vue-router";
-import { usePets } from "@/stores";
-import { storeToRefs } from "pinia";
+import { useAllPets } from "@/queries/pets";
 import { Icon } from "@iconify/vue";
 const props = defineProps<{
   row: Row<any>;
 }>();
 const emits = defineEmits(["click"]);
-const petStore = usePets();
-const { pets } = storeToRefs(petStore);
+const { data: pets } = useAllPets();
 
 const type = reactive<T_ROW_FUNCTION[]>([
   {
@@ -92,10 +90,4 @@ const showSettingPrice = computed(() => route.name !== "pets")
 function handleEmit({ action, row }: { action: T_ROW_FUNCTION; row: any }) {
   emits("click", { action, row });
 }
-
-onMounted(async () => {
-  if (route.name === "petService") {
-    await petStore.getListPets({ pageIndex: 1, pageSize: 500 });
-  }
-});
 </script>

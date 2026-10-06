@@ -1,3 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build-only",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci",
+  "framework": "vite",
   "rewrites": [{ "source": "/:path*", "destination": "/index.html" }]
 }

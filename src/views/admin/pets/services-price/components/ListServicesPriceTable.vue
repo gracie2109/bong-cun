@@ -50,7 +50,7 @@
               }">
                 {{
                   formatPrice(
-                    data[k.id].find((m: any) => m.weightId === i.id)?.price
+                    data[k.id].find((m: any) => m.weightId === i.id)?.price ?? ''
                   )
                 }}
               </td>
@@ -70,14 +70,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import { usePetServices } from "@/stores";
+import { computed } from "vue";
+import { groupPricesByService, useServicePrices } from "@/queries/servicePrices";
 import { useRoute } from "vue-router";
 import { contents } from "@/data/pet-weights.json";
 import { useI18n } from "vue-i18n";
 import { formatPrice } from "@/lib/utils";
 
-const store = usePetServices();
 const route = useRoute();
 const props = defineProps<{
   services: any[];
@@ -86,20 +85,17 @@ const props = defineProps<{
 const emits = defineEmits(["setMouseEl"]);
 console.log('pops', props.services)
 const { locale } = useI18n();
-const data = ref();
+// Prices for this pet, grouped by service id (the shape the table renders).
+const pricesQuery = useServicePrices({ petId: String(route.params.petId) });
+const data = computed(() =>
+  pricesQuery.data.value ? groupPricesByService(pricesQuery.data.value) : undefined
+);
 const serviceTypeWeight = computed(() =>
   props.services.filter((i) => i.type !== "all")
 );
 const serviceTypeAll = computed(() =>
   props.services.filter((i) => i.type === "all")
 );
-
-onMounted(async () => {
-  const result = await store.getAllServicePriceByPetId({
-    petId: String(route.params.petId),
-  });
-  data.value = result;
-});
 
 function onMouseOver(id: string) {
   emits("setMouseEl", id);

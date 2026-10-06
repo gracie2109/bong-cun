@@ -1,6 +1,6 @@
 import * as Vue from "vue";
 
-import { createRouter, createWebHistory, useRouter } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import ComboServiceView from "@/views/admin/pets/service-combo/Index.vue";
 import ContactView from "@/views/client/contact/ContactView.vue";
@@ -27,6 +27,8 @@ import CartPageView from "@/views/client/cart/Index.vue";
 import CheckoutPage from "@/views/client/checkout/Index.vue"
 import ProfilePage from "@/views/client/profile/Index.vue"
 import i18n from "@/i18n";
+import { env } from "@/config/env";
+import { ADMIN_ROLES, canAccess } from "@/lib/access";
 import { useAuthStore } from "@/stores";
 
 /*
@@ -38,7 +40,7 @@ import { useAuthStore } from "@/stores";
 const AUTH_PATH = ["login", "register"];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_PUBLIC_PATH || ""),
+  history: createWebHistory(env.publicPath),
   routes: [
     {
       path: "/",
@@ -145,6 +147,7 @@ const router = createRouter({
       meta: {
         layout: PAGE_LAYOUT.ADMIN,
         requiresAuth: true,
+        roles: ADMIN_ROLES,
       },
       children: [
         {
@@ -291,17 +294,17 @@ router.afterEach((to, from) => {
     document.title = i18n.global.t(`pageMeta.${to.meta.key}`);
   });
 });
-router.beforeEach((to, from, next) => {
-  const userStore = useAuthStore();
-  const nav = useRouter();
+router.beforeEach(async (to) => {
+  const auth = useAuthStore();
+  // Wait for the stored session to be restored, otherwise a page refresh would
+  // look signed-out for a moment and bounce the user to the home page.
+  await auth.init();
 
-  if (AUTH_PATH.includes(to.meta.key as string) && userStore.currentUser) {
-    nav.go(-1);
-  }
-
-  if (to.meta.requiresAuth && !userStore.currentUser) {
-    nav.replace({ name: "home" });
-  } else next();
+  const allowed = canAccess(
+    { ...to.meta, guestOnly: AUTH_PATH.includes(to.meta.key as string) },
+    { isAuthenticated: auth.isAuthenticated, role: auth.role }
+  );
+  return allowed ? true : { name: "home" };
 });
 
 export default router;

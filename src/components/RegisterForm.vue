@@ -5,8 +5,7 @@ import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import VueDatePicker, { type DatePickerInstance } from "@vuepic/vue-datepicker";
 import { REGISTER_PARAMS, registerFormSchema } from "@/validations/register";
 import useValidation from "@/composables/useValidation";
-import { format } from "date-fns";
-import { useBookingService } from "@/stores";
+import { useCreateBooking } from "@/queries/bookings";
 import FormItemInline from "@/components/FormFieldInline.vue";
 
 const formSchema = ref<any>({
@@ -16,7 +15,7 @@ const formSchema = ref<any>({
   email: "",
   content: "",
 });
-const $store = useBookingService();
+const createBooking = useCreateBooking();
 const datepicker = ref<DatePickerInstance>(null);
 
 const { validate, isValid, getError, isInValid, scrolltoError } = useValidation(
@@ -31,22 +30,21 @@ async function handleSubmit() {
   await validate();
 
   if (isValid.value) {
-    const payload = {
-      ...formSchema.value,
-      time: format(formSchema.value.time, "MM/dd/yyyy hh:mm:ss"),
-    };
-
-    $store.registerBooking(payload, () => {
-      formSchema.value = {
-        name: "",
-        time: new Date(),
-        phone_number: "",
-        email: "",
-        content: "",
-      };
-      if (datepicker.value) {
-        datepicker.value.clearValue();
-      }
+    // `time` is sent as a real timestamp; the old "MM/dd/yyyy hh:mm:ss" string
+    // was 12-hour with no AM/PM, so it could not be read back unambiguously.
+    createBooking.mutate(formSchema.value, {
+      onSuccess: () => {
+        formSchema.value = {
+          name: "",
+          time: new Date(),
+          phone_number: "",
+          email: "",
+          content: "",
+        };
+        if (datepicker.value) {
+          datepicker.value.clearValue();
+        }
+      },
     });
   } else {
     scrolltoError(".p-invalid", { offset: 24 });

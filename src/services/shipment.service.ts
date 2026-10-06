@@ -1,9 +1,9 @@
 import type { IGHNShippingPayload } from "@/types/shipment.type";
 
-const token = import.meta.env.VITE_APP_GHN_TOKEN;
-const shopId = import.meta.env.VITE_APP_GHN_SHOP_ID;
-const service_light_good = import.meta.env
-  .VITE_APP_GHN_SERVICE_ID_TYPE_LIGHT_GOODS;
+import { env } from "@/config/env";
+
+const token = env.ghnToken;
+const service_light_good = env.ghnLightGoodsServiceId;
 
 export async function calcShippingFee({
   shippingInfo,

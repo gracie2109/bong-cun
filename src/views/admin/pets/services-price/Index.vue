@@ -17,7 +17,7 @@
           <div
             v-if="!_.isEmpty(petServices) && !loading"
             v-for="(i, j) in petServices.filter((i) =>
-              i?.petIds?.includes(params?.petId)
+              i?.petIds?.includes(petId)
             )"
           >
             <ServiceCard
@@ -35,7 +35,7 @@
         >
           <div class="w-full h-full" id="short_cut_service">
             <ListServicesPriceTable
-              :services="petServices.filter((i) => i.petIds.includes(params?.petId))"
+              :services="petServices.filter((i) => i.petIds.includes(petId))"
               :isMouseId="isMouseId"
               @set-mouse-el="handleMouseEv"
             />
@@ -47,31 +47,30 @@
 </template>
 
 <script setup lang="ts">
-import { usePetServices, usePets } from "@/stores";
+import { useAllPetServices } from "@/queries/petServices";
+import { usePet } from "@/queries/pets";
 import { ContentWrap } from "@/views/admin/components";
 import PageTitle from "../PageTitle.vue";
-import { computed, onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
+import { computed, ref } from "vue";
 import ServiceCard from "../services/components/ServiceCard.vue";
 import ListServicesPriceTable from "./components/ListServicesPriceTable.vue";
 import ModalCreateService from "../components/ModalCreateService.vue";
 import SubMenu from "../components/SubMenu.vue";
 import { useRoute } from "vue-router";
 import _ from "lodash"
-const store = usePetServices();
-const petStore = usePets();
-const { petServices, loading } = storeToRefs(store);
 
-const petInfo = ref()
-const isMouseId = ref("");
 const { params } = useRoute();
+const petId = String(params.petId);
+const servicesQuery = useAllPetServices();
+const petServices = computed(() => servicesQuery.data.value ?? []);
+const loading = servicesQuery.isPending;
+
+const { data: pet } = usePet(petId);
+// ModalCreateService pre-selects the current pet from a list.
+const petInfo = computed(() => (pet.value ? [pet.value] : undefined));
+
+const isMouseId = ref("");
 const handleMouseEv = (value: string) => {
   isMouseId.value = value;
 };
-
-onMounted(async () => {
-  await store.getListPetService({ pageIndex: 1, pageSize: 500 });
-  const data= await petStore.getPetInfo(params?.petId.toString());
-  petInfo.value = [data]
-});
 </script>

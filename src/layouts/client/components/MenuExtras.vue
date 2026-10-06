@@ -40,11 +40,12 @@
 import { BaseAvatar, SwitchLang } from "@/components/common";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { getLocalStorage } from "@/lib/utils";
 import ForgotPassView from "@/views/auth/ForgotPassView.vue";
 import LoginView from "@/views/auth/LoginView.vue";
 import RegisterView from "@/views/auth/RegisterView.vue";
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "@/stores";
 import { useRoute } from "vue-router";
 import MenuButton from "../components/MenuButton.vue";
 import CartMenu from "./CartMenu.vue";
@@ -52,7 +53,7 @@ import CartMenu from "./CartMenu.vue";
 const emit = defineEmits(["toggleMenu"]);
 const route = useRoute();
 const component = ref<string | null>(null);
-const user = JSON.parse(getLocalStorage("auth"));
+const { currentUser: user } = storeToRefs(useAuthStore());
 const open = ref(false);
 const directPath = (value: any) => {
   component.value = value;

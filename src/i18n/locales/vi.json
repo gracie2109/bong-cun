@@ -16,6 +16,8 @@
     "delete": "Xóa",
     "dataExisted": "{field} đã tồn tại!",
     "dataNotExisted": "{field} không tồn tại!",
+    "inUse": "Đang được sử dụng nên không thể xoá",
+    "noPermission": "Bạn không có quyền thực hiện thao tác này",
     "addNew": "Thêm mới {field}",
     "name": "Tên",
     "description": "Mô tả",
@@ -31,6 +33,7 @@
     "login": "Đăng nhập",
     "register": "Tạo tài khoản",
     "forgotPw": "Quên mật khẩu",
+    "resetPw": "Đặt lại mật khẩu",
     "suppliers": "Nhà cung cấp",
     "pets": "Thú cưng",
     "services": "Dịch vụ",
@@ -52,7 +55,15 @@
       "alreadyHasAccount": "Đã có tài khoản?",
       "dontHaveAccount": "Không có tài khoản?",
       "createAcc": "Tạo tài khoản",
-      "prefForgotPw": "Nhập email của bạn để nhận mail lấy lại mật khẩu"
+      "prefForgotPw": "Nhập email của bạn để nhận mail lấy lại mật khẩu",
+      "verifyTitle": "Xác thực email",
+      "verifyDesc": "Nhập mã chúng tôi đã gửi tới {email}",
+      "codeLabel": "Mã xác thực",
+      "codeInvalid": "Nhập mã số trong email của bạn",
+      "verify": "Xác thực",
+      "resend": "Gửi lại mã",
+      "resendIn": "Gửi lại mã sau {s}s",
+      "back": "Quay lại"
     },
     "serviceProvider": {
       "desc": "Thêm thông tin về nhà cung cấp sản phẩm cho bạn"
