@@ -1,7 +1,6 @@
-import { getCurrentDateTime, getLocalStorage, valueUpdater } from "@/lib/utils";
+import { getCurrentDateTime, valueUpdater } from "@/lib/utils";
 import { endOfDay, endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, subMonths } from "date-fns";
 
-export const USER_LOCALE = JSON.parse(getLocalStorage("user-locale"));
 export const CURRENT_DATE = getCurrentDateTime();
 
 export const COLLECTION = {

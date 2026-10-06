@@ -1,18 +1,13 @@
-import { createI18n } from 'vue-i18n'
-import pluralRules from './rules/pluralization'
-import numberFormats from './rules/numbers'
-import datetimeFormats from './rules/datetime'
-import vi from './locales/vi.json'
-import en from './locales/en.json';
-import { USER_LOCALE } from "@/lib/constants";
+import { tryUseNuxtApp } from "#imports";
 
-export default createI18n({
-  locale: USER_LOCALE || import.meta.env.VITE_DEFAULT_LOCALE,
-  fallbackLocale: import.meta.env.VITE_FALLBACK_LOCALE,
-  legacy: false,
-  globalInjection: true,
-  messages: { vi, en },
-  ...numberFormats,
-  ...datetimeFormats,
-  pluralRules,
-})
+// The vue-i18n instance is owned by @nuxtjs/i18n (one per request on the
+// server). Plain modules such as toasts and zod schemas cannot call useI18n(),
+// so they translate through this accessor, which keeps the old
+// `i18n.global.t(...)` call shape. Outside a Nuxt context it returns the key.
+const t = (key: string, named?: Record<string, unknown>): string => {
+  const i18n = tryUseNuxtApp()?.$i18n;
+  if (!i18n) return key;
+  return named ? i18n.t(key, named) : i18n.t(key);
+};
+
+export default { global: { t } };

@@ -1,5 +1,5 @@
 <template>
-  <section class="mx-auto  w-full" 
+  <section v-if="!pendingVerificationEmail" class="mx-auto  w-full" 
   
   :class="{
       'mt-5 p-5': !isExactPath
@@ -94,6 +94,7 @@
       </div>
     </div>
   </section>
+  <VerifyEmailCode v-else @verified="finishRegister" />
   <div v-if="loading">
     <LoadingIndicator />
   </div>
@@ -108,18 +109,18 @@ import { useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import LoadingIndicator from "@/components/common/LoadingIndicator.vue";
 import type { IRegisterPayload } from "@/types/user.type";
-import { InputPassword } from "@/components/common";
+import { InputPassword, VerifyEmailCode } from "@/components/common";
 import { useRoute, useRouter } from "vue-router";
 import useValidation from "@/composables/useValidation";
 import { registerSchema } from "@/validations/auth";
 const route = useRoute();
 const router = useRouter();
-const emits = defineEmits(["directPath"]);
+const emits = defineEmits(["directPath", "closeDialog"]);
 const isExactPath = route.fullPath?.toString()?.split('/')[1] === ""
 
 const isCheckStt = ref(false);
 const authStore = useAuthStore();
-const { loading, isSuccess } = storeToRefs(authStore);
+const { loading, isSuccess, pendingVerificationEmail } = storeToRefs(authStore);
 
 const formSchema = ref<IRegisterPayload>({
   email: "",
@@ -141,6 +142,15 @@ function redirectPath() {
     router.push({ name: "login" });
   } else {
     emits("directPath", "login");
+  }
+}
+
+// The account is verified and signed in after the emailed code is accepted.
+function finishRegister() {
+  if (route.fullPath?.includes("register")) {
+    router.push({ name: "home" });
+  } else {
+    emits("closeDialog");
   }
 }
 

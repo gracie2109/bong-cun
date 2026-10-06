@@ -16,6 +16,8 @@
     "delete": "Delete",
     "dataExisted": "{field} already exists!",
     "dataNotExisted": "{field} does not exist!",
+    "inUse": "It is still in use and cannot be deleted",
+    "noPermission": "You do not have permission to do this",
     "addNew": "Add new {field}",
     "name": "Name",
     "description": "Description",
@@ -31,12 +33,25 @@
     "login": "Login",
     "register": "Register",
     "forgotPw": "Forgot Password",
+    "resetPw": "Reset Password",
     "suppliers": "Suppliers",
     "pets": "Pets",
     "services": "Services",
     "settingPetServicePrice": "Manage Pet Service Pricing",
     "petService": "Manage Pet Services",
-    "customers": "Customers"
+    "customers": "Customers",
+    "products": "Products",
+    "about-us": "About us",
+    "coupons": "Coupons",
+    "contact": "Contact",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "profile": "My account",
+    "schedule": "Appointments",
+    "notFound": "Page not found"
+  },
+  "seo": {
+    "description": "Food and accessories for dogs and cats, plus pet care appointments."
   },
   "validation": {
     "min": "{name} must have at least {min} characters"
@@ -52,7 +67,15 @@
       "alreadyHasAccount": "Already have an account?",
       "dontHaveAccount": "Don't have an account?",
       "createAcc": "Create Account",
-      "prefForgotPw": "Enter your email to receive a password recovery email"
+      "prefForgotPw": "Enter your email to receive a password recovery email",
+      "verifyTitle": "Verify your email",
+      "verifyDesc": "Enter the code we sent to {email}",
+      "codeLabel": "Verification code",
+      "codeInvalid": "Enter the numeric code from your email",
+      "verify": "Verify",
+      "resend": "Resend code",
+      "resendIn": "Resend code in {s}s",
+      "back": "Back"
     },
     "serviceProvider": {
       "desc": "Add information about your product supplier"
@@ -78,6 +101,102 @@
       "comboToTime": "End time",
       "comboTime": "Combo duration",
       "originPrice": "Original price"
+    },
+    "customers": {
+      "subtitle": "Manage owner information, spending and care history for each customer",
+      "addNew": "Add customer",
+      "kpi": {
+        "total": "Total customers",
+        "newThisPeriod": "+{n} in {days} days",
+        "activePets": "Active pets",
+        "vip": "VIP customers",
+        "returnRate": "Return rate",
+        "noData": "No data yet"
+      },
+      "searchPlaceholder": "Search by name, email, phone...",
+      "filterNew": "New customers ({days} days)",
+      "sortBy": "Sort:",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest",
+        "name": "Name A–Z"
+      },
+      "listTitle": "Customer list",
+      "showing": "Showing {count} / {total}",
+      "pageOf": "Page {page} / {pages}",
+      "col": {
+        "customer": "Customer",
+        "spent": "Total spent",
+        "lastVisit": "Last visit",
+        "actions": "Actions"
+      },
+      "serviceCount": "{n} services",
+      "neverVisited": "No services yet",
+      "badgeNew": "New",
+      "viewProfile": "View profile",
+      "empty": "No matching customers",
+      "detail": {
+        "placeholder": "Select a customer to view their profile",
+        "code": "Customer ID",
+        "memberFor": "Member for {n} months",
+        "memberNew": "Just joined",
+        "address": "Address",
+        "noAddress": "No address yet",
+        "email": "Email",
+        "pets": "Pet profiles",
+        "petsEmpty": "No pet profiles for this customer yet",
+        "history": "Recent service history",
+        "historyCount": "{n} visits",
+        "historyEmpty": "This customer has not used any service yet",
+        "noPhone": "No phone number"
+      },
+      "form": {
+        "title": "Add customer",
+        "new": "New",
+        "subtitle": "Create a new pet owner profile and login account",
+        "step": {
+          "info": "Info",
+          "groups": "Groups",
+          "address": "Address"
+        },
+        "stepOf": "Step {n}/3",
+        "fullName": "Full name",
+        "displayName": "Display name",
+        "gender": "Gender",
+        "phone": "Phone number",
+        "email": "Email address",
+        "required": "This field is required",
+        "invalidEmail": "Invalid email",
+        "invalidPhone": "Invalid phone number",
+        "passwordMin": "Password needs at least {min} characters",
+        "passwordTitle": "Initial password",
+        "generate": "Generate",
+        "passwordHint": "The customer can change the password after signing in.",
+        "strength": {
+          "weak": "Weak",
+          "medium": "Medium",
+          "strong": "Strong",
+          "veryStrong": "Very strong"
+        },
+        "groupsTitle": "Target customer groups",
+        "groupsDesc": "Groups apply offers and campaigns that fit the customer.",
+        "groupsPlaceholder": "Choose groups",
+        "groupsEmpty": "No customer groups yet.",
+        "addressTitle": "Delivery & pet pickup address",
+        "addressDesc": "Used for pet taxi and product delivery.",
+        "back": "Back",
+        "next": "Next",
+        "cancel": "Cancel",
+        "save": "Save customer",
+        "saving": "Saving...",
+        "avatarTitle": "Avatar",
+        "avatarHint": "Shown on the profile and booking cards. JPG/PNG, max 2MB.",
+        "fullNamePh": "John Smith",
+        "displayNamePh": "e.g. John (Milo's owner)",
+        "phonePh": "0901 234 567",
+        "emailPh": "john.smith@email.com",
+        "passwordPh": "At least 8 characters"
+      }
     }
   }
 }

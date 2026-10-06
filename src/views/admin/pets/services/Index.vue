@@ -62,17 +62,16 @@
 <script lang="ts" setup>
 import { ContentWrap } from "@/views/admin/components";
 
-import { h, onMounted, reactive, ref, watchEffect } from "vue";
-import { usePetServices } from "@/stores";
+import { h, reactive, ref } from "vue";
+import { useDeletePetService, usePetServicesList } from "@/queries/petServices";
+import usePagedRows from "@/composables/usePagedRows";
 import { formatDateTime, formatPrice } from "@/lib/utils";
 import { type IHeaderAdvanced, type T_ROW_FUNCTION } from "@/types";
 import type { ColumnDef, PaginationState } from "@tanstack/vue-table";
 
-import { storeToRefs } from "pinia";
 import { DialogConfirm, DataTable } from "@/components/common";
 import DataTableColumnHeader from "@/components/common/DataTable/DataTableColumnHeader.vue";
 import { HEADER_ADVANCE_FUNCTION, INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { watch } from "vue";
 import RowFunction from "../components/RowFunction.vue";
 import PageTitle from "../PageTitle.vue";
 import ModalCreateService from "../components/ModalCreateService.vue";
@@ -81,8 +80,6 @@ import { useI18n } from "vue-i18n";
 import SubMenu from "../components/SubMenu.vue";
 
 const { locale } = useI18n();
-const store = usePetServices();
-const { petServices, pageCount } = storeToRefs(store);
 const selectedItem = ref();
 const rowEditSelected = ref();
 const mode = ref();
@@ -91,6 +88,10 @@ const pageData = ref<PaginationState>({
   pageIndex: INITIAL_PAGE_INDEX,
   pageSize: 500,
 });
+
+const servicesQuery = usePetServicesList(pageData);
+const { rows: petServices, total: pageCount } = usePagedRows(servicesQuery, pageData);
+const deleteService = useDeletePetService();
 
 const columns: ColumnDef<any>[] = reactive([
   {
@@ -239,9 +240,14 @@ function deleteItem(val: any) {
   mode.value = "delete";
 }
 async function handleDelete() {
-  await store.deletePetService(selectedItem.value.id);
-  setOpen();
-  selectedItem.value = null;
+  try {
+    await deleteService.mutateAsync(selectedItem.value.id);
+  } catch {
+    // the mutation already showed the failure toast
+  } finally {
+    setOpen();
+    selectedItem.value = null;
+  }
 }
 
 function onReset() {
@@ -260,29 +266,10 @@ function setElSelect() {
 
 function updatePageSize(newPs: number) {
   pageData.value.pageSize = +newPs;
+  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
 }
 
-const loadDataForPage = async (page: number) => {
-  await store.getListPetService({
-    pageIndex: page,
-    pageSize: pageData.value.pageSize,
-  });
-};
-
-onMounted(async () => {
-  await store.getListPetService({
-    pageIndex: pageData.value.pageIndex,
-    pageSize: pageData.value.pageSize,
-  });
-});
-
-watch(
-  () => pageData.value.pageSize,
-  async () => {
-    await store.getListPetService({
-      pageIndex: pageData.value.pageIndex,
-      pageSize: pageData.value.pageSize,
-    });
-  }
-);
+function loadDataForPage(page: number) {
+  pageData.value.pageIndex = page;
+}
 </script>

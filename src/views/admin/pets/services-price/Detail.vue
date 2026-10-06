@@ -18,32 +18,18 @@
 import ContentWrap from "@/views/admin/components/ContentWrap.vue";
 import PageTitle from "@/views/admin/pets/PageTitle.vue";
 import { useRoute } from "vue-router";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import ServicePriceTable from "./components/ServicePriceTable.vue";
-import { getDetailData } from "@/lib/firebaseFn";
-import { COLLECTION } from "@/lib/constants";
+import { usePetService } from "@/queries/petServices";
 
 const route = useRoute();
-const serviceInfo = ref();
-const isHandleForm = computed(() => {
-  if (serviceInfo?.value) {
-    if (serviceInfo?.value?.petIds?.includes(String(route.params.petId))) {
-      return true;
-    }
-    return false;
-  } else return false;
-});
+const serviceId =
+  route.name === "DetailPetService" && route.params.serviceId
+    ? String(route.params.serviceId)
+    : undefined;
+const { data: serviceInfo } = usePetService(serviceId);
 
-onMounted(async () => {
-  if (route.name === "DetailPetService" && route.params.serviceId) {
-    const service = await getDetailData(
-      COLLECTION.PETS_SERVICES,
-      "__name__",
-      String(route.params.serviceId)
-    );
-    if (!service.empty) {
-      serviceInfo.value = service.docs[0].data();
-    }
-  }
-});
+const isHandleForm = computed(() =>
+  !!serviceInfo.value?.petIds?.includes(String(route.params.petId))
+);
 </script>

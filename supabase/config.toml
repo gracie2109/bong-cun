@@ -1,0 +1,38 @@
+# Supabase project configuration: the one place for server-side auth settings
+# (OTP length/expiry, email templates, redirect URLs, the access-token hook).
+# `supabase start` reads it for local development. For the hosted project, push it
+# with `supabase config push`, or set the same values in the dashboard
+# (see docs/supabase-setup.md).
+
+project_id = "bongcun-manager"
+
+[db]
+major_version = 17
+
+[auth]
+site_url = "http://localhost:3004"
+additional_redirect_urls = ["http://localhost:3004/**"]
+
+[auth.email]
+enable_signup = true
+# Accounts must be verified before they can sign in; the app asks for the emailed code.
+enable_confirmations = true
+# Email verification and password reset use a one-time code, never a link.
+otp_length = 6
+otp_expiry = 3600
+
+[auth.email.template.confirmation]
+subject = "Mã xác thực của bạn / Your verification code"
+content_path = "./supabase/templates/confirm-signup.html"
+
+[auth.email.template.recovery]
+subject = "Mã đặt lại mật khẩu / Your password reset code"
+content_path = "./supabase/templates/recovery.html"
+
+# Copies users.role into the JWT as `user_role`; Row Level Security reads it.
+[auth.hook.custom_access_token]
+enabled = true
+uri = "pg-functions://postgres/public/custom_access_token_hook"
+
+[functions.admin-create-user]
+verify_jwt = true

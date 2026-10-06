@@ -10,9 +10,9 @@
       <div class="relative top-10">
         <DataTable
           :headerAdvanced="headerAdvanced"
-          :data="searchOrderService"
+          :data="orders"
           :columns="columns"
-          :page-count="searchTotalPage"
+          :page-count="totalRecord"
           :page-data="pageData"
           :saveColumnVisible="{ name: 'customers', isRemeber: true }"
           :add-new-handle="{ content: null, type: 'function' }"
@@ -28,21 +28,10 @@
 <script lang="ts" setup>
 import Header from "@/views/admin/components/Header.vue";
 import ContentWrap from "@/views/admin/components/ContentWrap.vue";
+import { reactive, ref } from "vue";
+import { useOrdersList } from "@/queries/orders";
+import usePagedRows from "@/composables/usePagedRows";
 import {
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  nextTick,
-  toRaw,
-  inject,
-  provide
-} from "vue";
-import { useOrderService } from "@/stores";
-import { storeToRefs } from "pinia";
-import { getTotalRecord, type QueryCondition } from "@/lib/firebaseFn";
-import {
-  COLLECTION,
   HEADER_ADVANCE_FUNCTION,
   INITIAL_PAGE_INDEX,
   TIME_OPTIONS
@@ -56,10 +45,8 @@ import { status } from "@/data/order-services-status.json";
 import { useI18n } from "vue-i18n";
 import RowAction from "./components/RowAction.vue";
 import { CalendarDays } from "lucide-vue-next";
+import { formatDateTime } from "@/lib/utils";
 
-const $store = useOrderService();
-const { loading, searchOrderService, searchTotalPage } = storeToRefs($store);
-const totalRecord = ref(0);
 const date = ref(TIME_OPTIONS[0]["value"]);
 
 const headerAdvanced = reactive<IHeaderAdvanced[]>([
@@ -69,21 +56,19 @@ const headerAdvanced = reactive<IHeaderAdvanced[]>([
 
 const pageData = ref<PaginationState>({
   pageIndex: INITIAL_PAGE_INDEX,
-  pageSize: 5
+  pageSize: 25
 });
 
-const dataSearch = ref<QueryCondition[]>([]);
+// Exact phone-number search, as the search box always intended.
+const phoneNumber = ref<string | undefined>(undefined);
+const ordersQuery = useOrdersList(pageData, phoneNumber);
+const { rows: orders, total: totalRecord } = usePagedRows(ordersQuery, pageData);
 const { locale } = useI18n();
 
 const onInput = (vl: string | number) => {
-  if (String(vl).length > 0) {
-    const sKs = [
-      { fieldId: "phoneNumber", operator: "==", value: vl.toString().trim() }
-    ];
-    dataSearch.value = sKs;
-  } else {
-    dataSearch.value = [];
-  }
+  const text = String(vl).trim();
+  phoneNumber.value = text.length > 0 ? text : undefined;
+  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
 };
 
 const handleDate = (vl: any) => {
@@ -141,7 +126,7 @@ const columns: ColumnDef<any>[] = reactive([
       h(
         "span",
         { class: "max-w-[500px] truncate font-medium" },
-        row.getValue("time")
+        formatDateTime(row.getValue("time") as string)
       )
   },
   {
@@ -185,39 +170,4 @@ const columns: ColumnDef<any>[] = reactive([
       })
   }
 ]);
-
-onMounted(async () => {
-  totalRecord.value = await getTotalRecord(COLLECTION.ORDER_SERVICES);
-  await nextTick();
-  await $store.searchServiceOrder({
-    pageIndex: 1,
-    pageSize: 25,
-    dataSearch: [
-      // { fieldId: "time", operator: "<=", value:format(date.value[0],'') },
-      // { fieldId: "time", operator: ">=", value:date.value[1] }
-    ]
-  });
-});
-
-watch(
-  () => dataSearch.value,
-  async (vl) => {
-    await nextTick();
-    if (dataSearch.value[0]?.value?.length > 0) {
-      const raw = toRaw(dataSearch.value);
-
-      await $store.searchServiceOrder({
-        pageIndex: 1,
-        pageSize: 25,
-        dataSearch:  []
-      });
-    } else {
-      await $store.searchServiceOrder({
-        pageIndex: 1,
-        pageSize: 25,
-        dataSearch: []
-      });
-    }
-  }
-);
 </script>

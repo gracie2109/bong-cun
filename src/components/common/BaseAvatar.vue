@@ -11,7 +11,7 @@
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-56">
 
-      <DropdownMenuLabel>{{  currentUser.email ?? ""}}</DropdownMenuLabel>
+      <DropdownMenuLabel>{{  currentUser?.email ?? ""}}</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem @click="goToProfile">

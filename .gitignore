@@ -33,3 +33,10 @@ coverage
 .env
 .env.*
 !.env.example
+
+# Nuxt
+.nuxt
+.output
+.data
+.nitro
+.cache

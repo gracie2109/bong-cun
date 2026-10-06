@@ -1,3 +1,5 @@
 {
-  "rewrites": [{ "source": "/:path*", "destination": "/index.html" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nuxtjs",
+  "installCommand": "npm ci"
 }

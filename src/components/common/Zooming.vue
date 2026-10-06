@@ -1,5 +1,6 @@
 <template>
   <VueZoomable
+    class="h-full w-full"
     selector="#myContent"
     :minZoom="1"
     :maxZoom="3"

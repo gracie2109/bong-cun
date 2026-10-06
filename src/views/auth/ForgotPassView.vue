@@ -1,5 +1,6 @@
 <template>
   <section
+    v-if="!pendingRecoveryEmail"
     class="mx-auto grid gap-6 w-full"
     :class="{
       'mt-5 p-5': !isExactPath,
@@ -43,6 +44,7 @@
       </div>
     </div>
   </section>
+  <ResetPasswordWithCode v-else @done="finishRecovery" />
   <div v-if="loading">
     <LoadingIndicator />
   </div>
@@ -55,7 +57,7 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { LoadingIndicator } from "@/components/common";
+import { LoadingIndicator, ResetPasswordWithCode } from "@/components/common";
 import useValidation from "@/composables/useValidation";
 import { EmailSChema } from "@/validations";
 
@@ -63,7 +65,7 @@ const formVl = ref({
   email: "",
 });
 const store = useAuthStore();
-const { isSuccess, loading } = storeToRefs(store);
+const { loading, pendingRecoveryEmail } = storeToRefs(store);
 const emit = defineEmits(["directPath", "closeDialog"]);
 const route = useRoute();
 const router = useRouter();
@@ -85,20 +87,20 @@ const { validate, isValid, getError, scrolltoError, errors } = useValidation(
   }
 );
 
+// After the code is accepted the user is signed in with the new password.
+function finishRecovery() {
+  if (route.fullPath?.includes("forgot-password")) {
+    router.push({ name: "home" });
+  } else {
+    emit("closeDialog");
+  }
+}
+
 async function submitHdl() {
   await validate();
   if (isValid.value) {
-    const mail = formVl.value.email;
-    await store.sendResetPassMail(mail.trim());
-
-    if (isSuccess) {
-      emit("closeDialog");
-      if (route.fullPath?.includes("forgot-password")) {
-        router.push({ name: "home" });
-      } else {
-        redirectPath();
-      }
-    }
+    // On success the store switches to the code form (pendingRecoveryEmail).
+    await store.sendResetPassMail(formVl.value.email.trim());
   } else {
     scrolltoError(".p-invalid", { offset: 24 });
   }

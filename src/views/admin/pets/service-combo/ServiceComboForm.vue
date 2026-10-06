@@ -196,7 +196,8 @@ import {
 import { status } from "@/data/status.json";
 import { useI18n } from "vue-i18n";
 import type { FormContext } from "vee-validate";
-import { usePetCombo, usePetServices } from "@/stores";
+import { useCreatePetCombo } from "@/queries/petCombos";
+import { useFetchServicesOfPets } from "@/queries/petServices";
 import Multiselect from "vue-multiselect";
 import { Slider } from "@/components/ui/slider";
 import { TIME_OPTIONS } from "@/lib/constants";
@@ -211,8 +212,8 @@ const props = defineProps<{
 const emit = defineEmits(["onSubmitHdl", "changeOpen"]);
 const { locale } = useI18n();
 const dataItem = ref();
-const store = usePetCombo();
-const serviceStore = usePetServices();
+const createCombo = useCreatePetCombo();
+const fetchServicesOfPets = useFetchServicesOfPets();
 const date = ref();
 const time = ref([0]);
 const price = ref();
@@ -233,7 +234,11 @@ function resetAll() {
 const onSubmit = props.form.handleSubmit(async (values: any) => {
   if (!dataItem.value) {
     const pl = { ...values, status: 1 };
-    await store.createNewPetCombo(pl);
+    try {
+      await createCombo.mutateAsync(pl);
+    } catch {
+      return; // the mutation already showed the failure toast; keep the dialog open
+    }
     resetAll();
     emit("changeOpen");
   }
@@ -250,9 +255,9 @@ watch(
       return;
     }
 
-    const response = await serviceStore.searchServiceOfPet({
-      petIds: petSelected.value.map((i) => i?.id),
-    });
+    const response = await fetchServicesOfPets(
+      petSelected.value.map((i) => i?.id).filter(Boolean)
+    );
     listServices.value = response || [];
 
     const selectedServiceIds = serviceSelected.value.map(
@@ -281,7 +286,7 @@ watch(
   (newVal) => {
     console.log("newVal", props.rowEditting);
     props.form.setValues({ ...props.rowEditting }, true);
-    petSelected.value = props.rowEditting["petIds"];
+    petSelected.value = props.rowEditting["petProfiles"] ?? [];
     price.value = props.rowEditting["price"];
     time.value = props.rowEditting["duration"];
   }

@@ -65,31 +65,47 @@
 <script setup lang="ts">
 import { useForm } from "vee-validate";
 import PermissionForm from "./components/RoleForm.vue";
-import { onMounted, ref } from "vue";
-import { usePermissionStore } from "@/stores";
+import { computed, ref } from "vue";
+import { useCreateRole, useDeleteRole, useRolesList, useUpdateRole } from "@/queries/roles";
+import { usePermissionsList } from "@/queries/permissions";
 import { PlusCircle } from "lucide-vue-next";
-import { storeToRefs } from "pinia";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ListRoles from "./components/ListRoles.vue";
 import { DialogConfirm } from "@/components/common";
 
-const store = usePermissionStore();
 const form = useForm();
-const { loading, permissions, roles, pageCount } = storeToRefs(store);
+const rolesQuery = useRolesList();
+const roles = computed(() => rolesQuery.data.value ?? []);
+const pageCount = computed(() => roles.value.length);
+const { data: permissionOptions } = usePermissionsList();
+const permissions = computed(() => permissionOptions.value ?? []);
+const createRole = useCreateRole();
+const updateRole = useUpdateRole();
+const deleteRole = useDeleteRole();
+const loading = computed(
+  () =>
+    rolesQuery.isPending.value ||
+    createRole.isPending.value ||
+    updateRole.isPending.value ||
+    deleteRole.isPending.value
+);
 const elSelect = ref();
 const open = ref(false);
 const openDelete = ref(false);
 const isEditSuccess = ref(false);
 
 const handleSubmit = form.handleSubmit(async (value: any) => {
-  if (!elSelect.value) {
-    await store.createNewRole(value);
-    closeDialog();
-  } else {
-    await store.editRole(value);
-    isEditSuccess.value = true;
-    closeDialog();
+  try {
+    if (!elSelect.value) {
+      await createRole.mutateAsync(value);
+    } else {
+      await updateRole.mutateAsync({ id: elSelect.value.id, input: value });
+      isEditSuccess.value = true;
+    }
+  } catch {
+    return; // the mutation already showed the failure toast; keep the dialog open
   }
+  closeDialog();
 });
 
 const closeDialog = () => {
@@ -108,14 +124,14 @@ const onDelete = (item: any) => {
   elSelect.value = item.res;
   openDelete.value = true;
 };
-const handleDelete = async (item: any) => {
-  await store.deleteRole(elSelect.value.id);
-  openDelete.value = false;
-  elSelect.value = [];
+const handleDelete = async () => {
+  try {
+    await deleteRole.mutateAsync(elSelect.value.id);
+  } catch {
+    // the mutation already showed the failure toast
+  } finally {
+    openDelete.value = false;
+    elSelect.value = [];
+  }
 };
-
-onMounted(async () => {
-  await store.getListPermissions();
-  await store.getListRole();
-});
 </script>

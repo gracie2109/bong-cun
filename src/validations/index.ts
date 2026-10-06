@@ -3,10 +3,16 @@ import * as z from 'zod';
 import i18n from "@/i18n"
 
 const t = i18n.global.t;
-export const validMinString = (name: string, min: number) => z.string()
-    .min(min, {
-        message: t('validation.min', { name: name, min: min })
-    });
+// The message is translated when validation runs, not when the schema is built:
+// page modules are evaluated before @nuxtjs/i18n has finished setting up. Pass
+// `name` as a function when it needs translating too.
+export const validMinString = (name: string | (() => string), min: number) => z
+    .string({
+        errorMap: (issue, ctx) => issue.code === z.ZodIssueCode.too_small
+            ? { message: t('validation.min', { name: typeof name === 'function' ? name() : name, min: min }) }
+            : { message: ctx.defaultError },
+    })
+    .min(min);
 export const validaMaxString = (name: string, min: number, max: number) => z.string().max(max, { message: `${name} must be at least ${max} characters` });
 export const validMinMaxString = (name: string, min: number, max: number) =>
     z.string()

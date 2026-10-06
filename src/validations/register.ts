@@ -11,7 +11,7 @@ export const REGISTER_PARAMS = {
 };
 const t = i18n.global.t;
 export const registerFormSchema = z.object({
-  [REGISTER_PARAMS.NAME]: validMinString(t("pageFields.products.name"), 3),
+  [REGISTER_PARAMS.NAME]: validMinString(() => t("pageFields.products.name"), 3),
   [REGISTER_PARAMS.EMAIL]: validEmail,
   [REGISTER_PARAMS.PHONE_NUMBER]: validPhoneNumber,
 });

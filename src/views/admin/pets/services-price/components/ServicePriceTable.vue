@@ -39,15 +39,15 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { contents } from "@/data/pet-weights.json";
 import Input from "@/components/ui/input/Input.vue";
 import { useRoute } from "vue-router";
 import Button from "@/components/ui/button/Button.vue";
 import { Save, RotateCcw } from "lucide-vue-next";
-import { usePetServices } from "@/stores";
-import { storeToRefs } from "pinia";
+import { useSaveServicePrices, useServicePrices } from "@/queries/servicePrices";
+import type { ServicePrice } from "@/repositories/servicePrices";
 
 type IPrice = {
   [key: string]: string | number;
@@ -58,64 +58,56 @@ const props = defineProps<{
 }>();
 
 const { locale } = useI18n();
-const store = usePetServices();
-const {loading} = storeToRefs(store)
 const route = useRoute();
-const isAdd = ref(true);
+const petId = String(route.params.petId);
+const serviceId = String(route.params.serviceId);
 
 const data2 = ref<IPrice[]>(
   contents.map((i) => {
     return {
       id: "",
-      petId: String(route.params.petId),
-      serviceId: String(route.params.serviceId),
+      petId,
+      serviceId,
       weightId: String(i.id),
       price: "",
     };
   })
 );
 
-async function clearData() {
-  await getServicePrice();
+const pricesQuery = useServicePrices({ petId, serviceId });
+const savePrices = useSaveServicePrices();
+const loading = computed(() => pricesQuery.isFetching.value || savePrices.isPending.value);
+
+// Fill the inputs from the saved prices; a weight with no saved price is blank.
+function applyPrices(prices: ServicePrice[] | undefined) {
+  data2.value.forEach((row) => {
+    const saved = prices?.find((price) => price.weightId === row.weightId);
+    row.id = saved?.id ?? "";
+    row.price = saved ? saved.price : "";
+  });
+}
+
+watch(() => pricesQuery.data.value, applyPrices, { immediate: true });
+
+/** Discards unsaved edits and shows the saved prices again. */
+function clearData() {
+  applyPrices(pricesQuery.data.value);
 }
 
 async function handleSubmit() {
-  if (data2.value) {
-    await store.createPetServicePrice({
-      data: data2.value,
-      isAdd: isAdd.value,
+  try {
+    await savePrices.mutateAsync({
+      petId,
+      serviceId,
+      rows: data2.value.map((row) => ({
+        weightId: String(row.weightId),
+        price: row.price === "" ? null : row.price,
+      })),
     });
-    await getServicePrice();
+  } catch {
+    // the mutation already showed the failure toast
   }
 }
-
-async function getServicePrice() {
-  const result = await store.getServicePriceByPetId({
-    petId: String(route.params.petId),
-    serviceId: String(route.params.serviceId),
-  });
-  if (result && Array.isArray(result) && result.length > 0) {
-    isAdd.value = false;
-
-    result.forEach((item: any) => {
-      const matched = data2.value.find(
-        (dataItem) =>
-          dataItem.petId === item.petId &&
-          dataItem.serviceId === item.serviceId &&
-          dataItem.weightId === item.weightId
-      );
-      if (matched) {
-        matched.price = item.price;
-        matched.id = item.id;
-      }
-    });
-  }
-  else isAdd.value = true;
-}
-
-onMounted(async () => {
-  await getServicePrice();
-});
 </script>
 
 <style scoped>

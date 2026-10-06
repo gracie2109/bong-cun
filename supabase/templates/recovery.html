@@ -1,0 +1,17 @@
+<!--
+  Supabase "Reset password" email — CODE ONLY, no link.
+  Applied from supabase/config.toml ([auth.email.template.recovery]); on the hosted
+  project paste it into: Dashboard > Authentication > Emails > Templates > Reset Password
+  Subject: Mã đặt lại mật khẩu / Your password reset code
+
+  Do NOT add {{ .ConfirmationURL }}: that is what produces a link.
+-->
+<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #111;">
+  <h2 style="margin-bottom: 8px;">Đặt lại mật khẩu / Reset your password</h2>
+  <p>Mã đặt lại mật khẩu của bạn là / Your password reset code is:</p>
+  <p style="font-size: 34px; font-weight: bold; letter-spacing: 10px; margin: 20px 0;">{{ .Token }}</p>
+  <p style="color: #555;">
+    Mã có hiệu lực trong 1 giờ. Nếu bạn không yêu cầu, hãy bỏ qua email này.<br />
+    This code expires in 1 hour. If you did not ask for it, ignore this email.
+  </p>
+</div>

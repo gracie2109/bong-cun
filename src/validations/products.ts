@@ -4,7 +4,7 @@ import i18n from "@/i18n"
 
 const t = i18n.global.t
 export const productFormSchema = z.object({
-    name: validMinString(t('pageFields.products.name'), 3),
+    name: validMinString(() => t('pageFields.products.name'), 3),
     description: validCanNull('description'),
 })
 
