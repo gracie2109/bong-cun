@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   createRole,
   deleteRole,
@@ -12,12 +12,12 @@ import { invalidateAccess } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
 export const useRolesList = () =>
-  useQuery({ queryKey: roleKeys.list(), queryFn: () => listRoles(supabase) });
+  useQuery({ queryKey: roleKeys.list(), queryFn: () => listRoles(supabaseClient()) });
 
 export const useCreateRole = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: RoleInput) => createRole(supabase, input),
+    mutationFn: (input: RoleInput) => createRole(supabaseClient(), input),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("create");
@@ -29,7 +29,7 @@ export const useCreateRole = () => {
 export const useUpdateRole = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: RoleInput }) => updateRole(supabase, id, input),
+    mutationFn: ({ id, input }: { id: string; input: RoleInput }) => updateRole(supabaseClient(), id, input),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("update");
@@ -41,7 +41,7 @@ export const useUpdateRole = () => {
 export const useDeleteRole = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteRole(supabase, id),
+    mutationFn: (id: string) => deleteRole(supabaseClient(), id),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("delete");

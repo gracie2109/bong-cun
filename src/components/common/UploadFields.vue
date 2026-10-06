@@ -3,7 +3,7 @@ import { useFileDialog } from "@vueuse/core";
 import { Eye, PlusCircle, Trash } from "lucide-vue-next";
 import { ref, toRaw } from "vue";
 import { storeToRefs } from "pinia";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import { useAuthStore } from "@/stores";
 import { deleteImage, pathFromPublicUrl, uploadImage, validateImage } from "@/repositories/storage";
 import { DialogConfirm, LoadingSpin } from "@/components/common";
@@ -57,7 +57,7 @@ const uploadFile = async (file: File) => {
   // Supabase uploads report no per-chunk progress, so this is a plain busy flag.
   progress.value = true;
   try {
-    const { url } = await uploadImage(supabase, {
+    const { url } = await uploadImage(supabaseClient(), {
       userId: session.value.user.id,
       folder: props.folderName,
       file,
@@ -77,7 +77,7 @@ const handleDelete = async (img: string) => {
   if (!path) return;
 
   try {
-    await deleteImage(supabase, path);
+    await deleteImage(supabaseClient(), path);
     const newData = images.value.filter((i) => i !== img);
     images.value = newData;
     emit("setImages", newData);
@@ -162,7 +162,7 @@ const handleDelete = async (img: string) => {
                 "
                 v-if="selectedImg"
               >
-                <DialogContent class="w-full max-w-screen-md max-h-[500px]">
+                <DialogContent class="h-screen w-screen max-w-none gap-0 rounded-none border-0 p-0 sm:rounded-none">
                   <Zooming :image="selectedImg" :showControl="props.showControl" />
                 </DialogContent>
               </Dialog>
@@ -172,6 +172,8 @@ const handleDelete = async (img: string) => {
                 :ok-btn="'Delete'"
                 :desc="'You may be deleting user data. After you delete this, it can not be recovered.'"
                 :title="'Delete files'"
+                @cancel="delImg = ''"
+                @open-change="delImg = ''"
                 @handle-ok="handleDelete(toRaw(delImg))"
               />
             </div>

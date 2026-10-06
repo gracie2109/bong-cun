@@ -17,4 +17,4 @@ export default {
         weekday: 'short', hour: 'numeric', minute: 'numeric'
       }
     }
-  }
+  } as const

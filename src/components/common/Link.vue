@@ -9,8 +9,6 @@
 </template>
 
 <script setup lang="ts">
-
-const activePath = location.pathname;
 import { useRoute } from "vue-router";
 const route = useRoute();
 

@@ -40,14 +40,15 @@ import { ref, defineProps, defineEmits } from "vue";
 
 import { InfoIcon } from "lucide-vue-next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { FormControl, FormField, FormItem } from "./ui/form";
 import { PopoverArrow, PopoverClose } from "radix-vue";
 
 defineProps<{
-  name: String;
-  placeholder: String;
+  name: string;
+  placeholder: string;
   error: any;
-  isInValid: Boolean;
-  modelValue: String;
+  isInValid: boolean;
+  modelValue: string;
 }>();
 const openTooltip = ref(false);
 const emit = defineEmits<{

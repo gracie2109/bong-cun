@@ -15,7 +15,7 @@
             <ModalCreateService :default-pet="petInfo" />
           </div>
           <div
-            v-if="!_.isEmpty(petServices) && !loading"
+            v-if="!isEmpty(petServices) && !loading"
             v-for="(i, j) in petServices.filter((i) =>
               i?.petIds?.includes(petId)
             )"
@@ -57,7 +57,7 @@ import ListServicesPriceTable from "./components/ListServicesPriceTable.vue";
 import ModalCreateService from "../components/ModalCreateService.vue";
 import SubMenu from "../components/SubMenu.vue";
 import { useRoute } from "vue-router";
-import _ from "lodash"
+import { isEmpty } from "lodash-es"
 
 const { params } = useRoute();
 const petId = String(params.petId);

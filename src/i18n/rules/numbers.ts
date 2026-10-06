@@ -11,4 +11,4 @@ export default {
         currency: "VND"
       }
     }
-  }
+  } as const

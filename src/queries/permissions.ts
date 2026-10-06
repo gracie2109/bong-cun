@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   createPermission,
   deletePermission,
@@ -12,12 +12,12 @@ import { invalidateAccess } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
 export const usePermissionsList = () =>
-  useQuery({ queryKey: permissionKeys.list(), queryFn: () => listPermissions(supabase) });
+  useQuery({ queryKey: permissionKeys.list(), queryFn: () => listPermissions(supabaseClient()) });
 
 export const useCreatePermission = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: PermissionInput) => createPermission(supabase, input),
+    mutationFn: (input: PermissionInput) => createPermission(supabaseClient(), input),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("create");
@@ -30,7 +30,7 @@ export const useUpdatePermission = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: PermissionInput }) =>
-      updatePermission(supabase, id, input),
+      updatePermission(supabaseClient(), id, input),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("update");
@@ -42,7 +42,7 @@ export const useUpdatePermission = () => {
 export const useDeletePermission = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePermission(supabase, id),
+    mutationFn: (id: string) => deletePermission(supabaseClient(), id),
     onSuccess: async () => {
       await invalidateAccess(queryClient);
       notifySuccess("delete");

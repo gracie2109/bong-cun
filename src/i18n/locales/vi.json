@@ -28,7 +28,7 @@
     "price": "Giá tiền"
   },
   "pageMeta": {
-    "home": "Trang chủ ",
+    "home": "Trang chủ",
     "product_list": "Danh sách sản phẩm",
     "login": "Đăng nhập",
     "register": "Tạo tài khoản",
@@ -39,7 +39,19 @@
     "services": "Dịch vụ",
     "settingPetServicePrice": "Quản lý giá dịch vụ thú cưng",
     "petService": "Quản lý các dịch vụ của thú cưng",
-    "customers": "Khách hàng"
+    "customers": "Khách hàng",
+    "products": "Sản phẩm",
+    "about-us": "Về chúng tôi",
+    "coupons": "Khuyến mãi",
+    "contact": "Liên hệ",
+    "cart": "Giỏ hàng",
+    "checkout": "Thanh toán",
+    "profile": "Tài khoản của tôi",
+    "schedule": "Lịch hẹn",
+    "notFound": "Không tìm thấy trang"
+  },
+  "seo": {
+    "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
   },
   "validation": {
     "min": "{name} cần tối thiểu {min} ký tự"
@@ -74,7 +86,6 @@
       "editPrice": "Chỉnh sửa giá dịch vụ",
       "choosePet": "Chọn thú cưng",
       "chooseService": "Chọn dịch vụ",
-
       "duration": "Thời gian hoàn thành dự tính",
       "serviceTypeSelect": "Chọn điều kiện áp dụng",
       "serviceTypeSelectPlaceholder": "Chọn loại hiển thị",
@@ -90,6 +101,102 @@
       "comboToTime": "Thời gian kết thúc",
       "comboTime": "Thời gian chạy combo",
       "originPrice": "Giá gốc"
+    },
+    "customers": {
+      "subtitle": "Quản lý thông tin chủ nuôi, chi tiêu và lịch sử chăm sóc của từng khách hàng",
+      "addNew": "Thêm khách hàng",
+      "kpi": {
+        "total": "Tổng số khách hàng",
+        "newThisPeriod": "+{n} trong {days} ngày",
+        "activePets": "Thú cưng hoạt động",
+        "vip": "Khách hàng VIP",
+        "returnRate": "Tỷ lệ quay lại",
+        "noData": "Chưa có dữ liệu"
+      },
+      "searchPlaceholder": "Tìm theo tên, email, số điện thoại...",
+      "filterNew": "Khách mới ({days} ngày)",
+      "sortBy": "Sắp xếp:",
+      "sort": {
+        "newest": "Mới tạo gần nhất",
+        "oldest": "Cũ nhất",
+        "name": "Tên A–Z"
+      },
+      "listTitle": "Danh sách khách hàng",
+      "showing": "Hiển thị {count} / {total}",
+      "pageOf": "Trang {page} / {pages}",
+      "col": {
+        "customer": "Khách hàng",
+        "spent": "Tổng chi tiêu",
+        "lastVisit": "Lần gần nhất",
+        "actions": "Thao tác"
+      },
+      "serviceCount": "{n} lượt dịch vụ",
+      "neverVisited": "Chưa sử dụng dịch vụ",
+      "badgeNew": "Khách mới",
+      "viewProfile": "Xem hồ sơ",
+      "empty": "Không có khách hàng nào phù hợp",
+      "detail": {
+        "placeholder": "Chọn một khách hàng để xem hồ sơ",
+        "code": "Mã KH",
+        "memberFor": "Đã tham gia {n} tháng",
+        "memberNew": "Mới tham gia",
+        "address": "Địa chỉ",
+        "noAddress": "Chưa có địa chỉ",
+        "email": "Email",
+        "pets": "Hồ sơ thú cưng",
+        "petsEmpty": "Chưa có hồ sơ thú cưng cho khách hàng này",
+        "history": "Lịch sử dịch vụ gần nhất",
+        "historyCount": "{n} lượt",
+        "historyEmpty": "Khách hàng chưa sử dụng dịch vụ nào",
+        "noPhone": "Chưa có số điện thoại"
+      },
+      "form": {
+        "title": "Thêm khách hàng",
+        "new": "Mới",
+        "subtitle": "Tạo hồ sơ chủ nuôi mới và tài khoản đăng nhập",
+        "step": {
+          "info": "Thông tin",
+          "groups": "Phân nhóm",
+          "address": "Địa chỉ"
+        },
+        "stepOf": "Bước {n}/3",
+        "fullName": "Họ và tên",
+        "displayName": "Tên hiển thị / Xưng hô",
+        "gender": "Giới tính",
+        "phone": "Số điện thoại",
+        "email": "Địa chỉ email",
+        "required": "Trường này là bắt buộc",
+        "invalidEmail": "Email không hợp lệ",
+        "invalidPhone": "Số điện thoại không hợp lệ",
+        "passwordMin": "Mật khẩu tối thiểu {min} ký tự",
+        "passwordTitle": "Thiết lập mật khẩu khởi tạo",
+        "generate": "Tạo ngẫu nhiên",
+        "passwordHint": "Khách hàng có thể đổi mật khẩu sau khi đăng nhập.",
+        "strength": {
+          "weak": "Yếu",
+          "medium": "Trung bình",
+          "strong": "Mạnh",
+          "veryStrong": "Rất mạnh"
+        },
+        "groupsTitle": "Nhóm khách hàng mục tiêu",
+        "groupsDesc": "Gán nhóm giúp áp dụng ưu đãi và gửi chiến dịch phù hợp.",
+        "groupsPlaceholder": "Chọn nhóm",
+        "groupsEmpty": "Chưa có nhóm khách hàng nào.",
+        "addressTitle": "Địa chỉ giao nhận & đón trả thú cưng",
+        "addressDesc": "Dùng cho dịch vụ đưa đón thú cưng tận nhà và giao sản phẩm.",
+        "back": "Quay lại",
+        "next": "Tiếp theo",
+        "cancel": "Hủy",
+        "save": "Lưu khách hàng",
+        "saving": "Đang lưu...",
+        "avatarTitle": "Ảnh đại diện",
+        "avatarHint": "Hiển thị trên hồ sơ và thẻ lịch hẹn. JPG/PNG, tối đa 2MB.",
+        "fullNamePh": "Nguyễn Văn An",
+        "displayNamePh": "VD: Anh An (Bé Milo)",
+        "phonePh": "0901 234 567",
+        "emailPh": "an.nguyen@email.com",
+        "passwordPh": "Tối thiểu 8 ký tự"
+      }
     }
   }
 }

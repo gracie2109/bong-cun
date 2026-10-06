@@ -61,22 +61,69 @@ export const toCurrentUser = (row: UserRow): IUser => {
   };
 };
 
+export const USER_SORT = {
+  NEWEST: "newest",
+  OLDEST: "oldest",
+  NAME: "name",
+} as const;
+export type UserSort = (typeof USER_SORT)[keyof typeof USER_SORT];
+
+export type UserListFilter = {
+  role?: string;
+  /** Matched against display name, full name, email and phone number. */
+  search?: string;
+  /** ISO timestamp: only accounts created at or after it. */
+  createdSince?: string;
+  sort?: UserSort;
+};
+
+const SEARCH_COLUMNS = ["display_name", "full_name", "email", "phone_number"] as const;
+
+/** Double-quoted so commas/parentheses in the term cannot break the PostgREST `or` syntax. */
+const searchFilter = (term: string) => {
+  const quoted = `"%${term.replace(/[\\"]/g, "\\$&")}%"`;
+  return SEARCH_COLUMNS.map((column) => `${column}.ilike.${quoted}`).join(",");
+};
+
+type Filterable<Q> = {
+  eq: (column: string, value: string) => Q;
+  gte: (column: string, value: string) => Q;
+  or: (filters: string) => Q;
+};
+
+const applyUserFilter = <Q extends Filterable<Q>>(query: Q, filter: UserListFilter): Q => {
+  let next = query;
+  if (filter.role) next = next.eq("role", filter.role);
+  if (filter.createdSince) next = next.gte("created_at", filter.createdSince);
+  const term = filter.search?.trim();
+  if (term) next = next.or(searchFilter(term));
+  return next;
+};
+
 export const listUsers = async (
   client: Client,
   page: PageParams,
-  filter: { role?: string } = {}
+  filter: UserListFilter = {}
 ): Promise<Page<IUser>> => {
   const { from, to } = pageRange(page);
-  let query = client
-    .from("users")
-    .select("*", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(from, to);
-  if (filter.role) query = query.eq("role", filter.role);
+  let query = applyUserFilter(client.from("users").select("*", { count: "exact" }), filter);
+  query =
+    filter.sort === USER_SORT.NAME
+      ? query.order("full_name", { ascending: true, nullsFirst: false })
+      : query.order("created_at", { ascending: filter.sort === USER_SORT.OLDEST });
 
-  const { data, count, error } = await query;
+  const { data, count, error } = await query.range(from, to);
   if (error) throw error;
   return { rows: (data ?? []).map(toCurrentUser), total: count ?? 0 };
+};
+
+export const countUsers = async (client: Client, filter: UserListFilter = {}): Promise<number> => {
+  const { count, error } = await applyUserFilter(
+    client.from("users").select("id", { count: "exact", head: true }),
+    filter
+  );
+  if (error) throw error;
+  return count ?? 0;
 };
 
 export type CreateUserInput = {

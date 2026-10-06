@@ -102,27 +102,40 @@ async function handleSubmit() {
                       <FormItem>
                         <FormControl>
                           <div class="pt-3 w-full">
-                            <VueDatePicker
-                              ref="datepicker"
-                              class="custom-datepicker"
-                              id="date-picker-cs"
-                              v-model="formSchema.time"
-                              v-bind="componentField"
-                              placeholder="Chọn thời gian"
-                              teleport-center
-                              :start-date="new Date()"
-                              :enable-time-picker="true"
-                              auto-apply
-                              :min-date="new Date()"
-                              :start-time="{
-                                hours: new Date().getHours() + 1,
-                                minutes: new Date().getMinutes(),
-                              }"
-                              :max-time="{
-                                hours: 23,
-                                minutes: 0,
-                              }"
-                            />
+                            <!-- Client only: the server's clock/time zone (UTC on Vercel)
+                                 would render a different time than the browser. -->
+                            <ClientOnly>
+                              <template #fallback>
+                                <input
+                                  type="text"
+                                  class="text-sm w-full"
+                                  placeholder="Chọn thời gian"
+                                  aria-label="Chọn thời gian"
+                                  disabled
+                                />
+                              </template>
+                              <VueDatePicker
+                                ref="datepicker"
+                                class="custom-datepicker"
+                                id="date-picker-cs"
+                                v-model="formSchema.time"
+                                v-bind="componentField"
+                                placeholder="Chọn thời gian"
+                                teleport-center
+                                :start-date="new Date()"
+                                :enable-time-picker="true"
+                                auto-apply
+                                :min-date="new Date()"
+                                :start-time="{
+                                  hours: new Date().getHours() + 1,
+                                  minutes: new Date().getMinutes(),
+                                }"
+                                :max-time="{
+                                  hours: 23,
+                                  minutes: 0,
+                                }"
+                              />
+                            </ClientOnly>
                           </div>
                         </FormControl>
                       </FormItem>
@@ -272,7 +285,7 @@ input {
   height: 201px;
   right: -23rem;
   bottom: -7rem;
-  background: url(/src/assets/register/cho-form.png);
+  background: url(../assets/register/cho-form.png);
   background-size: 48%;
   background-repeat: no-repeat;
   z-index: 100;

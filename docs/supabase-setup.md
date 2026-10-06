@@ -35,8 +35,12 @@ Client-side code entry (accepted length, resend cooldown) is in `src/config/auth
 
 ## 3. Environment
 
-Copy `.env.example` to `.env` and set `VITE_SUPABASE_URL` and
-`VITE_SUPABASE_PUBLISHABLE_KEY`. Never use the service_role key in `.env`.
+Copy `.env.example` to `.env` and set `NUXT_PUBLIC_SUPABASE_URL` and
+`NUXT_PUBLIC_SUPABASE_KEY` (the publishable key). `NUXT_PUBLIC_*` values reach
+the browser, so never put the service_role key in one.
+
+The session is stored in cookies (`@nuxtjs/supabase`), so server-rendered pages
+see the signed-in user. Set the same variables in the Vercel project settings.
 
 ## 4. Test accounts (dev / local / test only)
 
@@ -44,7 +48,7 @@ Copy `.env.example` to `.env` and set `VITE_SUPABASE_URL` and
 (`superadmin@`, `admin@`, `cashier@`, `customer@` + `TEST_ACCOUNT_EMAIL_DOMAIN`), so
 you can sign in without the email flow. It uses the Admin API with the
 service-role key, so it runs from your machine, never from the browser. Set these
-in `.env` (placeholders are in `.env.example`; none are `VITE_` variables):
+in `.env` (placeholders are in `.env.example`; none are `NUXT_PUBLIC_` variables):
 
 `SUPABASE_SERVICE_ROLE_KEY`, `TEST_ACCOUNT_PASSWORD`, `TEST_ACCOUNT_EMAIL_DOMAIN`,
 and `ALLOW_TEST_ACCOUNTS=true` (an explicit opt-in; the script also refuses under

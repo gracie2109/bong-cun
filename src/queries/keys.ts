@@ -1,6 +1,7 @@
 // Every query key lives here so invalidation never needs to import a hook
 // module (avoids import cycles) and keys stay consistent.
 import type { PageParams } from "@/repositories/shared";
+import type { UserListFilter } from "@/repositories/users";
 
 export const petKeys = {
   all: ["pets"] as const,
@@ -40,7 +41,9 @@ export const roleKeys = {
 
 export const userKeys = {
   all: ["users"] as const,
-  list: (page: PageParams, role?: string) => [...userKeys.all, "list", page, role ?? null] as const,
+  list: (page: PageParams, filter: UserListFilter) =>
+    [...userKeys.all, "list", page, filter] as const,
+  count: (filter: UserListFilter) => [...userKeys.all, "count", filter] as const,
 };
 
 export const orderKeys = {
@@ -48,4 +51,5 @@ export const orderKeys = {
   list: (page: PageParams, phoneNumber?: string) =>
     [...orderKeys.all, "list", page, phoneNumber ?? null] as const,
   detail: (id: string) => [...orderKeys.all, "detail", id] as const,
+  byUsers: (userIds: string[]) => [...orderKeys.all, "by-users", [...userIds].sort()] as const,
 };

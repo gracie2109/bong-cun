@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   createPetCombo,
   deletePetCombo,
@@ -15,14 +15,14 @@ import { notifyFailure, notifySuccess } from "./notify";
 export const usePetCombosList = (page: MaybeRef<PageParams>) =>
   useQuery({
     queryKey: computed(() => petComboKeys.list(toPage(unref(page)))),
-    queryFn: () => listPetCombos(supabase, toPage(unref(page))),
+    queryFn: () => listPetCombos(supabaseClient(), toPage(unref(page))),
     placeholderData: keepPreviousData,
   });
 
 export const useCreatePetCombo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: PetComboInput) => createPetCombo(supabase, input),
+    mutationFn: (input: PetComboInput) => createPetCombo(supabaseClient(), input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("create");
@@ -34,7 +34,7 @@ export const useCreatePetCombo = () => {
 export const useDeletePetCombo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePetCombo(supabase, id),
+    mutationFn: (id: string) => deletePetCombo(supabaseClient(), id),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("delete");

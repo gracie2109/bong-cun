@@ -185,3 +185,21 @@ export const createOrder = async (client: Client, input: CreateOrderInput): Prom
       },
     })
   );
+
+export type CustomerOrder = Order & { userId: string };
+
+/** Every order placed by the given accounts, newest first (for per-customer stats and history). */
+export const listOrdersByUserIds = async (
+  client: Client,
+  userIds: string[]
+): Promise<CustomerOrder[]> => {
+  if (userIds.length === 0) return [];
+  const rows = unwrap(
+    await client
+      .from("orders")
+      .select(SELECT_WITH_ITEMS)
+      .in("user_id", userIds)
+      .order("created_at", { ascending: false })
+  ) as OrderRow[];
+  return rows.map((row) => ({ ...toOrder(row), userId: row.user_id as string }));
+};

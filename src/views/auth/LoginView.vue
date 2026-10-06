@@ -11,7 +11,7 @@
       </p>
     </div>
     <div>
-      <form action="" @submit.prevent="handleSubmit">
+      <form action="" @submit.prevent="handleSubmit()">
         <div class="grid gap-4">
           <div class="grid gap-1">
             <Label for="email">Email</Label>
@@ -31,10 +31,10 @@
               placeholder="********" :class="{ 'p-invalid': !!getError('password') }" class="w-full" />
             <div class="error">{{ getError("password") }}</div>
           </div>
-          <Button type="submit" class="w-full h-[50px]" @click="handleSubmit()">
+          <Button type="submit" class="w-full h-[50px]">
             {{ $t("pageMeta.login") }}
           </Button>
-          <Button variant="outline" class="w-full h-[50px]" @click="handleSubmit('google')">
+          <Button type="button" variant="outline" class="w-full h-[50px]" @click="handleSubmit('google')">
             Login with Google
           </Button>
         </div>

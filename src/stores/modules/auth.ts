@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import type { Session } from "@supabase/supabase-js";
 import { toast } from "vue-sonner";
 import { useRoute, useRouter } from "vue-router";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   getUserById,
   isDisplayNameAvailable,
@@ -15,6 +15,7 @@ import { removeStorage, sendMessageToast } from "@/lib/utils";
 import type { IUser, ILoginPayload, IRegisterPayload } from "@/types/user.type";
 
 export const useAuthStore = defineStore("auth", () => {
+  const supabase = supabaseClient();
   const users: Ref<IUser[]> = ref([]);
   const currentUser = ref<IUser | null>(null);
   const session = shallowRef<Session | null>(null);
@@ -88,11 +89,15 @@ export const useAuthStore = defineStore("auth", () => {
   function init() {
     if (!initPromise) {
       initPromise = (async () => {
-        supabase.auth.onAuthStateChange((_event, next) => {
-          // Never await Supabase calls inside this callback (it can deadlock the
-          // client), so the work is deferred out of it.
-          setTimeout(() => void applySession(next), 0);
-        });
+        // The server builds a fresh store per request, so it only reads the
+        // session from the request cookies and never subscribes.
+        if (import.meta.client) {
+          supabase.auth.onAuthStateChange((_event, next) => {
+            // Never await Supabase calls inside this callback (it can deadlock the
+            // client), so the work is deferred out of it.
+            setTimeout(() => void applySession(next), 0);
+          });
+        }
         const { data } = await supabase.auth.getSession();
         await applySession(data.session);
       })();

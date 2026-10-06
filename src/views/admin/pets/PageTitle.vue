@@ -66,15 +66,16 @@
 <script setup lang="ts">
 import { usePet, usePetsList } from "@/queries/pets";
 import { usePetService } from "@/queries/petServices";
-import router from "@/router";
+
 import { Header } from "@/views/admin/components";
 import clsx from "clsx";
 import { PawPrint, ChevronRight } from "lucide-vue-next";
 import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 
 const route = useRoute();
+const router = useRouter();
 const { petId, serviceId } = route.params;
 
 // Only the total is needed here, so ask for a single row.

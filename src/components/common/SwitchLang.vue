@@ -4,10 +4,10 @@
     <div class="flex gap-2 items-center  cursor-pointer">
 
       <div :class="{ 'disable': locale !== 'en' }" @click="switchLanguage('en')">
-        <img alt="" class="w-6 h-6 object-cover inline-block " src="../../assets/flags/uk.png">
+        <img alt="" class="w-6 h-6 object-cover inline-block " src="~/assets/flags/uk.png">
       </div>
       <div :class="{ 'disable': locale !== 'vi' }" @click="switchLanguage('vi')">
-        <img alt="" class="w-6 h-6  object-cover inline-block " src="../../assets/flags/vietnam.png">
+        <img alt="" class="w-6 h-6  object-cover inline-block " src="~/assets/flags/vietnam.png">
       </div>
     </div>
   </div>
@@ -17,25 +17,12 @@
 
 
 <script lang="ts" setup>
-import Tr from "@/i18n/translation"
-import { useRouter } from "vue-router";
-import { nextTick, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-const locale = ref(Tr.getPersistedLocale() || Tr.defaultLocale);
-const router = useRouter();
+// @nuxtjs/i18n persists the choice in the `user-locale` cookie and sets <html lang>.
+const { locale, setLocale } = useI18n();
 
-const switchLanguage = async (newLocale: string) => {
-  await Tr.switchLanguage(newLocale)
-  await nextTick();
-  locale.value = Tr.getPersistedLocale()
-  try {
-    // await router.replace({params: {locale: newLocale}});
-    // router.go(0)
-  } catch (e) {
-    router.push("/")
-  }
-}
-
+const switchLanguage = (newLocale: "vi" | "en") => setLocale(newLocale);
 </script>
 <style scoped>
 .disable>img {

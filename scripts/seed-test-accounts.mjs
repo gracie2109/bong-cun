@@ -9,7 +9,7 @@
  *   npm run seed:test-accounts        (= node --env-file=.env scripts/seed-test-accounts.mjs)
  *
  * Needs, from the environment (see .env.example):
- *   VITE_SUPABASE_URL           project URL
+ *   NUXT_PUBLIC_SUPABASE_URL    project URL
  *   SUPABASE_SERVICE_ROLE_KEY   server-only secret; never put it in a VITE_ variable
  *   TEST_ACCOUNT_PASSWORD       password given to every test account
  *   TEST_ACCOUNT_EMAIL_DOMAIN   optional, default "bongcun.test"
@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === "production" || process.env.ALLOW_TEST_ACCOUNTS !==
   process.exit(1);
 }
 
-const url = need("VITE_SUPABASE_URL");
+const url = need("NUXT_PUBLIC_SUPABASE_URL");
 const serviceKey = need("SUPABASE_SERVICE_ROLE_KEY");
 const password = need("TEST_ACCOUNT_PASSWORD");
 const domain = process.env.TEST_ACCOUNT_EMAIL_DOMAIN || "bongcun.test";

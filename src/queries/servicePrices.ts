@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   listServicePrices,
   saveServicePrices,
@@ -17,7 +17,7 @@ export const useServicePrices = (filter: MaybeRef<PriceFilter>) =>
   useQuery({
     queryKey: computed(() => servicePriceKeys.list(unref(filter).petId ?? "", unref(filter).serviceId)),
     queryFn: () =>
-      listServicePrices(supabase, {
+      listServicePrices(supabaseClient(), {
         petId: unref(filter).petId as string,
         serviceId: unref(filter).serviceId,
       }),
@@ -35,7 +35,7 @@ export const useSaveServicePrices = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (args: { petId: string; serviceId: string; rows: ServicePriceInput[] }) =>
-      saveServicePrices(supabase, args),
+      saveServicePrices(supabaseClient(), args),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("update");

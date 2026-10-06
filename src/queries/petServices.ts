@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
-import { supabase } from "@/plugins/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import {
   createPetService,
   deletePetService,
@@ -20,17 +20,17 @@ import { notifyFailure, notifySuccess } from "./notify";
 export const usePetServicesList = (page: MaybeRef<PageParams>) =>
   useQuery({
     queryKey: computed(() => petServiceKeys.list(toPage(unref(page)))),
-    queryFn: () => listPetServices(supabase, toPage(unref(page))),
+    queryFn: () => listPetServices(supabaseClient(), toPage(unref(page))),
     placeholderData: keepPreviousData,
   });
 
 export const useAllPetServices = () =>
-  useQuery({ queryKey: petServiceKeys.options(), queryFn: () => listAllPetServices(supabase) });
+  useQuery({ queryKey: petServiceKeys.options(), queryFn: () => listAllPetServices(supabaseClient()) });
 
 export const usePetService = (id: MaybeRef<string | undefined>) =>
   useQuery({
     queryKey: computed(() => petServiceKeys.detail(unref(id) ?? "")),
-    queryFn: () => getPetService(supabase, unref(id) as string),
+    queryFn: () => getPetService(supabaseClient(), unref(id) as string),
     enabled: computed(() => !!unref(id)),
   });
 
@@ -40,14 +40,14 @@ export const useFetchServicesOfPets = () => {
   return (petIds: string[]) =>
     queryClient.fetchQuery({
       queryKey: petServiceKeys.ofPets(petIds),
-      queryFn: () => listServicesOfPets(supabase, petIds),
+      queryFn: () => listServicesOfPets(supabaseClient(), petIds),
     });
 };
 
 export const useCreatePetService = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: PetServiceInput) => createPetService(supabase, input),
+    mutationFn: (input: PetServiceInput) => createPetService(supabaseClient(), input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("create");
@@ -60,7 +60,7 @@ export const useUpdatePetService = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: PetServiceInput }) =>
-      updatePetService(supabase, id, input),
+      updatePetService(supabaseClient(), id, input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("update");
@@ -72,7 +72,7 @@ export const useUpdatePetService = () => {
 export const useDeletePetService = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePetService(supabase, id),
+    mutationFn: (id: string) => deletePetService(supabaseClient(), id),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("delete");
@@ -85,7 +85,7 @@ export const useUpdateGeneralPrice = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, generalPrice }: { id: string; generalPrice: number | null }) =>
-      updateGeneralPrice(supabase, id, generalPrice),
+      updateGeneralPrice(supabaseClient(), id, generalPrice),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("update");
