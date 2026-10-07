@@ -101,6 +101,15 @@
     --input: 213 27% 84%;
     --ring: 175 77% 26%;
 
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 27%;
+    --sidebar-primary: 175 77% 26%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 166 76% 94%;
+    --sidebar-accent-foreground: 175 77% 22%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 175 77% 26%;
+
     font-family: "Be Vietnam Pro", "Quicksand", sans-serif;
   }
 }

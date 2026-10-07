@@ -663,5 +663,24 @@
       "noStaff": "No staff accounts yet. Change the account type on the Users page first."
     },
     "eyebrow": "Security & access"
+  },
+  "adminNav": {
+    "overview": "Overview",
+    "dashboard": "Dashboard",
+    "scheduling": "Scheduling",
+    "schedule": "Bookings",
+    "customersPets": "Customers & pets",
+    "customers": "Customers",
+    "pets": "Pet profiles",
+    "servicesPrices": "Services & prices",
+    "species": "Species",
+    "services": "Spa services",
+    "prices": "Price list",
+    "combos": "Combo packages",
+    "system": "System",
+    "roles": "Roles & permissions",
+    "permissions": "Permission list",
+    "matrix": "Permission matrix",
+    "logout": "Sign out"
   }
 }

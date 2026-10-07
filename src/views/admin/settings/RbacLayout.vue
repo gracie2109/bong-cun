@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5 pb-24">
+    <div class="space-y-5 pb-24">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div class="max-w-2xl space-y-1.5">
           <span

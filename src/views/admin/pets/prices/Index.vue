@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5" :class="dirtyCount > 0 ? 'pb-20' : ''">
+    <div class="space-y-5" :class="dirtyCount > 0 ? 'pb-20' : ''">
       <div>
         <h2 class="text-2xl font-bold">{{ $t("petCare.prices.title") }}</h2>
         <p class="text-sm text-muted-foreground">{{ $t("petCare.prices.subtitle") }}</p>

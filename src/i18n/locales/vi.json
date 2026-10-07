@@ -663,5 +663,24 @@
       "noStaff": "Chưa có tài khoản nhân viên. Đổi loại tài khoản ở trang Người dùng trước."
     },
     "eyebrow": "Bảo mật & kiểm soát"
+  },
+  "adminNav": {
+    "overview": "Tổng quan",
+    "dashboard": "Bảng điều khiển",
+    "scheduling": "Quản lý lịch",
+    "schedule": "Lịch hẹn đặt chỗ",
+    "customersPets": "Khách hàng & Pet",
+    "customers": "Khách hàng",
+    "pets": "Hồ sơ thú cưng",
+    "servicesPrices": "Dịch vụ & Giá",
+    "species": "Danh mục loài",
+    "services": "Dịch vụ spa",
+    "prices": "Bảng giá",
+    "combos": "Gói dịch vụ Combo",
+    "system": "Hệ thống",
+    "roles": "Vai trò & Phân quyền",
+    "permissions": "Danh sách quyền",
+    "matrix": "Ma trận đối chiếu",
+    "logout": "Đăng xuất"
   }
 }

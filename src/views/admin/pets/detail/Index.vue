@@ -11,7 +11,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5">
+    <div class="space-y-5">
       <PetsNav />
 
       <div v-if="petQuery.isPending.value" class="space-y-4">

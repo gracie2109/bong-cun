@@ -1,69 +1,39 @@
 import type { LinkProp } from "@/types";
-import { Settings2 } from "lucide-vue-next";
 
-export const ADMIN_NAVIGATOR: LinkProp[] = [
+export type AdminNavSection = { title: string; items: LinkProp[] };
+
+/** Admin sidebar. Titles are i18n keys under `adminNav`; `name` is the route name. */
+export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
   {
-    title: "customers",
-    icon: "lucide:user-2",
-    name: "users",
+    title: "adminNav.overview",
+    items: [{ title: "adminNav.dashboard", icon: "lucide:layout-dashboard", name: "dashboard" }],
   },
   {
-    title: "pets",
-    icon: "lucide:paw-print",
-    name: "pets",
-    children: [
-      {
-        title: "Hồ sơ thú cưng",
-        icon: "lucide:paw-print",
-        name: "pets",
-      },
-      {
-        title: "Danh mục loài",
-        icon: "lucide:dog",
-        name: "petSpecies",
-      },
-      {
-        title: "Dịch vụ spa",
-        icon: "carbon:settings-services",
-        name: "petService",
-      },
-      {
-        title: "Bảng giá",
-        icon: "lucide:banknote",
-        name: "petPrices",
-      },
-      {
-        title: "Combo",
-        icon: "lucide:layers-2",
-        name: "petServiceCombo",
-      },
+    title: "adminNav.scheduling",
+    items: [{ title: "adminNav.schedule", icon: "lucide:calendar-days", name: "listOrderSchedule" }],
+  },
+  {
+    title: "adminNav.customersPets",
+    items: [
+      { title: "adminNav.customers", icon: "lucide:users", name: "users" },
+      { title: "adminNav.pets", icon: "lucide:paw-print", name: "pets" },
     ],
   },
   {
-    title: "schedule",
-    icon: "lucide:calendar-days",
-    name: "listOrderSchedule",
+    title: "adminNav.servicesPrices",
+    items: [
+      { title: "adminNav.species", icon: "lucide:dog", name: "petSpecies" },
+      { title: "adminNav.services", icon: "lucide:scissors", name: "petService" },
+      { title: "adminNav.prices", icon: "lucide:banknote", name: "petPrices" },
+      { title: "adminNav.combos", icon: "lucide:layers-2", name: "petServiceCombo" },
+    ],
   },
   {
-    title: "Vai trò & Phân quyền",
-    icon: "lucide:shield-check",
-    name: "settings",
-    children: [
-      {
-        title: "Cấu hình vai trò",
-        icon: "lucide:user-cog",
-        name: "settings",
-      },
-      {
-        title: "Danh sách quyền",
-        icon: "lucide:key-round",
-        name: "permissions",
-      },
-      {
-        title: "Ma trận đối chiếu",
-        icon: "lucide:grid-3x3",
-        name: "permissionMatrix",
-      },
+    title: "adminNav.system",
+    items: [
+      { title: "adminNav.roles", icon: "lucide:shield-check", name: "settings" },
+      { title: "adminNav.permissions", icon: "lucide:key-round", name: "permissions" },
+      { title: "adminNav.matrix", icon: "lucide:grid-3x3", name: "permissionMatrix" },
     ],
   },
 ];

@@ -7,7 +7,7 @@
       </h1>
     </Header>
     <ContentWrap>
-      <div class="relative top-10">
+      <div>
         <DataTable
           :headerAdvanced="headerAdvanced"
           :data="orders"

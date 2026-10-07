@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5">
+    <div class="space-y-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">{{ $t("pageMeta.customers") }}</h2>

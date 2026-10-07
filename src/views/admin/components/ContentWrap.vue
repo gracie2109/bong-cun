@@ -1,16 +1,5 @@
 <template>
-  <div class="admin_content ">
+  <div class="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6">
     <slot />
   </div>
 </template>
-
-<style scoped>
-.admin_content {
-  position: relative;
-  /* top: 8rem; */
-  padding: 1.25rem;
-  height: auto;
-  min-height: 100dvh;
-  overflow: auto;
-}
-</style>
