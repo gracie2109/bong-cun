@@ -873,14 +873,15 @@
   },
   "products": {
     "title": "Sản phẩm",
-    "subtitle": "Hàng bán tại quầy: giá bán, đơn vị, mã vạch.",
+    "subtitle": "Nhóm sản phẩm và biến thể: giá, đơn vị, mã vạch, tồn kho.",
     "add": "Thêm sản phẩm",
     "edit": "Sửa sản phẩm",
     "searchPlaceholder": "Tên, SKU hoặc mã vạch...",
     "showArchived": "Hiện sản phẩm ngừng bán",
     "empty": "Chưa có sản phẩm nào.",
     "col": {
-      "product": "Sản phẩm"
+      "product": "Sản phẩm",
+      "variants": "Biến thể"
     },
     "form": {
       "name": "Tên sản phẩm",
@@ -890,9 +891,46 @@
       "unit": "Đơn vị",
       "desc": "Mô tả",
       "trackStock": "Quản lý tồn kho theo lô",
-      "trackStockHint": "Bán sẽ trừ kho theo hạn dùng gần nhất trước (FEFO) và không bán khi hết hàng. Tắt cho hàng không cần tồn kho như túi đựng."
+      "trackStockHint": "Bán sẽ trừ kho theo hạn dùng gần nhất trước (FEFO) và không bán khi hết hàng. Tắt cho hàng không cần tồn kho như túi đựng.",
+      "image": "Ảnh (link)"
     },
-    "noStock": "Không quản lý tồn"
+    "noStock": "Không quản lý tồn",
+    "variantsCount": "{n} biến thể",
+    "attributes": {
+      "title": "Thuộc tính",
+      "hint": "Ví dụ Khối lượng: 800g, 2kg; Vị: Gà, Cá. Thêm bao nhiêu thuộc tính cũng được, mỗi tổ hợp giá trị là một biến thể. Thuộc tính dùng chung cho mọi sản phẩm.",
+      "add": "Thêm thuộc tính",
+      "name": "Tên thuộc tính",
+      "valuesPlaceholder": "Gõ giá trị rồi Enter",
+      "remove": "Xóa thuộc tính",
+      "up": "Lên",
+      "down": "Xuống",
+      "needValue": "Thêm ít nhất một giá trị.",
+      "duplicate": "Trùng tên với thuộc tính khác."
+    },
+    "variants": {
+      "title": "Biến thể ({n})",
+      "hint": "Tắt \"Bán\" cho tổ hợp không kinh doanh. Biến thể đã có giao dịch chỉ được lưu trữ, không bị xóa.",
+      "default": "Mặc định",
+      "variant": "Biến thể",
+      "sell": "Bán",
+      "stock": "Tồn kho",
+      "image": "Ảnh riêng",
+      "bulk": "Áp cho tất cả",
+      "bulkPrice": "Giá chung",
+      "bulkUnit": "Đơn vị chung",
+      "new": "Mới",
+      "many": "{n} biến thể, khá nhiều. Kiểm tra lại các giá trị thuộc tính."
+    },
+    "errors": {
+      "duplicate_name": "Đã có sản phẩm tên \"{value}\".",
+      "duplicate_sku": "SKU {value} đã được dùng.",
+      "duplicate_barcode": "Mã vạch {value} đã được dùng.",
+      "duplicate_variant": "Có hai biến thể trùng giá trị.",
+      "duplicate_attribute": "Một thuộc tính bị khai báo hai lần.",
+      "variant_options": "Mỗi biến thể cần đủ giá trị cho mọi thuộc tính.",
+      "no_variants": "Sản phẩm cần ít nhất một biến thể."
+    }
   },
   "inventory": {
     "stock": {

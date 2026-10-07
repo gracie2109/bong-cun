@@ -930,11 +930,15 @@ export type Database = {
           barcode: string | null
           created_at: string
           description: string | null
+          group_id: string
           id: string
+          image_url: string | null
           is_active: boolean
           name: string
+          option_key: string
           price: number
           sku: string | null
+          sort_order: number
           unit: string
           updated_at: string
         }
@@ -943,11 +947,15 @@ export type Database = {
           barcode?: string | null
           created_at?: string
           description?: string | null
+          group_id: string
           id?: string
+          image_url?: string | null
           is_active?: boolean
           name: string
+          option_key?: string
           price?: number
           sku?: string | null
+          sort_order?: number
           unit?: string
           updated_at?: string
         }
@@ -956,15 +964,122 @@ export type Database = {
           barcode?: string | null
           created_at?: string
           description?: string | null
+          group_id?: string
           id?: string
+          image_url?: string | null
           is_active?: boolean
           name?: string
+          option_key?: string
           price?: number
           sku?: string | null
+          sort_order?: number
           unit?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "products_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "product_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_attributes: {
+        Row: { created_at: string; id: string; name: string }
+        Insert: { created_at?: string; id?: string; name: string }
+        Update: { created_at?: string; id?: string; name?: string }
         Relationships: []
+      }
+      product_attribute_values: {
+        Row: { attribute_id: string; created_at: string; id: string; sort_order: number; value: string }
+        Insert: { attribute_id: string; created_at?: string; id?: string; sort_order?: number; value: string }
+        Update: { attribute_id?: string; created_at?: string; id?: string; sort_order?: number; value?: string }
+        Relationships: [
+          {
+            foreignKeyName: "product_attribute_values_attribute_id_fkey"
+            columns: ["attribute_id"]
+            isOneToOne: false
+            referencedRelation: "product_attributes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_groups: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_group_attributes: {
+        Row: { attribute_id: string; group_id: string; sort_order: number }
+        Insert: { attribute_id: string; group_id: string; sort_order?: number }
+        Update: { attribute_id?: string; group_id?: string; sort_order?: number }
+        Relationships: [
+          {
+            foreignKeyName: "product_group_attributes_attribute_id_fkey"
+            columns: ["attribute_id"]
+            isOneToOne: false
+            referencedRelation: "product_attributes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_group_attributes_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "product_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variant_values: {
+        Row: { attribute_id: string; product_id: string; value_id: string }
+        Insert: { attribute_id: string; product_id: string; value_id: string }
+        Update: { attribute_id?: string; product_id?: string; value_id?: string }
+        Relationships: [
+          {
+            foreignKeyName: "product_variant_values_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_variant_values_value_id_fkey"
+            columns: ["value_id"]
+            isOneToOne: false
+            referencedRelation: "product_attribute_values"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppliers: {
         Row: {
@@ -1702,6 +1817,13 @@ export type Database = {
         Args: { p_branch: string; p_products: string[] }
         Returns: { product_id: string; qty: number }[]
       }
+      list_product_groups: {
+        Args: { p_include_archived?: boolean; p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: Json
+      }
+      product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
+      save_product_group: { Args: { p: Json }; Returns: string }
+      set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined

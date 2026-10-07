@@ -53,9 +53,8 @@
             <thead>
               <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th class="px-4 py-3 font-semibold">{{ $t("products.col.product") }}</th>
+                <th class="px-4 py-3 font-semibold">{{ $t("products.col.variants") }}</th>
                 <th class="px-4 py-3 font-semibold">{{ $t("products.form.sku") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("products.form.barcode") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("products.form.unit") }}</th>
                 <th class="px-4 py-3 text-right font-semibold">{{ $t("products.form.price") }}</th>
                 <th class="px-4 py-3" />
               </tr>
@@ -63,36 +62,57 @@
             <tbody>
               <template v-if="listQuery.isPending.value">
                 <tr v-for="i in 5" :key="i" class="border-t">
-                  <td colspan="6" class="px-4 py-3"><Skeleton class="h-8 w-full" /></td>
+                  <td colspan="5" class="px-4 py-3"><Skeleton class="h-8 w-full" /></td>
                 </tr>
               </template>
               <tr v-else-if="rows.length === 0">
-                <td colspan="6" class="px-4 py-10 text-center text-muted-foreground">{{ $t("products.empty") }}</td>
+                <td colspan="5" class="px-4 py-10 text-center text-muted-foreground">{{ $t("products.empty") }}</td>
               </tr>
-              <tr v-for="row in rows" :key="row.id" class="border-t" :class="row.isActive ? '' : 'opacity-60'">
+              <tr
+                v-for="row in rows"
+                :key="row.id"
+                class="border-t"
+                :class="[row.isActive ? '' : 'opacity-60', canUpdate ? 'cursor-pointer hover:bg-muted/40' : '']"
+                @click="canUpdate && openForm(row.id)"
+              >
                 <td class="px-4 py-3">
-                  <p class="flex items-center gap-2 font-semibold">
-                    {{ row.name }}
-                    <span v-if="!row.isActive" class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                      {{ $t("petCare.common.archived") }}
-                    </span>
-                  </p>
-                  <p v-if="row.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ row.desc }}</p>
+                  <div class="flex items-center gap-3">
+                    <ProductThumb :src="row.imageUrl ?? row.variants.find((item) => item.imageUrl)?.imageUrl" class="size-10 shrink-0" />
+                    <div class="min-w-0">
+                      <p class="flex items-center gap-2 font-semibold">
+                        {{ row.name }}
+                        <span v-if="!row.isActive" class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                          {{ $t("petCare.common.archived") }}
+                        </span>
+                      </p>
+                      <p v-if="row.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ row.desc }}</p>
+                    </div>
+                  </div>
                 </td>
-                <td class="px-4 py-3">{{ row.sku ?? "—" }}</td>
-                <td class="px-4 py-3 font-mono text-xs">{{ row.barcode ?? "—" }}</td>
                 <td class="px-4 py-3">
-                  {{ row.unit }}
-                  <span v-if="!row.trackStock" class="block text-[11px] text-muted-foreground">{{ $t("products.noStock") }}</span>
+                  <template v-if="row.attributes.length">
+                    <p class="font-medium">{{ $t("products.variantsCount", { n: row.variants.length }) }}</p>
+                    <p class="text-xs text-muted-foreground">
+                      {{ row.attributes.map((item) => `${item.name}: ${item.values.join(", ")}`).join(" · ") }}
+                    </p>
+                  </template>
+                  <span v-else class="text-muted-foreground">—</span>
                 </td>
-                <td class="whitespace-nowrap px-4 py-3 text-right font-semibold">{{ money(row.price) }}</td>
-                <td class="px-4 py-3 text-right">
+                <td class="px-4 py-3">
+                  <template v-if="row.variants.length === 1">
+                    {{ row.variants[0]?.sku ?? "—" }}
+                    <span v-if="row.variants[0]?.barcode" class="block font-mono text-xs text-muted-foreground">{{ row.variants[0]?.barcode }}</span>
+                  </template>
+                  <span v-else class="text-muted-foreground">—</span>
+                </td>
+                <td class="whitespace-nowrap px-4 py-3 text-right font-semibold">{{ priceRange(row) }}</td>
+                <td class="px-4 py-3 text-right" @click.stop>
                   <DropdownMenu v-if="canUpdate">
                     <DropdownMenuTrigger as-child>
                       <Button variant="ghost" size="icon" class="size-8"><EllipsisVertical class="size-4" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem @click="openForm(row)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
+                      <DropdownMenuItem @click="openForm(row.id)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
                       <DropdownMenuItem @click="setActive(row, !row.isActive)">
                         {{ row.isActive ? $t("petCare.common.archive") : $t("petCare.common.restore") }}
                       </DropdownMenuItem>
@@ -106,7 +126,7 @@
       </div>
     </div>
 
-    <ProductFormSheet v-model:open="formOpen" :product="editing" />
+    <ProductGroupSheet v-model:open="formOpen" :group-id="editingId" />
   </ContentWrap>
 </template>
 
@@ -126,11 +146,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { usePermission } from "@/composables/usePermission";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { useProductsList, useSetProductActive } from "@/queries/products";
-import type { Product, ProductFilter } from "@/repositories/products";
+import { useProductGroups, useSetProductGroupActive } from "@/queries/products";
+import type { ProductFilter, ProductGroup } from "@/repositories/products";
 import { ContentWrap, Header } from "@/views/admin/components";
 import { money } from "@/views/admin/pos/format";
-import ProductFormSheet from "./ProductFormSheet.vue";
+import ProductGroupSheet from "./ProductGroupSheet.vue";
+import ProductThumb from "./ProductThumb.vue";
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 500;
@@ -140,28 +161,34 @@ const search = ref("");
 const showArchived = ref(false);
 const page = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
 const formOpen = ref(false);
-const editing = ref<Product | null>(null);
+const editingId = ref<string | null>(null);
 const debouncedSearch = refDebounced(search, SEARCH_DEBOUNCE_MS);
 
 const filter = computed<ProductFilter>(() => ({ search: debouncedSearch.value, includeArchived: showArchived.value }));
-const listQuery = useProductsList(page, filter);
+const listQuery = useProductGroups(page, filter);
 const rows = computed(() => listQuery.data.value?.rows ?? []);
 const total = computed(() => listQuery.data.value?.total ?? 0);
 const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));
-const setActiveMutation = useSetProductActive();
+const setActiveMutation = useSetProductGroupActive();
 
 watch([debouncedSearch, showArchived], () => {
   page.pageIndex = INITIAL_PAGE_INDEX;
 });
 
-const openForm = (product: Product | null) => {
-  editing.value = product;
+const openForm = (id: string | null) => {
+  editingId.value = id;
   formOpen.value = true;
 };
 
-const setActive = async (product: Product, isActive: boolean) => {
+const priceRange = (group: ProductGroup) => {
+  if (group.minPrice === null || group.maxPrice === null) return "—";
+  if (group.minPrice === group.maxPrice) return money(group.minPrice);
+  return `${money(group.minPrice)} – ${money(group.maxPrice)}`;
+};
+
+const setActive = async (group: ProductGroup, isActive: boolean) => {
   try {
-    await setActiveMutation.mutateAsync({ id: product.id, isActive });
+    await setActiveMutation.mutateAsync({ id: group.id, isActive });
   } catch {
     // the mutation already showed the failure toast
   }

@@ -873,14 +873,15 @@
   },
   "products": {
     "title": "Products",
-    "subtitle": "Items sold at the counter: price, unit, barcode.",
+    "subtitle": "Product groups and variants: price, unit, barcode, stock.",
     "add": "Add product",
     "edit": "Edit product",
     "searchPlaceholder": "Name, SKU or barcode...",
     "showArchived": "Show archived products",
     "empty": "No products yet.",
     "col": {
-      "product": "Product"
+      "product": "Product",
+      "variants": "Variants"
     },
     "form": {
       "name": "Product name",
@@ -890,9 +891,46 @@
       "unit": "Unit",
       "desc": "Description",
       "trackStock": "Track stock by lot",
-      "trackStockHint": "Sales take the earliest expiry first (FEFO) and stop when stock runs out. Turn off for items sold without stock, such as carry bags."
+      "trackStockHint": "Sales take the earliest expiry first (FEFO) and stop when stock runs out. Turn off for items sold without stock, such as carry bags.",
+      "image": "Image (link)"
     },
-    "noStock": "No stock tracking"
+    "noStock": "No stock tracking",
+    "variantsCount": "{n} variants",
+    "attributes": {
+      "title": "Attributes",
+      "hint": "For example Weight: 800g, 2kg; Flavour: Chicken, Fish. Add as many attributes as needed; each combination of values is one variant. Attributes are shared by all products.",
+      "add": "Add attribute",
+      "name": "Attribute name",
+      "valuesPlaceholder": "Type a value and press Enter",
+      "remove": "Remove attribute",
+      "up": "Up",
+      "down": "Down",
+      "needValue": "Add at least one value.",
+      "duplicate": "Same name as another attribute."
+    },
+    "variants": {
+      "title": "Variants ({n})",
+      "hint": "Turn off \"Sell\" for combinations you do not stock. Variants with sales are archived, never deleted.",
+      "default": "Default",
+      "variant": "Variant",
+      "sell": "Sell",
+      "stock": "Stock",
+      "image": "Own image",
+      "bulk": "Apply to all",
+      "bulkPrice": "Price for all",
+      "bulkUnit": "Unit for all",
+      "new": "New",
+      "many": "{n} variants, quite a lot. Check the attribute values."
+    },
+    "errors": {
+      "duplicate_name": "A product named \"{value}\" already exists.",
+      "duplicate_sku": "SKU {value} is already used.",
+      "duplicate_barcode": "Barcode {value} is already used.",
+      "duplicate_variant": "Two variants have the same values.",
+      "duplicate_attribute": "An attribute is listed twice.",
+      "variant_options": "Each variant needs a value for every attribute.",
+      "no_variants": "A product needs at least one variant."
+    }
   },
   "inventory": {
     "stock": {
