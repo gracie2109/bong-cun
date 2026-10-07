@@ -200,7 +200,7 @@
         "fullNamePh": "Nguyễn Văn An",
         "displayNamePh": "VD: Anh An (Bé Milo)",
         "phonePh": "0901 234 567",
-        "emailPh": "an.nguyen@email.com",
+        "emailPh": "an.nguyen{'@'}email.com",
         "passwordPh": "Tối thiểu 8 ký tự"
       }
     }

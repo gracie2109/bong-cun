@@ -200,7 +200,7 @@
         "fullNamePh": "John Smith",
         "displayNamePh": "e.g. John (Milo's owner)",
         "phonePh": "0901 234 567",
-        "emailPh": "john.smith@email.com",
+        "emailPh": "john.smith{'@'}email.com",
         "passwordPh": "At least 8 characters"
       }
     }
