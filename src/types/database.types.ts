@@ -110,35 +110,38 @@ export type Database = {
         }
         Relationships: []
       }
-      combo_pets: {
+      branches: {
         Row: {
-          combo_id: string
-          pet_id: string
+          address: string | null
+          code: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          phone: string | null
+          updated_at: string
         }
         Insert: {
-          combo_id: string
-          pet_id: string
+          address?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          phone?: string | null
+          updated_at?: string
         }
         Update: {
-          combo_id?: string
-          pet_id?: string
+          address?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          phone?: string | null
+          updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "combo_pets_combo_id_fkey"
-            columns: ["combo_id"]
-            isOneToOne: false
-            referencedRelation: "pet_service_combos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "combo_pets_pet_id_fkey"
-            columns: ["pet_id"]
-            isOneToOne: false
-            referencedRelation: "pets"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       combo_services: {
         Row: {
@@ -166,6 +169,86 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "pet_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      combo_species: {
+        Row: {
+          combo_id: string
+          species_id: string
+        }
+        Insert: {
+          combo_id: string
+          species_id: string
+        }
+        Update: {
+          combo_id?: string
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "combo_species_combo_id_fkey"
+            columns: ["combo_id"]
+            isOneToOne: false
+            referencedRelation: "pet_service_combos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "combo_species_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          full_name: string
+          id: string
+          is_active: boolean
+          note: string | null
+          phone: string
+          phone_digits: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          phone: string
+          phone_digits?: never
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          phone?: string
+          phone_digits?: never
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -312,12 +395,52 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_owners: {
+        Row: {
+          customer_id: string
+          from_date: string
+          pet_id: string
+          role: string
+          to_date: string | null
+        }
+        Insert: {
+          customer_id: string
+          from_date?: string
+          pet_id: string
+          role?: string
+          to_date?: string | null
+        }
+        Update: {
+          customer_id?: string
+          from_date?: string
+          pet_id?: string
+          role?: string
+          to_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_owners_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_owners_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_service_combos: {
         Row: {
           created_at: string
           description: string | null
           duration_minutes: number | null
           id: string
+          is_active: boolean
           mark_as_id: string | null
           mark_end: string | null
           mark_start: string | null
@@ -332,6 +455,7 @@ export type Database = {
           description?: string | null
           duration_minutes?: number | null
           id?: string
+          is_active?: boolean
           mark_as_id?: string | null
           mark_end?: string | null
           mark_start?: string | null
@@ -346,6 +470,7 @@ export type Database = {
           description?: string | null
           duration_minutes?: number | null
           id?: string
+          is_active?: boolean
           mark_as_id?: string | null
           mark_end?: string | null
           mark_start?: string | null
@@ -357,70 +482,50 @@ export type Database = {
         }
         Relationships: []
       }
-      pet_service_pets: {
-        Row: {
-          pet_id: string
-          service_id: string
-        }
-        Insert: {
-          pet_id: string
-          service_id: string
-        }
-        Update: {
-          pet_id?: string
-          service_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "pet_service_pets_pet_id_fkey"
-            columns: ["pet_id"]
-            isOneToOne: false
-            referencedRelation: "pets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pet_service_pets_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "pet_services"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       pet_service_prices: {
         Row: {
+          bracket_id: string
+          branch_id: string | null
           created_at: string
           id: string
-          pet_id: string
           price: number
           service_id: string
+          species_id: string
           updated_at: string
-          weight_id: string
         }
         Insert: {
+          bracket_id: string
+          branch_id?: string | null
           created_at?: string
           id?: string
-          pet_id: string
           price: number
           service_id: string
+          species_id: string
           updated_at?: string
-          weight_id: string
         }
         Update: {
+          bracket_id?: string
+          branch_id?: string | null
           created_at?: string
           id?: string
-          pet_id?: string
           price?: number
           service_id?: string
+          species_id?: string
           updated_at?: string
-          weight_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "pet_service_prices_pet_id_fkey"
-            columns: ["pet_id"]
+            foreignKeyName: "pet_service_prices_bracket_id_fkey"
+            columns: ["bracket_id"]
             isOneToOne: false
-            referencedRelation: "pets"
+            referencedRelation: "weight_brackets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_service_prices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
             referencedColumns: ["id"]
           },
           {
@@ -431,10 +536,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pet_service_prices_weight_id_fkey"
-            columns: ["weight_id"]
+            foreignKeyName: "pet_service_prices_species_id_fkey"
+            columns: ["species_id"]
             isOneToOne: false
-            referencedRelation: "pet_weights"
+            referencedRelation: "species"
             referencedColumns: ["id"]
           },
         ]
@@ -446,6 +551,7 @@ export type Database = {
           duration_minutes: number | null
           general_price: number | null
           id: string
+          is_active: boolean
           is_show: boolean
           name: string
           type: string | null
@@ -458,6 +564,7 @@ export type Database = {
           duration_minutes?: number | null
           general_price?: number | null
           id?: string
+          is_active?: boolean
           is_show?: boolean
           name: string
           type?: string | null
@@ -470,6 +577,7 @@ export type Database = {
           duration_minutes?: number | null
           general_price?: number | null
           id?: string
+          is_active?: boolean
           is_show?: boolean
           name?: string
           type?: string | null
@@ -478,53 +586,102 @@ export type Database = {
         }
         Relationships: []
       }
-      pet_weights: {
+      pet_weight_logs: {
         Row: {
+          created_by: string | null
           id: string
-          label_en: string
-          label_vi: string
-          sort_order: number
+          measured_at: string
+          note: string | null
+          pet_id: string
+          weight_kg: number
         }
         Insert: {
-          id: string
-          label_en: string
-          label_vi: string
-          sort_order?: number
+          created_by?: string | null
+          id?: string
+          measured_at?: string
+          note?: string | null
+          pet_id: string
+          weight_kg: number
         }
         Update: {
+          created_by?: string | null
           id?: string
-          label_en?: string
-          label_vi?: string
-          sort_order?: number
+          measured_at?: string
+          note?: string | null
+          pet_id?: string
+          weight_kg?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pet_weight_logs_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pets: {
         Row: {
+          allergies: string | null
+          behavior_notes: string | null
+          birth_date: string | null
+          breed: string | null
           created_at: string
-          description: string | null
-          icon: string | null
+          created_by: string | null
           id: string
+          microchip: string | null
           name: string
+          neutered: boolean
+          photo_url: string | null
+          sex: string
+          species_id: string
+          status: string
           updated_at: string
         }
         Insert: {
+          allergies?: string | null
+          behavior_notes?: string | null
+          birth_date?: string | null
+          breed?: string | null
           created_at?: string
-          description?: string | null
-          icon?: string | null
+          created_by?: string | null
           id?: string
+          microchip?: string | null
           name: string
+          neutered?: boolean
+          photo_url?: string | null
+          sex?: string
+          species_id: string
+          status?: string
           updated_at?: string
         }
         Update: {
+          allergies?: string | null
+          behavior_notes?: string | null
+          birth_date?: string | null
+          breed?: string | null
           created_at?: string
-          description?: string | null
-          icon?: string | null
+          created_by?: string | null
           id?: string
+          microchip?: string | null
           name?: string
+          neutered?: boolean
+          photo_url?: string | null
+          sex?: string
+          species_id?: string
+          status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pets_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -549,56 +706,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      users: {
-        Row: {
-          address: Json | null
-          created_at: string
-          display_name: string | null
-          email: string | null
-          full_name: string | null
-          gender: string | null
-          id: string
-          phone_number: string | null
-          photo_url: string | null
-          role: string
-          updated_at: string
-        }
-        Insert: {
-          address?: Json | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
-          full_name?: string | null
-          gender?: string | null
-          id: string
-          phone_number?: string | null
-          photo_url?: string | null
-          role?: string
-          updated_at?: string
-        }
-        Update: {
-          address?: Json | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
-          full_name?: string | null
-          gender?: string | null
-          id?: string
-          phone_number?: string | null
-          photo_url?: string | null
-          role?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "users_role_fkey"
-            columns: ["role"]
-            isOneToOne: false
-            referencedRelation: "roles"
-            referencedColumns: ["name"]
-          },
-        ]
       }
       role_permissions: {
         Row: {
@@ -681,24 +788,226 @@ export type Database = {
         }
         Relationships: []
       }
+      service_species: {
+        Row: {
+          service_id: string
+          species_id: string
+        }
+        Insert: {
+          service_id: string
+          species_id: string
+        }
+        Update: {
+          service_id?: string
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_species_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "pet_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_species_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      species: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          address: Json | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          phone_number: string | null
+          photo_url: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          address?: Json | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id: string
+          phone_number?: string | null
+          photo_url?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: Json | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          phone_number?: string | null
+          photo_url?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_role_fkey"
+            columns: ["role"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["name"]
+          },
+        ]
+      }
+      weight_brackets: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          max_kg: number | null
+          min_kg: number
+          sort_order: number
+          species_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          max_kg?: number | null
+          min_kg: number
+          sort_order?: number
+          species_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          max_kg?: number | null
+          min_kg?: number
+          sort_order?: number
+          species_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_brackets_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      pet_overview: {
+        Row: {
+          allergies: string | null
+          behavior_notes: string | null
+          birth_date: string | null
+          bracket_id: string | null
+          bracket_label: string | null
+          breed: string | null
+          created_at: string | null
+          id: string | null
+          name: string | null
+          neutered: boolean | null
+          owner_count: number | null
+          owner_id: string | null
+          owner_name: string | null
+          owner_phone: string | null
+          photo_url: string | null
+          sex: string | null
+          species_icon: string | null
+          species_id: string | null
+          species_name: string | null
+          status: string | null
+          weight_kg: number | null
+          weight_measured_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       create_order: { Args: { p: Json }; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      get_service_price: {
+        Args: {
+          p_branch_id?: string
+          p_service_id: string
+          p_species_id: string
+          p_weight_kg: number
+        }
+        Returns: number
+      }
       is_admin: { Args: never; Returns: boolean }
       is_display_name_available: {
         Args: { p_display_name: string }
         Returns: boolean
       }
+      is_staff: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      register_pet: { Args: { p: Json }; Returns: string }
       save_pet_combo: { Args: { p: Json; p_id?: string }; Returns: string }
       save_pet_service: { Args: { p: Json; p_id?: string }; Returns: string }
       save_role: { Args: { p: Json; p_id?: string }; Returns: string }
       save_service_prices: {
-        Args: { p_pet_id: string; p_rows: Json; p_service_id: string }
+        Args: {
+          p_branch_id?: string
+          p_rows: Json
+          p_service_id: string
+          p_species_id: string
+        }
+        Returns: undefined
+      }
+      save_species: { Args: { p: Json; p_id?: string }; Returns: string }
+      save_weight_brackets: {
+        Args: { p_rows: Json; p_species_id: string }
+        Returns: undefined
+      }
+      seed_default_weight_brackets: {
+        Args: { p_species_id: string }
         Returns: undefined
       }
     }
