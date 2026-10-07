@@ -277,6 +277,8 @@
         "subtitle": "Quick entry at the counter: owner first, then the pet",
         "ownerSection": "Owner",
         "phone": "Phone number",
+        "search": "Find existing customer",
+        "searchPlaceholder": "Type a phone number, email or name",
         "phonePlaceholder": "Type a phone number, email or name to find an existing customer",
         "matchPets": "{n} pet(s)",
         "choose": "Select",
@@ -287,7 +289,7 @@
         "email": "Email (optional)",
         "petSection": "Pet",
         "saveAndNext": "Save and register another",
-        "errOwner": "Pick an existing customer or enter a full name and a valid phone number",
+        "errOwner": "Enter the owner full name",
         "errPhone": "Phone number needs 8 to 15 digits"
       },
       "fields": {

@@ -277,6 +277,8 @@
         "subtitle": "Nhập nhanh tại quầy: chủ nuôi trước, thú cưng sau",
         "ownerSection": "Chủ nuôi",
         "phone": "Số điện thoại",
+        "search": "Tìm khách cũ",
+        "searchPlaceholder": "Nhập số điện thoại, email hoặc tên",
         "phonePlaceholder": "Nhập số điện thoại, email hoặc tên để tìm khách cũ",
         "matchPets": "{n} thú cưng",
         "choose": "Chọn",
@@ -287,7 +289,7 @@
         "email": "Email (không bắt buộc)",
         "petSection": "Thú cưng",
         "saveAndNext": "Lưu và đăng ký thêm",
-        "errOwner": "Chọn khách cũ hoặc nhập họ tên và số điện thoại hợp lệ",
+        "errOwner": "Nhập họ tên chủ nuôi",
         "errPhone": "Số điện thoại cần từ 8 đến 15 chữ số"
       },
       "fields": {

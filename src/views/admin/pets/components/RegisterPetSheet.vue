@@ -30,12 +30,11 @@
 
           <template v-else>
             <div class="space-y-2">
-              <Label for="register-owner-phone">{{ $t("petCare.pets.registerSheet.phone") }}</Label>
+              <Label for="register-owner-search">{{ $t("petCare.pets.registerSheet.search") }}</Label>
               <Input
-                id="register-owner-phone"
-                v-model="phoneText"
-                inputmode="tel"
-                :placeholder="$t('petCare.pets.registerSheet.phonePlaceholder')"
+                id="register-owner-search"
+                v-model="searchInput"
+                :placeholder="$t('petCare.pets.registerSheet.searchPlaceholder')"
               />
             </div>
 
@@ -67,7 +66,26 @@
               </p>
               <div class="space-y-2">
                 <Label for="register-owner-name">{{ $t("petCare.pets.registerSheet.fullName") }}</Label>
-                <Input id="register-owner-name" v-model="newOwner.fullName" />
+                <Input
+                  id="register-owner-name"
+                  v-model="newOwner.fullName"
+                  :class="{ 'border-destructive': submitted && ownerErrors.fullName }"
+                />
+                <p v-if="submitted && ownerErrors.fullName" class="text-xs text-destructive">
+                  {{ ownerErrors.fullName }}
+                </p>
+              </div>
+              <div class="space-y-2">
+                <Label for="register-owner-phone">{{ $t("petCare.pets.registerSheet.phone") }}</Label>
+                <Input
+                  id="register-owner-phone"
+                  v-model="newOwner.phone"
+                  inputmode="tel"
+                  :class="{ 'border-destructive': submitted && ownerErrors.phone }"
+                />
+                <p v-if="submitted && ownerErrors.phone" class="text-xs text-destructive">
+                  {{ ownerErrors.phone }}
+                </p>
               </div>
               <div class="space-y-2">
                 <Label for="register-owner-email">{{ $t("petCare.pets.registerSheet.email") }}</Label>
@@ -75,7 +93,6 @@
               </div>
             </div>
           </template>
-          <p v-if="submitted && ownerError" class="text-xs text-destructive">{{ ownerError }}</p>
         </section>
 
         <section class="space-y-4">
@@ -167,15 +184,15 @@ const speciesQuery = useSpeciesOptions();
 const species = computed(() => speciesQuery.data.value ?? []);
 const register = useRegisterPet();
 
-const phoneText = ref("");
+const searchInput = ref("");
 const selected = ref<CustomerMatch | null>(null);
-const newOwner = reactive({ fullName: "", email: "" });
+const newOwner = reactive({ fullName: "", phone: "", email: "" });
 const pet = ref<PetFormState>(emptyPetForm());
 const weight = ref("");
 const submitted = ref(false);
 const noErrors = { name: false, speciesId: false };
 
-const searchText = refDebounced(phoneText, SEARCH_DEBOUNCE_MS);
+const searchText = refDebounced(searchInput, SEARCH_DEBOUNCE_MS);
 const matchesQuery = useCustomerSearch(searchText);
 const matches = computed(() => matchesQuery.data.value ?? []);
 
@@ -199,15 +216,17 @@ const bracketText = computed(() => {
 
 const errors = computed(() => petFormErrors(pet.value));
 
-const ownerError = computed((): string | null => {
-  if (selected.value) return null;
-  if (newOwner.fullName.trim().length === 0) return t("petCare.pets.registerSheet.errOwner");
-  const digits = digitsOf(phoneText.value).length;
-  if (digits < MIN_PHONE_DIGITS || digits > MAX_PHONE_DIGITS) {
-    return t("petCare.pets.registerSheet.errPhone");
-  }
-  return null;
+// Only a new customer needs typed details; a picked one already has them.
+const ownerErrors = computed(() => {
+  if (selected.value) return { fullName: null, phone: null };
+  const digits = digitsOf(newOwner.phone).length;
+  const phoneOk = digits >= MIN_PHONE_DIGITS && digits <= MAX_PHONE_DIGITS;
+  return {
+    fullName: newOwner.fullName.trim() ? null : t("petCare.pets.registerSheet.errOwner"),
+    phone: phoneOk ? null : t("petCare.pets.registerSheet.errPhone"),
+  };
 });
+const hasOwnerError = computed(() => !!(ownerErrors.value.fullName || ownerErrors.value.phone));
 
 const clearSelected = () => {
   selected.value = null;
@@ -221,8 +240,9 @@ const resetPet = () => {
 
 const resetAll = () => {
   resetPet();
-  phoneText.value = "";
+  searchInput.value = "";
   newOwner.fullName = "";
+  newOwner.phone = "";
   newOwner.email = "";
   selected.value = null;
 };
@@ -239,14 +259,14 @@ const ownerInput = (): RegisterOwner => {
   if (match?.userId) return { userId: match.userId };
   return {
     fullName: newOwner.fullName.trim(),
-    phone: phoneText.value.trim(),
+    phone: newOwner.phone.trim(),
     email: newOwner.email.trim() || null,
   };
 };
 
 const submit = async (registerAnother: boolean) => {
   submitted.value = true;
-  if (ownerError.value || hasPetFormErrors(errors.value) || weightInvalid.value) return;
+  if (hasOwnerError.value || hasPetFormErrors(errors.value) || weightInvalid.value) return;
 
   try {
     const petId = await register.mutateAsync({
@@ -265,8 +285,8 @@ const submit = async (registerAnother: boolean) => {
   }
 };
 
-// Choosing a customer from the list replaces the typed phone with theirs.
-watch(selected, (match) => {
-  if (match) phoneText.value = match.phone;
+// A digits-only search is most likely the new customer's phone: carry it over once.
+watch(searchInput, (text) => {
+  if (!newOwner.phone && /^[\d\s+.-]{8,}$/.test(text)) newOwner.phone = text.trim();
 });
 </script>
