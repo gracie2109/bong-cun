@@ -3,6 +3,8 @@
 import type { PetListFilter } from "@/repositories/pets";
 import type { PageParams } from "@/repositories/shared";
 import type { PetServiceFilter } from "@/repositories/petServices";
+import type { InvoiceFilter } from "@/repositories/pos";
+import type { ProductFilter } from "@/repositories/products";
 import type { UserListFilter } from "@/repositories/users";
 
 export const speciesKeys = {
@@ -84,4 +86,23 @@ export const orderKeys = {
 export const staffKeys = {
   all: ["staff"] as const,
   list: () => [...staffKeys.all, "list"] as const,
+};
+
+export const productKeys = {
+  all: ["products"] as const,
+  list: (page: PageParams, filter: ProductFilter) => [...productKeys.all, "list", page, filter] as const,
+  sellable: (text: string) => [...productKeys.all, "sellable", text] as const,
+};
+
+export const posKeys = {
+  all: ["pos"] as const,
+  myShift: (branchId: string, userId: string) => [...posKeys.all, "my-shift", branchId, userId] as const,
+  shifts: (branchId: string, page: PageParams) => [...posKeys.all, "shifts", branchId, page] as const,
+  shiftSummary: (shiftId: string) => [...posKeys.all, "shift-summary", shiftId] as const,
+  invoices: (page: PageParams, filter: InvoiceFilter) => [...posKeys.all, "invoices", page, filter] as const,
+  invoice: (id: string) => [...posKeys.all, "invoice", id] as const,
+  combos: () => [...posKeys.all, "combos"] as const,
+  customerPets: (customerId: string) => [...posKeys.all, "customer-pets", customerId] as const,
+  servicePrice: (speciesId: string, serviceId: string, weightKg: number, branchId: string) =>
+    [...posKeys.all, "service-price", speciesId, serviceId, weightKg, branchId] as const,
 };

@@ -9,6 +9,15 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     items: [{ title: "adminNav.dashboard", icon: "lucide:layout-dashboard", name: "dashboard" }],
   },
   {
+    title: "adminNav.sales",
+    items: [
+      { title: "adminNav.pos", icon: "lucide:shopping-cart", name: "pos" },
+      { title: "adminNav.invoices", icon: "lucide:receipt", name: "invoices" },
+      { title: "adminNav.cashShifts", icon: "lucide:wallet", name: "cashShifts" },
+      { title: "adminNav.products", icon: "lucide:package", name: "adminProducts" },
+    ],
+  },
+  {
     title: "adminNav.scheduling",
     items: [{ title: "adminNav.schedule", icon: "lucide:calendar-days", name: "listOrderSchedule" }],
   },

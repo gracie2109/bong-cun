@@ -57,7 +57,11 @@
     "petCombos": "Combo",
     "rbacRoles": "Cấu hình vai trò",
     "rbacPermissions": "Danh sách quyền",
-    "rbacMatrix": "Ma trận phân quyền"
+    "rbacMatrix": "Ma trận phân quyền",
+    "pos": "Bán tại quầy",
+    "invoices": "Hóa đơn",
+    "cashShifts": "Ca thu ngân",
+    "adminProducts": "Sản phẩm"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -684,6 +688,181 @@
     "logout": "Đăng xuất",
     "welcome": "Xin chào, {name}",
     "welcomeHint": "Chọn một mục để bắt đầu làm việc.",
-    "noAccess": "Tài khoản này chưa được cấp quyền nào. Liên hệ quản trị viên để được gán vai trò."
+    "noAccess": "Tài khoản này chưa được cấp quyền nào. Liên hệ quản trị viên để được gán vai trò.",
+    "sales": "Bán hàng",
+    "pos": "Bán tại quầy",
+    "invoices": "Hóa đơn",
+    "cashShifts": "Ca thu ngân",
+    "products": "Sản phẩm"
+  },
+  "pos": {
+    "title": "Bán tại quầy",
+    "branch": "Chi nhánh",
+    "walkIn": "Khách lẻ",
+    "subtotal": "Tạm tính",
+    "discount": "Giảm giá",
+    "total": "Tổng cộng",
+    "change": "Tiền thối lại",
+    "nav": {
+      "sell": "Bán hàng",
+      "invoices": "Hóa đơn",
+      "shifts": "Ca thu ngân"
+    },
+    "lineType": {
+      "product": "Sản phẩm",
+      "service": "Dịch vụ",
+      "combo": "Combo"
+    },
+    "method": {
+      "cash": "Tiền mặt",
+      "transfer": "Chuyển khoản",
+      "card": "Thẻ"
+    },
+    "status": {
+      "paid": "Đã thanh toán",
+      "cancelled": "Đã hủy"
+    },
+    "catalog": {
+      "products": "Sản phẩm",
+      "services": "Dịch vụ",
+      "combos": "Combo",
+      "scanPlaceholder": "Quét mã vạch hoặc gõ tên, SKU...",
+      "searchPlaceholder": "Tìm theo tên...",
+      "byWeight": "Theo cân nặng",
+      "empty": "Không có mục nào phù hợp.",
+      "noProducts": "Chưa có sản phẩm nào. Thêm sản phẩm ở mục Sản phẩm."
+    },
+    "customer": {
+      "title": "Khách hàng",
+      "searchPlaceholder": "Số điện thoại, tên hoặc email...",
+      "walkInHint": "Bỏ trống nếu là khách lẻ.",
+      "pets": "{n} thú cưng",
+      "choose": "Chọn",
+      "change": "Đổi",
+      "notFound": "Không tìm thấy. Nhập thông tin để tạo khách mới cùng hóa đơn.",
+      "fullName": "Họ tên",
+      "phone": "Số điện thoại",
+      "useNew": "Dùng khách mới này",
+      "newBadge": "Khách mới"
+    },
+    "cart": {
+      "empty": "Chọn sản phẩm, dịch vụ hoặc combo bên trái để thêm vào hóa đơn.",
+      "remove": "Bỏ khỏi hóa đơn",
+      "less": "Giảm số lượng",
+      "more": "Tăng số lượng",
+      "pet": "Thú cưng",
+      "noPet": "Không gắn thú cưng",
+      "note": "Ghi chú hóa đơn",
+      "clear": "Xóa hết",
+      "checkout": "Thanh toán",
+      "needCustomerPet": "Dịch vụ tính giá theo cân nặng: chọn khách có hồ sơ thú cưng.",
+      "needPet": "Chọn thú cưng để tính giá theo cân nặng.",
+      "needWeight": "Thú cưng chưa có cân nặng. Cập nhật cân nặng trong hồ sơ thú cưng.",
+      "noPrice": "Dịch vụ chưa có giá cho loài và cân nặng này.",
+      "unpriced": "Còn dòng chưa tính được giá.",
+      "discountTooHigh": "Giảm giá lớn hơn tạm tính."
+    },
+    "payment": {
+      "title": "Thanh toán",
+      "subtitle": "Có thể kết hợp tiền mặt, chuyển khoản và thẻ.",
+      "due": "Khách cần trả",
+      "bankRef": "Mã giao dịch",
+      "paid": "Khách đưa",
+      "missing": "Còn thiếu",
+      "confirm": "Xác nhận thanh toán",
+      "done": "Đã thanh toán",
+      "print": "In hóa đơn",
+      "newSale": "Đơn mới"
+    },
+    "shift": {
+      "current": "Ca {code} · mở lúc {time}",
+      "open": "Mở ca",
+      "close": "Đóng ca",
+      "noneTitle": "Bạn chưa mở ca thu ngân",
+      "noneHint": "Mở ca với số tiền đầu ca trong két để bắt đầu bán.",
+      "openTitle": "Mở ca thu ngân",
+      "openSubtitle": "Chi nhánh {branch}. Đếm tiền trong két trước khi mở ca.",
+      "openingCash": "Tiền đầu ca",
+      "note": "Ghi chú",
+      "closeTitle": "Đóng ca {code}",
+      "closeSubtitle": "Đếm tiền mặt trong két và đối chiếu với hệ thống.",
+      "invoices": "Số hóa đơn",
+      "cancelledCount": "{n} đã hủy",
+      "sales": "Doanh thu",
+      "drawer": "Tiền mặt trong két",
+      "cashIn": "Tiền mặt thu",
+      "changeOut": "Tiền thối lại",
+      "expectedCash": "Tiền mặt theo hệ thống",
+      "countedCash": "Tiền mặt thực đếm",
+      "balanced": "Khớp với hệ thống.",
+      "over": "Thừa {amount} so với hệ thống.",
+      "short": "Thiếu {amount} so với hệ thống."
+    },
+    "invoices": {
+      "title": "Hóa đơn",
+      "detail": "Chi tiết hóa đơn",
+      "searchPlaceholder": "Mã hóa đơn, tên hoặc SĐT khách...",
+      "period": "Thời gian",
+      "periods": {
+        "today": "Hôm nay",
+        "week": "7 ngày",
+        "month": "30 ngày",
+        "all": "Tất cả"
+      },
+      "status": "Trạng thái",
+      "code": "Mã hóa đơn",
+      "time": "Thời gian",
+      "empty": "Chưa có hóa đơn nào.",
+      "item": "Mặt hàng",
+      "qty": "SL",
+      "amount": "Thành tiền",
+      "cancel": "Hủy hóa đơn",
+      "cancelReason": "Lý do hủy",
+      "confirmCancel": "Xác nhận hủy",
+      "cancelledAt": "Đã hủy lúc {time}"
+    },
+    "shifts": {
+      "title": "Ca thu ngân",
+      "code": "Mã ca",
+      "cashier": "Thu ngân",
+      "openedAt": "Mở ca",
+      "closedAt": "Đóng ca",
+      "difference": "Chênh lệch",
+      "open": "Đang mở",
+      "empty": "Chưa có ca nào."
+    },
+    "receipt": {
+      "title": "HÓA ĐƠN BÁN LẺ",
+      "cashier": "Thu ngân",
+      "customer": "Khách hàng",
+      "thanks": "Cảm ơn quý khách!"
+    },
+    "errors": {
+      "no_open_shift": "Bạn cần mở ca trước khi bán.",
+      "discount_limit": "Giảm giá trên 10% cần quản lý duyệt.",
+      "underpaid": "Số tiền khách trả chưa đủ.",
+      "overpaid": "Chuyển khoản và thẻ không được vượt quá tổng tiền.",
+      "shift_closed": "Ca của hóa đơn này đã đóng, không thể hủy."
+    }
+  },
+  "products": {
+    "title": "Sản phẩm",
+    "subtitle": "Hàng bán tại quầy: giá bán, đơn vị, mã vạch.",
+    "add": "Thêm sản phẩm",
+    "edit": "Sửa sản phẩm",
+    "searchPlaceholder": "Tên, SKU hoặc mã vạch...",
+    "showArchived": "Hiện sản phẩm ngừng bán",
+    "empty": "Chưa có sản phẩm nào.",
+    "col": {
+      "product": "Sản phẩm"
+    },
+    "form": {
+      "name": "Tên sản phẩm",
+      "sku": "SKU",
+      "barcode": "Mã vạch",
+      "price": "Giá bán",
+      "unit": "Đơn vị",
+      "desc": "Mô tả"
+    }
   }
 }

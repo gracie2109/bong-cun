@@ -143,6 +143,66 @@ export type Database = {
         }
         Relationships: []
       }
+      cash_shifts: {
+        Row: {
+          branch_id: string
+          close_note: string | null
+          closed_at: string | null
+          closed_by: string | null
+          closed_by_name: string | null
+          code: string
+          counted_cash: number | null
+          created_at: string
+          expected_cash: number | null
+          id: string
+          open_note: string | null
+          opened_at: string
+          opened_by: string
+          opened_by_name: string | null
+          opening_cash: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          close_note?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
+          closed_by_name?: string | null
+          code: string
+          counted_cash?: number | null
+          created_at?: string
+          expected_cash?: number | null
+          id?: string
+          open_note?: string | null
+          opened_at?: string
+          opened_by: string
+          opened_by_name?: string | null
+          opening_cash: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          close_note?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
+          closed_by_name?: string | null
+          code?: string
+          counted_cash?: number | null
+          created_at?: string
+          expected_cash?: number | null
+          id?: string
+          open_note?: string | null
+          opened_at?: string
+          opened_by?: string
+          opened_by_name?: string | null
+          opening_cash?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       combo_services: {
         Row: {
           combo_id: string
@@ -249,6 +309,143 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          branch_id: string
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          cashier_name: string | null
+          change_amount: number
+          code: string
+          created_at: string
+          created_by: string
+          customer_id: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          discount_amount: number
+          einvoice_no: string | null
+          id: string
+          note: string | null
+          paid_amount: number
+          shift_id: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          cashier_name?: string | null
+          change_amount?: number
+          code: string
+          created_at?: string
+          created_by: string
+          customer_id?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_amount?: number
+          einvoice_no?: string | null
+          id?: string
+          note?: string | null
+          paid_amount?: number
+          shift_id: string
+          status?: string
+          subtotal: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          cashier_name?: string | null
+          change_amount?: number
+          code?: string
+          created_at?: string
+          created_by?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          discount_amount?: number
+          einvoice_no?: string | null
+          id?: string
+          note?: string | null
+          paid_amount?: number
+          shift_id?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoice_lines: {
+        Row: {
+          amount: number
+          combo_id: string | null
+          id: string
+          invoice_id: string
+          item_type: string
+          line_no: number
+          name: string
+          pet_id: string | null
+          pet_name: string | null
+          product_id: string | null
+          qty: number
+          service_id: string | null
+          unit: string | null
+          unit_price: number
+          weight_kg: number | null
+        }
+        Insert: {
+          amount: number
+          combo_id?: string | null
+          id?: string
+          invoice_id: string
+          item_type: string
+          line_no: number
+          name: string
+          pet_id?: string | null
+          pet_name?: string | null
+          product_id?: string | null
+          qty: number
+          service_id?: string | null
+          unit?: string | null
+          unit_price: number
+          weight_kg?: number | null
+        }
+        Update: {
+          amount?: number
+          combo_id?: string | null
+          id?: string
+          invoice_id?: string
+          item_type?: string
+          line_no?: number
+          name?: string
+          pet_id?: string | null
+          pet_name?: string | null
+          product_id?: string | null
+          qty?: number
+          service_id?: string | null
+          unit?: string | null
+          unit_price?: number
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_lines_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
             referencedColumns: ["id"]
           },
         ]
@@ -370,6 +567,41 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          bank_ref: string | null
+          created_at: string
+          id: string
+          invoice_id: string
+          method: string
+        }
+        Insert: {
+          amount: number
+          bank_ref?: string | null
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method: string
+        }
+        Update: {
+          amount?: number
+          bank_ref?: string | null
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       permissions: {
         Row: {
@@ -691,24 +923,39 @@ export type Database = {
       }
       products: {
         Row: {
+          barcode: string | null
           created_at: string
           description: string | null
           id: string
+          is_active: boolean
           name: string
+          price: number
+          sku: string | null
+          unit: string
           updated_at: string
         }
         Insert: {
+          barcode?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean
           name: string
+          price?: number
+          sku?: string | null
+          unit?: string
           updated_at?: string
         }
         Update: {
+          barcode?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean
           name?: string
+          price?: number
+          sku?: string | null
+          unit?: string
           updated_at?: string
         }
         Relationships: []
@@ -1025,6 +1272,14 @@ export type Database = {
       }
     }
     Functions: {
+      can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      cancel_invoice: { Args: { p_id: string; p_reason: string }; Returns: undefined }
+      cash_shift_summary: { Args: { p_shift: string }; Returns: Json }
+      close_cash_shift: {
+        Args: { p_counted_cash: number; p_note?: string; p_shift: string }
+        Returns: Json
+      }
+      create_invoice: { Args: { p: Json }; Returns: Json }
       create_order: { Args: { p: Json }; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       has_permission: {
@@ -1056,6 +1311,10 @@ export type Database = {
       }
       is_staff: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      open_cash_shift: {
+        Args: { p_branch: string; p_note?: string; p_opening_cash: number }
+        Returns: string
+      }
       register_pet: { Args: { p: Json }; Returns: string }
       save_pet_combo: { Args: { p: Json; p_id?: string }; Returns: string }
       save_pet_service: { Args: { p: Json; p_id?: string }; Returns: string }
