@@ -681,6 +681,9 @@
     "roles": "Roles & permissions",
     "permissions": "Permission list",
     "matrix": "Permission matrix",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "welcome": "Hello, {name}",
+    "welcomeHint": "Pick a section to get started.",
+    "noAccess": "This account has no permissions yet. Ask an administrator to assign a role."
   }
 }

@@ -681,6 +681,9 @@
     "roles": "Vai trò & Phân quyền",
     "permissions": "Danh sách quyền",
     "matrix": "Ma trận đối chiếu",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "welcome": "Xin chào, {name}",
+    "welcomeHint": "Chọn một mục để bắt đầu làm việc.",
+    "noAccess": "Tài khoản này chưa được cấp quyền nào. Liên hệ quản trị viên để được gán vai trò."
   }
 }

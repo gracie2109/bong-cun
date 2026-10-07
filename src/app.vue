@@ -7,7 +7,7 @@
   </div>
   <div class="absolute right-0 top-36 z-[9999] border">
     <ClientOnly>
-      <Toaster position="top-right" rich-colors />
+      <Toaster position="top-center" rich-colors />
     </ClientOnly>
   </div>
 </template>

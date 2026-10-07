@@ -48,6 +48,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (token === grantsToken) return grantsPromise;
     grantsToken = token;
     grantsPromise = (async () => {
+      await applyPromise; // the role for this token must be loaded first
       if (role.value === SUPER_ADMIN_ROLE) {
         adminGrants.value = "all";
         return;

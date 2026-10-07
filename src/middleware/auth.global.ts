@@ -23,8 +23,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!allowed) return navigateTo({ name: "home" });
 
   // Inside /admin each page needs VIEW on its permission; without it, fall back to the dashboard.
-  if (to.meta.staffOnly && to.name !== "dashboard") {
+  // Grants load on every admin route, the dashboard included, because the sidebar menu reads them.
+  if (to.meta.staffOnly) {
     await auth.loadAdminGrants();
-    if (!canOpenAdminRoute(auth.adminGrants ?? {}, to.name as string)) return navigateTo({ name: "dashboard" });
+    if (to.name !== "dashboard" && !canOpenAdminRoute(auth.adminGrants ?? {}, to.name as string)) {
+      return navigateTo({ name: "dashboard" });
+    }
   }
 });
