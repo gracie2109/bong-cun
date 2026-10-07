@@ -4,6 +4,8 @@ declare module "#app" {
     titleKey?: string;
     requiresAuth?: boolean;
     roles?: readonly string[];
+    /** Any staff account (account type other than customer). */
+    staffOnly?: boolean;
     /** Keep the page out of search results (e.g. placeholder pages that duplicate the home page). */
     noindex?: boolean;
   }

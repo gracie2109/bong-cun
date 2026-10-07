@@ -69,3 +69,11 @@ export const deletePermission = async (client: Client, id: string): Promise<void
   const { error } = await client.from("permissions").delete().eq("name", id);
   if (error) throw error;
 };
+
+/** The caller's own grants at every branch they work in, merged per permission code. */
+export const listMyPermissions = async (client: Client): Promise<Record<string, string[]>> => {
+  const rows = unwrap(await client.rpc("my_permissions"));
+  const grants: Record<string, string[]> = {};
+  for (const row of rows) grants[row.permission] = [...new Set([...(grants[row.permission] ?? []), ...row.methods])];
+  return grants;
+};
