@@ -57,7 +57,11 @@
     "petCombos": "Combos",
     "rbacRoles": "Role setup",
     "rbacPermissions": "Permissions",
-    "rbacMatrix": "Permission matrix"
+    "rbacMatrix": "Permission matrix",
+    "pos": "Point of sale",
+    "invoices": "Invoices",
+    "cashShifts": "Cash shifts",
+    "adminProducts": "Products"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -684,6 +688,181 @@
     "logout": "Sign out",
     "welcome": "Hello, {name}",
     "welcomeHint": "Pick a section to get started.",
-    "noAccess": "This account has no permissions yet. Ask an administrator to assign a role."
+    "noAccess": "This account has no permissions yet. Ask an administrator to assign a role.",
+    "sales": "Sales",
+    "pos": "Point of sale",
+    "invoices": "Invoices",
+    "cashShifts": "Cash shifts",
+    "products": "Products"
+  },
+  "pos": {
+    "title": "Point of sale",
+    "branch": "Branch",
+    "walkIn": "Walk-in customer",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "change": "Change",
+    "nav": {
+      "sell": "Sell",
+      "invoices": "Invoices",
+      "shifts": "Cash shifts"
+    },
+    "lineType": {
+      "product": "Product",
+      "service": "Service",
+      "combo": "Combo"
+    },
+    "method": {
+      "cash": "Cash",
+      "transfer": "Bank transfer",
+      "card": "Card"
+    },
+    "status": {
+      "paid": "Paid",
+      "cancelled": "Cancelled"
+    },
+    "catalog": {
+      "products": "Products",
+      "services": "Services",
+      "combos": "Combos",
+      "scanPlaceholder": "Scan a barcode or type a name, SKU...",
+      "searchPlaceholder": "Search by name...",
+      "byWeight": "By weight",
+      "empty": "Nothing matches.",
+      "noProducts": "No products yet. Add them under Products."
+    },
+    "customer": {
+      "title": "Customer",
+      "searchPlaceholder": "Phone, name or email...",
+      "walkInHint": "Leave empty for a walk-in sale.",
+      "pets": "{n} pets",
+      "choose": "Pick",
+      "change": "Change",
+      "notFound": "Not found. Enter their details to create the customer with the invoice.",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "useNew": "Use this new customer",
+      "newBadge": "New"
+    },
+    "cart": {
+      "empty": "Pick products, services or combos on the left to add them.",
+      "remove": "Remove",
+      "less": "Decrease",
+      "more": "Increase",
+      "pet": "Pet",
+      "noPet": "No pet",
+      "note": "Invoice note",
+      "clear": "Clear",
+      "checkout": "Checkout",
+      "needCustomerPet": "Priced by weight: pick a customer with a pet profile.",
+      "needPet": "Pick the pet to price by weight.",
+      "needWeight": "The pet has no weight yet. Add one in the pet profile.",
+      "noPrice": "No price for this species and weight yet.",
+      "unpriced": "Some lines have no price yet.",
+      "discountTooHigh": "The discount is more than the subtotal."
+    },
+    "payment": {
+      "title": "Payment",
+      "subtitle": "Cash, transfer and card can be combined.",
+      "due": "Amount due",
+      "bankRef": "Transaction ref",
+      "paid": "Received",
+      "missing": "Still due",
+      "confirm": "Confirm payment",
+      "done": "Paid",
+      "print": "Print receipt",
+      "newSale": "New sale"
+    },
+    "shift": {
+      "current": "Shift {code} · opened {time}",
+      "open": "Open shift",
+      "close": "Close shift",
+      "noneTitle": "You have no open cash shift",
+      "noneHint": "Open a shift with the cash in the drawer to start selling.",
+      "openTitle": "Open cash shift",
+      "openSubtitle": "Branch {branch}. Count the drawer before opening.",
+      "openingCash": "Opening cash",
+      "note": "Note",
+      "closeTitle": "Close shift {code}",
+      "closeSubtitle": "Count the cash in the drawer and compare it with the system.",
+      "invoices": "Invoices",
+      "cancelledCount": "{n} cancelled",
+      "sales": "Sales",
+      "drawer": "Cash in drawer",
+      "cashIn": "Cash received",
+      "changeOut": "Change given",
+      "expectedCash": "Expected cash",
+      "countedCash": "Counted cash",
+      "balanced": "Matches the system.",
+      "over": "{amount} over the system.",
+      "short": "{amount} short of the system."
+    },
+    "invoices": {
+      "title": "Invoices",
+      "detail": "Invoice",
+      "searchPlaceholder": "Invoice code, customer name or phone...",
+      "period": "Period",
+      "periods": {
+        "today": "Today",
+        "week": "7 days",
+        "month": "30 days",
+        "all": "All"
+      },
+      "status": "Status",
+      "code": "Code",
+      "time": "Time",
+      "empty": "No invoices yet.",
+      "item": "Item",
+      "qty": "Qty",
+      "amount": "Amount",
+      "cancel": "Cancel invoice",
+      "cancelReason": "Reason",
+      "confirmCancel": "Confirm cancel",
+      "cancelledAt": "Cancelled at {time}"
+    },
+    "shifts": {
+      "title": "Cash shifts",
+      "code": "Shift",
+      "cashier": "Cashier",
+      "openedAt": "Opened",
+      "closedAt": "Closed",
+      "difference": "Difference",
+      "open": "Open",
+      "empty": "No shifts yet."
+    },
+    "receipt": {
+      "title": "SALES RECEIPT",
+      "cashier": "Cashier",
+      "customer": "Customer",
+      "thanks": "Thank you!"
+    },
+    "errors": {
+      "no_open_shift": "Open a cash shift before selling.",
+      "discount_limit": "A discount above 10% needs a manager.",
+      "underpaid": "The payment does not cover the total.",
+      "overpaid": "Transfer and card cannot exceed the total.",
+      "shift_closed": "This invoice's shift is closed, it cannot be cancelled."
+    }
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Items sold at the counter: price, unit, barcode.",
+    "add": "Add product",
+    "edit": "Edit product",
+    "searchPlaceholder": "Name, SKU or barcode...",
+    "showArchived": "Show archived products",
+    "empty": "No products yet.",
+    "col": {
+      "product": "Product"
+    },
+    "form": {
+      "name": "Product name",
+      "sku": "SKU",
+      "barcode": "Barcode",
+      "price": "Price",
+      "unit": "Unit",
+      "desc": "Description"
+    }
   }
 }
