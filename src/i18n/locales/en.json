@@ -61,7 +61,9 @@
     "pos": "Point of sale",
     "invoices": "Invoices",
     "cashShifts": "Cash shifts",
-    "adminProducts": "Products"
+    "adminProducts": "Products",
+    "inventoryStock": "Stock",
+    "stockDocuments": "Stock documents"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -693,7 +695,11 @@
     "pos": "Point of sale",
     "invoices": "Invoices",
     "cashShifts": "Cash shifts",
-    "products": "Products"
+    "products": "Products",
+    "inventory": "Inventory",
+    "stock": "Stock",
+    "stockDocuments": "Stock documents",
+    "suppliers": "Suppliers"
   },
   "pos": {
     "title": "Point of sale",
@@ -730,7 +736,9 @@
       "searchPlaceholder": "Search by name...",
       "byWeight": "By weight",
       "empty": "Nothing matches.",
-      "noProducts": "No products yet. Add them under Products."
+      "noProducts": "No products yet. Add them under Products.",
+      "outOfStock": "Out of stock",
+      "inStock": "{n} left"
     },
     "customer": {
       "title": "Customer",
@@ -796,7 +804,9 @@
       "countedCash": "Counted cash",
       "balanced": "Matches the system.",
       "over": "{amount} over the system.",
-      "short": "{amount} short of the system."
+      "short": "{amount} short of the system.",
+      "returns": "Returns ({n})",
+      "refundCash": "Cash refunds"
     },
     "invoices": {
       "title": "Invoices",
@@ -842,7 +852,23 @@
       "discount_limit": "A discount above 10% needs a manager.",
       "underpaid": "The payment does not cover the total.",
       "overpaid": "Transfer and card cannot exceed the total.",
-      "shift_closed": "This invoice's shift is closed, it cannot be cancelled."
+      "shift_closed": "This invoice's shift is closed, it cannot be cancelled.",
+      "out_of_stock": "Not enough unexpired stock: {name}.",
+      "has_returns": "This invoice has returns and cannot be cancelled.",
+      "return_too_much": "More than what is left to return of {name}.",
+      "return_products_only": "Only products can be returned, not services or combos.",
+      "reason_required": "A reason is required."
+    },
+    "returns": {
+      "title": "Returns",
+      "start": "Return goods",
+      "formTitle": "Customer return",
+      "canReturn": "{n} can be returned",
+      "returnedQty": "{n} returned",
+      "reason": "Reason",
+      "invalidQty": "Invalid return quantity.",
+      "refund": "Refund:",
+      "confirm": "Confirm return"
     }
   },
   "products": {
@@ -862,7 +888,155 @@
       "barcode": "Barcode",
       "price": "Price",
       "unit": "Unit",
-      "desc": "Description"
+      "desc": "Description",
+      "trackStock": "Track stock by lot",
+      "trackStockHint": "Sales take the earliest expiry first (FEFO) and stop when stock runs out. Turn off for items sold without stock, such as carry bags."
+    },
+    "noStock": "No stock tracking"
+  },
+  "inventory": {
+    "stock": {
+      "title": "Stock",
+      "alerts": {
+        "low": "Below minimum",
+        "out": "Out of stock",
+        "expiring": "Expiring ({days} days)",
+        "expired": "Has expired lots"
+      },
+      "filter": "Stock filter",
+      "expiryWindow": "Expiry warning",
+      "withinDays": "Expires within {days} days",
+      "status": {
+        "all": "All",
+        "low": "Below minimum",
+        "out": "Out of stock",
+        "expiring": "Expiring soon",
+        "expired": "Has expired lots"
+      },
+      "sellable": "Sellable",
+      "expired": "Expired",
+      "expiringShort": "Expiring in {days} days",
+      "nextExpiry": "Next expiry",
+      "inDays": "({n} days left)",
+      "min": "Minimum",
+      "value": "Stock value",
+      "empty": "No matching products.",
+      "minLabel": "Minimum stock at this branch",
+      "minHint": "Below this the product shows in the alerts. Leave empty for no alert."
+    },
+    "lots": {
+      "title": "Lots",
+      "showEmpty": "Show empty lots",
+      "empty": "No lots yet. Receive goods with a goods receipt.",
+      "lotNo": "Lot",
+      "expiry": "Expiry",
+      "onHand": "On hand",
+      "unitCost": "Unit cost",
+      "noLot": "No lot number",
+      "noExpiry": "No expiry",
+      "next": "Sells next",
+      "expired": "expired"
+    },
+    "movements": {
+      "title": "Stock card",
+      "empty": "No movements yet.",
+      "reason": "Movement",
+      "qty": "Quantity",
+      "balance": "Lot after",
+      "reasons": {
+        "receipt": "Received",
+        "receipt_cancel": "Receipt cancelled",
+        "sale": "Sold",
+        "sale_cancel": "Invoice cancelled",
+        "return": "Customer return",
+        "writeoff": "Written off",
+        "count": "Stock count"
+      }
+    },
+    "documents": {
+      "title": "Stock documents",
+      "new": "New document",
+      "types": {
+        "receipt": "Goods receipt",
+        "writeoff": "Write-off",
+        "count": "Stock count"
+      },
+      "newTitle": {
+        "receipt": "New goods receipt",
+        "writeoff": "New write-off",
+        "count": "New stock count"
+      },
+      "typeHint": {
+        "receipt": "Receive goods by lot and expiry. They can be sold once posted.",
+        "writeoff": "Write off expired or damaged goods. A manager posts it.",
+        "count": "Count each lot; the difference is adjusted when a manager posts it."
+      },
+      "searchPlaceholder": "Code, supplier reference, note...",
+      "type": "Type",
+      "status": {
+        "draft": "Draft",
+        "posted": "Posted",
+        "cancelled": "Cancelled"
+      },
+      "code": "Code",
+      "supplierOrNote": "Supplier / Note",
+      "createdBy": "Created by",
+      "postedBy": "Posted by",
+      "cancelledBy": "Cancelled by",
+      "value": "Value",
+      "empty": "No stock documents yet.",
+      "supplier": "Supplier",
+      "noSupplier": "None",
+      "supplierRef": "Supplier invoice / delivery number",
+      "note": "Note",
+      "notePlaceholder": {
+        "receipt": "For example: October restock",
+        "writeoff": "Reason: expired, dented, damaged...",
+        "count": "For example: month-end count"
+      },
+      "addProduct": "Add a product: scan a barcode or type a name, SKU...",
+      "untracked": "No stock tracking",
+      "noLines": "No lines yet. Add products above.",
+      "systemQty": "System",
+      "countedQty": "Counted",
+      "difference": "Difference",
+      "pickLot": "Pick a lot",
+      "lotHolds": "Lot holds {n}",
+      "totalLabel": {
+        "receipt": "Receipt total",
+        "writeoff": "Written-off value",
+        "count": "Difference value"
+      },
+      "needsManager": "You can save a draft; a manager (Inventory: Update) checks and posts it.",
+      "cancelReason": "Reason",
+      "confirmCancel": "Confirm cancel",
+      "cancelDraft": "Cancel draft",
+      "cancelPosted": "Cancel receipt",
+      "saveDraft": "Save draft",
+      "post": "Save and post"
+    },
+    "suppliers": {
+      "title": "Suppliers",
+      "add": "Add supplier",
+      "edit": "Edit supplier",
+      "subtitle": "Used on goods receipts.",
+      "searchPlaceholder": "Name, phone or tax code...",
+      "showArchived": "Show archived suppliers",
+      "name": "Supplier name",
+      "phone": "Phone",
+      "email": "Email",
+      "taxCode": "Tax code",
+      "address": "Address",
+      "empty": "No suppliers yet."
+    },
+    "errors": {
+      "lot_short": "A lot of {name} no longer holds enough (sold or written off).",
+      "needs_manager": "Needs a manager (Inventory: Update or Delete).",
+      "not_draft": "The document is posted or cancelled and can no longer change.",
+      "no_lines": "The document has no lines.",
+      "posted_not_receipt": "A posted write-off or count cannot be cancelled; correct it with a new count.",
+      "reason_required": "A reason is required.",
+      "untracked_product": "{name} does not track stock."
     }
   }
 }

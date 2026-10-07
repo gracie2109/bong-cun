@@ -43,6 +43,10 @@ export type ShiftSummary = {
   cashIn: number;
   transferIn: number;
   cardIn: number;
+  /** Returns refunded from this shift (not the shift of the original sale). */
+  returnCount: number;
+  refundCash: number;
+  refundTransfer: number;
   expectedCash: number;
 };
 
@@ -76,6 +80,9 @@ const toShiftSummary = (raw: unknown): ShiftSummary => {
     cashIn: num(row.cash_in),
     transferIn: num(row.transfer_in),
     cardIn: num(row.card_in),
+    returnCount: num(row.return_count),
+    refundCash: num(row.refund_cash),
+    refundTransfer: num(row.refund_transfer),
     expectedCash: num(row.expected_cash),
   };
 };
@@ -152,6 +159,7 @@ export type InvoiceLine = {
   id: string;
   lineNo: number;
   itemType: LineType;
+  productId: string | null;
   name: string;
   unit: string | null;
   petName: string | null;
@@ -215,6 +223,7 @@ const toInvoiceLine = (row: Tables<"invoice_lines">): InvoiceLine => ({
   id: row.id,
   lineNo: row.line_no,
   itemType: toLineType(row.item_type),
+  productId: row.product_id,
   name: row.name,
   unit: row.unit,
   petName: row.pet_name,
@@ -354,6 +363,74 @@ export const cancelInvoice = async (client: Client, id: string, reason: string):
   if (error) throw error;
 };
 
+// ------------------------------------------------------------------ returns
+export type RefundMethod = "cash" | "transfer";
+export const REFUND_METHODS: readonly RefundMethod[] = ["cash", "transfer"];
+
+export type SalesReturn = {
+  id: string;
+  code: string;
+  createdAt: string;
+  createdByName: string | null;
+  refundMethod: RefundMethod;
+  refundAmount: number;
+  reason: string;
+  lines: { invoiceLineId: string; name: string; qty: number; amount: number }[];
+};
+
+type ReturnRow = Tables<"sales_returns"> & { sales_return_lines: Tables<"sales_return_lines">[] };
+
+/** Returns taken on an invoice, oldest first. */
+export const listInvoiceReturns = async (client: Client, invoiceId: string): Promise<SalesReturn[]> => {
+  const rows = unwrap(
+    await client
+      .from("sales_returns")
+      .select("*, sales_return_lines(*)")
+      .eq("invoice_id", invoiceId)
+      .order("created_at")
+  ) as unknown as ReturnRow[];
+  return rows.map((row) => ({
+    id: row.id,
+    code: row.code,
+    createdAt: row.created_at,
+    createdByName: row.created_by_name,
+    refundMethod: row.refund_method === "transfer" ? "transfer" : "cash",
+    refundAmount: num(row.refund_amount),
+    reason: row.reason,
+    lines: row.sales_return_lines.map((line) => ({
+      invoiceLineId: line.invoice_line_id,
+      name: line.name,
+      qty: num(line.qty),
+      amount: num(line.amount),
+    })),
+  }));
+};
+
+export type SalesReturnInput = {
+  invoiceId: string;
+  reason: string;
+  refundMethod: RefundMethod;
+  lines: { invoiceLineId: string; qty: number }[];
+};
+
+/** Takes goods back and refunds them from the caller's open shift; the goods go back to their lots. */
+export const createSalesReturn = async (
+  client: Client,
+  input: SalesReturnInput
+): Promise<{ id: string; code: string; refundAmount: number }> => {
+  const raw = unwrap(
+    await client.rpc("create_sales_return", {
+      p: {
+        invoice_id: input.invoiceId,
+        reason: input.reason,
+        refund_method: input.refundMethod,
+        lines: input.lines.map((line) => ({ invoice_line_id: line.invoiceLineId, qty: line.qty })),
+      },
+    })
+  ) as Record<string, unknown>;
+  return { id: String(raw.id), code: String(raw.code), refundAmount: num(raw.refund_amount) };
+};
+
 // ------------------------------------------------------------ cart helpers
 /** A customer's current pets, with species and latest weight for by-weight prices. */
 export type CustomerPet = {
@@ -397,13 +474,18 @@ export const previewServicePrice = async (
   return data ?? null;
 };
 
-/** Error hints raised by the POS functions, for readable messages. */
+/** Error hints raised by the POS and stock functions, for readable messages. */
 export const POS_ERROR_HINTS = [
   "no_open_shift",
   "discount_limit",
   "underpaid",
   "overpaid",
   "shift_closed",
+  "out_of_stock",
+  "has_returns",
+  "return_too_much",
+  "return_products_only",
+  "reason_required",
 ] as const;
 export type PosErrorHint = (typeof POS_ERROR_HINTS)[number];
 
@@ -411,6 +493,9 @@ export const posErrorHint = (error: unknown): PosErrorHint | null => {
   const hint = (error as { hint?: string } | null)?.hint;
   return POS_ERROR_HINTS.find((item) => item === hint) ?? null;
 };
+
+/** The product an error is about (out of stock, return too much), when the database names one. */
+export const errorDetail = (error: unknown): string => (error as { details?: string } | null)?.details ?? "";
 
 /** Combos that can be sold now: active, shown (status 1) and priced. Combos sell at their fixed price. */
 export type SellableCombo = { id: string; name: string; price: number; speciesIds: string[] };

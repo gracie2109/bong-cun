@@ -39,10 +39,20 @@
           v-for="item in items"
           :key="item.id"
           type="button"
-          class="flex min-h-20 flex-col justify-between rounded-lg border p-3 text-left transition-colors hover:border-primary hover:bg-primary/5"
+          class="flex min-h-20 flex-col justify-between rounded-lg border p-3 text-left transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-border disabled:hover:bg-transparent"
+          :disabled="stockOf(item) === 0"
           @click="emit('add', item)"
         >
-          <span class="line-clamp-2 text-sm font-semibold">{{ item.name }}</span>
+          <span class="flex items-start justify-between gap-2">
+            <span class="line-clamp-2 text-sm font-semibold">{{ item.name }}</span>
+            <span
+              v-if="stockOf(item) !== undefined"
+              class="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+              :class="stockOf(item) === 0 ? 'bg-red-50 text-red-600' : 'bg-muted text-muted-foreground'"
+            >
+              {{ stockOf(item) === 0 ? $t("pos.catalog.outOfStock") : $t("pos.catalog.inStock", { n: qty(stockOf(item)) }) }}
+            </span>
+          </span>
           <span class="mt-1 flex items-end justify-between gap-2">
             <span class="truncate text-[11px] text-muted-foreground">{{ item.hint }}</span>
             <span class="whitespace-nowrap text-sm font-bold text-primary">
@@ -63,11 +73,13 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fold } from "@/views/admin/settings/rbac";
 import { useAllPetServices } from "@/queries/petServices";
+import { useSellableStock } from "@/queries/inventory";
 import { useSellableCombos } from "@/queries/pos";
 import { useSellableProducts } from "@/queries/products";
 import { supabaseClient } from "@/lib/supabase";
 import type { LineType } from "@/repositories/pos";
 import { searchSellableProducts, type Product } from "@/repositories/products";
+import { qty } from "@/views/admin/inventory/format";
 import { money } from "../format";
 
 /** One tile; `price` is null for a by-weight service (priced once a pet is picked). */
@@ -89,6 +101,7 @@ const TABS = [
   { value: "combo", label: "pos.catalog.combos", icon: Layers2 },
 ] as const;
 
+const props = defineProps<{ branchId: string | undefined }>();
 const emit = defineEmits<{ add: [item: CatalogItem] }>();
 
 const kind = ref<LineType>("product");
@@ -133,6 +146,12 @@ const items = computed<CatalogItem[]>(() => {
     .map((combo) => ({ type: "combo", id: combo.id, name: combo.name, price: combo.price, unit: null, hint: "" }));
 });
 
+// Unexpired stock at this branch for the product tiles; products that do not track stock have none.
+const productIds = computed(() => (productsQuery.data.value ?? []).map((product) => product.id));
+const stockQuery = useSellableStock(computed(() => props.branchId), productIds);
+const stockOf = (item: CatalogItem): number | undefined =>
+  item.type === "product" ? stockQuery.data.value?.[item.id] : undefined;
+
 const loading = computed(() => {
   if (kind.value === "product") return productsQuery.isPending.value;
   if (kind.value === "service") return servicesQuery.isPending.value;
@@ -150,7 +169,7 @@ const addExactMatch = async () => {
       : items.value;
   const exact = pool.find((item) => item.barcode === code || item.sku === code);
   const pick = exact ?? (pool.length === 1 ? pool[0] : undefined);
-  if (!pick) return;
+  if (!pick || stockOf(pick) === 0) return;
   emit("add", pick);
   search.value = "";
 };

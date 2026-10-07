@@ -40,7 +40,7 @@
       </div>
 
       <div class="grid gap-4 lg:h-[calc(100vh-12rem)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-        <CatalogPanel class="min-h-[420px]" @add="addItem" />
+        <CatalogPanel class="min-h-[420px]" :branch-id="branchId" @add="addItem" />
 
         <section class="flex min-h-0 flex-col rounded-xl border bg-white">
           <div class="space-y-2 border-b p-3">

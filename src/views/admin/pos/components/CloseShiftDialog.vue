@@ -21,6 +21,10 @@
         <dd class="text-right">{{ money(summary.transferIn) }}</dd>
         <dt class="text-muted-foreground">{{ $t("pos.method.card") }}</dt>
         <dd class="text-right">{{ money(summary.cardIn) }}</dd>
+        <template v-if="summary.returnCount">
+          <dt class="text-muted-foreground">{{ $t("pos.shift.returns", { n: summary.returnCount }) }}</dt>
+          <dd class="text-right text-red-600">-{{ money(summary.refundCash + summary.refundTransfer) }}</dd>
+        </template>
         <dt class="col-span-2 mt-2 border-t pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {{ $t("pos.shift.drawer") }}
         </dt>
@@ -30,6 +34,10 @@
         <dd class="text-right">{{ money(summary.cashIn) }}</dd>
         <dt class="text-muted-foreground">{{ $t("pos.shift.changeOut") }}</dt>
         <dd class="text-right">-{{ money(summary.changeTotal) }}</dd>
+        <template v-if="summary.refundCash">
+          <dt class="text-muted-foreground">{{ $t("pos.shift.refundCash") }}</dt>
+          <dd class="text-right">-{{ money(summary.refundCash) }}</dd>
+        </template>
         <dt class="font-semibold">{{ $t("pos.shift.expectedCash") }}</dt>
         <dd class="text-right font-bold text-primary">{{ money(summary.expectedCash) }}</dd>
       </dl>
