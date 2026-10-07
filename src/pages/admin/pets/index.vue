@@ -3,7 +3,7 @@ import View from "@/views/admin/pets/Index.vue";
 
 definePageMeta({
   name: "pets",
-  titleKey: "pets",
+  titleKey: "petProfiles",
 });
 </script>
 

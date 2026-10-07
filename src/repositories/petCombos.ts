@@ -1,15 +1,14 @@
-// Service combos. `petIds`/`serviceIds` and their denormalized *Profiles copies
-// come from two join tables and are rebuilt on read.
+// Service combos. The species and services of a combo come from two join tables and are rebuilt on read.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { toPet, type Pet, type PetRow } from "./pets";
+import { toSpecies, type Species, type SpeciesRow } from "./species";
 import { toPetService, type PetService } from "./petServices";
 import { pageRange, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 type ComboRow = Tables<"pet_service_combos">;
 type WithRelations = ComboRow & {
-  combo_pets: { pets: PetRow | null }[];
+  combo_species: { species: SpeciesRow | null }[];
   combo_services: { pet_services: Tables<"pet_services"> | null }[];
 };
 
@@ -25,8 +24,9 @@ export type PetCombo = {
   /** [start, end] ISO strings, or [] when no promotion window is set. */
   markTime: string[];
   status: number;
-  petIds: string[];
-  petProfiles: Pet[];
+  isActive: boolean;
+  speciesIds: string[];
+  species: Species[];
   serviceIds: string[];
   serviceProfiles: PetService[];
   createdAt: string;
@@ -42,19 +42,22 @@ export type PetComboInput = {
   markAsId?: string | null;
   markTime?: (Date | string | null)[] | null;
   status?: number;
-  petIds?: string[] | null;
+  isActive?: boolean;
+  speciesIds?: string[] | null;
   serviceIds?: string[] | null;
 };
 
-const SELECT_WITH_RELATIONS = "*, combo_pets(pets(*)), combo_services(pet_services(*))";
+const SELECT_WITH_RELATIONS = "*, combo_species(species(*)), combo_services(pet_services(*))";
 
 const toIso = (value: Date | string | null | undefined): string | null =>
   value ? new Date(value).toISOString() : null;
 
 export const toPetCombo = (row: WithRelations): PetCombo => {
-  const pets = row.combo_pets.flatMap((link) => (link.pets ? [toPet(link.pets)] : []));
+  const species = row.combo_species.flatMap((link) =>
+    link.species ? [toSpecies(link.species)] : []
+  );
   const services = row.combo_services.flatMap((link) =>
-    link.pet_services ? [toPetService({ ...link.pet_services, pet_service_pets: [] })] : []
+    link.pet_services ? [toPetService({ ...link.pet_services, service_species: [] })] : []
   );
   return {
     id: row.id,
@@ -66,8 +69,9 @@ export const toPetCombo = (row: WithRelations): PetCombo => {
     markAsId: row.mark_as_id,
     markTime: row.mark_start && row.mark_end ? [row.mark_start, row.mark_end] : [],
     status: row.status,
-    petIds: pets.map((pet) => pet.id),
-    petProfiles: pets,
+    isActive: row.is_active,
+    speciesIds: species.map((item) => item.id),
+    species,
     serviceIds: services.map((service) => service.id),
     serviceProfiles: services,
     createdAt: row.created_at,
@@ -85,20 +89,24 @@ const toRpcPayload = (input: PetComboInput) => ({
   mark_start: toIso(input.markTime?.[0]),
   mark_end: toIso(input.markTime?.[1]),
   status: input.status ?? 1,
-  pet_ids: input.petIds ?? [],
+  is_active: input.isActive ?? true,
+  species_ids: input.speciesIds ?? [],
   service_ids: input.serviceIds ?? [],
 });
 
 export const listPetCombos = async (
   client: Client,
-  page: PageParams
+  page: PageParams,
+  options: { includeArchived?: boolean } = {}
 ): Promise<Page<PetCombo>> => {
   const { from, to } = pageRange(page);
-  const { data, count, error } = await client
+  let query = client
     .from("pet_service_combos")
     .select(SELECT_WITH_RELATIONS, { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
+  if (!options.includeArchived) query = query.eq("is_active", true);
+  const { data, count, error } = await query;
   if (error) throw error;
   return { rows: (data as WithRelations[]).map(toPetCombo), total: count ?? 0 };
 };
@@ -130,7 +138,15 @@ export const updatePetCombo = async (
   return data;
 };
 
-export const deletePetCombo = async (client: Client, id: string): Promise<void> => {
-  const { error } = await client.from("pet_service_combos").delete().eq("id", id);
+/** Combos are archived, not deleted: orders keep pointing at them. */
+export const setPetComboActive = async (
+  client: Client,
+  id: string,
+  isActive: boolean
+): Promise<void> => {
+  const { error } = await client
+    .from("pet_service_combos")
+    .update({ is_active: isActive })
+    .eq("id", id);
   if (error) throw error;
 };

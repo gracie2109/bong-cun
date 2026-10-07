@@ -3,8 +3,9 @@ import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import {
   createPetCombo,
-  deletePetCombo,
   listPetCombos,
+  setPetComboActive,
+  updatePetCombo,
   type PetComboInput,
 } from "@/repositories/petCombos";
 import { toPage, type PageParams } from "@/repositories/shared";
@@ -12,10 +13,16 @@ import { petComboKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
-export const usePetCombosList = (page: MaybeRef<PageParams>) =>
+export const usePetCombosList = (
+  page: MaybeRef<PageParams>,
+  includeArchived: MaybeRef<boolean> = false
+) =>
   useQuery({
-    queryKey: computed(() => petComboKeys.list(toPage(unref(page)))),
-    queryFn: () => listPetCombos(supabaseClient(), toPage(unref(page))),
+    queryKey: computed(() => petComboKeys.list(toPage(unref(page)), unref(includeArchived))),
+    queryFn: () =>
+      listPetCombos(supabaseClient(), toPage(unref(page)), {
+        includeArchived: unref(includeArchived),
+      }),
     placeholderData: keepPreviousData,
   });
 
@@ -31,14 +38,28 @@ export const useCreatePetCombo = () => {
   });
 };
 
-export const useDeletePetCombo = () => {
+export const useUpdatePetCombo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePetCombo(supabaseClient(), id),
+    mutationFn: ({ id, input }: { id: string; input: PetComboInput }) =>
+      updatePetCombo(supabaseClient(), id, input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
-      notifySuccess("delete");
+      notifySuccess("update");
     },
-    onError: (error) => notifyFailure("delete", error),
+    onError: (error, { input }) => notifyFailure("update", error, input.name),
+  });
+};
+
+export const useSetPetComboActive = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      setPetComboActive(supabaseClient(), id, isActive),
+    onSuccess: async () => {
+      await invalidateCatalog(queryClient);
+      notifySuccess("update");
+    },
+    onError: (error) => notifyFailure("update", error),
   });
 };

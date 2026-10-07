@@ -13,24 +13,24 @@ export const ADMIN_NAVIGATOR: LinkProp[] = [
     name: "pets",
     children: [
       {
-        title: "Overview",
-        icon: "lucide:image",
-        name: "petOverview",
-      },
-      {
-        title: "Manager Pets Register",
-        icon: "lucide:align-left",
-        name: "register-pets",
-      },
-      {
-        title: "Manager Pets Type",
-        icon: "lucide:align-left",
+        title: "Hồ sơ thú cưng",
+        icon: "lucide:paw-print",
         name: "pets",
       },
       {
-        title: "Manager Pets Service",
+        title: "Danh mục loài",
+        icon: "lucide:dog",
+        name: "petSpecies",
+      },
+      {
+        title: "Dịch vụ spa",
         icon: "carbon:settings-services",
         name: "petService",
+      },
+      {
+        title: "Bảng giá",
+        icon: "lucide:banknote",
+        name: "petPrices",
       },
       {
         title: "Combo",

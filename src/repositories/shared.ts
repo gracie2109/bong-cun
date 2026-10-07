@@ -20,6 +20,9 @@ export const pageRange = ({ pageIndex, pageSize }: PageParams) => ({
   to: pageIndex * pageSize - 1,
 });
 
+/** PostgREST filter values are comma and parenthesis separated, so these are dropped from user text. */
+export const filterSafe = (text: string): string => text.replace(/[,()*%\\]/g, " ").trim();
+
 /** Throws the PostgREST error unchanged so callers can inspect `.code`. */
 export const unwrap = <T>(result: { data: T | null; error: PostgrestError | null }): T => {
   if (result.error) throw result.error;

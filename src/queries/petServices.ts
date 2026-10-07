@@ -3,13 +3,14 @@ import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import {
   createPetService,
-  deletePetService,
   getPetService,
   listAllPetServices,
   listPetServices,
-  listServicesOfPets,
+  listServicesOfSpecies,
+  setPetServiceActive,
   updateGeneralPrice,
   updatePetService,
+  type PetServiceFilter,
   type PetServiceInput,
 } from "@/repositories/petServices";
 import { toPage, type PageParams } from "@/repositories/shared";
@@ -17,10 +18,13 @@ import { petServiceKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
-export const usePetServicesList = (page: MaybeRef<PageParams>) =>
+export const usePetServicesList = (
+  page: MaybeRef<PageParams>,
+  filter: MaybeRef<PetServiceFilter> = {}
+) =>
   useQuery({
-    queryKey: computed(() => petServiceKeys.list(toPage(unref(page)))),
-    queryFn: () => listPetServices(supabaseClient(), toPage(unref(page))),
+    queryKey: computed(() => petServiceKeys.list(toPage(unref(page)), { ...unref(filter) })),
+    queryFn: () => listPetServices(supabaseClient(), toPage(unref(page)), { ...unref(filter) }),
     placeholderData: keepPreviousData,
   });
 
@@ -34,13 +38,13 @@ export const usePetService = (id: MaybeRef<string | undefined>) =>
     enabled: computed(() => !!unref(id)),
   });
 
-/** Imperative lookup (used from a watcher): services offered for the given pets. */
-export const useFetchServicesOfPets = () => {
+/** Imperative lookup (used from a watcher): services offered for the given species. */
+export const useFetchServicesOfSpecies = () => {
   const queryClient = useQueryClient();
-  return (petIds: string[]) =>
+  return (speciesIds: string[]) =>
     queryClient.fetchQuery({
-      queryKey: petServiceKeys.ofPets(petIds),
-      queryFn: () => listServicesOfPets(supabaseClient(), petIds),
+      queryKey: petServiceKeys.ofSpecies(speciesIds),
+      queryFn: () => listServicesOfSpecies(supabaseClient(), speciesIds),
     });
 };
 
@@ -69,15 +73,16 @@ export const useUpdatePetService = () => {
   });
 };
 
-export const useDeletePetService = () => {
+export const useSetPetServiceActive = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePetService(supabaseClient(), id),
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      setPetServiceActive(supabaseClient(), id, isActive),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
-      notifySuccess("delete");
+      notifySuccess("update");
     },
-    onError: (error) => notifyFailure("delete", error),
+    onError: (error) => notifyFailure("update", error),
   });
 };
 

@@ -3,7 +3,7 @@ import View from "@/views/admin/pets/service-combo/Index.vue";
 
 definePageMeta({
   name: "petServiceCombo",
-  titleKey: "settingPetServicePrice",
+  titleKey: "petCombos",
 });
 </script>
 

@@ -1,42 +1,41 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import {
-  createPet,
-  deletePet,
-  getPet,
-  listAllPets,
-  listPets,
-  updatePet,
-  type PetInput,
-} from "@/repositories/pets";
-import { toPage, type PageParams } from "@/repositories/shared";
-import { petKeys } from "./keys";
+  createSpecies,
+  getSpecies,
+  listSpecies,
+  listSpeciesSummaries,
+  setSpeciesActive,
+  updateSpecies,
+  type SpeciesInput,
+} from "@/repositories/species";
+import { speciesKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
-export const usePetsList = (page: MaybeRef<PageParams>) =>
+/** Active species, for selectors; pass `includeArchived` to list archived ones too. */
+export const useSpeciesOptions = (includeArchived: MaybeRef<boolean> = false) =>
   useQuery({
-    queryKey: computed(() => petKeys.list(toPage(unref(page)))),
-    queryFn: () => listPets(supabaseClient(), toPage(unref(page))),
-    placeholderData: keepPreviousData,
+    queryKey: computed(() => speciesKeys.options(unref(includeArchived))),
+    queryFn: () => listSpecies(supabaseClient(), { includeArchived: unref(includeArchived) }),
   });
 
-/** All pets, for selectors. */
-export const useAllPets = () =>
-  useQuery({ queryKey: petKeys.options(), queryFn: () => listAllPets(supabaseClient()) });
+/** The catalog page: every species with its pet and service counters. */
+export const useSpeciesSummaries = () =>
+  useQuery({ queryKey: speciesKeys.summaries(), queryFn: () => listSpeciesSummaries(supabaseClient()) });
 
-export const usePet = (id: MaybeRef<string | undefined>) =>
+export const useSpecies = (id: MaybeRef<string | undefined>) =>
   useQuery({
-    queryKey: computed(() => petKeys.detail(unref(id) ?? "")),
-    queryFn: () => getPet(supabaseClient(), unref(id) as string),
+    queryKey: computed(() => speciesKeys.detail(unref(id) ?? "")),
+    queryFn: () => getSpecies(supabaseClient(), unref(id) as string),
     enabled: computed(() => !!unref(id)),
   });
 
-export const useCreatePet = () => {
+export const useCreateSpecies = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: PetInput) => createPet(supabaseClient(), input),
+    mutationFn: (input: SpeciesInput) => createSpecies(supabaseClient(), input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("create");
@@ -45,10 +44,11 @@ export const useCreatePet = () => {
   });
 };
 
-export const useUpdatePet = () => {
+export const useUpdateSpecies = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: PetInput }) => updatePet(supabaseClient(), id, input),
+    mutationFn: ({ id, input }: { id: string; input: SpeciesInput }) =>
+      updateSpecies(supabaseClient(), id, input),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("update");
@@ -57,14 +57,15 @@ export const useUpdatePet = () => {
   });
 };
 
-export const useDeletePet = () => {
+export const useSetSpeciesActive = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deletePet(supabaseClient(), id),
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      setSpeciesActive(supabaseClient(), id, isActive),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
-      notifySuccess("delete");
+      notifySuccess("update");
     },
-    onError: (error) => notifyFailure("delete", error),
+    onError: (error) => notifyFailure("update", error),
   });
 };
