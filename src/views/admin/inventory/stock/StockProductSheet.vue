@@ -49,43 +49,45 @@
           <p v-else-if="lots.length === 0" class="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
             {{ $t("inventory.lots.empty") }}
           </p>
-          <table v-else class="w-full text-sm">
-            <thead>
-              <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                <th class="py-2 font-semibold">{{ $t("inventory.lots.lotNo") }}</th>
-                <th class="py-2 font-semibold">{{ $t("inventory.lots.expiry") }}</th>
-                <th class="py-2 text-right font-semibold">{{ $t("inventory.lots.onHand") }}</th>
-                <th class="py-2 text-right font-semibold">{{ $t("inventory.lots.unitCost") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(lot, index) in lots" :key="lot.id" class="border-b last:border-0">
-                <td class="py-2">
-                  <span class="font-medium">{{ lot.lotNo || $t("inventory.lots.noLot") }}</span>
-                  <span
-                    v-if="index === firstSellableIndex"
-                    class="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
-                  >
-                    {{ $t("inventory.lots.next") }}
-                  </span>
-                </td>
-                <td class="py-2">
-                  <template v-if="lot.expiryDate">
-                    {{ day(lot.expiryDate) }}
+          <div v-else class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <th class="py-2 font-semibold">{{ $t("inventory.lots.lotNo") }}</th>
+                  <th class="py-2 font-semibold">{{ $t("inventory.lots.expiry") }}</th>
+                  <th class="py-2 text-right font-semibold">{{ $t("inventory.lots.onHand") }}</th>
+                  <th class="py-2 text-right font-semibold">{{ $t("inventory.lots.unitCost") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(lot, index) in lots" :key="lot.id" class="border-b last:border-0">
+                  <td class="py-2">
+                    <span class="font-medium">{{ lot.lotNo || $t("inventory.lots.noLot") }}</span>
                     <span
-                      class="ml-1 text-xs"
-                      :class="isExpired(lot.expiryDate) ? 'font-semibold text-red-600' : daysUntil(lot.expiryDate) < expiryDays ? 'font-semibold text-amber-700' : 'text-muted-foreground'"
+                      v-if="index === firstSellableIndex"
+                      class="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
                     >
-                      {{ isExpired(lot.expiryDate) ? $t("inventory.lots.expired") : $t("inventory.stock.inDays", { n: daysUntil(lot.expiryDate) }) }}
+                      {{ $t("inventory.lots.next") }}
                     </span>
-                  </template>
-                  <span v-else class="text-muted-foreground">{{ $t("inventory.lots.noExpiry") }}</span>
-                </td>
-                <td class="py-2 text-right font-semibold">{{ qty(lot.qtyOnHand) }}</td>
-                <td class="py-2 text-right text-muted-foreground">{{ money(lot.unitCost) }}</td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                  <td class="py-2">
+                    <template v-if="lot.expiryDate">
+                      {{ day(lot.expiryDate) }}
+                      <span
+                        class="ml-1 text-xs"
+                        :class="isExpired(lot.expiryDate) ? 'font-semibold text-red-600' : daysUntil(lot.expiryDate) < expiryDays ? 'font-semibold text-amber-700' : 'text-muted-foreground'"
+                      >
+                        {{ isExpired(lot.expiryDate) ? $t("inventory.lots.expired") : $t("inventory.stock.inDays", { n: daysUntil(lot.expiryDate) }) }}
+                      </span>
+                    </template>
+                    <span v-else class="text-muted-foreground">{{ $t("inventory.lots.noExpiry") }}</span>
+                  </td>
+                  <td class="py-2 text-right font-semibold">{{ qty(lot.qtyOnHand) }}</td>
+                  <td class="py-2 text-right text-muted-foreground">{{ money(lot.unitCost) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section class="space-y-2">
@@ -94,34 +96,36 @@
           <p v-else-if="movements.length === 0" class="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
             {{ $t("inventory.movements.empty") }}
           </p>
-          <table v-else class="w-full text-sm">
-            <thead>
-              <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                <th class="py-2 font-semibold">{{ $t("pos.invoices.time") }}</th>
-                <th class="py-2 font-semibold">{{ $t("inventory.movements.reason") }}</th>
-                <th class="py-2 font-semibold">{{ $t("inventory.lots.lotNo") }}</th>
-                <th class="py-2 text-right font-semibold">{{ $t("inventory.movements.qty") }}</th>
-                <th class="py-2 text-right font-semibold">{{ $t("inventory.movements.balance") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="move in movements" :key="move.id" class="border-b last:border-0">
-                <td class="whitespace-nowrap py-2 text-xs">{{ dateTime(move.createdAt) }}</td>
-                <td class="py-2">
-                  {{ $t(`inventory.movements.reasons.${move.reason}`) }}
-                  <span v-if="move.ref" class="block text-xs text-muted-foreground">{{ move.ref }}</span>
-                </td>
-                <td class="py-2 text-xs">
-                  {{ move.lotNo || $t("inventory.lots.noLot") }}
-                  <span v-if="move.expiryDate" class="block text-muted-foreground">{{ day(move.expiryDate) }}</span>
-                </td>
-                <td class="py-2 text-right font-semibold" :class="move.qty > 0 ? 'text-primary' : 'text-red-600'">
-                  {{ move.qty > 0 ? "+" : "" }}{{ qty(move.qty) }}
-                </td>
-                <td class="py-2 text-right text-muted-foreground">{{ qty(move.balanceAfter) }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <th class="py-2 font-semibold">{{ $t("pos.invoices.time") }}</th>
+                  <th class="py-2 font-semibold">{{ $t("inventory.movements.reason") }}</th>
+                  <th class="py-2 font-semibold">{{ $t("inventory.lots.lotNo") }}</th>
+                  <th class="py-2 text-right font-semibold">{{ $t("inventory.movements.qty") }}</th>
+                  <th class="py-2 text-right font-semibold">{{ $t("inventory.movements.balance") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="move in movements" :key="move.id" class="border-b last:border-0">
+                  <td class="whitespace-nowrap py-2 text-xs">{{ dateTime(move.createdAt) }}</td>
+                  <td class="py-2">
+                    {{ $t(`inventory.movements.reasons.${move.reason}`) }}
+                    <span v-if="move.ref" class="block text-xs text-muted-foreground">{{ move.ref }}</span>
+                  </td>
+                  <td class="py-2 text-xs">
+                    {{ move.lotNo || $t("inventory.lots.noLot") }}
+                    <span v-if="move.expiryDate" class="block text-muted-foreground">{{ day(move.expiryDate) }}</span>
+                  </td>
+                  <td class="py-2 text-right font-semibold" :class="move.qty > 0 ? 'text-primary' : 'text-red-600'">
+                    {{ move.qty > 0 ? "+" : "" }}{{ qty(move.qty) }}
+                  </td>
+                  <td class="py-2 text-right text-muted-foreground">{{ qty(move.balanceAfter) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
     </SheetContent>

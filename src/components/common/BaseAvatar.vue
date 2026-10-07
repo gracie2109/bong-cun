@@ -1,12 +1,11 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child class="cursor-pointer">
-      <Avatar size="xs">
-        <AvatarImage
-          :src="avatar"
-
-          alt="@radix-vue"
-        />
+      <Avatar size="xs" class="ring-1 ring-border">
+        <AvatarImage :src="avatar" :alt="currentUser?.displayName ?? ''" />
+        <AvatarFallback>
+          <User class="size-4 text-muted-foreground" />
+        </AvatarFallback>
       </Avatar>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-56">
@@ -43,7 +42,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { placeholderImg } from "@/setting";
+import { LogOut, User } from "lucide-vue-next";
 import { useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
@@ -58,7 +57,6 @@ function handleLogout() {
 function goToProfile () {
   router.push({name: 'profile'})
 }
-const avatar = computed(() => (currentUser.value && currentUser.value.photoURL && currentUser.value.photoURL !== null && currentUser.value.photoURL !== "")
-    ? currentUser.value.photoURL : placeholderImg
-)
+// No photo: leave src empty so the fallback icon shows instead of a remote placeholder.
+const avatar = computed(() => currentUser.value?.photoURL || "")
 </script>

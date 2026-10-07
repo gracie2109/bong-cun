@@ -61,7 +61,7 @@
           <p v-else-if="permissions.length === 0" class="px-4 py-10 text-center text-sm text-muted-foreground">
             {{ $t("rbac.roles.noPermissions") }}
           </p>
-          <div v-else class="overflow-x-auto">
+          <div v-else class="table-scroll">
             <table class="w-full text-sm">
               <thead>
                 <tr class="border-b">
