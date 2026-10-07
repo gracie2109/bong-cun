@@ -1,299 +1,226 @@
 <template>
   <Header>
-    <h1 class="font-semibold flex items-center gap-2">Service Combo</h1>
+    <h1 class="font-semibold flex items-center gap-2">
+      <Layers2 class="size-4 text-primary" />
+      {{ $t("petCare.combos.title") }}
+    </h1>
   </Header>
 
   <ContentWrap>
-    <SubMenu />
-    <div class="bg-white min-h-svh p-5 space-y-6 mt-12">
-      <DataTable
-        :headerAdvanced="headerAdvanced"
-        :data="listCombo"
-        :columns="columns"
-        :page-count="pageCount"
-        :page-data="pageData"
-        :saveColumnVisible="{
-          name: 'petCombo',
-          isRemeber: true,
-        }"
-        :add-new-handle="{
-          content: null,
-          type: 'function',
-        }"
-        :show-search="true"
-        @clear-filter="clearFilter"
-        @on-reset="onReset"
-        @clearFilter="clearFilter"
-        @set-open="setOpen"
-        @handle-page-change="loadDataForPage"
-        @update-page-size="updatePageSize"
-      />
+    <div class="relative top-10 space-y-5">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="text-2xl font-bold">
+            {{ $t("petCare.combos.title") }}
+            <span class="text-muted-foreground">({{ total }})</span>
+          </h2>
+          <p class="text-sm text-muted-foreground">{{ $t("petCare.combos.subtitle") }}</p>
+        </div>
+        <Button @click="openCreate">
+          <Plus class="mr-2 size-4" />
+          {{ $t("petCare.combos.add") }}
+        </Button>
+      </div>
 
-      <ServiceComboForm
-        :form="form"
-        :open="open && !selectedItem"
-        @changeOpen="reset"
-        :rowEditting="rowEditting"
-        :listPet="pets"
-      />
+      <PetsNav />
 
-      <DialogConfirm
-        @change-open="
-          () => {
-            selectedItem = null;
-            open = !open;
-          }
-        "
-        :open="open && selectedItem"
-        :title="selectedItem?.name"
-        @cancel="
-          () => {
-            selectedItem = null;
-            open = false;
-          }
-        "
-        @handleOk="handleDelete"
-      />
+      <div class="flex items-center justify-between gap-3 rounded-xl border bg-white p-3">
+        <label class="flex items-center gap-2 text-sm text-muted-foreground">
+          <Switch v-model="showArchived" />
+          {{ $t("petCare.combos.showArchived") }}
+        </label>
+        <div class="flex items-center gap-1 text-xs text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="icon"
+            class="size-7"
+            :disabled="pageData.pageIndex <= 1 || combosQuery.isFetching.value"
+            @click="pageData.pageIndex -= 1"
+          >
+            <ChevronLeft class="size-4" />
+          </Button>
+          <span>{{ $t("petCare.common.pageOf", { page: pageData.pageIndex, pages: pageCount }) }}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="size-7"
+            :disabled="pageData.pageIndex >= pageCount || combosQuery.isFetching.value"
+            @click="pageData.pageIndex += 1"
+          >
+            <ChevronRight class="size-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border bg-white">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.combos.title") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.species") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.title") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.price") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.common.status") }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ $t("petCare.services.col.actions") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-if="combosQuery.isPending.value">
+              <tr v-for="i in 4" :key="i" class="border-t">
+                <td colspan="6" class="px-4 py-3"><Skeleton class="h-10 w-full" /></td>
+              </tr>
+            </template>
+            <tr v-else-if="combos.length === 0">
+              <td colspan="6" class="px-4 py-10 text-center text-muted-foreground">{{ $t("petCare.combos.empty") }}</td>
+            </tr>
+            <tr v-for="combo in combos" :key="combo.id" class="border-t" :class="combo.isActive ? '' : 'opacity-60'">
+              <td class="px-4 py-3">
+                <p class="flex flex-wrap items-center gap-2 font-semibold">
+                  {{ combo.name }}
+                  <span
+                    v-if="combo.markAsId && combo.markAsId !== '4'"
+                    class="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary"
+                  >
+                    {{ $t(`petCare.combos.marks.${combo.markAsId}`) }}
+                  </span>
+                </p>
+                <p v-if="combo.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ combo.desc }}</p>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-wrap gap-1">
+                  <span
+                    v-for="item in combo.species"
+                    :key="item.id"
+                    class="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
+                  >
+                    {{ item.name }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-xs text-muted-foreground">
+                {{ combo.serviceProfiles.map((service) => service.name).join(", ") }}
+              </td>
+              <td class="whitespace-nowrap px-4 py-3">
+                <p class="font-semibold">{{ formatPrice(combo.price ?? 0) }}</p>
+                <p v-if="combo.origin_price" class="text-xs text-muted-foreground line-through">
+                  {{ formatPrice(combo.origin_price) }}
+                </p>
+              </td>
+              <td class="px-4 py-3">
+                <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="statusClass(combo)">
+                  {{ $t(`petCare.combos.status.${comboStatus(combo)}`) }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger as-child>
+                    <Button variant="ghost" size="icon" class="size-8"><EllipsisVertical class="size-4" /></Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem @click="openEdit(combo)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
+                    <DropdownMenuItem v-if="combo.isActive" @click="toArchive = combo">
+                      {{ $t("petCare.common.archive") }}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem v-else @click="setActive(combo, true)">
+                      {{ $t("petCare.common.restore") }}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <ComboFormSheet v-model:open="formOpen" :combo="editing" />
+
+    <ConfirmDialog
+      :open="!!toArchive"
+      :title="$t('petCare.common.confirmArchiveTitle', { name: toArchive?.name ?? '' })"
+      :desc="$t('petCare.common.confirmArchiveDesc')"
+      :ok-btn="$t('petCare.common.confirm')"
+      @cancel="toArchive = null"
+      @open-change="toArchive = null"
+      @handle-ok="archive"
+    />
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
-import ContentWrap from "../../components/ContentWrap.vue";
-import Header from "../../components/Header.vue";
-import { computed, h, reactive, ref } from "vue";
-import ServiceComboForm from "./ServiceComboForm.vue";
-import { useForm } from "vee-validate";
-import { useDeletePetCombo, usePetCombosList } from "@/queries/petCombos";
-import { useAllPets } from "@/queries/pets";
-import usePagedRows from "@/composables/usePagedRows";
-import type { ColumnDef, PaginationState } from "@tanstack/vue-table";
-import DataTableColumnHeader from "@/components/common/DataTable/DataTableColumnHeader.vue";
-import { convertNumberToTime, formatDateTime, formatPrice } from "@/lib/utils";
-import type { IHeaderAdvanced, T_ROW_FUNCTION } from "@/types";
-import { HEADER_ADVANCE_FUNCTION, INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { DataTable, DialogConfirm } from "@/components/common";
-import { status, manualStatus } from "@/data/status.json";
-import { useI18n } from "vue-i18n";
-import RowFunction from "../components/RowFunction.vue";
-import SubMenu from "../components/SubMenu.vue";
-const { locale } = useI18n();
+import { computed, reactive, ref, watch } from "vue";
+import { ChevronLeft, ChevronRight, EllipsisVertical, Layers2, Plus } from "lucide-vue-next";
+import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { INITIAL_PAGE_INDEX } from "@/lib/constants";
+import { formatPrice } from "@/lib/utils";
+import { usePetCombosList, useSetPetComboActive } from "@/queries/petCombos";
+import type { PetCombo } from "@/repositories/petCombos";
+import { ContentWrap, Header } from "@/views/admin/components";
+import PetsNav from "../PetsNav.vue";
+import ComboFormSheet from "./ComboFormSheet.vue";
 
-const open = ref(false);
-const form = useForm();
+const PAGE_SIZE = 10;
+const STATUS_SELLING = 1;
 
-const rowEditting = ref();
-const selectedItem = ref();
+const pageData = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
+const showArchived = ref(false);
+const formOpen = ref(false);
+const editing = ref<PetCombo | null>(null);
+const toArchive = ref<PetCombo | null>(null);
 
-const headerAdvanced = reactive<IHeaderAdvanced[]>([
-  HEADER_ADVANCE_FUNCTION.SETTING_COLUMN,
-  HEADER_ADVANCE_FUNCTION.ADD_NEW,
-]);
+const combosQuery = usePetCombosList(pageData, showArchived);
+const combos = computed(() => combosQuery.data.value?.rows ?? []);
+const total = computed(() => combosQuery.data.value?.total ?? 0);
+const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));
+const setActiveMutation = useSetPetComboActive();
 
-const pageData = ref<PaginationState>({
-  pageIndex: INITIAL_PAGE_INDEX,
-  pageSize: 500,
+watch(showArchived, () => {
+  pageData.pageIndex = INITIAL_PAGE_INDEX;
 });
 
-const combosQuery = usePetCombosList(pageData);
-const { rows: listCombo, total: pageCount } = usePagedRows(combosQuery, pageData);
-const { data: petOptions } = useAllPets();
-const pets = computed(() => petOptions.value ?? []);
-const deleteCombo = useDeletePetCombo();
+type ComboStatus = "selling" | "stopped" | "expired";
+const comboStatus = (combo: PetCombo): ComboStatus => {
+  if (combo.status !== STATUS_SELLING) return "stopped";
+  const end = combo.markTime[1];
+  return end && new Date(end).getTime() < Date.now() ? "expired" : "selling";
+};
+const STATUS_CLASS: Record<ComboStatus, string> = {
+  selling: "bg-green-100 text-green-700",
+  stopped: "bg-muted text-muted-foreground",
+  expired: "bg-amber-100 text-amber-700",
+};
+const statusClass = (combo: PetCombo): string => STATUS_CLASS[comboStatus(combo)];
 
-function reset() {
-  open.value = !open.value;
-}
+const openCreate = () => {
+  editing.value = null;
+  formOpen.value = true;
+};
 
-function onReset() {
-  alert("reset");
-}
-function clearFilter() {
-  alert("clearFilter");
-}
-function setOpen() {
-  open.value = !open.value;
-}
-const columns: ColumnDef<any>[] = reactive([
-  {
-    accessorKey: "index",
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: "#" }),
+const openEdit = (combo: PetCombo) => {
+  editing.value = combo;
+  formOpen.value = true;
+};
 
-    cell: ({ row }) => {
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        row.getValue("index")
-      );
-    },
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: "Name" }),
-    cell: ({ row }) => {
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        row.getValue("name")
-      );
-    },
-  },
-  {
-    accessorKey: "price",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Price" }),
-    cell: ({ row }) => {
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        formatPrice(row.getValue("price"))
-      );
-    },
-  },
-  {
-    accessorKey: "serviceIds",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Services" }),
-    cell: ({ row }) => {
-      const data = row.original.serviceProfiles?.map((i: any, index: any) => {
-        return index < row.original.serviceProfiles.length - 1
-          ? `${i?.name} + `
-          : i?.name;
-      });
-      return h("span", { class: "max-w-[500px] truncate font-medium" }, data);
-    },
-  },
-  {
-    accessorKey: "petIds",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "petIds" }),
-    cell: ({ row }) => {
-      const data = row.original.petProfiles?.map((i: any, index: any) => {
-        return index < row.original.petProfiles.length - 1
-          ? `${i?.name} + `
-          : i?.name;
-      });
-      return h("span", { class: "max-w-[500px] truncate font-medium" }, data);
-    },
-  },
-  {
-    accessorKey: "duration",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "duration Time" }),
-    cell: ({ row }) => {
-      const data = (row.getValue("duration") as any[])[0];
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        convertNumberToTime(+data)
-      );
-    },
-  },
-  {
-    accessorKey: "markAsId",
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: "Type" }),
-    cell: ({ row }) => {
-      const data = status.find((i) => i.id === row.getValue("markAsId"));
-      const res = data ? (data.name as any)[String(locale.value)] : "";
-      return h("span", { class: "max-w-[500px] truncate font-medium" }, res);
-    },
-  },
-  {
-    accessorKey: "markTime",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Promotion time" }),
-    cell: ({ row }) => {
-      const time1 = (row.getValue("markTime") as any)[0];
-      return h("span", { class: "max-w-[500px] truncate font-medium" }, time1);
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Status" }),
-    cell: ({ row }) => {
-      const data = manualStatus.find((i) => i.id === row.getValue("status"));
-      const res = data ? (data.name as any)[String(locale.value)] : "";
-
-      return h("span", { class: "max-w-[500px] truncate font-medium" }, res);
-    },
-  },
-  {
-    accessorKey: "desc",
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: "Desc" }),
-    cell: ({ row }) => {
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        row.getValue("desc")
-      );
-    },
-  },
-
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Created At" }),
-    cell: ({ row }) => {
-      return h(
-        "span",
-        { class: "max-w-[500px] truncate font-medium" },
-        formatDateTime(row.getValue("createdAt"))
-      );
-    },
-  },
-  {
-    id: "function",
-    accessorKey: "function",
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: "Function" }),
-    cell: ({ row }) =>
-      h(RowFunction, {
-        row,
-        onClick: (item: any) => {
-          handleActionRow(item);
-        },
-      }),
-  },
-]);
-
-function updatePageSize(newPs: number) {
-  pageData.value.pageSize = +newPs;
-  pageData.value.pageIndex = INITIAL_PAGE_INDEX;
-}
-
-function handleActionRow({
-  action,
-  row,
-}: {
-  action: T_ROW_FUNCTION;
-  row: any;
-}) {
-  if (action.isShow) {
-    if (action.id === "DELETE") {
-      selectedItem.value = row;
-      open.value = true;
-    }
-
-    if (action.id === "EDIT") {
-      open.value = true;
-      rowEditting.value = row;
-    }
-  }
-}
-
-function loadDataForPage(page: number) {
-  pageData.value.pageIndex = page;
-}
-
-async function handleDelete() {
+const setActive = async (combo: PetCombo, isActive: boolean) => {
   try {
-    await deleteCombo.mutateAsync(selectedItem.value.id);
+    await setActiveMutation.mutateAsync({ id: combo.id, isActive });
   } catch {
     // the mutation already showed the failure toast
-  } finally {
-    setOpen();
-    selectedItem.value = null;
   }
-}
+};
+
+const archive = async () => {
+  const combo = toArchive.value;
+  toArchive.value = null;
+  if (combo) await setActive(combo, false);
+};
 </script>

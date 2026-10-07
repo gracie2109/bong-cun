@@ -15,6 +15,10 @@ import {
 import Nav from "@/components/layout/admin/Nav.vue";
 import { ADMIN_NAVIGATOR } from "@/lib/navigations";
 
+// The admin palette lives on <html> (see index.css) so teleported sheets and dialogs get it too.
+onMounted(() => document.documentElement.classList.add("admin-theme"));
+onBeforeUnmount(() => document.documentElement.classList.remove("admin-theme"));
+
 </script>
 
 <template>

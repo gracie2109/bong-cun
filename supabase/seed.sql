@@ -1,6 +1,6 @@
 -- Dev seed — replaces scripts/seed.mjs. Re-runnable (ON CONFLICT DO NOTHING).
--- REFERENCE data: permissions, role_permissions, pet_weights.
--- SAMPLE data: pets, pet_services — replace before production.
+-- REFERENCE data: permissions, role_permissions. (branches: CS01 comes from the migration.)
+-- SAMPLE data: species, weight_brackets, pet_services — replace before production.
 -- Not seeded (no shape evidence): products, banners, service_providers, combos,
 -- prices, bookings, orders. No admin user: see "first admin" in the docs.
 -- (roles are inserted by the schema migration; the signup trigger needs them.)
@@ -26,28 +26,21 @@ from (values
 join public.permissions p on p.name = r.permission
 on conflict do nothing;
 
--- ids kept verbatim from src/data/pet-weights.json (including 'from15to14').
-insert into public.pet_weights (id, label_vi, label_en, sort_order) values
-  ('lessthan2',  'Dưới 2kg',   'Less than 2kg',   1),
-  ('from2to4',   'Từ 2-4kg',   'From 2-4kg',      2),
-  ('morethan5',  'Trên 5kg',   'More than 5kg',   3),
-  ('from10to14', 'Từ 10-14kg', 'From 10-14kg',    4),
-  ('from15to14', 'Từ 15-20kg', 'From 15-20kg',    5)
-on conflict (id) do nothing;
-
-insert into public.pets (name, icon) values
-  ('Dog', 'lucide:dog'),
-  ('Cat', 'lucide:cat')
+insert into public.species (name, icon) values
+  ('Chó', 'lucide:dog'),
+  ('Mèo', 'lucide:cat')
 on conflict (name) do nothing;
+
+select public.seed_default_weight_brackets(id) from public.species;
 
 insert into public.pet_services (name, description, unit, type) values
   ('Grooming', 'Sample service — replace with real data', 'unit1', 'by_weight'),
   ('Boarding', 'Sample service — replace with real data', 'unit2', 'all')
 on conflict (name) do nothing;
 
-insert into public.pet_service_pets (service_id, pet_id)
+insert into public.service_species (service_id, species_id)
 select s.id, p.id
 from public.pet_services s
-cross join public.pets p
-where s.name in ('Grooming', 'Boarding') and p.name in ('Dog', 'Cat')
+cross join public.species p
+where s.name in ('Grooming', 'Boarding') and p.name in ('Chó', 'Mèo')
 on conflict do nothing;

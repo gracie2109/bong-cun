@@ -1,12 +1,23 @@
 import type { QueryClient } from "@tanstack/vue-query";
-import { permissionKeys, petComboKeys, petKeys, petServiceKeys, roleKeys, servicePriceKeys } from "./keys";
+import {
+  permissionKeys,
+  petComboKeys,
+  petProfileKeys,
+  petServiceKeys,
+  roleKeys,
+  servicePriceKeys,
+  speciesKeys,
+  weightBracketKeys,
+} from "./keys";
 
-// Pets, services, prices and combos reference each other through join tables
+// Species, brackets, services, prices and combos reference each other through join tables
 // (and cascade deletes), so a change to one can change what the others show.
 // Refreshing the whole catalog is simple and cheap for an admin tool.
 export const invalidateCatalog = (queryClient: QueryClient) =>
   Promise.all([
-    queryClient.invalidateQueries({ queryKey: petKeys.all }),
+    queryClient.invalidateQueries({ queryKey: speciesKeys.all }),
+    queryClient.invalidateQueries({ queryKey: weightBracketKeys.all }),
+    queryClient.invalidateQueries({ queryKey: petProfileKeys.all }),
     queryClient.invalidateQueries({ queryKey: petServiceKeys.all }),
     queryClient.invalidateQueries({ queryKey: servicePriceKeys.all }),
     queryClient.invalidateQueries({ queryKey: petComboKeys.all }),

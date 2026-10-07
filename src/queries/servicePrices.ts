@@ -11,31 +11,39 @@ import { servicePriceKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
 
-type PriceFilter = { petId?: string; serviceId?: string };
+type PriceFilter = { speciesId?: string; serviceId?: string; branchId?: string | null };
 
 export const useServicePrices = (filter: MaybeRef<PriceFilter>) =>
   useQuery({
-    queryKey: computed(() => servicePriceKeys.list(unref(filter).petId ?? "", unref(filter).serviceId)),
+    queryKey: computed(() =>
+      servicePriceKeys.list(
+        unref(filter).speciesId ?? "",
+        unref(filter).serviceId ?? null,
+        unref(filter).branchId ?? null
+      )
+    ),
     queryFn: () =>
       listServicePrices(supabaseClient(), {
-        petId: unref(filter).petId as string,
+        speciesId: unref(filter).speciesId as string,
         serviceId: unref(filter).serviceId,
+        branchId: unref(filter).branchId ?? null,
       }),
-    enabled: computed(() => !!unref(filter).petId),
+    enabled: computed(() => !!unref(filter).speciesId),
   });
 
-/** Groups a flat price list by service id (the shape the price table renders). */
-export const groupPricesByService = (prices: ServicePrice[]): Record<string, ServicePrice[]> =>
-  prices.reduce<Record<string, ServicePrice[]>>((groups, price) => {
-    (groups[price.serviceId] ??= []).push(price);
-    return groups;
-  }, {});
+/** Prices by `serviceId:bracketId`, for looking a matrix cell up. */
+export const priceByCell = (prices: ServicePrice[]): Map<string, number> =>
+  new Map(prices.map((price) => [`${price.serviceId}:${price.bracketId}`, price.price]));
 
 export const useSaveServicePrices = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (args: { petId: string; serviceId: string; rows: ServicePriceInput[] }) =>
-      saveServicePrices(supabaseClient(), args),
+    mutationFn: (args: {
+      speciesId: string;
+      serviceId: string;
+      branchId: string | null;
+      rows: ServicePriceInput[];
+    }) => saveServicePrices(supabaseClient(), args),
     onSuccess: async () => {
       await invalidateCatalog(queryClient);
       notifySuccess("update");

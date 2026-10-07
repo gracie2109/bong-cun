@@ -69,6 +69,42 @@
   }
 }
 
+/* Light, high-contrast palette for the admin CMS (teal primary on a cool white canvas).
+   Applied to <html> by the admin layout so portalled sheets and dialogs pick it up too. */
+@layer base {
+  html.admin-theme {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 175 77% 26%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 166 76% 96%;
+    --accent-foreground: 175 77% 22%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 213 27% 84%;
+    --ring: 175 77% 26%;
+
+    font-family: "Be Vietnam Pro", "Quicksand", sans-serif;
+  }
+}
+
 *, html, body{
   scroll-behavior: smooth;
 }
