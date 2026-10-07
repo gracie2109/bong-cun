@@ -1006,6 +1006,17 @@ export type Database = {
         Args: { p_rows: Json; p_species_id: string }
         Returns: undefined
       }
+      search_customers: {
+        Args: { p_limit?: number; p_text: string }
+        Returns: {
+          email: string | null
+          full_name: string
+          id: string
+          note: string | null
+          pet_count: number
+          phone: string
+        }[]
+      }
       seed_default_weight_brackets: {
         Args: { p_species_id: string }
         Returns: undefined
