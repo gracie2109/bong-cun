@@ -56,3 +56,39 @@ export const groupByModule = (permissions: readonly Permission[]): PermissionGro
 /** Permission codes are used in RLS and code, so they stay ASCII. */
 export const PERMISSION_CODE_PATTERN = /^[a-zA-Z][a-zA-Z0-9_.]*$/;
 export const ROLE_CODE_PATTERN = /^[a-zA-Z][a-zA-Z0-9_]*$/;
+
+/** Lowercase without Vietnamese accents, so "quyen" finds "Quyền". */
+export const fold = (text: string): string =>
+  text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/gi, "d").toLowerCase().trim();
+
+// Modules are free text, so the icon is picked from words in the module name.
+const MODULE_ICON_RULES: [RegExp, string][] = [
+  [/khach|customer/, "lucide:users"],
+  [/thu cung|pet|ho so/, "lucide:paw-print"],
+  [/dich vu|gia|spa|service|price/, "lucide:scissors"],
+  [/lich|booking|appointment|dat cho/, "lucide:calendar-days"],
+  [/ban hang|hoa don|pos|thu ngan|invoice|sale/, "lucide:receipt"],
+  [/kho|inventory|stock|san pham|product/, "lucide:package"],
+  [/bao cao|report|doanh thu/, "lucide:chart-column"],
+  [/he thong|cai dat|setting|system|phan quyen|tai khoan/, "lucide:settings"],
+];
+
+export const moduleIcon = (module: string | null): string => {
+  const key = fold(module ?? "");
+  return MODULE_ICON_RULES.find(([pattern]) => pattern.test(key))?.[1] ?? "lucide:folder-key";
+};
+
+export const SUPER_ADMIN_ROLE = "superAdmin";
+export const CUSTOMER_ROLE = "customer";
+
+/** The methods a role holds on a permission; superAdmin passes every has_permission() check. */
+export const roleMethods = (
+  role: { name: string; permissions: readonly RolePermissionGrant[] },
+  permission: Pick<Permission, "id" | "methods">
+): Method[] => (role.name === SUPER_ADMIN_ROLE ? methodsOf(permission) : grantedMethods(role.permissions, permission));
+
+/** How many permissions a role holds at least one method on. */
+export const grantedCount = (
+  role: { name: string; permissions: readonly RolePermissionGrant[] },
+  permissions: readonly Permission[]
+): number => permissions.filter((permission) => roleMethods(role, permission).length > 0).length;
