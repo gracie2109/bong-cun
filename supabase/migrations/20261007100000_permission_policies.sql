@@ -48,6 +48,11 @@ begin
         raise notice 'skip %: table not found', t;
         continue;
       end if;
+      -- Drop first so the file can be run again safely.
+      execute format('drop policy if exists "permission read" on public.%I', t);
+      execute format('drop policy if exists "permission insert" on public.%I', t);
+      execute format('drop policy if exists "permission delete" on public.%I', t);
+      execute format('drop policy if exists "permission update" on public.%I', t);
       execute format(
         'create policy "permission read" on public.%I for select to authenticated
            using ((select public.has_permission(%L, ''VIEW'')))', t, code);
