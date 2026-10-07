@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5">
+    <div class="space-y-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">
@@ -16,7 +16,7 @@
           </h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.services.subtitle") }}</p>
         </div>
-        <Button @click="openCreate">
+        <Button v-if="canCreate" @click="openCreate">
           <Plus class="mr-2 size-4" />
           {{ $t("petCare.services.add") }}
         </Button>
@@ -147,7 +147,7 @@
                   {{ $t("petCare.services.minutes", { n: service.duration[0] }) }}
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <DropdownMenu>
+                  <DropdownMenu v-if="canUpdate">
                     <DropdownMenuTrigger as-child>
                       <Button variant="ghost" size="icon" class="size-8">
                         <EllipsisVertical class="size-4" />
@@ -203,6 +203,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { formatPrice } from "@/lib/utils";
+import { usePermission } from "@/composables/usePermission";
 import { usePetServicesList, useSetPetServiceActive } from "@/queries/petServices";
 import { useSpeciesOptions } from "@/queries/species";
 import type { PetService, PetServiceFilter } from "@/repositories/petServices";
@@ -233,6 +234,7 @@ const filter = computed<PetServiceFilter>(() => ({
 }));
 
 const servicesQuery = usePetServicesList(pageData, filter);
+const { canCreate, canUpdate } = usePermission("petServices");
 const services = computed(() => servicesQuery.data.value?.rows ?? []);
 const total = computed(() => servicesQuery.data.value?.total ?? 0);
 const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));

@@ -80,3 +80,8 @@ export const orderKeys = {
   detail: (id: string) => [...orderKeys.all, "detail", id] as const,
   byUsers: (userIds: string[]) => [...orderKeys.all, "by-users", [...userIds].sort()] as const,
 };
+
+export const staffKeys = {
+  all: ["staff"] as const,
+  list: () => [...staffKeys.all, "list"] as const,
+};

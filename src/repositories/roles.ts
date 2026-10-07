@@ -8,6 +8,7 @@ import { unwrap } from "./shared";
 type Client = SupabaseClient<Database>;
 type RoleRow = Tables<"roles"> & {
   role_permissions: { permission: string; methods: string[] }[];
+  staff_branches: { count: number }[];
 };
 
 export type RolePermissionGrant = { id: string; method: string[] };
@@ -16,7 +17,11 @@ export type Role = {
   id: string;
   name: string;
   description: string | null;
+  /** superAdmin and customer: cannot be renamed or deleted. */
+  isSystem: boolean;
   permissions: RolePermissionGrant[];
+  /** Number of (staff, branch) assignments holding this role. */
+  staffCount: number;
   createdAt: string;
 };
 
@@ -30,10 +35,12 @@ const toRole = (row: RoleRow): Role => ({
   id: row.name,
   name: row.name,
   description: row.description,
+  isSystem: row.is_system,
   permissions: row.role_permissions.map((grant) => ({
     id: grant.permission,
     method: grant.methods,
   })),
+  staffCount: row.staff_branches[0]?.count ?? 0,
   createdAt: row.created_at,
 });
 
@@ -47,8 +54,9 @@ export const listRoles = async (client: Client): Promise<Role[]> => {
   const rows = unwrap(
     await client
       .from("roles")
-      .select("*, role_permissions(permission, methods)")
-      .order("created_at", { ascending: false })
+      .select("*, role_permissions(permission, methods), staff_branches(count)")
+      .order("is_system", { ascending: false })
+      .order("created_at")
   );
   return (rows as RoleRow[]).map(toRole);
 };

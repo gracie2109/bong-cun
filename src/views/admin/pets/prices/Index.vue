@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5" :class="dirtyCount > 0 ? 'pb-20' : ''">
+    <div class="space-y-5" :class="dirtyCount > 0 ? 'pb-20' : ''">
       <div>
         <h2 class="text-2xl font-bold">{{ $t("petCare.prices.title") }}</h2>
         <p class="text-sm text-muted-foreground">{{ $t("petCare.prices.subtitle") }}</p>
@@ -97,6 +97,7 @@
                 <td v-for="bracket in brackets" :key="bracket.id" class="px-2 py-2">
                   <Input
                     :model-value="cellValue(service.id, bracket.id)"
+                    :readonly="!canUpdate"
                     type="number"
                     min="0"
                     step="1000"
@@ -112,12 +113,14 @@
                   />
                 </td>
                 <td class="whitespace-nowrap px-2 py-2 text-right">
-                  <Button type="button" variant="ghost" size="sm" @click="fillRow(service.id)">
-                    {{ $t("petCare.prices.fillRow") }}
-                  </Button>
-                  <Button type="button" variant="ghost" size="sm" @click="clearRow(service.id)">
-                    {{ $t("petCare.prices.clearRow") }}
-                  </Button>
+                  <template v-if="canUpdate">
+                    <Button type="button" variant="ghost" size="sm" @click="fillRow(service.id)">
+                      {{ $t("petCare.prices.fillRow") }}
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" @click="clearRow(service.id)">
+                      {{ $t("petCare.prices.clearRow") }}
+                    </Button>
+                  </template>
                 </td>
               </tr>
             </tbody>
@@ -139,7 +142,7 @@
     </div>
 
     <div
-      v-if="dirtyCount > 0"
+      v-if="canUpdate && dirtyCount > 0"
       class="fixed inset-x-0 bottom-0 z-20 flex items-center justify-end gap-3 border-t bg-white px-6 py-3 shadow-lg"
     >
       <span class="text-sm text-muted-foreground">{{ $t("petCare.prices.edited", { n: dirtyCount }) }}</span>
@@ -162,6 +165,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { usePermission } from "@/composables/usePermission";
 import { useBranches } from "@/queries/branches";
 import { useAllPetServices } from "@/queries/petServices";
 import { priceByCell, useSaveServicePrices, useServicePrices } from "@/queries/servicePrices";
@@ -271,6 +275,7 @@ watch([speciesId, scope], () => {
 });
 
 const saveMutation = useSaveServicePrices();
+const { canUpdate } = usePermission("petServices");
 const saveAll = async () => {
   if (!speciesId.value) return;
   const touched = new Set([...edits.value.keys()].map((key) => key.split(":")[0]));

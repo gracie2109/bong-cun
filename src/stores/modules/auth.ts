@@ -9,7 +9,8 @@ import {
   isDisplayNameAvailable,
   toCurrentUser,
 } from "@/repositories/users";
-import { isAdminRole } from "@/lib/access";
+import { canUse, isAdminRole, isStaffRole, SUPER_ADMIN_ROLE, type AdminGrants } from "@/lib/access";
+import { listMyPermissions } from "@/repositories/permissions";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";
 import type { IUser, ILoginPayload, IRegisterPayload } from "@/types/user.type";
@@ -34,6 +35,45 @@ export const useAuthStore = defineStore("auth", () => {
 
   const isAuthenticated = computed(() => !!session.value);
   const isAdmin = computed(() => isAdminRole(role.value));
+  const isStaff = computed(() => isStaffRole(role.value));
+
+  // What the signed-in staff member may do in /admin, from my_permissions(). Loaded on
+  // demand by the route middleware and reloaded when the access token changes.
+  const adminGrants = ref<AdminGrants | null>(null);
+  let grantsToken: string | null | undefined;
+  let grantsPromise: Promise<void> = Promise.resolve();
+
+  function loadAdminGrants() {
+    const token = session.value?.access_token ?? null;
+    if (token === grantsToken) return grantsPromise;
+    grantsToken = token;
+    grantsPromise = (async () => {
+      await applyPromise; // the role for this token must be loaded first
+      if (role.value === SUPER_ADMIN_ROLE) {
+        adminGrants.value = "all";
+        return;
+      }
+      if (!isStaffRole(role.value)) {
+        adminGrants.value = {};
+        return;
+      }
+      try {
+        const grants = await listMyPermissions(supabase);
+        // An admin account with no role at any branch yet keeps the full menu it had before
+        // branch roles existed (is_admin() still lets it through RLS).
+        const legacyAdmin = isAdminRole(role.value) && Object.keys(grants).length === 0;
+        if (grantsToken === token) adminGrants.value = legacyAdmin ? "all" : grants;
+      } catch (error) {
+        console.error("Failed to load permissions", error);
+        if (grantsToken === token) adminGrants.value = {};
+        grantsToken = undefined; // retry on the next navigation
+      }
+    })();
+    return grantsPromise;
+  }
+
+  const can = (permission: string, method = "VIEW"): boolean =>
+    !!adminGrants.value && canUse(adminGrants.value, permission, method);
 
   const userAddress = ref([
     {
@@ -381,6 +421,10 @@ export const useAuthStore = defineStore("auth", () => {
     role,
     isAuthenticated,
     isAdmin,
+    isStaff,
+    adminGrants,
+    loadAdminGrants,
+    can,
     init,
     pendingVerificationEmail,
     verifyEmailCode,

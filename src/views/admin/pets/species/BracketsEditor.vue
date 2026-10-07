@@ -32,13 +32,14 @@
           </thead>
           <tbody>
             <tr v-for="row in rows" :key="row.key" class="border-t">
-              <td class="px-3 py-2"><Input v-model="row.label" /></td>
+              <td class="px-3 py-2"><Input v-model="row.label" :readonly="!canUpdate" /></td>
               <td class="px-3 py-2">
-                <Input v-model="row.min" type="number" min="0" step="0.1" inputmode="decimal" />
+                <Input v-model="row.min" :readonly="!canUpdate" type="number" min="0" step="0.1" inputmode="decimal" />
               </td>
               <td class="px-3 py-2">
                 <Input
                   v-model="row.max"
+                  :readonly="!canUpdate"
                   type="number"
                   min="0"
                   step="0.1"
@@ -48,6 +49,7 @@
               </td>
               <td class="px-3 py-2 text-right">
                 <Button
+                  v-if="canUpdate"
                   type="button"
                   variant="ghost"
                   size="icon"
@@ -78,7 +80,7 @@
         {{ $t("petCare.species.removeWarning", { n: removedCount }) }}
       </p>
 
-      <div class="flex flex-wrap items-center justify-between gap-2">
+      <div v-if="canUpdate" class="flex flex-wrap items-center justify-between gap-2">
         <Button type="button" variant="outline" @click="addRow">
           <Plus class="mr-2 size-4" />
           {{ $t("petCare.species.addBracket") }}
@@ -114,6 +116,7 @@ import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePermission } from "@/composables/usePermission";
 import { useSaveWeightBrackets, useWeightBrackets } from "@/queries/weightBrackets";
 import { checkBrackets, type WeightBracketInput } from "@/repositories/weightBrackets";
 
@@ -125,6 +128,7 @@ const { t } = useI18n();
 const speciesId = computed(() => props.speciesId);
 const bracketsQuery = useWeightBrackets(speciesId);
 const saveMutation = useSaveWeightBrackets();
+const { canUpdate } = usePermission("petServices");
 
 const rows = ref<Row[]>([]);
 const confirmOpen = ref(false);

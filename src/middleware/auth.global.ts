@@ -1,4 +1,4 @@
-import { canAccess } from "@/lib/access";
+import { canAccess, canOpenAdminRoute } from "@/lib/access";
 import { useAuthStore } from "@/stores";
 
 /** Pages a signed-in user should not see, matched against `meta.titleKey`. */
@@ -15,9 +15,19 @@ export default defineNuxtRouteMiddleware(async (to) => {
     {
       requiresAuth: to.meta.requiresAuth,
       roles: to.meta.roles,
+      staffOnly: to.meta.staffOnly,
       guestOnly: GUEST_ONLY_KEYS.includes(to.meta.titleKey as string),
     },
     { isAuthenticated: auth.isAuthenticated, role: auth.role }
   );
   if (!allowed) return navigateTo({ name: "home" });
+
+  // Inside /admin each page needs VIEW on its permission; without it, fall back to the dashboard.
+  // Grants load on every admin route, the dashboard included, because the sidebar menu reads them.
+  if (to.meta.staffOnly) {
+    await auth.loadAdminGrants();
+    if (to.name !== "dashboard" && !canOpenAdminRoute(auth.adminGrants ?? {}, to.name as string)) {
+      return navigateTo({ name: "dashboard" });
+    }
+  }
 });

@@ -7,13 +7,13 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5">
+    <div class="space-y-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">{{ $t("petCare.species.title") }}</h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.species.subtitle") }}</p>
         </div>
-        <Button @click="openCreate">
+        <Button v-if="canCreate" @click="openCreate">
           <Plus class="mr-2 size-4" />
           {{ $t("petCare.species.add") }}
         </Button>
@@ -75,7 +75,7 @@
                 <h3 class="text-lg font-bold">{{ selected.name }}</h3>
                 <p v-if="selected.desc" class="text-sm text-muted-foreground">{{ selected.desc }}</p>
               </div>
-              <div class="flex gap-2">
+              <div v-if="canUpdate" class="flex gap-2">
                 <Button variant="outline" size="sm" @click="openEdit">
                   <Pencil class="mr-2 size-4" />
                   {{ $t("petCare.common.edit") }}
@@ -126,6 +126,7 @@ import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
+import { usePermission } from "@/composables/usePermission";
 import { useSetSpeciesActive, useSpeciesSummaries } from "@/queries/species";
 import type { Species, SpeciesSummary } from "@/repositories/species";
 import { ContentWrap, Header } from "@/views/admin/components";
@@ -135,6 +136,7 @@ import SpeciesFormSheet from "./SpeciesFormSheet.vue";
 
 const summariesQuery = useSpeciesSummaries();
 const setActiveMutation = useSetSpeciesActive();
+const { canCreate, canUpdate } = usePermission("petServices");
 
 const showArchived = ref(false);
 const selectedId = ref<string>();

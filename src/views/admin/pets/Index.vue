@@ -7,7 +7,7 @@
   </Header>
 
   <ContentWrap>
-    <div class="relative top-10 space-y-5">
+    <div class="space-y-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">
@@ -16,7 +16,7 @@
           </h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.pets.subtitle") }}</p>
         </div>
-        <Button @click="registerOpen = true">
+        <Button v-if="canCreate" @click="registerOpen = true">
           <Plus class="mr-2 size-4" />
           {{ $t("petCare.pets.register") }}
         </Button>
@@ -195,12 +195,12 @@
                         {{ $t("petCare.common.viewProfile") }}
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        v-if="pet.status === 'active'"
+                        v-if="canUpdate && pet.status === 'active'"
                         @click="toArchive = pet"
                       >
                         {{ $t("petCare.common.archive") }}
                       </DropdownMenuItem>
-                      <DropdownMenuItem v-else @click="restore(pet.id)">
+                      <DropdownMenuItem v-else-if="canUpdate" @click="restore(pet.id)">
                         {{ $t("petCare.common.restore") }}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -253,6 +253,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePermission } from "@/composables/usePermission";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { usePetsList, useSetPetStatus } from "@/queries/pets";
 import { useSpeciesOptions } from "@/queries/species";
@@ -270,6 +271,7 @@ const STATUSES: PetStatus[] = ["active", "archived", "deceased"];
 
 const { t } = useI18n();
 const router = useRouter();
+const { canCreate, canUpdate } = usePermission("pets");
 
 const search = ref("");
 const speciesFilter = ref(ALL);

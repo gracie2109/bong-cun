@@ -376,21 +376,27 @@ export type Database = {
           created_at: string
           description: string | null
           methods: string[]
+          module: string | null
           name: string
+          sort_order: number
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
           methods?: string[]
+          module?: string | null
           name: string
+          sort_order?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
           methods?: string[]
+          module?: string | null
           name?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
@@ -744,18 +750,21 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          is_system: boolean
           name: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
+          is_system?: boolean
           name: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
+          is_system?: boolean
           name?: string
           updated_at?: string
         }
@@ -814,6 +823,52 @@ export type Database = {
             columns: ["species_id"]
             isOneToOne: false
             referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_branches: {
+        Row: {
+          branch_id: string
+          created_at: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_branches_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_branches_role_fkey"
+            columns: ["role"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "staff_branches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -972,6 +1027,19 @@ export type Database = {
     Functions: {
       create_order: { Args: { p: Json }; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      has_permission: {
+        Args: { p_branch?: string; p_method: string; p_permission: string }
+        Returns: boolean
+      }
+      my_permissions: {
+        Args: { p_branch?: string }
+        Returns: {
+          branch_id: string
+          methods: string[]
+          permission: string
+          role: string
+        }[]
+      }
       get_service_price: {
         Args: {
           p_branch_id?: string
@@ -992,6 +1060,7 @@ export type Database = {
       save_pet_combo: { Args: { p: Json; p_id?: string }; Returns: string }
       save_pet_service: { Args: { p: Json; p_id?: string }; Returns: string }
       save_role: { Args: { p: Json; p_id?: string }; Returns: string }
+      save_staff_branches: { Args: { p: Json; p_user: string }; Returns: undefined }
       save_service_prices: {
         Args: {
           p_branch_id?: string
