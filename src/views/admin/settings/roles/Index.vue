@@ -1,7 +1,7 @@
 <template>
   <RbacLayout :eyebrow="$t('rbac.eyebrow')">
     <template #actions>
-      <Button @click="startNew(null)">
+      <Button v-if="canManage" @click="startNew(null)">
         <Plus class="mr-2 size-4" />
         {{ $t("rbac.roles.add") }}
       </Button>
@@ -88,7 +88,7 @@
                 </span>
               </span>
             </button>
-            <DropdownMenu>
+            <DropdownMenu v-if="canManage">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" size="icon" class="absolute right-1.5 top-2 size-8" :aria-label="$t('rbac.roles.more')">
                   <EllipsisVertical class="size-4" />
@@ -155,6 +155,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCanManageRbac } from "@/composables/usePermission";
 import { useBranches } from "@/queries/branches";
 import { usePermissionsList } from "@/queries/permissions";
 import { useDeleteRole, useRolesList } from "@/queries/roles";
@@ -167,6 +168,7 @@ import RoleEditor from "./RoleEditor.vue";
 
 const route = useRoute();
 const router = useRouter();
+const canManage = useCanManageRbac();
 
 const rolesQuery = useRolesList();
 const roles = computed(() => rolesQuery.data.value ?? []);
@@ -237,7 +239,7 @@ watch(selectedId, (id) => {
 watch(
   () => route.query.new,
   (value) => {
-    if (value) startNew(null);
+    if (value && canManage.value) startNew(null);
   },
   { immediate: true }
 );

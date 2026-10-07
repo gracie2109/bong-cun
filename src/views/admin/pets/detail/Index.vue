@@ -72,11 +72,11 @@
                 {{ $t("petCare.pets.detail.checkPrice") }}
               </router-link>
             </Button>
-            <Button variant="outline" @click="editOpen = true">
+            <Button v-if="canUpdate" variant="outline" @click="editOpen = true">
               <Pencil class="mr-2 size-4" />
               {{ $t("petCare.pets.detail.editProfile") }}
             </Button>
-            <DropdownMenu>
+            <DropdownMenu v-if="canUpdate">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" size="icon"><EllipsisVertical class="size-4" /></Button>
               </DropdownMenuTrigger>
@@ -128,7 +128,7 @@
                 <h3 class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {{ $t("petCare.pets.detail.weight") }}
                 </h3>
-                <Button size="sm" variant="outline" @click="weightOpen = !weightOpen">
+                <Button v-if="canUpdate" size="sm" variant="outline" @click="weightOpen = !weightOpen">
                   <Plus class="mr-1 size-4" />
                   {{ $t("petCare.pets.detail.addWeight") }}
                 </Button>
@@ -146,7 +146,7 @@
                 }}
               </p>
 
-              <form v-if="weightOpen" class="space-y-2 rounded-lg border bg-muted/30 p-3" @submit.prevent="submitWeight">
+              <form v-if="canUpdate && weightOpen" class="space-y-2 rounded-lg border bg-muted/30 p-3" @submit.prevent="submitWeight">
                 <div class="space-y-1">
                   <Label for="weight-kg">{{ $t("petCare.pets.detail.weightKg") }}</Label>
                   <Input id="weight-kg" v-model="weightInput" type="number" step="0.1" min="0" inputmode="decimal" />
@@ -230,6 +230,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePermission } from "@/composables/usePermission";
 import { useAddPetWeight, usePet, useSetPetStatus } from "@/queries/pets";
 import { useWeightBrackets } from "@/queries/weightBrackets";
 import type { PetStatus } from "@/repositories/pets";
@@ -244,6 +245,7 @@ const placeholderTabs = ["history", "upcoming", "boarding", "notes"];
 
 const { t } = useI18n();
 const route = useRoute();
+const { canUpdate } = usePermission("pets");
 const petId = computed(() => String(route.params.petId));
 
 const petQuery = usePet(petId);

@@ -13,7 +13,7 @@
           <h2 class="text-2xl font-bold">{{ $t("pageMeta.customers") }}</h2>
           <p class="text-sm text-muted-foreground">{{ $t("pageFields.customers.subtitle") }}</p>
         </div>
-        <Button @click="open = true">
+        <Button v-if="canCreate" @click="open = true">
           <UserPlus class="size-4 mr-2" />
           {{ $t("pageFields.customers.addNew") }}
         </Button>
@@ -99,6 +99,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { usePermission } from "@/composables/usePermission";
 import { BASE_GENDER, INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { useOrdersByUsers } from "@/queries/orders";
 import { useCreateUser, useUsersCount, useUsersList } from "@/queries/users";
@@ -173,6 +174,7 @@ const selected = computed(
 const selectedOrders = computed(() => orders.value.filter((o) => o.userId === selected.value?.userId));
 
 const createUser = useCreateUser();
+const { canCreate } = usePermission("users");
 const loading = computed(() => createUser.isPending.value);
 const open = ref(false);
 

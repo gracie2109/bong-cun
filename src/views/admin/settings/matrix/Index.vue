@@ -4,7 +4,7 @@
     :title="$t('rbac.matrix.title')"
     :subtitle="$t('rbac.matrix.subtitle')"
   >
-    <template #actions>
+    <template v-if="canManage" #actions>
       <Button variant="outline" as-child>
         <router-link :to="{ name: 'settings', query: { new: '1' } }">
           <Plus class="mr-2 size-4" />
@@ -25,6 +25,7 @@
             <Input v-model="search" class="pl-9" :placeholder="$t('rbac.matrix.searchPlaceholder')" />
           </div>
           <label
+            v-if="canManage"
             class="flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5"
             :class="quickEdit ? 'border-primary bg-primary/5' : ''"
           >
@@ -243,7 +244,7 @@
           </ul>
         </div>
 
-        <Button class="w-full" as-child>
+        <Button v-if="canManage" class="w-full" as-child>
           <router-link :to="{ name: 'settings', query: { role: detailRole.id } }">
             <SquarePen class="mr-2 size-4" />
             {{ $t("rbac.matrix.editRole") }}
@@ -264,6 +265,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCanManageRbac } from "@/composables/usePermission";
 import { useBranches } from "@/queries/branches";
 import { usePermissionsList } from "@/queries/permissions";
 import { useRolesList, useUpdateRole } from "@/queries/roles";
@@ -290,6 +292,7 @@ const CLOSED = "";
 const { t } = useI18n();
 
 const permissionsQuery = usePermissionsList();
+const canManage = useCanManageRbac();
 const permissions = computed(() => permissionsQuery.data.value ?? []);
 const rolesQuery = useRolesList();
 // Customers never hold staff permissions, so they have no column.

@@ -19,7 +19,7 @@
             <p class="text-sm text-muted-foreground">{{ $t("rbac.roles.configHint") }}</p>
           </div>
         </div>
-        <div class="flex gap-2">
+        <div v-if="canManage" class="flex gap-2">
           <Button v-if="role" type="button" variant="ghost" :disabled="!dirty || pending" @click="reset">
             <RotateCcw class="mr-2 size-4" />
             {{ $t("rbac.roles.restore") }}
@@ -40,7 +40,7 @@
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="space-y-2">
           <Label for="role-desc">{{ $t("rbac.roles.desc") }}</Label>
-          <Input id="role-desc" v-model="description" :placeholder="$t('rbac.roles.descPlaceholder')" />
+          <Input id="role-desc" v-model="description" :readonly="!canManage" :placeholder="$t('rbac.roles.descPlaceholder')" />
         </div>
         <div class="space-y-2">
           <Label for="role-name">{{ $t("rbac.roles.name") }} <span v-if="!role" class="text-red-600">*</span></Label>
@@ -148,7 +148,7 @@
             {{ groupState(group.items) === "indeterminate" ? $t("rbac.roles.partial") : $t("rbac.roles.selectAll") }}
             <Checkbox
               :checked="groupState(group.items)"
-              :disabled="isSuperAdmin"
+              :disabled="locked"
               @update:checked="(value: boolean | 'indeterminate') => setGroup(group.items, value === true)"
             />
           </label>
@@ -165,7 +165,7 @@
               <Checkbox
                 class="mt-0.5"
                 :checked="rowState(permission)"
-                :disabled="isSuperAdmin"
+                :disabled="locked"
                 :aria-label="permission.description || permission.name"
                 @update:checked="(value: boolean | 'indeterminate') => setRow(permission, value === true)"
               />
@@ -180,7 +180,7 @@
                     :key="method"
                     type="button"
                     :aria-pressed="isSuperAdmin || has(permission.id, method)"
-                    :disabled="isSuperAdmin"
+                    :disabled="locked"
                     class="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors disabled:cursor-not-allowed"
                     :class="isSuperAdmin || has(permission.id, method)
                       ? 'border-primary bg-primary text-primary-foreground'
@@ -201,7 +201,7 @@
     <section v-if="role && role.name !== CUSTOMER_ROLE" ref="staffSection" class="rounded-xl border bg-white">
       <div class="flex items-center justify-between gap-3 border-b px-5 py-3">
         <h4 class="font-semibold">{{ $t("rbac.roles.staff", { n: holders.length }) }}</h4>
-        <Button type="button" variant="ghost" size="sm" class="text-primary" @click="assignOpen = true">
+        <Button v-if="canManage" type="button" variant="ghost" size="sm" class="text-primary" @click="assignOpen = true">
           <UserPlus class="mr-2 size-4" />
           {{ $t("rbac.roles.assign") }}
         </Button>
@@ -224,6 +224,7 @@
             <p class="truncate text-xs text-muted-foreground">{{ branchName(holder.branchId) }}</p>
           </div>
           <Button
+            v-if="canManage"
             type="button"
             variant="ghost"
             size="sm"
@@ -244,7 +245,7 @@
       leave-active-class="transition duration-150"
     >
       <div
-        v-if="role && dirty"
+        v-if="canManage && role && dirty"
         class="sticky bottom-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white px-4 py-3 shadow-lg"
       >
         <p class="flex items-center gap-2 text-sm">
@@ -299,6 +300,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCanManageRbac } from "@/composables/usePermission";
 import { useCreateRole, useUpdateRole } from "@/queries/roles";
 import { useSaveStaffAssignments } from "@/queries/staff";
 import type { Branch } from "@/repositories/branches";
@@ -348,6 +350,9 @@ const openGroups = ref<Record<string, boolean>>({});
 const staffSection = ref<HTMLElement | null>(null);
 
 const isSuperAdmin = computed(() => props.role?.name === SUPER_ADMIN_ROLE);
+const canManage = useCanManageRbac();
+// superAdmin always holds everything; anyone but a superAdmin only looks.
+const locked = computed(() => isSuperAdmin.value || !canManage.value);
 const nameValid = computed(() => ROLE_CODE_PATTERN.test(name.value.trim()));
 const pending = computed(() => createRole.isPending.value || updateRole.isPending.value);
 

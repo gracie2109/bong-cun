@@ -16,7 +16,7 @@
           </h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.combos.subtitle") }}</p>
         </div>
-        <Button @click="openCreate">
+        <Button v-if="canCreate" @click="openCreate">
           <Plus class="mr-2 size-4" />
           {{ $t("petCare.combos.add") }}
         </Button>
@@ -112,7 +112,7 @@
                 </span>
               </td>
               <td class="px-4 py-3 text-right">
-                <DropdownMenu>
+                <DropdownMenu v-if="canUpdate">
                   <DropdownMenuTrigger as-child>
                     <Button variant="ghost" size="icon" class="size-8"><EllipsisVertical class="size-4" /></Button>
                   </DropdownMenuTrigger>
@@ -162,6 +162,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { formatPrice } from "@/lib/utils";
+import { usePermission } from "@/composables/usePermission";
 import { usePetCombosList, useSetPetComboActive } from "@/queries/petCombos";
 import type { PetCombo } from "@/repositories/petCombos";
 import { ContentWrap, Header } from "@/views/admin/components";
@@ -178,6 +179,7 @@ const editing = ref<PetCombo | null>(null);
 const toArchive = ref<PetCombo | null>(null);
 
 const combosQuery = usePetCombosList(pageData, showArchived);
+const { canCreate, canUpdate } = usePermission("petServices");
 const combos = computed(() => combosQuery.data.value?.rows ?? []);
 const total = computed(() => combosQuery.data.value?.total ?? 0);
 const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));

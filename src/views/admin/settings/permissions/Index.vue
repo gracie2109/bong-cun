@@ -8,7 +8,7 @@
         <Download class="mr-2 size-4" />
         {{ $t("rbac.permissions.export") }}
       </Button>
-      <Button @click="openForm(null)">
+      <Button v-if="canManage" @click="openForm(null)">
         <Plus class="mr-2 size-4" />
         {{ $t("rbac.permissions.add") }}
       </Button>
@@ -157,7 +157,7 @@
                 </div>
               </td>
               <td class="px-4 py-4 text-right">
-                <DropdownMenu>
+                <DropdownMenu v-if="canManage">
                   <DropdownMenuTrigger as-child>
                     <Button variant="ghost" size="icon" class="size-8" :aria-label="$t('rbac.permissions.col.actions')">
                       <EllipsisVertical class="size-4" />
@@ -262,6 +262,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCanManageRbac } from "@/composables/usePermission";
 import { useDeletePermission, usePermissionsList } from "@/queries/permissions";
 import { useRolesList } from "@/queries/roles";
 import type { Permission } from "@/repositories/permissions";
@@ -280,6 +281,7 @@ const permissions = computed(() => permissionsQuery.data.value ?? []);
 const rolesQuery = useRolesList();
 const roles = computed(() => rolesQuery.data.value ?? []);
 const deletePermission = useDeletePermission();
+const canManage = useCanManageRbac();
 
 const search = ref("");
 const moduleFilter = ref(ALL);
