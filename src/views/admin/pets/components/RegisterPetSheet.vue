@@ -42,7 +42,7 @@
             <ul v-if="matches.length" class="divide-y rounded-lg border">
               <li
                 v-for="match in matches"
-                :key="match.id"
+                :key="matchKey(match)"
                 class="flex items-center justify-between gap-3 px-3 py-2"
               >
                 <div class="min-w-0">
@@ -143,7 +143,7 @@ import { useCustomerSearch } from "@/queries/customers";
 import { useRegisterPet } from "@/queries/pets";
 import { useSpeciesOptions } from "@/queries/species";
 import { useWeightBrackets } from "@/queries/weightBrackets";
-import { digitsOf, type CustomerMatch } from "@/repositories/customers";
+import { digitsOf, matchKey, type CustomerMatch } from "@/repositories/customers";
 import type { RegisterOwner } from "@/repositories/pets";
 import { findBracket } from "@/repositories/weightBrackets";
 import {
@@ -233,14 +233,16 @@ const close = (value: boolean) => {
 };
 
 // An existing customer picked from the list wins over whatever was typed for a new one.
-const ownerInput = (): RegisterOwner =>
-  selected.value
-    ? { id: selected.value.id }
-    : {
-        fullName: newOwner.fullName.trim(),
-        phone: phoneText.value.trim(),
-        email: newOwner.email.trim() || null,
-      };
+const ownerInput = (): RegisterOwner => {
+  const match = selected.value;
+  if (match?.customerId) return { id: match.customerId };
+  if (match?.userId) return { userId: match.userId };
+  return {
+    fullName: newOwner.fullName.trim(),
+    phone: phoneText.value.trim(),
+    email: newOwner.email.trim() || null,
+  };
+};
 
 const submit = async (registerAnother: boolean) => {
   submitted.value = true;

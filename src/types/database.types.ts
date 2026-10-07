@@ -1009,12 +1009,13 @@ export type Database = {
       search_customers: {
         Args: { p_limit?: number; p_text: string }
         Returns: {
+          customer_id: string | null
           email: string | null
           full_name: string
-          id: string
           note: string | null
           pet_count: number
           phone: string
+          user_id: string | null
         }[]
       }
       seed_default_weight_brackets: {

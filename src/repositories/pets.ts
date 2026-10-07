@@ -86,8 +86,11 @@ export type PetInput = {
   behaviorNotes?: string | null;
 };
 
-/** The owner of a new pet: an existing customer (id) or the details of a new one. */
-export type RegisterOwner = { id: string } | { fullName: string; phone: string; email?: string | null };
+/** The owner of a new pet: an existing customer (id), a web account (userId) or the details of a new customer. */
+export type RegisterOwner =
+  | { id: string }
+  | { userId: string }
+  | { fullName: string; phone: string; email?: string | null };
 
 export type RegisterPetInput = { owner: RegisterOwner; pet: PetInput; weightKg?: number | null };
 
@@ -212,16 +215,15 @@ const toPetColumns = (input: PetInput) => ({
   behavior_notes: input.behaviorNotes || null,
 });
 
-/** Customer (found by phone or new), pet, owner link and first weight in one transaction. */
+/** Customer (existing, from a web account, or new), pet, owner link and first weight in one transaction. */
 export const registerPet = async (client: Client, input: RegisterPetInput): Promise<string> => {
+  const { owner } = input;
   const customer =
-    "id" in input.owner
-      ? { id: input.owner.id }
-      : {
-          full_name: input.owner.fullName,
-          phone: input.owner.phone,
-          email: input.owner.email ?? null,
-        };
+    "id" in owner
+      ? { id: owner.id }
+      : "userId" in owner
+        ? { user_id: owner.userId }
+        : { full_name: owner.fullName, phone: owner.phone, email: owner.email ?? null };
   const pet = toPetColumns(input.pet);
   return unwrap(
     await client.rpc("register_pet", {

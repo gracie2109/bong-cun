@@ -13,8 +13,19 @@ export type Customer = {
   note: string | null;
 };
 
-/** A customer found while typing a phone number or name, with how many pets they have. */
-export type CustomerMatch = Customer & { petCount: number };
+/**
+ * A person found while typing a phone number, email or name, with how many pets they have.
+ * `customerId` is null for a web account that is not a customer yet; registering a pet for
+ * them creates the customer record from `userId`.
+ */
+export type CustomerMatch = Omit<Customer, "id"> & {
+  customerId: string | null;
+  userId: string | null;
+  petCount: number;
+};
+
+/** Stable list key: a match has a customer id, a web account id, or both. */
+export const matchKey = (match: CustomerMatch): string => match.customerId ?? match.userId ?? match.phone;
 
 export const toCustomer = (row: Tables<"customers">): Customer => ({
   id: row.id,
@@ -39,7 +50,8 @@ export const searchCustomers = async (
   if (text.trim().length < 2) return [];
   const rows = unwrap(await client.rpc("search_customers", { p_text: text, p_limit: limit }));
   return rows.map((row) => ({
-    id: row.id,
+    customerId: row.customer_id,
+    userId: row.user_id,
     fullName: row.full_name,
     phone: row.phone,
     email: row.email,
