@@ -157,7 +157,7 @@ import PetFields from "./PetFields.vue";
 
 const MIN_PHONE_DIGITS = 8;
 const MAX_PHONE_DIGITS = 15;
-const SEARCH_DEBOUNCE_MS = 300;
+const SEARCH_DEBOUNCE_MS = 500;
 
 defineProps<{ open: boolean }>();
 const emit = defineEmits<{ "update:open": [value: boolean]; registered: [petId: string] }>();

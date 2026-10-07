@@ -28,7 +28,7 @@ export const toCustomer = (row: Tables<"customers">): Customer => ({
 
 export const digitsOf = (phone: string): string => phone.replace(/\D/g, "");
 
-/** Customers whose phone starts with the typed digits or whose name contains the text. */
+/** Customers whose phone starts with the typed digits, or whose name or email contains the text. */
 export const searchCustomers = async (
   client: Client,
   text: string,
@@ -37,7 +37,7 @@ export const searchCustomers = async (
   const term = filterSafe(text);
   if (term.length < 2) return [];
   const digits = digitsOf(term);
-  const conditions = [`full_name.ilike.%${term}%`];
+  const conditions = [`full_name.ilike.%${term}%`, `email.ilike.%${term}%`];
   if (digits.length >= 3) conditions.push(`phone_digits.like.${digits}%`);
 
   const rows = unwrap(

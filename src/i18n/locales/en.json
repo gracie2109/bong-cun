@@ -277,7 +277,7 @@
         "subtitle": "Quick entry at the counter: owner first, then the pet",
         "ownerSection": "Owner",
         "phone": "Phone number",
-        "phonePlaceholder": "Type a phone number or name to find an existing customer",
+        "phonePlaceholder": "Type a phone number, email or name to find an existing customer",
         "matchPets": "{n} pet(s)",
         "choose": "Select",
         "change": "Change",
