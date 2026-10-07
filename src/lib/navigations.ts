@@ -18,6 +18,14 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     ],
   },
   {
+    title: "adminNav.inventory",
+    items: [
+      { title: "adminNav.stock", icon: "lucide:boxes", name: "inventoryStock" },
+      { title: "adminNav.stockDocuments", icon: "lucide:clipboard-list", name: "stockDocuments" },
+      { title: "adminNav.suppliers", icon: "lucide:truck", name: "suppliers" },
+    ],
+  },
+  {
     title: "adminNav.scheduling",
     items: [{ title: "adminNav.schedule", icon: "lucide:calendar-days", name: "listOrderSchedule" }],
   },

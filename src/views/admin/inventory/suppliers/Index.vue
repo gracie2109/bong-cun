@@ -1,35 +1,29 @@
 <template>
   <Header>
     <h1 class="flex items-center gap-2 font-semibold">
-      <Package class="size-4 text-primary" />
-      {{ $t("products.title") }}
+      <Truck class="size-4 text-primary" />
+      {{ $t("inventory.suppliers.title") }}
     </h1>
   </Header>
 
   <ContentWrap>
     <div class="space-y-5">
-      <div class="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 class="text-2xl font-bold">
-            {{ $t("products.title") }}
-            <span class="text-muted-foreground">({{ total }})</span>
-          </h2>
-          <p class="text-sm text-muted-foreground">{{ $t("products.subtitle") }}</p>
-        </div>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <InventoryNav />
         <Button v-if="canCreate" @click="openForm(null)">
           <Plus class="mr-2 size-4" />
-          {{ $t("products.add") }}
+          {{ $t("inventory.suppliers.add") }}
         </Button>
       </div>
 
       <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
         <div class="relative min-w-60 flex-1">
           <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('products.searchPlaceholder')" />
+          <Input v-model="search" class="pl-9" :placeholder="$t('inventory.suppliers.searchPlaceholder')" />
         </div>
         <label class="flex items-center gap-2 text-sm text-muted-foreground">
           <Switch v-model:checked="showArchived" />
-          {{ $t("products.showArchived") }}
+          {{ $t("inventory.suppliers.showArchived") }}
         </label>
       </div>
 
@@ -52,22 +46,21 @@
           <table class="w-full text-sm">
             <thead>
               <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                <th class="px-4 py-3 font-semibold">{{ $t("products.col.product") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("products.form.sku") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("products.form.barcode") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("products.form.unit") }}</th>
-                <th class="px-4 py-3 text-right font-semibold">{{ $t("products.form.price") }}</th>
+                <th class="px-4 py-3 font-semibold">{{ $t("inventory.suppliers.name") }}</th>
+                <th class="px-4 py-3 font-semibold">{{ $t("inventory.suppliers.phone") }}</th>
+                <th class="px-4 py-3 font-semibold">{{ $t("inventory.suppliers.taxCode") }}</th>
+                <th class="px-4 py-3 font-semibold">{{ $t("inventory.suppliers.address") }}</th>
                 <th class="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               <template v-if="listQuery.isPending.value">
                 <tr v-for="i in 5" :key="i" class="border-t">
-                  <td colspan="6" class="px-4 py-3"><Skeleton class="h-8 w-full" /></td>
+                  <td colspan="5" class="px-4 py-3"><Skeleton class="h-8 w-full" /></td>
                 </tr>
               </template>
               <tr v-else-if="rows.length === 0">
-                <td colspan="6" class="px-4 py-10 text-center text-muted-foreground">{{ $t("products.empty") }}</td>
+                <td colspan="5" class="px-4 py-10 text-center text-muted-foreground">{{ $t("inventory.suppliers.empty") }}</td>
               </tr>
               <tr v-for="row in rows" :key="row.id" class="border-t" :class="row.isActive ? '' : 'opacity-60'">
                 <td class="px-4 py-3">
@@ -77,15 +70,11 @@
                       {{ $t("petCare.common.archived") }}
                     </span>
                   </p>
-                  <p v-if="row.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ row.desc }}</p>
+                  <p v-if="row.note" class="line-clamp-1 text-xs text-muted-foreground">{{ row.note }}</p>
                 </td>
-                <td class="px-4 py-3">{{ row.sku ?? "—" }}</td>
-                <td class="px-4 py-3 font-mono text-xs">{{ row.barcode ?? "—" }}</td>
-                <td class="px-4 py-3">
-                  {{ row.unit }}
-                  <span v-if="!row.trackStock" class="block text-[11px] text-muted-foreground">{{ $t("products.noStock") }}</span>
-                </td>
-                <td class="whitespace-nowrap px-4 py-3 text-right font-semibold">{{ money(row.price) }}</td>
+                <td class="px-4 py-3">{{ row.phone ?? "—" }}</td>
+                <td class="px-4 py-3 font-mono text-xs">{{ row.taxCode ?? "—" }}</td>
+                <td class="max-w-64 px-4 py-3"><span class="line-clamp-1">{{ row.address ?? "—" }}</span></td>
                 <td class="px-4 py-3 text-right">
                   <DropdownMenu v-if="canUpdate">
                     <DropdownMenuTrigger as-child>
@@ -106,14 +95,14 @@
       </div>
     </div>
 
-    <ProductFormSheet v-model:open="formOpen" :product="editing" />
+    <SupplierFormSheet v-model:open="formOpen" :supplier="editing" />
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
-import { ChevronLeft, ChevronRight, EllipsisVertical, Package, Plus, Search } from "lucide-vue-next";
+import { ChevronLeft, ChevronRight, EllipsisVertical, Plus, Search, Truck } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -126,42 +115,42 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { usePermission } from "@/composables/usePermission";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { useProductsList, useSetProductActive } from "@/queries/products";
-import type { Product, ProductFilter } from "@/repositories/products";
+import { useSaveSupplier, useSuppliersList } from "@/queries/inventory";
+import type { Supplier, SupplierFilter } from "@/repositories/inventory";
 import { ContentWrap, Header } from "@/views/admin/components";
-import { money } from "@/views/admin/pos/format";
-import ProductFormSheet from "./ProductFormSheet.vue";
+import InventoryNav from "../InventoryNav.vue";
+import SupplierFormSheet from "./SupplierFormSheet.vue";
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 500;
 
-const { canCreate, canUpdate } = usePermission("products");
+const { canCreate, canUpdate } = usePermission("inventory");
 const search = ref("");
 const showArchived = ref(false);
 const page = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
 const formOpen = ref(false);
-const editing = ref<Product | null>(null);
+const editing = ref<Supplier | null>(null);
 const debouncedSearch = refDebounced(search, SEARCH_DEBOUNCE_MS);
 
-const filter = computed<ProductFilter>(() => ({ search: debouncedSearch.value, includeArchived: showArchived.value }));
-const listQuery = useProductsList(page, filter);
+const filter = computed<SupplierFilter>(() => ({ search: debouncedSearch.value, includeArchived: showArchived.value }));
+const listQuery = useSuppliersList(page, filter);
 const rows = computed(() => listQuery.data.value?.rows ?? []);
 const total = computed(() => listQuery.data.value?.total ?? 0);
 const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));
-const setActiveMutation = useSetProductActive();
+const saveMutation = useSaveSupplier();
 
 watch([debouncedSearch, showArchived], () => {
   page.pageIndex = INITIAL_PAGE_INDEX;
 });
 
-const openForm = (product: Product | null) => {
-  editing.value = product;
+const openForm = (supplier: Supplier | null) => {
+  editing.value = supplier;
   formOpen.value = true;
 };
 
-const setActive = async (product: Product, isActive: boolean) => {
+const setActive = async (supplier: Supplier, isActive: boolean) => {
   try {
-    await setActiveMutation.mutateAsync({ id: product.id, isActive });
+    await saveMutation.mutateAsync({ id: supplier.id, input: { ...supplier, isActive } });
   } catch {
     // the mutation already showed the failure toast
   }

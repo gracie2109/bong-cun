@@ -390,6 +390,7 @@ export type Database = {
       }
       invoice_lines: {
         Row: {
+          cost_amount: number | null
           amount: number
           combo_id: string | null
           id: string
@@ -407,6 +408,7 @@ export type Database = {
           weight_kg: number | null
         }
         Insert: {
+          cost_amount?: number | null
           amount: number
           combo_id?: string | null
           id?: string
@@ -424,6 +426,7 @@ export type Database = {
           weight_kg?: number | null
         }
         Update: {
+          cost_amount?: number | null
           amount?: number
           combo_id?: string | null
           id?: string
@@ -923,6 +926,7 @@ export type Database = {
       }
       products: {
         Row: {
+          track_stock: boolean
           barcode: string | null
           created_at: string
           description: string | null
@@ -935,6 +939,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          track_stock?: boolean
           barcode?: string | null
           created_at?: string
           description?: string | null
@@ -947,6 +952,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          track_stock?: boolean
           barcode?: string | null
           created_at?: string
           description?: string | null
@@ -959,6 +965,421 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      suppliers: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean
+          name: string
+          note: string | null
+          phone: string | null
+          tax_code: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          note?: string | null
+          phone?: string | null
+          tax_code?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          note?: string | null
+          phone?: string | null
+          tax_code?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stock_thresholds: {
+        Row: {
+          branch_id: string
+          min_qty: number
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          min_qty: number
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          min_qty?: number
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stock_lots: {
+        Row: {
+          branch_id: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          lot_no: string
+          product_id: string
+          qty_on_hand: number
+          received_at: string
+          unit_cost: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          lot_no?: string
+          product_id: string
+          qty_on_hand?: number
+          received_at?: string
+          unit_cost?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          lot_no?: string
+          product_id?: string
+          qty_on_hand?: number
+          received_at?: string
+          unit_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_lots_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_documents: {
+        Row: {
+          branch_id: string
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          cancelled_by_name: string | null
+          code: string
+          created_at: string
+          created_by: string
+          created_by_name: string | null
+          doc_type: string
+          id: string
+          note: string | null
+          posted_at: string | null
+          posted_by: string | null
+          posted_by_name: string | null
+          status: string
+          supplier_id: string | null
+          supplier_ref: string | null
+          total_cost: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          cancelled_by_name?: string | null
+          code: string
+          created_at?: string
+          created_by: string
+          created_by_name?: string | null
+          doc_type: string
+          id?: string
+          note?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          posted_by_name?: string | null
+          status?: string
+          supplier_id?: string | null
+          supplier_ref?: string | null
+          total_cost?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          cancelled_by_name?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string
+          created_by_name?: string | null
+          doc_type?: string
+          id?: string
+          note?: string | null
+          posted_at?: string | null
+          posted_by?: string | null
+          posted_by_name?: string | null
+          status?: string
+          supplier_id?: string | null
+          supplier_ref?: string | null
+          total_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_documents_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_document_lines: {
+        Row: {
+          counted_qty: number | null
+          document_id: string
+          expiry_date: string | null
+          id: string
+          line_no: number
+          lot_id: string | null
+          lot_no: string
+          note: string | null
+          product_id: string
+          qty: number
+          system_qty: number | null
+          unit_cost: number
+        }
+        Insert: {
+          counted_qty?: number | null
+          document_id: string
+          expiry_date?: string | null
+          id?: string
+          line_no: number
+          lot_id?: string | null
+          lot_no?: string
+          note?: string | null
+          product_id: string
+          qty?: number
+          system_qty?: number | null
+          unit_cost?: number
+        }
+        Update: {
+          counted_qty?: number | null
+          document_id?: string
+          expiry_date?: string | null
+          id?: string
+          line_no?: number
+          lot_id?: string | null
+          lot_no?: string
+          note?: string | null
+          product_id?: string
+          qty?: number
+          system_qty?: number | null
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_document_lines_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "stock_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_document_lines_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          balance_after: number
+          branch_id: string
+          created_at: string
+          created_by: string | null
+          document_id: string | null
+          document_line_id: string | null
+          id: string
+          invoice_id: string | null
+          invoice_line_id: string | null
+          lot_id: string
+          product_id: string
+          qty: number
+          reason: string
+          return_id: string | null
+          unit_cost: number
+        }
+        Insert: {
+          balance_after: number
+          branch_id: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          document_line_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          invoice_line_id?: string | null
+          lot_id: string
+          product_id: string
+          qty: number
+          reason: string
+          return_id?: string | null
+          unit_cost: number
+        }
+        Update: {
+          balance_after?: number
+          branch_id?: string
+          created_at?: string
+          created_by?: string | null
+          document_id?: string | null
+          document_line_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          invoice_line_id?: string | null
+          lot_id?: string
+          product_id?: string
+          qty?: number
+          reason?: string
+          return_id?: string | null
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "stock_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "stock_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_return_id_fkey"
+            columns: ["return_id"]
+            isOneToOne: false
+            referencedRelation: "sales_returns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_returns: {
+        Row: {
+          branch_id: string
+          code: string
+          created_at: string
+          created_by: string
+          created_by_name: string | null
+          id: string
+          invoice_id: string
+          reason: string
+          refund_amount: number
+          refund_method: string
+          shift_id: string
+        }
+        Insert: {
+          branch_id: string
+          code: string
+          created_at?: string
+          created_by: string
+          created_by_name?: string | null
+          id?: string
+          invoice_id: string
+          reason: string
+          refund_amount: number
+          refund_method: string
+          shift_id: string
+        }
+        Update: {
+          branch_id?: string
+          code?: string
+          created_at?: string
+          created_by?: string
+          created_by_name?: string | null
+          id?: string
+          invoice_id?: string
+          reason?: string
+          refund_amount?: number
+          refund_method?: string
+          shift_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_returns_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_return_lines: {
+        Row: {
+          amount: number
+          id: string
+          invoice_line_id: string
+          name: string
+          product_id: string
+          qty: number
+          return_id: string
+        }
+        Insert: {
+          amount: number
+          id?: string
+          invoice_line_id: string
+          name: string
+          product_id: string
+          qty: number
+          return_id: string
+        }
+        Update: {
+          amount?: number
+          id?: string
+          invoice_line_id?: string
+          name?: string
+          product_id?: string
+          qty?: number
+          return_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_return_lines_return_id_fkey"
+            columns: ["return_id"]
+            isOneToOne: false
+            referencedRelation: "sales_returns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {
@@ -1272,6 +1693,46 @@ export type Database = {
       }
     }
     Functions: {
+      can_inventory: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
+      cancel_stock_document: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      create_sales_return: { Args: { p: Json }; Returns: Json }
+      post_stock_document: { Args: { p_id: string }; Returns: undefined }
+      save_stock_document: { Args: { p: Json }; Returns: string }
+      sellable_stock: {
+        Args: { p_branch: string; p_products: string[] }
+        Returns: { product_id: string; qty: number }[]
+      }
+      set_min_stock: {
+        Args: { p_branch: string; p_min: number | null; p_product: string }
+        Returns: undefined
+      }
+      stock_alert_counts: { Args: { p_branch: string; p_expiry_days?: number }; Returns: Json }
+      stock_summary: {
+        Args: {
+          p_branch: string
+          p_expiry_days?: number
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_status?: string
+        }
+        Returns: {
+          barcode: string | null
+          expired: number
+          expiring: number
+          is_active: boolean
+          min_qty: number | null
+          name: string
+          next_expiry: string | null
+          on_hand: number
+          product_id: string
+          sellable: number
+          sku: string | null
+          stock_value: number
+          total_count: number
+          unit: string
+        }[]
+      }
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       cancel_invoice: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       cash_shift_summary: { Args: { p_shift: string }; Returns: Json }

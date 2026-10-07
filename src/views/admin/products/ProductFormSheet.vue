@@ -34,6 +34,13 @@
             <p v-if="submitted && !form.unit.trim()" class="text-sm text-red-600">{{ $t("petCare.common.required") }}</p>
           </div>
         </div>
+        <label class="flex items-start gap-3 rounded-lg border p-3">
+          <Switch v-model:checked="form.trackStock" class="mt-0.5" />
+          <span>
+            <span class="block text-sm font-medium">{{ $t("products.form.trackStock") }}</span>
+            <span class="text-xs text-muted-foreground">{{ $t("products.form.trackStockHint") }}</span>
+          </span>
+        </label>
         <div class="space-y-2">
           <Label for="product-desc">{{ $t("products.form.desc") }}</Label>
           <Textarea id="product-desc" v-model="form.desc" rows="3" class="resize-none" />
@@ -61,6 +68,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useSaveProduct } from "@/queries/products";
 import type { Product } from "@/repositories/products";
@@ -71,7 +79,7 @@ const DEFAULT_UNIT = "cái";
 const props = defineProps<{ open: boolean; product: Product | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
-const form = reactive({ name: "", sku: "", barcode: "", price: "", unit: DEFAULT_UNIT, desc: "" });
+const form = reactive({ name: "", sku: "", barcode: "", price: "", unit: DEFAULT_UNIT, desc: "", trackStock: true });
 const submitted = ref(false);
 const mutation = useSaveProduct();
 
@@ -86,6 +94,7 @@ watch(
     form.price = product ? String(product.price) : "";
     form.unit = product?.unit ?? DEFAULT_UNIT;
     form.desc = product?.desc ?? "";
+    form.trackStock = product?.trackStock ?? true;
     submitted.value = false;
   }
 );
@@ -104,6 +113,7 @@ const submit = async () => {
         unit: form.unit,
         desc: form.desc,
         isActive: props.product?.isActive ?? true,
+        trackStock: form.trackStock,
       },
     });
     emit("update:open", false);

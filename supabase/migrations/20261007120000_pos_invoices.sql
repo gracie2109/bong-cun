@@ -1,8 +1,8 @@
 -- POS at the counter (docs: pet-care-plan/ke-hoach-ba-kien-truc.md, M7 and section 3.2).
 --
 --  1. Products get what the counter needs to sell them: SKU, barcode, unit, price, archive flag.
---     Stock by lot and expiry (FEFO) comes with the inventory module; create_invoice marks the
---     spot where it will deduct stock.
+--     Stock by lot and expiry (FEFO) is taken by a trigger on invoice_lines
+--     (20261007130000_inventory_lots.sql).
 --  2. Cash shifts per (branch, cashier): opening cash, then a count at close compared with what
 --     the system expects.
 --  3. Invoices follow the customer (walk-in allowed), lines are polymorphic (product, service,
@@ -563,7 +563,7 @@ begin
       v_name := v_product.name;
       v_unit := v_product.unit;
       v_price := v_product.price;
-      -- Inventory module: deduct stock here by lot, earliest expiry first (FEFO).
+      -- Stock is taken FEFO by the take_stock trigger on invoice_lines (inventory migration).
     elsif v_kind = 'combo' then
       select * into v_combo from public.pet_service_combos
       where id = v_item and status = 1 and is_active;

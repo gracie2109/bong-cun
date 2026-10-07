@@ -3,6 +3,7 @@
 import type { PetListFilter } from "@/repositories/pets";
 import type { PageParams } from "@/repositories/shared";
 import type { PetServiceFilter } from "@/repositories/petServices";
+import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
 import type { ProductFilter } from "@/repositories/products";
 import type { UserListFilter } from "@/repositories/users";
@@ -101,8 +102,29 @@ export const posKeys = {
   shiftSummary: (shiftId: string) => [...posKeys.all, "shift-summary", shiftId] as const,
   invoices: (page: PageParams, filter: InvoiceFilter) => [...posKeys.all, "invoices", page, filter] as const,
   invoice: (id: string) => [...posKeys.all, "invoice", id] as const,
+  invoiceReturns: (invoiceId: string) => [...posKeys.all, "invoice-returns", invoiceId] as const,
   combos: () => [...posKeys.all, "combos"] as const,
   customerPets: (customerId: string) => [...posKeys.all, "customer-pets", customerId] as const,
   servicePrice: (speciesId: string, serviceId: string, weightKg: number, branchId: string) =>
     [...posKeys.all, "service-price", speciesId, serviceId, weightKg, branchId] as const,
+};
+
+// Sales change stock, so POS mutations invalidate these too.
+export const inventoryKeys = {
+  all: ["inventory"] as const,
+  summary: (page: PageParams, filter: StockFilter) => [...inventoryKeys.all, "summary", page, filter] as const,
+  alerts: (branchId: string, expiryDays: number) => [...inventoryKeys.all, "alerts", branchId, expiryDays] as const,
+  sellable: (branchId: string, productIds: string[]) =>
+    [...inventoryKeys.all, "sellable", branchId, [...productIds].sort()] as const,
+  lots: (branchId: string, productId: string, includeEmpty: boolean) =>
+    [...inventoryKeys.all, "lots", branchId, productId, includeEmpty] as const,
+  movements: (branchId: string, productId: string) => [...inventoryKeys.all, "movements", branchId, productId] as const,
+  documents: (page: PageParams, filter: StockDocumentFilter) => [...inventoryKeys.all, "documents", page, filter] as const,
+  document: (id: string) => [...inventoryKeys.all, "document", id] as const,
+};
+
+export const supplierKeys = {
+  all: ["suppliers"] as const,
+  list: (page: PageParams, filter: SupplierFilter) => [...supplierKeys.all, "list", page, filter] as const,
+  options: () => [...supplierKeys.all, "options"] as const,
 };

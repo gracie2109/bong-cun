@@ -1,4 +1,4 @@
-// Shop products sold at the counter. Stock by lot and expiry comes with the inventory module.
+// Shop products sold at the counter. Stock by lot and expiry lives in repositories/inventory.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
@@ -14,6 +14,8 @@ export type Product = {
   unit: string;
   price: number;
   isActive: boolean;
+  /** Sold out of stock lots (FEFO). Off for items sold without stock, such as a carry bag. */
+  trackStock: boolean;
 };
 
 export type ProductInput = {
@@ -24,6 +26,7 @@ export type ProductInput = {
   unit: string;
   price: number;
   isActive?: boolean;
+  trackStock?: boolean;
 };
 
 export type ProductFilter = { search?: string; includeArchived?: boolean };
@@ -37,6 +40,7 @@ export const toProduct = (row: Tables<"products">): Product => ({
   unit: row.unit,
   price: row.price,
   isActive: row.is_active,
+  trackStock: row.track_stock,
 });
 
 const blankToNull = (value: string | null | undefined): string | null => value?.trim() || null;
@@ -49,6 +53,7 @@ const toRow = (input: ProductInput) => ({
   unit: input.unit.trim(),
   price: input.price,
   is_active: input.isActive ?? true,
+  track_stock: input.trackStock ?? true,
 });
 
 /** Name, SKU or barcode contains the typed text. */

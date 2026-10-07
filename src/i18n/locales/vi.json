@@ -61,7 +61,9 @@
     "pos": "Bán tại quầy",
     "invoices": "Hóa đơn",
     "cashShifts": "Ca thu ngân",
-    "adminProducts": "Sản phẩm"
+    "adminProducts": "Sản phẩm",
+    "inventoryStock": "Tồn kho",
+    "stockDocuments": "Phiếu kho"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -693,7 +695,11 @@
     "pos": "Bán tại quầy",
     "invoices": "Hóa đơn",
     "cashShifts": "Ca thu ngân",
-    "products": "Sản phẩm"
+    "products": "Sản phẩm",
+    "inventory": "Kho",
+    "stock": "Tồn kho",
+    "stockDocuments": "Phiếu kho",
+    "suppliers": "Nhà cung cấp"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -730,7 +736,9 @@
       "searchPlaceholder": "Tìm theo tên...",
       "byWeight": "Theo cân nặng",
       "empty": "Không có mục nào phù hợp.",
-      "noProducts": "Chưa có sản phẩm nào. Thêm sản phẩm ở mục Sản phẩm."
+      "noProducts": "Chưa có sản phẩm nào. Thêm sản phẩm ở mục Sản phẩm.",
+      "outOfStock": "Hết hàng",
+      "inStock": "Còn {n}"
     },
     "customer": {
       "title": "Khách hàng",
@@ -796,7 +804,9 @@
       "countedCash": "Tiền mặt thực đếm",
       "balanced": "Khớp với hệ thống.",
       "over": "Thừa {amount} so với hệ thống.",
-      "short": "Thiếu {amount} so với hệ thống."
+      "short": "Thiếu {amount} so với hệ thống.",
+      "returns": "Trả hàng ({n} phiếu)",
+      "refundCash": "Hoàn tiền trả hàng"
     },
     "invoices": {
       "title": "Hóa đơn",
@@ -842,7 +852,23 @@
       "discount_limit": "Giảm giá trên 10% cần quản lý duyệt.",
       "underpaid": "Số tiền khách trả chưa đủ.",
       "overpaid": "Chuyển khoản và thẻ không được vượt quá tổng tiền.",
-      "shift_closed": "Ca của hóa đơn này đã đóng, không thể hủy."
+      "shift_closed": "Ca của hóa đơn này đã đóng, không thể hủy.",
+      "out_of_stock": "Không đủ hàng còn hạn trong kho: {name}.",
+      "has_returns": "Hóa đơn đã có phiếu trả hàng, không thể hủy.",
+      "return_too_much": "Số lượng trả vượt quá số còn lại của {name}.",
+      "return_products_only": "Chỉ trả được sản phẩm, không trả dịch vụ hay combo.",
+      "reason_required": "Cần nhập lý do."
+    },
+    "returns": {
+      "title": "Phiếu trả hàng",
+      "start": "Trả hàng",
+      "formTitle": "Khách trả hàng",
+      "canReturn": "Còn trả được {n}",
+      "returnedQty": "Đã trả {n}",
+      "reason": "Lý do trả",
+      "invalidQty": "Số lượng trả không hợp lệ.",
+      "refund": "Hoàn cho khách:",
+      "confirm": "Xác nhận trả hàng"
     }
   },
   "products": {
@@ -862,7 +888,155 @@
       "barcode": "Mã vạch",
       "price": "Giá bán",
       "unit": "Đơn vị",
-      "desc": "Mô tả"
+      "desc": "Mô tả",
+      "trackStock": "Quản lý tồn kho theo lô",
+      "trackStockHint": "Bán sẽ trừ kho theo hạn dùng gần nhất trước (FEFO) và không bán khi hết hàng. Tắt cho hàng không cần tồn kho như túi đựng."
+    },
+    "noStock": "Không quản lý tồn"
+  },
+  "inventory": {
+    "stock": {
+      "title": "Tồn kho",
+      "alerts": {
+        "low": "Dưới mức tối thiểu",
+        "out": "Hết hàng",
+        "expiring": "Sắp hết hạn ({days} ngày)",
+        "expired": "Có lô đã hết hạn"
+      },
+      "filter": "Lọc tồn kho",
+      "expiryWindow": "Cảnh báo hạn dùng",
+      "withinDays": "Hết hạn trong {days} ngày",
+      "status": {
+        "all": "Tất cả",
+        "low": "Dưới tối thiểu",
+        "out": "Hết hàng",
+        "expiring": "Sắp hết hạn",
+        "expired": "Có lô hết hạn"
+      },
+      "sellable": "Tồn bán được",
+      "expired": "Đã hết hạn",
+      "expiringShort": "Hết hạn trong {days} ngày",
+      "nextExpiry": "HSD gần nhất",
+      "inDays": "(còn {n} ngày)",
+      "min": "Tối thiểu",
+      "value": "Giá trị tồn",
+      "empty": "Không có sản phẩm nào phù hợp.",
+      "minLabel": "Tồn tối thiểu tại chi nhánh",
+      "minHint": "Dưới mức này sản phẩm hiện trong cảnh báo. Để trống để bỏ cảnh báo."
+    },
+    "lots": {
+      "title": "Các lô",
+      "showEmpty": "Hiện lô đã hết",
+      "empty": "Chưa có lô nào. Nhập hàng bằng phiếu nhập kho.",
+      "lotNo": "Số lô",
+      "expiry": "Hạn dùng",
+      "onHand": "Tồn",
+      "unitCost": "Giá vốn",
+      "noLot": "Không số lô",
+      "noExpiry": "Không có HSD",
+      "next": "Bán tiếp theo",
+      "expired": "đã hết hạn"
+    },
+    "movements": {
+      "title": "Thẻ kho",
+      "empty": "Chưa có biến động nào.",
+      "reason": "Nghiệp vụ",
+      "qty": "Số lượng",
+      "balance": "Tồn lô sau",
+      "reasons": {
+        "receipt": "Nhập kho",
+        "receipt_cancel": "Hủy phiếu nhập",
+        "sale": "Bán hàng",
+        "sale_cancel": "Hủy hóa đơn",
+        "return": "Khách trả hàng",
+        "writeoff": "Xuất hủy",
+        "count": "Kiểm kê"
+      }
+    },
+    "documents": {
+      "title": "Phiếu kho",
+      "new": "Tạo phiếu",
+      "types": {
+        "receipt": "Phiếu nhập kho",
+        "writeoff": "Phiếu xuất hủy",
+        "count": "Phiếu kiểm kê"
+      },
+      "newTitle": {
+        "receipt": "Phiếu nhập kho mới",
+        "writeoff": "Phiếu xuất hủy mới",
+        "count": "Phiếu kiểm kê mới"
+      },
+      "typeHint": {
+        "receipt": "Nhập hàng theo lô và hạn dùng. Ghi sổ xong hàng mới bán được.",
+        "writeoff": "Xuất hủy hàng hết hạn, hư hỏng. Cần quản lý ghi sổ.",
+        "count": "Đếm thực tế từng lô; chênh lệch được điều chỉnh khi quản lý ghi sổ."
+      },
+      "searchPlaceholder": "Mã phiếu, số chứng từ NCC, ghi chú...",
+      "type": "Loại phiếu",
+      "status": {
+        "draft": "Nháp",
+        "posted": "Đã ghi sổ",
+        "cancelled": "Đã hủy"
+      },
+      "code": "Mã phiếu",
+      "supplierOrNote": "Nhà cung cấp / Ghi chú",
+      "createdBy": "Người lập",
+      "postedBy": "Người ghi sổ",
+      "cancelledBy": "Đã hủy bởi",
+      "value": "Giá trị",
+      "empty": "Chưa có phiếu kho nào.",
+      "supplier": "Nhà cung cấp",
+      "noSupplier": "Không chọn",
+      "supplierRef": "Số hóa đơn / phiếu giao của NCC",
+      "note": "Ghi chú",
+      "notePlaceholder": {
+        "receipt": "Ví dụ: nhập hàng tháng 10",
+        "writeoff": "Lý do xuất hủy: hết hạn, móp, hỏng...",
+        "count": "Ví dụ: kiểm kê cuối tháng"
+      },
+      "addProduct": "Thêm sản phẩm: quét mã vạch hoặc gõ tên, SKU...",
+      "untracked": "Không quản lý tồn",
+      "noLines": "Chưa có dòng nào. Thêm sản phẩm ở ô phía trên.",
+      "systemQty": "Tồn hệ thống",
+      "countedQty": "Thực đếm",
+      "difference": "Chênh lệch",
+      "pickLot": "Chọn lô",
+      "lotHolds": "Lô còn {n}",
+      "totalLabel": {
+        "receipt": "Tổng tiền nhập",
+        "writeoff": "Giá trị xuất hủy",
+        "count": "Giá trị chênh lệch"
+      },
+      "needsManager": "Bạn lưu được phiếu nháp; quản lý (quyền Kho: Sửa) sẽ kiểm tra và ghi sổ.",
+      "cancelReason": "Lý do hủy",
+      "confirmCancel": "Xác nhận hủy",
+      "cancelDraft": "Hủy phiếu nháp",
+      "cancelPosted": "Hủy phiếu nhập",
+      "saveDraft": "Lưu nháp",
+      "post": "Lưu và ghi sổ"
+    },
+    "suppliers": {
+      "title": "Nhà cung cấp",
+      "add": "Thêm nhà cung cấp",
+      "edit": "Sửa nhà cung cấp",
+      "subtitle": "Dùng khi lập phiếu nhập kho.",
+      "searchPlaceholder": "Tên, số điện thoại hoặc mã số thuế...",
+      "showArchived": "Hiện nhà cung cấp ngừng giao dịch",
+      "name": "Tên nhà cung cấp",
+      "phone": "Số điện thoại",
+      "email": "Email",
+      "taxCode": "Mã số thuế",
+      "address": "Địa chỉ",
+      "empty": "Chưa có nhà cung cấp nào."
+    },
+    "errors": {
+      "lot_short": "Lô của {name} không còn đủ hàng (đã bán hoặc đã xuất).",
+      "needs_manager": "Cần quản lý (quyền Kho: Sửa hoặc Xóa) để thực hiện.",
+      "not_draft": "Phiếu đã ghi sổ hoặc đã hủy, không sửa được nữa.",
+      "no_lines": "Phiếu chưa có dòng nào.",
+      "posted_not_receipt": "Phiếu xuất hủy và kiểm kê đã ghi sổ không hủy được; hãy lập phiếu kiểm kê mới để điều chỉnh.",
+      "reason_required": "Cần nhập lý do hủy.",
+      "untracked_product": "{name} không quản lý tồn kho."
     }
   }
 }
