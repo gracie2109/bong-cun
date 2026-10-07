@@ -80,12 +80,13 @@ export type CreateOrderInput = {
   phoneNumber: string;
   petNum?: number | string | null;
   time?: Date | string | null;
+  /** Name, price and duration are read from the catalog by the database, never sent. */
   services: {
     id: string;
     type: "combo" | "service";
-    name: string;
-    price: number | string;
-    duration?: number[] | null;
+    /** Needed (with `weightKg`) for a service priced by weight. */
+    speciesId?: string | null;
+    weightKg?: number | null;
   }[];
 };
 
@@ -166,7 +167,7 @@ export const getOrderDetail = async (client: Client, id: string): Promise<OrderD
   };
 };
 
-/** Creates an order and its lines in one transaction; the caller becomes the owner. */
+/** Creates an order and its lines in one transaction; the caller becomes the owner and prices come from the catalog. */
 export const createOrder = async (client: Client, input: CreateOrderInput): Promise<string> =>
   unwrap(
     await client.rpc("create_order", {
@@ -178,9 +179,8 @@ export const createOrder = async (client: Client, input: CreateOrderInput): Prom
         services: input.services.map((service) => ({
           id: service.id,
           type: service.type,
-          name: service.name,
-          price: service.price,
-          duration_minutes: service.duration?.[0] ?? null,
+          species_id: service.speciesId ?? null,
+          weight_kg: service.weightKg ?? null,
         })),
       },
     })
