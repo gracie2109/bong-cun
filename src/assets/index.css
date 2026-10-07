@@ -119,6 +119,25 @@
 }
 
 @layer components {
+  /* Data tables: scroll both ways inside their card, header row stays visible.
+     max() keeps a usable height on short screens (iPad landscape with the keyboard up). */
+  .table-scroll {
+    @apply relative w-full overflow-auto overscroll-contain;
+    max-height: max(20rem, calc(100dvh - 14rem));
+  }
+
+  .table-scroll thead {
+    @apply sticky top-0 z-10;
+  }
+
+  .table-scroll thead:not([class*="bg-"]) {
+    @apply bg-card;
+  }
+
+  .table-scroll th {
+    @apply whitespace-nowrap;
+  }
+
   .hamburger {
     @apply relative z-20 m-0 inline-block cursor-pointer overflow-visible border-0 bg-transparent transition-all;
   }

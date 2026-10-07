@@ -91,7 +91,7 @@
     </div>
 
     <div class="overflow-hidden rounded-xl border bg-white">
-      <div class="overflow-x-auto">
+      <div class="table-scroll">
         <table class="w-full text-sm">
           <thead class="bg-muted/40">
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border bg-white">
+      <div class="table-scroll rounded-xl border bg-white">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

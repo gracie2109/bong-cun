@@ -48,7 +48,7 @@
             </Button>
           </div>
         </div>
-        <div class="overflow-x-auto">
+        <div class="table-scroll">
           <table class="w-full text-sm">
             <thead>
               <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
