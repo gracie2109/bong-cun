@@ -45,9 +45,26 @@ export const ADMIN_NAVIGATOR: LinkProp[] = [
     name: "listOrderSchedule",
   },
   {
-    title: "settings",
-    icon: "lucide:cog",
+    title: "Vai trò & Phân quyền",
+    icon: "lucide:shield-check",
     name: "settings",
+    children: [
+      {
+        title: "Cấu hình vai trò",
+        icon: "lucide:user-cog",
+        name: "settings",
+      },
+      {
+        title: "Danh sách quyền",
+        icon: "lucide:key-round",
+        name: "permissions",
+      },
+      {
+        title: "Ma trận đối chiếu",
+        icon: "lucide:grid-3x3",
+        name: "permissionMatrix",
+      },
+    ],
   },
 ];
 

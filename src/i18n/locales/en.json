@@ -54,7 +54,10 @@
     "petSpecies": "Species",
     "petServices": "Spa services",
     "petPrices": "Price list",
-    "petCombos": "Combos"
+    "petCombos": "Combos",
+    "rbacRoles": "Role setup",
+    "rbacPermissions": "Permissions",
+    "rbacMatrix": "Permission matrix"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -490,6 +493,105 @@
         "3": "Coming soon",
         "4": "Regular"
       }
+    }
+  },
+  "rbac": {
+    "title": "Roles & permissions",
+    "subtitle": "A role decides what staff can do; each staff member holds one role per branch.",
+    "nav": {
+      "roles": "Role setup",
+      "permissions": "Permissions",
+      "matrix": "Matrix"
+    },
+    "methods": {
+      "VIEW": "View",
+      "CREATE": "Create",
+      "UPDATE": "Edit",
+      "DELETE": "Delete",
+      "IMPORT": "Import",
+      "EXPORT": "Export",
+      "SETTING": "Configure",
+      "ALL": "Full access"
+    },
+    "ungrouped": "Other",
+    "system": "System",
+    "roles": {
+      "list": "Roles ({n})",
+      "add": "Add role",
+      "new": "New role",
+      "staffCount": "{n} staff",
+      "grantCount": "{n} permissions",
+      "name": "Role code",
+      "nameHint": "ASCII letters, no spaces, e.g. cashier, groomer",
+      "desc": "Display name / description",
+      "errName": "Use ASCII letters, digits and _ only",
+      "grid": "Role permissions",
+      "gridHint": "Tick each action. A blank cell means the permission has no such action.",
+      "permission": "Permission",
+      "allRow": "All",
+      "selectAll": "Select all",
+      "clearAll": "Clear all",
+      "systemNote": "System role: its code cannot change and it cannot be deleted. superAdmin always has full access.",
+      "superAdminNote": "superAdmin always has full access at every branch; no ticks needed.",
+      "delete": "Delete role",
+      "confirmDeleteTitle": "Delete role \"{name}\"?",
+      "confirmDeleteDesc": "Its permissions are removed too. A role still held by staff cannot be deleted.",
+      "unsaved": "Unsaved changes",
+      "empty": "Pick a role on the left or add a new one.",
+      "staff": "Staff holding this role",
+      "staffEmpty": "No staff yet.",
+      "assign": "Assign staff",
+      "remove": "Remove",
+      "noPermissions": "No permissions yet. Create them in the Permissions tab first."
+    },
+    "permissions": {
+      "add": "Add permission",
+      "edit": "Edit permission",
+      "searchPlaceholder": "Search code or description",
+      "filterModule": "Group",
+      "col": {
+        "code": "Code",
+        "desc": "Description",
+        "module": "Group",
+        "methods": "Actions",
+        "roles": "Used by",
+        "actions": "Actions"
+      },
+      "form": {
+        "code": "Permission code",
+        "codeHint": "Used in code and RLS: ASCII, e.g. invoices, stock.adjust",
+        "errCode": "Use ASCII letters, digits, _ and . only",
+        "desc": "Description",
+        "module": "Group",
+        "modulePlaceholder": "e.g. Sales, Inventory, Spa",
+        "methods": "Supported actions",
+        "errMethods": "Pick at least one action",
+        "sortOrder": "Display order",
+        "renameWarning": "Renaming updates every role, but code and RLS that use the old code will not change."
+      },
+      "empty": "No permissions yet.",
+      "confirmDeleteTitle": "Delete permission \"{name}\"?",
+      "confirmDeleteDesc": "It will be removed from every role that grants it.",
+      "usedBy": "{n} roles"
+    },
+    "matrix": {
+      "hint": "Each cell lists what the role may do on that permission. Click a role to edit it.",
+      "method": "Action",
+      "allMethods": "All actions",
+      "full": "Full",
+      "none": "—",
+      "legendFull": "Every action",
+      "legendPartial": "Some",
+      "legendNone": "None"
+    },
+    "assign": {
+      "title": "Assign staff to \"{role}\"",
+      "staff": "Staff",
+      "branch": "Branch",
+      "pickStaff": "Pick staff",
+      "current": "Now: {role}",
+      "replaceNote": "Staff with another role at this branch will move to \"{role}\".",
+      "noStaff": "No staff accounts yet. Change the account type on the Users page first."
     }
   }
 }

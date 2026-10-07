@@ -3,7 +3,7 @@ import View from "@/views/admin/settings/permissions/Index.vue";
 
 definePageMeta({
   name: "permissions",
-  titleKey: "pets",
+  titleKey: "rbacPermissions",
 });
 </script>
 

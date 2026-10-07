@@ -54,7 +54,10 @@
     "petSpecies": "Danh mục loài",
     "petServices": "Dịch vụ spa",
     "petPrices": "Bảng giá",
-    "petCombos": "Combo"
+    "petCombos": "Combo",
+    "rbacRoles": "Cấu hình vai trò",
+    "rbacPermissions": "Danh sách quyền",
+    "rbacMatrix": "Ma trận phân quyền"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -490,6 +493,105 @@
         "3": "Sắp ra mắt",
         "4": "Thường"
       }
+    }
+  },
+  "rbac": {
+    "title": "Vai trò & Phân quyền",
+    "subtitle": "Vai trò quyết định nhân viên được làm gì; mỗi nhân viên có một vai trò tại từng cơ sở.",
+    "nav": {
+      "roles": "Cấu hình vai trò",
+      "permissions": "Danh sách quyền",
+      "matrix": "Ma trận đối chiếu"
+    },
+    "methods": {
+      "VIEW": "Xem",
+      "CREATE": "Thêm",
+      "UPDATE": "Sửa",
+      "DELETE": "Xóa",
+      "IMPORT": "Nhập file",
+      "EXPORT": "Xuất file",
+      "SETTING": "Cấu hình",
+      "ALL": "Toàn quyền"
+    },
+    "ungrouped": "Khác",
+    "system": "Hệ thống",
+    "roles": {
+      "list": "Vai trò ({n})",
+      "add": "Thêm vai trò",
+      "new": "Vai trò mới",
+      "staffCount": "{n} nhân viên",
+      "grantCount": "{n} quyền",
+      "name": "Mã vai trò",
+      "nameHint": "Chữ không dấu, không khoảng trắng, ví dụ: cashier, groomer",
+      "desc": "Tên hiển thị / mô tả",
+      "errName": "Mã chỉ gồm chữ không dấu, số và dấu _",
+      "grid": "Quyền của vai trò",
+      "gridHint": "Tích theo từng thao tác. Ô trống là quyền đó không có thao tác này.",
+      "permission": "Quyền",
+      "allRow": "Tất cả",
+      "selectAll": "Chọn hết",
+      "clearAll": "Bỏ hết",
+      "systemNote": "Vai trò hệ thống: không đổi mã và không xóa được. superAdmin luôn có toàn quyền.",
+      "superAdminNote": "superAdmin luôn có toàn quyền ở mọi cơ sở, không cần tích.",
+      "delete": "Xóa vai trò",
+      "confirmDeleteTitle": "Xóa vai trò \"{name}\"?",
+      "confirmDeleteDesc": "Các quyền của vai trò sẽ bị xóa theo. Không xóa được khi còn nhân viên đang giữ vai trò này.",
+      "unsaved": "Có thay đổi chưa lưu",
+      "empty": "Chọn một vai trò bên trái hoặc thêm vai trò mới.",
+      "staff": "Nhân viên giữ vai trò này",
+      "staffEmpty": "Chưa có nhân viên nào.",
+      "assign": "Gán nhân viên",
+      "remove": "Gỡ",
+      "noPermissions": "Chưa có quyền nào. Hãy tạo quyền ở tab Danh sách quyền trước."
+    },
+    "permissions": {
+      "add": "Thêm quyền",
+      "edit": "Sửa quyền",
+      "searchPlaceholder": "Tìm theo mã hoặc mô tả",
+      "filterModule": "Nhóm",
+      "col": {
+        "code": "Mã quyền",
+        "desc": "Mô tả",
+        "module": "Nhóm",
+        "methods": "Thao tác",
+        "roles": "Vai trò đang dùng",
+        "actions": "Thao tác"
+      },
+      "form": {
+        "code": "Mã quyền",
+        "codeHint": "Dùng trong code và RLS: chữ không dấu, ví dụ: invoices, stock.adjust",
+        "errCode": "Mã chỉ gồm chữ không dấu, số, dấu _ và dấu .",
+        "desc": "Mô tả",
+        "module": "Nhóm",
+        "modulePlaceholder": "Ví dụ: Bán hàng, Kho, Spa",
+        "methods": "Thao tác hỗ trợ",
+        "errMethods": "Chọn ít nhất một thao tác",
+        "sortOrder": "Thứ tự hiển thị",
+        "renameWarning": "Đổi mã sẽ cập nhật theo ở mọi vai trò, nhưng code và RLS đang dùng mã cũ sẽ không tự đổi."
+      },
+      "empty": "Chưa có quyền nào.",
+      "confirmDeleteTitle": "Xóa quyền \"{name}\"?",
+      "confirmDeleteDesc": "Quyền này sẽ bị gỡ khỏi mọi vai trò đang dùng nó.",
+      "usedBy": "{n} vai trò"
+    },
+    "matrix": {
+      "hint": "Mỗi ô là các thao tác vai trò được làm trên quyền đó. Bấm tên vai trò để sửa.",
+      "method": "Thao tác",
+      "allMethods": "Mọi thao tác",
+      "full": "Đủ",
+      "none": "—",
+      "legendFull": "Đủ mọi thao tác",
+      "legendPartial": "Một phần",
+      "legendNone": "Không có"
+    },
+    "assign": {
+      "title": "Gán nhân viên vào vai trò \"{role}\"",
+      "staff": "Nhân viên",
+      "branch": "Cơ sở",
+      "pickStaff": "Chọn nhân viên",
+      "current": "Hiện tại: {role}",
+      "replaceNote": "Nhân viên đã có vai trò khác ở cơ sở này sẽ được chuyển sang vai trò \"{role}\".",
+      "noStaff": "Chưa có tài khoản nhân viên. Đổi loại tài khoản ở trang Người dùng trước."
     }
   }
 }

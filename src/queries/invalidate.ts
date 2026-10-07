@@ -7,6 +7,7 @@ import {
   roleKeys,
   servicePriceKeys,
   speciesKeys,
+  staffKeys,
   weightBracketKeys,
 } from "./keys";
 
@@ -23,9 +24,11 @@ export const invalidateCatalog = (queryClient: QueryClient) =>
     queryClient.invalidateQueries({ queryKey: petComboKeys.all }),
   ]);
 
-// Renaming a permission cascades into every role that grants it.
+// Renaming a permission cascades into every role that grants it, and renaming a role into
+// every staff assignment that holds it.
 export const invalidateAccess = (queryClient: QueryClient) =>
   Promise.all([
     queryClient.invalidateQueries({ queryKey: permissionKeys.all }),
     queryClient.invalidateQueries({ queryKey: roleKeys.all }),
+    queryClient.invalidateQueries({ queryKey: staffKeys.all }),
   ]);

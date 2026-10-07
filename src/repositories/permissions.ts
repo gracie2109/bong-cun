@@ -11,6 +11,9 @@ export type Permission = {
   name: string;
   methods: string[];
   description: string | null;
+  /** Group shown on the permission screens, e.g. "Bán hàng". */
+  module: string | null;
+  sortOrder: number;
   createdAt: string;
 };
 
@@ -18,6 +21,8 @@ export type PermissionInput = {
   name: string;
   methods: string[];
   description?: string | null;
+  module?: string | null;
+  sortOrder?: number;
 };
 
 const toPermission = (row: Tables<"permissions">): Permission => ({
@@ -25,6 +30,8 @@ const toPermission = (row: Tables<"permissions">): Permission => ({
   name: row.name,
   methods: row.methods,
   description: row.description,
+  module: row.module,
+  sortOrder: row.sort_order,
   createdAt: row.created_at,
 });
 
@@ -32,11 +39,18 @@ const toColumns = (input: PermissionInput) => ({
   name: input.name,
   methods: input.methods ?? [],
   description: input.description || null,
+  module: input.module?.trim() || null,
+  sort_order: input.sortOrder ?? 0,
 });
 
 export const listPermissions = async (client: Client): Promise<Permission[]> =>
   unwrap(
-    await client.from("permissions").select("*").order("created_at", { ascending: false })
+    await client
+      .from("permissions")
+      .select("*")
+      .order("sort_order")
+      .order("module", { nullsFirst: false })
+      .order("name")
   ).map(toPermission);
 
 export const createPermission = async (client: Client, input: PermissionInput): Promise<Permission> =>
