@@ -91,7 +91,10 @@ export const staffKeys = {
 
 export const productKeys = {
   all: ["products"] as const,
-  list: (page: PageParams, filter: ProductFilter) => [...productKeys.all, "list", page, filter] as const,
+  groups: (page: PageParams, filter: ProductFilter) => [...productKeys.all, "groups", page, filter] as const,
+  group: (id: string) => [...productKeys.all, "group", id] as const,
+  sellableGroup: (id: string) => [...productKeys.all, "sellable-group", id] as const,
+  attributes: () => [...productKeys.all, "attributes"] as const,
   sellable: (text: string) => [...productKeys.all, "sellable", text] as const,
 };
 

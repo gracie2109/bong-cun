@@ -41,7 +41,7 @@
           type="button"
           class="flex min-h-20 flex-col justify-between rounded-lg border p-3 text-left transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-border disabled:hover:bg-transparent"
           :disabled="stockOf(item) === 0"
-          @click="emit('add', item)"
+          @click="choose(item)"
         >
           <span class="flex items-start justify-between gap-2">
             <span class="line-clamp-2 text-sm font-semibold">{{ item.name }}</span>
@@ -56,17 +56,30 @@
           <span class="mt-1 flex items-end justify-between gap-2">
             <span class="truncate text-[11px] text-muted-foreground">{{ item.hint }}</span>
             <span class="whitespace-nowrap text-sm font-bold text-primary">
-              {{ item.price === null ? $t("pos.catalog.byWeight") : money(item.price) }}
+              <template v-if="item.price === null">{{ $t("pos.catalog.byWeight") }}</template>
+              <template v-else-if="item.maxPrice && item.maxPrice > item.price">
+                {{ $t("pos.variant.from", { price: money(item.price) }) }}
+              </template>
+              <template v-else>{{ money(item.price) }}</template>
             </span>
           </span>
         </button>
       </div>
     </div>
+
+    <VariantDialog
+      :group-id="openGroup?.groupId"
+      :title="openGroup?.name ?? ''"
+      :branch-id="branchId"
+      @close="openGroup = null"
+      @pick="(variant) => emit('add', fromVariant(variant))"
+    />
   </section>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import i18n from "@/i18n";
 import { refDebounced } from "@vueuse/core";
 import { Layers2, Package, ScanLine, Scissors, Search } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
@@ -78,9 +91,14 @@ import { useSellableCombos } from "@/queries/pos";
 import { useSellableProducts } from "@/queries/products";
 import { supabaseClient } from "@/lib/supabase";
 import type { LineType } from "@/repositories/pos";
-import { searchSellableProducts, type Product } from "@/repositories/products";
+import {
+  searchSellableProducts,
+  type ProductVariant,
+  type SellableProduct,
+} from "@/repositories/products";
 import { qty } from "@/views/admin/inventory/format";
 import { money } from "../format";
+import VariantDialog from "./VariantDialog.vue";
 
 /** One tile; `price` is null for a by-weight service (priced once a pet is picked). */
 export type CatalogItem = {
@@ -92,6 +110,9 @@ export type CatalogItem = {
   hint: string;
   barcode?: string | null;
   sku?: string | null;
+  /** Set on a tile that stands for several variants: picking it opens the variant picker. */
+  groupId?: string;
+  maxPrice?: number;
 };
 
 const SEARCH_DEBOUNCE_MS = 500;
@@ -112,7 +133,7 @@ const productsQuery = useSellableProducts(debounced);
 const servicesQuery = useAllPetServices();
 const combosQuery = useSellableCombos();
 
-const toProductItem = (product: Product): CatalogItem => ({
+const toProductItem = (product: SellableProduct | ProductVariant): CatalogItem => ({
   type: "product",
   id: product.id,
   name: product.name,
@@ -123,12 +144,35 @@ const toProductItem = (product: Product): CatalogItem => ({
   sku: product.sku,
 });
 
+const fromVariant = (variant: ProductVariant): CatalogItem => toProductItem(variant);
+
+// Variants of one group found together share one tile; a lone match (a scanned size) shows as itself.
+const productItems = computed<CatalogItem[]>(() => {
+  const byGroup = new Map<string, SellableProduct[]>();
+  for (const product of productsQuery.data.value ?? []) {
+    byGroup.set(product.groupId, [...(byGroup.get(product.groupId) ?? []), product]);
+  }
+  return [...byGroup.values()].map((variants) => {
+    const [first] = variants;
+    if (variants.length === 1) return toProductItem(first);
+    const prices = variants.map((variant) => variant.price);
+    return {
+      type: "product",
+      id: `group:${first.groupId}`,
+      groupId: first.groupId,
+      name: first.groupName,
+      price: Math.min(...prices),
+      maxPrice: Math.max(...prices),
+      unit: null,
+      hint: i18n.global.t("pos.variant.count", { n: variants.length }),
+    };
+  });
+});
+
 const matches = (name: string) => fold(name).includes(fold(search.value));
 
 const items = computed<CatalogItem[]>(() => {
-  if (kind.value === "product") {
-    return (productsQuery.data.value ?? []).map(toProductItem);
-  }
+  if (kind.value === "product") return productItems.value;
   if (kind.value === "service") {
     return (servicesQuery.data.value ?? [])
       .filter((service) => matches(service.name))
@@ -149,8 +193,22 @@ const items = computed<CatalogItem[]>(() => {
 // Unexpired stock at this branch for the product tiles; products that do not track stock have none.
 const productIds = computed(() => (productsQuery.data.value ?? []).map((product) => product.id));
 const stockQuery = useSellableStock(computed(() => props.branchId), productIds);
-const stockOf = (item: CatalogItem): number | undefined =>
-  item.type === "product" ? stockQuery.data.value?.[item.id] : undefined;
+const stockOf = (item: CatalogItem): number | undefined => {
+  if (item.type !== "product") return undefined;
+  if (!item.groupId) return stockQuery.data.value?.[item.id];
+  // A group tile counts its variants' stock only when every one of them tracks stock.
+  const variants = (productsQuery.data.value ?? []).filter((product) => product.groupId === item.groupId);
+  if (!variants.every((variant) => variant.trackStock)) return undefined;
+  const counts = variants.map((variant) => stockQuery.data.value?.[variant.id]);
+  if (!counts.every((count): count is number => count !== undefined)) return undefined;
+  return counts.reduce((sum, count) => sum + count, 0);
+};
+
+const openGroup = ref<CatalogItem | null>(null);
+const choose = (item: CatalogItem) => {
+  if (item.groupId) openGroup.value = item;
+  else emit("add", item);
+};
 
 const loading = computed(() => {
   if (kind.value === "product") return productsQuery.isPending.value;

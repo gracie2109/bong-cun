@@ -12,18 +12,22 @@
 
 <script lang="ts" setup>
 import { useSlots } from 'vue';
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonVariants } from "@/components/ui/button";
 import { Loader2 } from 'lucide-vue-next';
 
 const slots = useSlots();
 const hasIconSlot = !!slots.icon;
 
+// Props are listed here rather than intersected with ButtonProps: the SFC compiler must then
+// resolve "@/components/ui/button" itself, which fails in some dev setups.
 type ICustomBtn = {
   disabled?: boolean;
   loading?: boolean;
   buttonText: string;
   icon?: any;
-} & ButtonProps;
+  variant?: ButtonVariants["variant"];
+  size?: ButtonVariants["size"];
+};
 
 const props = defineProps<ICustomBtn>();
 

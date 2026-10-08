@@ -2,6 +2,16 @@ import { formatPrice } from "@/lib/utils";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
 
+/** One cart line: `id` is the variant (products row) id, `variant` its values ("Gà / 85g"). */
+export type CartItem = {
+  id: string;
+  image: string;
+  name: string;
+  quantity: number;
+  price: number;
+  variant: string;
+};
+
 export const useCartLocal = defineStore("cartLocal", () => {
   const checkoutList = ref([])
   const carts: Ref<any[]> = ref([
@@ -49,14 +59,17 @@ export const useCartLocal = defineStore("cartLocal", () => {
     carts.value = carts.value.filter((i) => i.id !== data.id);
   };
 
-  const addToCart= (data: any) => {
-    
-  }
+  /** Adds a variant to the cart; the same variant again only raises its quantity. */
+  const addToCart = (item: CartItem) => {
+    const existing = carts.value.find((line) => line.id === item.id);
+    if (existing) existing.quantity += item.quantity;
+    else carts.value.push({ ...item });
+  };
 
   const addToCheckoutList = (data:any) => {
     checkoutList.value = data
   }
 
 
-  return { carts,cartTotal, updateQuanty, clearCart, deleteCartItem , addToCheckoutList, checkoutList};
+  return { carts,cartTotal, updateQuanty, clearCart, deleteCartItem , addToCart, addToCheckoutList, checkoutList};
 });
