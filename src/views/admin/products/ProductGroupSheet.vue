@@ -12,7 +12,7 @@
 
       <form v-else id="product-group-form" class="flex-1 space-y-6 overflow-y-auto px-6 py-5" @submit.prevent="submit">
         <!-- General -->
-        <section class="grid gap-4 md:grid-cols-[1fr_12rem]">
+        <section class="grid gap-4 md:grid-cols-[1fr_auto]">
           <div class="space-y-4">
             <div class="space-y-2">
               <Label for="group-name">{{ $t("products.form.name") }}</Label>
@@ -25,9 +25,15 @@
             </div>
           </div>
           <div class="space-y-2">
-            <Label for="group-image">{{ $t("products.form.image") }}</Label>
-            <ProductThumb :src="form.imageUrl" class="aspect-square w-full" />
-            <Input id="group-image" v-model="form.imageUrl" :placeholder="URL_HINT" />
+            <Label>{{ $t("products.form.image") }}</Label>
+            <UploadFields
+              folder-name="products"
+              :limit="1"
+              :show-control="false"
+              keep-files
+              :model-value="toImages(form.imageUrl)"
+              @set-images="(list: string[]) => (form.imageUrl = list[0] ?? '')"
+            />
           </div>
         </section>
 
@@ -143,10 +149,15 @@
                   <td class="px-3 py-2 text-center"><Switch v-model:checked="row.trackStock" /></td>
                   <td class="px-3 py-2 text-center"><Switch v-model:checked="row.isActive" /></td>
                   <td class="px-3 py-2">
-                    <div class="flex items-center gap-2">
-                      <ProductThumb :src="row.imageUrl || form.imageUrl" class="size-8 shrink-0" />
-                      <Input v-model="row.imageUrl" class="h-8 w-40" :placeholder="URL_HINT" />
-                    </div>
+                    <UploadFields
+                      folder-name="products"
+                      :limit="1"
+                      :show-control="false"
+                      size="sm"
+                      keep-files
+                      :model-value="toImages(row.imageUrl)"
+                      @set-images="(list: string[]) => (row.imageUrl = list[0] ?? '')"
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -189,11 +200,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useProductAttributes, useProductGroup, useSaveProductGroup } from "@/queries/products";
 import type { ProductGroup } from "@/repositories/products";
 import { money, parseAmount } from "@/views/admin/pos/format";
-import ProductThumb from "./ProductThumb.vue";
+import UploadFields from "@/components/common/UploadFields.vue";
 
 const DEFAULT_UNIT = "cái";
 const MANY_VARIANTS = 100;
-const URL_HINT = "https://...";
+/** The single-image list the upload boxes show. */
+const toImages = (url: string) => (url ? [url] : []);
 
 type AttributeForm = { uid: number; name: string; values: string[]; draft: string };
 type VariantRow = {

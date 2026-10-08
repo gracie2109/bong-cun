@@ -899,7 +899,7 @@
       "desc": "Description",
       "trackStock": "Track stock by lot",
       "trackStockHint": "Sales take the earliest expiry first (FEFO) and stop when stock runs out. Turn off for items sold without stock, such as carry bags.",
-      "image": "Image (link)"
+      "image": "Image"
     },
     "noStock": "No stock tracking",
     "variantsCount": "{n} variants",

@@ -899,7 +899,7 @@
       "desc": "Mô tả",
       "trackStock": "Quản lý tồn kho theo lô",
       "trackStockHint": "Bán sẽ trừ kho theo hạn dùng gần nhất trước (FEFO) và không bán khi hết hàng. Tắt cho hàng không cần tồn kho như túi đựng.",
-      "image": "Ảnh (link)"
+      "image": "Ảnh"
     },
     "noStock": "Không quản lý tồn",
     "variantsCount": "{n} biến thể",

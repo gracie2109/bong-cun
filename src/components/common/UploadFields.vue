@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useFileDialog } from "@vueuse/core";
 import { Eye, PlusCircle, Trash } from "lucide-vue-next";
-import { ref, toRaw } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { supabaseClient } from "@/lib/supabase";
 import { useAuthStore } from "@/stores";
@@ -19,11 +19,25 @@ const props = defineProps<{
   folderName: string;
   limit: number;
   showControl:boolean
+  /** Images already saved (for an edit form); kept in sync when the parent changes them. */
+  modelValue?: string[];
+  /** "sm" draws small boxes, for a table cell. */
+  size?: "sm" | "md";
+  /** Removing only unlinks the image; the file stays (the form may still be cancelled). */
+  keepFiles?: boolean;
 }>();
 
 const errors = ref<string | null>(null);
 
 const images = ref<string[]>([]);
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (value) images.value = [...value];
+  },
+  { immediate: true }
+);
+const boxClass = computed(() => (props.size === "sm" ? "w-16 h-16" : "w-24 h-24"));
 
 const emit = defineEmits(["setImages"]);
 const zoom = ref(false); // State for zoom
@@ -73,11 +87,12 @@ const uploadFile = async (file: File) => {
 
 const delImg = ref("");
 const handleDelete = async (img: string) => {
-  const path = img ? pathFromPublicUrl(img) : null;
-  if (!path) return;
+  if (!img) return;
+  // A link from elsewhere (not in our bucket) is only taken off the list.
+  const path = pathFromPublicUrl(img);
 
   try {
-    await deleteImage(supabaseClient(), path);
+    if (path && !props.keepFiles) await deleteImage(supabaseClient(), path);
     const newData = images.value.filter((i) => i !== img);
     images.value = newData;
     emit("setImages", newData);
@@ -102,7 +117,8 @@ const handleDelete = async (img: string) => {
     <div
       v-for="(i, j) in limit"
       :key="j"
-      class="rounded-lg border border-custom-primary border-dashed relative w-24 h-24"
+      class="rounded-lg border border-custom-primary border-dashed relative"
+      :class="boxClass"
       @click="
         () => {
           if (!images[i - 1]) {
@@ -120,7 +136,7 @@ const handleDelete = async (img: string) => {
             <LoadingSpin />
           </template>
         </template>
-        <div class="relative w-24 h-24" v-else>
+        <div class="relative" :class="boxClass" v-else>
           <div id="media" class="relative w-full h-full">
             <img
               :src="images[i - 1]"
