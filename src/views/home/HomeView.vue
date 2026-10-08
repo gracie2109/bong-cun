@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed } from "vue";
 import Banner from "./components/Sliders.vue";
 import Services from "./components/Services.vue";
 import Categories from "./components/Categories.vue";
@@ -7,6 +8,14 @@ import { rawProducts } from "./constants";
 import CardProduct from "@/components/CardProduct.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
 import Footer from "@/components/Footer.vue";
+import ShopGroupCard from "@/components/ShopGroupCard.vue";
+import { useProductGroups } from "@/queries/products";
+
+// Products from the catalog: one card per product group, variants picked in the quick view.
+const groupsQuery = useProductGroups({ pageIndex: 1, pageSize: 12 });
+const groups = computed(() =>
+  (groupsQuery.data.value?.rows ?? []).filter((group) => group.variants.length > 0)
+);
 </script>
 <template>
   <div>
@@ -32,7 +41,18 @@ import Footer from "@/components/Footer.vue";
 
           <div id="products">
             <div
-              v-if="rawProducts && rawProducts.length > 0"
+              v-if="groups.length > 0"
+              class="flex gap-4 product_list snap-x snap-mandatory pb-4 custom-scrollbar2 overflow-x-auto"
+            >
+              <div v-for="group in groups" :key="group.id">
+                <div class="bg-white rounded-md w-[300px] h-[400px] snap-start">
+                  <ShopGroupCard :group="group" />
+                </div>
+              </div>
+            </div>
+            <!-- Sample cards until the catalog has products. -->
+            <div
+              v-else-if="rawProducts && rawProducts.length > 0"
               class="flex justify-between gap-4 product_list snap-x snap-mandatory pb-4 custom-scrollbar2 overflow-x-auto"
             >
               <div v-for="(i, j) in rawProducts" :key="j">

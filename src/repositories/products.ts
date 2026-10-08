@@ -16,6 +16,9 @@ export type Product = {
   isActive: boolean;
   /** Sold out of stock lots (FEFO). Off for items sold without stock, such as a carry bag. */
   trackStock: boolean;
+  /** The product group this variant belongs to; a plain product is a group of one. */
+  groupId: string;
+  imageUrl: string | null;
 };
 
 export type ProductFilter = { search?: string; includeArchived?: boolean };
@@ -30,6 +33,8 @@ export const toProduct = (row: Tables<"products">): Product => ({
   price: row.price,
   isActive: row.is_active,
   trackStock: row.track_stock,
+  groupId: row.group_id,
+  imageUrl: row.image_url,
 });
 
 /** Name, SKU or barcode contains the typed text. */
@@ -38,16 +43,26 @@ const searchCondition = (text: string): string | null => {
   return term ? [`name.ilike.%${term}%`, `sku.ilike.%${term}%`, `barcode.ilike.%${term}%`].join(",") : null;
 };
 
+export type SellableProduct = Product & { groupName: string };
+
 /** Active products for the POS picker; an exact barcode or SKU comes first. */
 export const searchSellableProducts = async (
   client: Client,
   text: string,
-  limit = 24
-): Promise<Product[]> => {
-  let query = client.from("products").select("*").eq("is_active", true).order("name").limit(limit);
+  limit = 60
+): Promise<SellableProduct[]> => {
+  let query = client
+    .from("products")
+    .select("*, product_groups(name)")
+    .eq("is_active", true)
+    .order("name")
+    .limit(limit);
   const condition = searchCondition(text);
   if (condition) query = query.or(condition);
-  const rows = unwrap(await query).map(toProduct);
+  const rows = unwrap(await query).map((row) => ({
+    ...toProduct(row),
+    groupName: row.product_groups?.name ?? row.name,
+  }));
   const code = text.trim();
   return [...rows].sort(
     (a, b) => Number(b.barcode === code || b.sku === code) - Number(a.barcode === code || a.sku === code)
@@ -174,6 +189,13 @@ export const listProductGroups = async (
 /** A group with all its variants, archived ones included, for the edit form. */
 export const getProductGroup = async (client: Client, id: string): Promise<ProductGroup | null> => {
   const { data, error } = await client.rpc("product_group_json", { p_group: id, p_all: true });
+  if (error) throw error;
+  return data ? toGroup(data as unknown as GroupJson) : null;
+};
+
+/** A group with only its sellable variants, for the POS and shop pickers. */
+export const getSellableGroup = async (client: Client, id: string): Promise<ProductGroup | null> => {
+  const { data, error } = await client.rpc("product_group_json", { p_group: id, p_all: false });
   if (error) throw error;
   return data ? toGroup(data as unknown as GroupJson) : null;
 };

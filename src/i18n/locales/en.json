@@ -869,6 +869,13 @@
       "invalidQty": "Invalid return quantity.",
       "refund": "Refund:",
       "confirm": "Confirm return"
+    },
+    "variant": {
+      "subtitle": "Pick the exact variant to add to the invoice.",
+      "pickAll": "Pick a value for each attribute.",
+      "add": "Add to invoice",
+      "count": "{n} variants",
+      "from": "From {price}"
     }
   },
   "products": {
@@ -1076,5 +1083,13 @@
       "reason_required": "A reason is required.",
       "untracked_product": "{name} does not track stock."
     }
+  },
+  "shop": {
+    "quantity": "Quantity",
+    "less": "Fewer",
+    "more": "More",
+    "pickVariant": "Pick every option to add it to the cart.",
+    "addToCart": "Add to cart",
+    "added": "Added {name} to the cart"
   }
 }

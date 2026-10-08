@@ -869,6 +869,13 @@
       "invalidQty": "Số lượng trả không hợp lệ.",
       "refund": "Hoàn cho khách:",
       "confirm": "Xác nhận trả hàng"
+    },
+    "variant": {
+      "subtitle": "Chọn đúng biến thể để thêm vào hóa đơn.",
+      "pickAll": "Chọn đủ các thuộc tính.",
+      "add": "Thêm vào hóa đơn",
+      "count": "{n} biến thể",
+      "from": "Từ {price}"
     }
   },
   "products": {
@@ -1076,5 +1083,13 @@
       "reason_required": "Cần nhập lý do hủy.",
       "untracked_product": "{name} không quản lý tồn kho."
     }
+  },
+  "shop": {
+    "quantity": "Số lượng",
+    "less": "Bớt",
+    "more": "Thêm",
+    "pickVariant": "Chọn đủ phân loại để thêm vào giỏ.",
+    "addToCart": "Thêm vào giỏ hàng",
+    "added": "Đã thêm {name} vào giỏ"
   }
 }

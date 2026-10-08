@@ -5,6 +5,7 @@ import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
 import {
   getProductGroup,
+  getSellableGroup,
   listProductAttributes,
   listProductGroups,
   productErrorHint,
@@ -39,6 +40,14 @@ export const useProductGroup = (id: MaybeRef<string | undefined>) =>
   useQuery({
     queryKey: computed(() => productKeys.group(unref(id) ?? "")),
     queryFn: () => getProductGroup(supabaseClient(), unref(id) ?? ""),
+    enabled: computed(() => Boolean(unref(id))),
+  });
+
+/** A group with its sellable variants only, for picking a variant at the counter or in the shop. */
+export const useSellableGroup = (id: MaybeRef<string | undefined>) =>
+  useQuery({
+    queryKey: computed(() => productKeys.sellableGroup(unref(id) ?? "")),
+    queryFn: () => getSellableGroup(supabaseClient(), unref(id) ?? ""),
     enabled: computed(() => Boolean(unref(id))),
   });
 
