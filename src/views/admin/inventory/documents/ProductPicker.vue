@@ -44,10 +44,10 @@ import { computed, ref } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { ScanLine } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { supabaseClient } from "@/lib/supabase";
 import { useSellableProducts } from "@/queries/products";
 import { searchSellableProducts, type Product } from "@/repositories/products";
-import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
 const BLUR_CLOSE_MS = 150;
 

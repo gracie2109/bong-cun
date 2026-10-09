@@ -1,10 +1,10 @@
 import { computed, reactive, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { useCustomerSearch } from "@/queries/customers";
 import { digitsOf, type CustomerMatch } from "@/repositories/customers";
 import type { RegisterOwner } from "@/repositories/pets";
-import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
 const MIN_PHONE_DIGITS = 8;
 const MAX_PHONE_DIGITS = 15;

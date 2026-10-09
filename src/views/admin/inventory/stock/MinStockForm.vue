@@ -39,7 +39,7 @@ const minValue = computed(() => {
   const value = parseQty(minText.value);
   return Number.isFinite(value) && value > 0 ? value : null;
 });
-const changed = computed(() => minValue.value !== (props.row.minQty ?? null));
+const changed = computed(() => minValue.value !== (props.row.minQty || null));
 
 const save = async () => {
   if (!props.branchId) return;
