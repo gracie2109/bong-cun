@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
+import { useInfiniteOptions } from "@/composables/useInfiniteOptions";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
@@ -176,8 +177,13 @@ export const useSuppliersList = (page: MaybeRef<PageParams>, filter: MaybeRef<Su
     placeholderData: keepPreviousData,
   });
 
-export const useSupplierOptions = () =>
-  useQuery({ queryKey: supplierKeys.options(), queryFn: () => listSupplierOptions(supabaseClient()) });
+/** Active suppliers for a select that loads more as it scrolls and searches on the server. */
+export const useSupplierOptions = (search: MaybeRef<string>) =>
+  useInfiniteOptions({
+    queryKey: supplierKeys.options,
+    fetchPage: (page, text) => listSupplierOptions(supabaseClient(), page, text),
+    search,
+  });
 
 export const useSaveSupplier = () => {
   const queryClient = useQueryClient();

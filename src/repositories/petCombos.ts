@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
 import { toSpecies, type Species, type SpeciesRow } from "./species";
 import { toPetService, type PetService } from "./petServices";
-import { pageRange, type Page, type PageParams } from "./shared";
+import { pageRange, searchOr, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 type ComboRow = Tables<"pet_service_combos">;
@@ -97,7 +97,7 @@ const toRpcPayload = (input: PetComboInput) => ({
 export const listPetCombos = async (
   client: Client,
   page: PageParams,
-  options: { includeArchived?: boolean } = {}
+  options: { includeArchived?: boolean; search?: string } = {}
 ): Promise<Page<PetCombo>> => {
   const { from, to } = pageRange(page);
   let query = client
@@ -106,6 +106,8 @@ export const listPetCombos = async (
     .order("created_at", { ascending: false })
     .range(from, to);
   if (!options.includeArchived) query = query.eq("is_active", true);
+  const condition = searchOr(["name"], options.search ?? "");
+  if (condition) query = query.or(condition);
   const { data, count, error } = await query;
   if (error) throw error;
   return { rows: (data as WithRelations[]).map(toPetCombo), total: count ?? 0 };

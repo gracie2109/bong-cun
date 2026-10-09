@@ -2,7 +2,7 @@
 // in the database (create_invoice), so nothing the client sends decides an amount.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
+import { filterSafe, pageRange, searchOr, unwrap, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 
@@ -108,15 +108,19 @@ export const getMyOpenShift = async (
 export const listShifts = async (
   client: Client,
   branchId: string,
-  page: PageParams
+  page: PageParams,
+  filter: { search?: string } = {}
 ): Promise<Page<CashShift>> => {
   const { from, to } = pageRange(page);
-  const { data, count, error } = await client
+  let query = client
     .from("cash_shifts")
     .select("*", { count: "exact" })
     .eq("branch_id", branchId)
     .order("opened_at", { ascending: false })
     .range(from, to);
+  const condition = searchOr(["code", "opened_by_name"], filter.search ?? "");
+  if (condition) query = query.or(condition);
+  const { data, count, error } = await query;
   if (error) throw error;
   return { rows: (data ?? []).map(toCashShift), total: count ?? 0 };
 };

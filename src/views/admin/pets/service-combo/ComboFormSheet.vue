@@ -20,20 +20,7 @@
 
         <div class="space-y-2">
           <Label>{{ $t("petCare.combos.form.species") }}</Label>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="item in speciesOptions"
-              :key="item.id"
-              type="button"
-              class="flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
-              :class="speciesIds.includes(item.id) ? 'border-primary bg-primary/10 text-primary' : 'hover:bg-muted'"
-              :aria-pressed="speciesIds.includes(item.id)"
-              @click="toggle(speciesIds, item.id)"
-            >
-              <Icon v-if="item.icon" :icon="item.icon" class="size-4" />
-              {{ item.name }}
-            </button>
-          </div>
+          <ChipPicker v-model="speciesIds" :options="speciesOptions" />
           <p v-if="submitted && speciesIds.length === 0" class="text-sm text-red-600">
             {{ $t("petCare.combos.form.errSpecies") }}
           </p>
@@ -46,19 +33,7 @@
           </p>
           <template v-else>
             <p class="text-xs text-muted-foreground">{{ $t("petCare.combos.form.servicesHint") }}</p>
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="item in serviceOptions"
-                :key="item.id"
-                type="button"
-                class="rounded-full border px-3 py-1.5 text-sm transition-colors"
-                :class="serviceIds.includes(item.id) ? 'border-primary bg-primary/10 text-primary' : 'hover:bg-muted'"
-                :aria-pressed="serviceIds.includes(item.id)"
-                @click="toggle(serviceIds, item.id)"
-              >
-                {{ item.name }}
-              </button>
-            </div>
+            <ChipPicker v-model="serviceIds" :options="serviceOptions" />
           </template>
           <p v-if="submitted && serviceIds.length === 0" class="text-sm text-red-600">
             {{ $t("petCare.combos.form.errServices") }}
@@ -90,7 +65,7 @@
             <Select v-model="markAsId">
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="mark in MARKS" :key="mark" :value="mark">
+                <SelectItem v-for="mark in COMBO_MARKS" :key="mark" :value="mark">
                   {{ $t(`petCare.combos.marks.${mark}`) }}
                 </SelectItem>
               </SelectContent>
@@ -129,8 +104,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { Icon } from "@iconify/vue";
+import { computed } from "vue";
+import ChipPicker from "@/components/common/ChipPicker.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -147,110 +122,47 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { formatPrice } from "@/lib/utils";
 import { useCreatePetCombo, useUpdatePetCombo } from "@/queries/petCombos";
-import { useAllPetServices } from "@/queries/petServices";
 import { useSpeciesOptions } from "@/queries/species";
 import type { PetCombo } from "@/repositories/petCombos";
-
-const MARKS = ["1", "2", "3", "4"];
-const DEFAULT_MARK = "4";
-const STATUS_SELLING = 1;
-const STATUS_STOPPED = 2;
+import { COMBO_MARKS } from "./comboStatus";
+import { useComboForm } from "./useComboForm";
 
 const props = defineProps<{ open: boolean; combo: PetCombo | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
 const speciesQuery = useSpeciesOptions();
 const speciesOptions = computed(() => speciesQuery.data.value ?? []);
-const servicesQuery = useAllPetServices();
 
-const name = ref("");
-const desc = ref("");
-const speciesIds = ref<string[]>([]);
-const serviceIds = ref<string[]>([]);
-const price = ref("");
-const duration = ref("0");
-const markAsId = ref(DEFAULT_MARK);
-const promoFrom = ref("");
-const promoTo = ref("");
-const sellable = ref(true);
-const submitted = ref(false);
+const {
+  name,
+  desc,
+  speciesIds,
+  serviceIds,
+  price,
+  duration,
+  markAsId,
+  promoFrom,
+  promoTo,
+  sellable,
+  submitted,
+  serviceOptions,
+  originPrice,
+  totalDuration,
+  savings,
+  priceValid,
+  toInput,
+} = useComboForm(
+  () => props.open,
+  () => props.combo
+);
 
 const create = useCreatePetCombo();
 const update = useUpdatePetCombo();
 const pending = computed(() => create.isPending.value || update.isPending.value);
 
-const dateInput = (iso: string | undefined): string => (iso ? iso.slice(0, 10) : "");
-
-watch(
-  () => [props.open, props.combo],
-  () => {
-    if (!props.open) return;
-    const combo = props.combo;
-    name.value = combo?.name ?? "";
-    desc.value = combo?.desc ?? "";
-    speciesIds.value = combo?.speciesIds ?? [];
-    serviceIds.value = combo?.serviceIds ?? [];
-    price.value = combo?.price != null ? String(combo.price) : "";
-    duration.value = String(combo?.duration[0] ?? 0);
-    markAsId.value = combo?.markAsId ?? DEFAULT_MARK;
-    promoFrom.value = dateInput(combo?.markTime[0]);
-    promoTo.value = dateInput(combo?.markTime[1]);
-    sellable.value = (combo?.status ?? STATUS_SELLING) === STATUS_SELLING;
-    submitted.value = false;
-  },
-  { immediate: true }
-);
-
-// Only services offered for every chosen species can be bundled (the database checks this too).
-const serviceOptions = computed(() =>
-  (servicesQuery.data.value ?? []).filter((service) =>
-    speciesIds.value.every((id) => service.speciesIds.includes(id))
-  )
-);
-const chosenServices = computed(() =>
-  (servicesQuery.data.value ?? []).filter((service) => serviceIds.value.includes(service.id))
-);
-
-const originTotal = computed(() =>
-  chosenServices.value.reduce((sum, service) => sum + (service.generalPrice ?? 0), 0)
-);
-const originPrice = computed(() => (originTotal.value > 0 ? formatPrice(originTotal.value) ?? "" : ""));
-const totalDuration = computed(() =>
-  chosenServices.value.reduce((sum, service) => sum + (service.duration[0] ?? 0), 0)
-);
-const savings = computed(() => (price.value === "" ? 0 : Math.max(0, originTotal.value - Number(price.value))));
-const priceValid = computed(() => price.value !== "" && Number(price.value) >= 0);
-
-const toggle = (list: string[], id: string) => {
-  const index = list.indexOf(id);
-  if (index >= 0) list.splice(index, 1);
-  else list.push(id);
-};
-
-// Dropping a species drops the services that no longer fit all remaining species.
-watch(speciesIds, () => {
-  const allowed = new Set(serviceOptions.value.map((service) => service.id));
-  serviceIds.value = serviceIds.value.filter((id) => allowed.has(id));
-}, { deep: true });
-
 const submit = async () => {
-  submitted.value = true;
-  if (!name.value.trim() || speciesIds.value.length === 0 || serviceIds.value.length === 0 || !priceValid.value) return;
-
-  const hasWindow = promoFrom.value !== "" && promoTo.value !== "";
-  const input = {
-    name: name.value.trim(),
-    desc: desc.value.trim() || null,
-    origin_price: originTotal.value > 0 ? originTotal.value : null,
-    price: Number(price.value),
-    duration: [Number(duration.value || 0)],
-    markAsId: markAsId.value,
-    markTime: hasWindow ? [`${promoFrom.value}T00:00:00`, `${promoTo.value}T23:59:59`] : [],
-    status: sellable.value ? STATUS_SELLING : STATUS_STOPPED,
-    isActive: props.combo?.isActive ?? true,
-    speciesIds: [...speciesIds.value],
-    serviceIds: [...serviceIds.value],
-  };
+  const input = toInput();
+  if (!input) return;
   try {
     if (props.combo) await update.mutateAsync({ id: props.combo.id, input });
     else await create.mutateAsync(input);

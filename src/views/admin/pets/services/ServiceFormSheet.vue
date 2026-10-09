@@ -20,20 +20,7 @@
 
         <div class="space-y-2">
           <Label>{{ $t("petCare.services.form.species") }}</Label>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="item in speciesOptions"
-              :key="item.id"
-              type="button"
-              class="flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors"
-              :class="speciesIds.includes(item.id) ? 'border-primary bg-primary/10 text-primary' : 'hover:bg-muted'"
-              :aria-pressed="speciesIds.includes(item.id)"
-              @click="toggleSpecies(item.id)"
-            >
-              <Icon v-if="item.icon" :icon="item.icon" class="size-4" />
-              {{ item.name }}
-            </button>
-          </div>
+          <ChipPicker v-model="speciesIds" :options="speciesOptions" />
           <p v-if="submitted && speciesIds.length === 0" class="text-sm text-red-600">
             {{ $t("petCare.services.form.errSpecies") }}
           </p>
@@ -46,7 +33,7 @@
           <Label>{{ $t("petCare.services.form.pricing") }}</Label>
           <div class="grid gap-2 sm:grid-cols-2">
             <button
-              v-for="option in PRICING"
+              v-for="option in SERVICE_PRICING"
               :key="option.value"
               type="button"
               class="rounded-xl border p-3 text-left transition-colors"
@@ -69,7 +56,7 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <div class="space-y-2">
             <Label for="service-duration">{{ $t("petCare.services.form.duration") }}</Label>
-            <Input id="service-duration" v-model="duration" type="number" min="0" max="1439" step="5" inputmode="numeric" />
+            <Input id="service-duration" v-model="duration" type="number" min="0" :max="MAX_DURATION_MINUTES" step="5" inputmode="numeric" />
             <p v-if="submitted && !durationValid" class="text-sm text-red-600">
               {{ $t("petCare.services.form.errDuration") }}
             </p>
@@ -79,8 +66,7 @@
             <Select v-model="unit">
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="unit1">{{ $t("petCare.services.form.unitTime") }}</SelectItem>
-                <SelectItem value="unit2">{{ $t("petCare.services.form.unitDay") }}</SelectItem>
+                <SelectItem v-for="option in SERVICE_UNITS" :key="option.value" :value="option.value">{{ $t(option.label) }}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -114,9 +100,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { Icon } from "@iconify/vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
+import ChipPicker from "@/components/common/ChipPicker.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -134,12 +120,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreatePetService, useUpdatePetService } from "@/queries/petServices";
 import { useSpeciesOptions } from "@/queries/species";
 import type { PetService } from "@/repositories/petServices";
-
-const MAX_DURATION_MINUTES = 1439;
-const PRICING = [
-  { value: "by_weight", title: "petCare.services.typeByWeight", desc: "petCare.services.form.byWeightDesc" },
-  { value: "all", title: "petCare.services.typeAll", desc: "petCare.services.form.fixedDesc" },
-] as const;
+import { MAX_DURATION_MINUTES, SERVICE_PRICING, SERVICE_UNITS } from "./serviceForm";
+import { useServiceForm } from "./useServiceForm";
 
 const props = defineProps<{ open: boolean; service: PetService | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
@@ -148,74 +130,32 @@ const router = useRouter();
 const speciesQuery = useSpeciesOptions();
 const speciesOptions = computed(() => speciesQuery.data.value ?? []);
 
-const name = ref("");
-const desc = ref("");
-const speciesIds = ref<string[]>([]);
-const type = ref<"by_weight" | "all">("by_weight");
-const price = ref("");
-const duration = ref("60");
-const unit = ref("unit1");
-const isShow = ref(true);
-const submitted = ref(false);
+const {
+  name,
+  desc,
+  speciesIds,
+  type,
+  price,
+  duration,
+  unit,
+  isShow,
+  submitted,
+  removedSpeciesCount,
+  priceValid,
+  durationValid,
+  toInput,
+} = useServiceForm(
+  () => props.open,
+  () => props.service
+);
 
 const create = useCreatePetService();
 const update = useUpdatePetService();
 const pending = computed(() => create.isPending.value || update.isPending.value);
 
-watch(
-  () => [props.open, props.service],
-  () => {
-    if (!props.open) return;
-    const service = props.service;
-    name.value = service?.name ?? "";
-    desc.value = service?.desc ?? "";
-    speciesIds.value = service?.speciesIds ?? [];
-    type.value = service?.type === "all" ? "all" : "by_weight";
-    price.value = service?.generalPrice != null ? String(service.generalPrice) : "";
-    duration.value = String(service?.duration[0] ?? 60);
-    unit.value = service?.unit ?? "unit1";
-    isShow.value = service?.isShow ?? true;
-    submitted.value = false;
-  },
-  { immediate: true }
-);
-
-const removedSpeciesCount = computed(
-  () => (props.service?.speciesIds ?? []).filter((id) => !speciesIds.value.includes(id)).length
-);
-
-const priceValid = computed(() => price.value !== "" && Number(price.value) >= 0);
-const durationValid = computed(() => {
-  const minutes = Number(duration.value);
-  return duration.value !== "" && minutes >= 0 && minutes <= MAX_DURATION_MINUTES;
-});
-
-const toggleSpecies = (id: string) => {
-  speciesIds.value = speciesIds.value.includes(id)
-    ? speciesIds.value.filter((item) => item !== id)
-    : [...speciesIds.value, id];
-};
-
 const submit = async (thenPrice = false) => {
-  submitted.value = true;
-  const valid =
-    name.value.trim() &&
-    speciesIds.value.length > 0 &&
-    durationValid.value &&
-    (type.value === "by_weight" || priceValid.value);
-  if (!valid) return;
-
-  const input = {
-    name: name.value.trim(),
-    desc: desc.value.trim() || null,
-    type: type.value,
-    unit: unit.value,
-    generalPrice: type.value === "all" ? Number(price.value) : null,
-    duration: [Number(duration.value)],
-    isShow: isShow.value,
-    isActive: props.service?.isActive ?? true,
-    speciesIds: speciesIds.value,
-  };
+  const input = toInput();
+  if (!input) return;
   try {
     const id = props.service
       ? await update.mutateAsync({ id: props.service.id, input })

@@ -9,6 +9,13 @@ export const useAppStore = defineStore('app', () => {
     const layout = useCookie<IPAGE_LAYOUT>(LOCAL_STORAGE_KEY.LAYOUT, {default: () => DEFAULT_LAYOUT});
     const theme = useCookie<IPAGE_THEME>(LOCAL_STORAGE_KEY.THEME, {default: () => DEFAULT_THEME});
 
+    // Admin sidebar expanded/collapsed; a cookie so a page refresh (and SSR) keeps it.
+    const sidebarOpen = useCookie<boolean>(LOCAL_STORAGE_KEY.SIDEBAR_OPEN, {default: () => true});
+
+    function setSidebarOpen(value: boolean) {
+        sidebarOpen.value = value;
+    }
+
     function setLayout(name: IPAGE_LAYOUT) {
         layout.value = name;
     }
@@ -20,6 +27,8 @@ export const useAppStore = defineStore('app', () => {
     return {
         layout,
         theme,
+        sidebarOpen,
+        setSidebarOpen,
         setLayout,
         setTheme
     }

@@ -14,11 +14,13 @@ import { notifyFailure, notifySuccess } from "./notify";
 
 export const useOrdersList = (
   page: MaybeRef<PageParams>,
-  phoneNumber?: MaybeRef<string | undefined>
+  phoneNumber?: MaybeRef<string | undefined>,
+  search: MaybeRef<string> = ""
 ) =>
   useQuery({
-    queryKey: computed(() => orderKeys.list(toPage(unref(page)), unref(phoneNumber))),
-    queryFn: () => listOrders(supabaseClient(), toPage(unref(page)), { phoneNumber: unref(phoneNumber) }),
+    queryKey: computed(() => orderKeys.list(toPage(unref(page)), unref(phoneNumber), unref(search))),
+    queryFn: () =>
+      listOrders(supabaseClient(), toPage(unref(page)), { phoneNumber: unref(phoneNumber), search: unref(search) }),
     placeholderData: keepPreviousData,
   });
 

@@ -47,8 +47,8 @@
     </div>
   </div>
 
-  <DialogConfirm :open="isClick" :ok-btn="'Delete'"
-    :desc="'You may be deleting user data. After you delete this, it can not be recovered.'" :title="'Delete files'"
+  <DialogConfirm :open="isClick" danger :ok-btn="$t('common.delete')"
+    :desc="$t('common.deleteFileDesc')" :title="$t('common.deleteFileTitle')"
     @handle-ok="handleDelete" @cancel="
       () => {
         isClick = false;

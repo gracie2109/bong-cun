@@ -23,7 +23,19 @@ export const ageOf = (
   return { years: Math.floor(months / 12), months: months % 12 };
 };
 
-export const formatDate = (iso: string): string => format(new Date(iso), "dd/MM/yyyy");
+type Translate = (key: string, named?: Record<string, unknown>) => string;
+
+/** Localized age like "2 tuổi 3 tháng", or the "unknown" label when there is no usable birth date. */
+export const formatAge = (birthDate: string | null, t: Translate): string => {
+  const age = ageOf(birthDate);
+  if (!age) return t("petCare.pets.ageUnknown");
+  if (age.years === 0) return t("petCare.pets.ageMonths", { m: age.months });
+  return age.months === 0
+    ? t("petCare.pets.ageYears", { y: age.years })
+    : t("petCare.pets.ageYearsMonths", { y: age.years, m: age.months });
+};
+
+export const formatDate =(iso: string): string => format(new Date(iso), "dd/MM/yyyy");
 
 export const formatShortDate = (iso: string): string => format(new Date(iso), "dd/MM");
 

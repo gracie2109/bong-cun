@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
 import { listPetCombosByIds, type PetCombo } from "./petCombos";
 import { listAllPetServices, type PetService } from "./petServices";
-import { pageRange, unwrap, type Page, type PageParams } from "./shared";
+import { pageRange, searchOr, unwrap, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 type OrderRow = Tables<"orders"> & { order_items: Tables<"order_items">[] };
@@ -124,7 +124,7 @@ const toOrder = (row: OrderRow): Order => {
 export const listOrders = async (
   client: Client,
   page: PageParams,
-  filter: { phoneNumber?: string } = {}
+  filter: { phoneNumber?: string; search?: string } = {}
 ): Promise<Page<Order>> => {
   const { from, to } = pageRange(page);
   let query = client
@@ -133,6 +133,8 @@ export const listOrders = async (
     .order("created_at", { ascending: false })
     .range(from, to);
   if (filter.phoneNumber) query = query.eq("phone_number", filter.phoneNumber);
+  const condition = searchOr(["name", "phone_number"], filter.search ?? "");
+  if (condition) query = query.or(condition);
 
   const { data, count, error } = await query;
   if (error) throw error;

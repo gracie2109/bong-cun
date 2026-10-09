@@ -6,8 +6,8 @@
     </h1>
   </Header>
 
-  <ContentWrap>
-    <div class="space-y-5">
+  <ContentWrap fill>
+    <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">
@@ -24,151 +24,39 @@
 
       <PetsNav />
 
-      <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
-        <div class="relative min-w-60 flex-1">
-          <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('petCare.services.searchPlaceholder')" />
-        </div>
-        <Select v-model="speciesFilter">
-          <SelectTrigger class="w-40" :aria-label="$t('petCare.services.filterSpecies')">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem :value="ALL">{{ $t("petCare.common.all") }}</SelectItem>
-            <SelectItem v-for="item in species" :key="item.id" :value="item.id">{{ item.name }}</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select v-model="typeFilter">
-          <SelectTrigger class="w-48" :aria-label="$t('petCare.services.filterType')">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem :value="ALL">{{ $t("petCare.common.all") }}</SelectItem>
-            <SelectItem value="by_weight">{{ $t("petCare.services.typeByWeight") }}</SelectItem>
-            <SelectItem value="all">{{ $t("petCare.services.typeAll") }}</SelectItem>
-          </SelectContent>
-        </Select>
-        <label class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Switch v-model="showArchived" />
-          {{ $t("petCare.services.showArchived") }}
-        </label>
-      </div>
+      <ServicesFilterBar
+        v-model:search="search"
+        v-model:species-filter="speciesFilter"
+        v-model:type-filter="typeFilter"
+        v-model:show-archived="showArchived"
+        :species="species"
+      />
 
-      <div class="overflow-hidden rounded-xl border bg-white">
-        <div class="flex items-center justify-between gap-3 border-b bg-muted/40 px-4 py-3">
-          <span class="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-            {{ $t("petCare.common.showing", { count: services.length, total }) }}
-          </span>
-          <div class="flex items-center gap-1 text-xs text-muted-foreground">
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-7"
-              :disabled="pageData.pageIndex <= 1 || servicesQuery.isFetching.value"
-              @click="pageData.pageIndex -= 1"
-            >
-              <ChevronLeft class="size-4" />
-            </Button>
-            <span>{{ $t("petCare.common.pageOf", { page: pageData.pageIndex, pages: pageCount }) }}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="size-7"
-              :disabled="pageData.pageIndex >= pageCount || servicesQuery.isFetching.value"
-              @click="pageData.pageIndex += 1"
-            >
-              <ChevronRight class="size-4" />
-            </Button>
-          </div>
-        </div>
-
-        <div class="table-scroll">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-                <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.service") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.species") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.pricing") }}</th>
-                <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.duration") }}</th>
-                <th class="px-4 py-3 text-right font-semibold">{{ $t("petCare.services.col.actions") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-if="servicesQuery.isPending.value">
-                <tr v-for="i in 5" :key="i" class="border-t">
-                  <td colspan="5" class="px-4 py-3"><Skeleton class="h-10 w-full" /></td>
-                </tr>
-              </template>
-              <tr v-else-if="services.length === 0">
-                <td colspan="5" class="px-4 py-10 text-center text-muted-foreground">
-                  {{ $t("petCare.services.empty") }}
-                </td>
-              </tr>
-              <tr v-for="service in services" :key="service.id" class="border-t" :class="service.isActive ? '' : 'opacity-60'">
-                <td class="px-4 py-3">
-                  <p class="flex items-center gap-2 font-semibold">
-                    {{ service.name }}
-                    <span
-                      v-if="!service.isActive"
-                      class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
-                    >
-                      {{ $t("petCare.common.archived") }}
-                    </span>
-                  </p>
-                  <p v-if="service.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ service.desc }}</p>
-                </td>
-                <td class="px-4 py-3">
-                  <div class="flex flex-wrap gap-1">
-                    <span
-                      v-for="item in service.species"
-                      :key="item.id"
-                      class="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
-                    >
-                      {{ item.name }}
-                    </span>
-                  </div>
-                </td>
-                <td class="px-4 py-3">
-                  <template v-if="service.type === 'all'">
-                    <p class="font-medium">{{ formatPrice(service.generalPrice ?? 0) }}</p>
-                    <p class="text-xs text-muted-foreground">{{ $t("petCare.services.typeAll") }}</p>
-                  </template>
-                  <template v-else>
-                    <p class="text-xs text-muted-foreground">{{ $t("petCare.services.typeByWeight") }}</p>
-                    <router-link
-                      class="text-xs font-semibold text-primary hover:underline"
-                      :to="{ name: 'petPrices', query: { speciesId: service.speciesIds[0], serviceId: service.id } }"
-                    >
-                      {{ $t("petCare.services.setPrices") }}
-                    </router-link>
-                  </template>
-                </td>
-                <td class="whitespace-nowrap px-4 py-3">
-                  {{ $t("petCare.services.minutes", { n: service.duration[0] }) }}
-                </td>
-                <td class="px-4 py-3 text-right">
-                  <DropdownMenu v-if="canUpdate">
-                    <DropdownMenuTrigger as-child>
-                      <Button variant="ghost" size="icon" class="size-8">
-                        <EllipsisVertical class="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem @click="openEdit(service)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
-                      <DropdownMenuItem v-if="service.isActive" @click="toArchive = service">
-                        {{ $t("petCare.common.archive") }}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem v-else @click="setActive(service, true)">
-                        {{ $t("petCare.common.restore") }}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <PagedTableCard class="min-h-0 flex-1" v-model:page="pageData.pageIndex" v-model:page-size="pageData.pageSize" :page-count="pageCount" :loading="servicesQuery.isFetching.value" :count="services.length" :total="total">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.service") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.species") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.pricing") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.duration") }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ $t("petCare.services.col.actions") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <TableStateRows :colspan="5" :pending="servicesQuery.isPending.value" :empty="services.length === 0" :empty-text="$t('petCare.services.empty')" skeleton-class="h-10 w-full" />
+            <ServiceRow
+              v-for="service in services"
+              :key="service.id"
+              :service="service"
+              :can-update="canUpdate"
+              @edit="openEdit"
+              @archive="toArchive = $event"
+              @restore="setActive($event, true)"
+            />
+          </tbody>
+        </table>
+      </PagedTableCard>
     </div>
 
     <ServiceFormSheet v-model:open="formOpen" :service="editing" />
@@ -186,66 +74,34 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from "vue";
-import { refDebounced } from "@vueuse/core";
-import { ChevronLeft, ChevronRight, EllipsisVertical, Plus, Scissors, Search } from "lucide-vue-next";
+import { ref } from "vue";
+import { Plus, Scissors } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import TableStateRows from "@/components/common/TableStateRows.vue";
+import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { INITIAL_PAGE_INDEX } from "@/lib/constants";
-import { formatPrice } from "@/lib/utils";
+import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { usePetServicesList, useSetPetServiceActive } from "@/queries/petServices";
-import { useSpeciesOptions } from "@/queries/species";
-import type { PetService, PetServiceFilter } from "@/repositories/petServices";
+import type { PetService } from "@/repositories/petServices";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import ServiceFormSheet from "./ServiceFormSheet.vue";
+import ServiceRow from "./ServiceRow.vue";
+import ServicesFilterBar from "./ServicesFilterBar.vue";
+import { useServicesFilters } from "./useServicesFilters";
 
-const ALL = "all";
-const PAGE_SIZE = 10;
-const SEARCH_DEBOUNCE_MS = 300;
+const { search, speciesFilter, typeFilter, showArchived, pageData, filter, species } = useServicesFilters();
 
-const search = ref("");
-const speciesFilter = ref(ALL);
-const typeFilter = ref(ALL);
-const showArchived = ref(false);
-const pageData = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
 const formOpen = ref(false);
 const editing = ref<PetService | null>(null);
 const toArchive = ref<PetService | null>(null);
 
-const debouncedSearch = refDebounced(search, SEARCH_DEBOUNCE_MS);
-
-const filter = computed<PetServiceFilter>(() => ({
-  search: debouncedSearch.value,
-  speciesId: speciesFilter.value === ALL ? undefined : speciesFilter.value,
-  type: typeFilter.value === ALL ? undefined : (typeFilter.value as "all" | "by_weight"),
-  includeArchived: showArchived.value,
-}));
-
 const servicesQuery = usePetServicesList(pageData, filter);
 const { canCreate, canUpdate } = usePermission("petServices");
-const services = computed(() => servicesQuery.data.value?.rows ?? []);
-const total = computed(() => servicesQuery.data.value?.total ?? 0);
-const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)));
+const { rows: services, total, pageCount } = usePagedList(servicesQuery, pageData);
 
-const speciesQuery = useSpeciesOptions();
-const species = computed(() => speciesQuery.data.value ?? []);
 const setActiveMutation = useSetPetServiceActive();
-
-watch([debouncedSearch, speciesFilter, typeFilter, showArchived], () => {
-  pageData.pageIndex = INITIAL_PAGE_INDEX;
-});
 
 const openCreate = () => {
   editing.value = null;

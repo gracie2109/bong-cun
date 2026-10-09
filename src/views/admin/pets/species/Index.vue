@@ -29,39 +29,19 @@
           </label>
 
           <div class="overflow-hidden rounded-xl border bg-white">
-            <template v-if="summariesQuery.isPending.value">
+            <template v-if="pending">
               <div v-for="i in 3" :key="i" class="border-b p-3"><Skeleton class="h-12 w-full" /></div>
             </template>
             <p v-else-if="visible.length === 0" class="p-6 text-center text-sm text-muted-foreground">
               {{ $t("petCare.species.empty") }}
             </p>
-            <button
+            <SpeciesListItem
               v-for="item in visible"
               :key="item.id"
-              type="button"
-              class="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/40"
-              :class="item.id === selected?.id ? 'bg-primary/5' : ''"
+              :species="item"
+              :selected="item.id === selected?.id"
               @click="selectedId = item.id"
-            >
-              <span class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon v-if="item.icon" :icon="item.icon" class="size-5" />
-                <PawPrint v-else class="size-5" />
-              </span>
-              <span class="min-w-0 flex-1">
-                <span class="flex items-center gap-2 font-semibold">
-                  <span class="truncate">{{ item.name }}</span>
-                  <span
-                    v-if="!item.isActive"
-                    class="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
-                  >
-                    {{ $t("petCare.common.archived") }}
-                  </span>
-                </span>
-                <span class="block text-xs text-muted-foreground">
-                  {{ $t("petCare.species.counts", { pets: item.petCount, services: item.serviceCount }) }}
-                </span>
-              </span>
-            </button>
+            />
           </div>
         </div>
 
@@ -119,43 +99,29 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { Icon } from "@iconify/vue";
-import { Dog, PawPrint, Pencil, Plus } from "lucide-vue-next";
+import { ref } from "vue";
+import { Dog, Pencil, Plus } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { usePermission } from "@/composables/usePermission";
-import { useSetSpeciesActive, useSpeciesSummaries } from "@/queries/species";
+import { useSetSpeciesActive } from "@/queries/species";
 import type { Species, SpeciesSummary } from "@/repositories/species";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import BracketsEditor from "./BracketsEditor.vue";
 import SpeciesFormSheet from "./SpeciesFormSheet.vue";
+import SpeciesListItem from "./SpeciesListItem.vue";
+import { useSpeciesSelection } from "./useSpeciesSelection";
 
-const summariesQuery = useSpeciesSummaries();
 const setActiveMutation = useSetSpeciesActive();
 const { canCreate, canUpdate } = usePermission("petServices");
+const { pending, showArchived, selectedId, visible, selected } = useSpeciesSelection();
 
-const showArchived = ref(false);
-const selectedId = ref<string>();
 const formOpen = ref(false);
 const editing = ref<Species | null>(null);
 const toArchive = ref<SpeciesSummary | null>(null);
-
-const all = computed(() => summariesQuery.data.value ?? []);
-const visible = computed(() => all.value.filter((item) => showArchived.value || item.isActive));
-const selected = computed(() => all.value.find((item) => item.id === selectedId.value));
-
-// Select the first species once the list loads, and when the selected one is hidden.
-watch(
-  visible,
-  (list) => {
-    if (!list.some((item) => item.id === selectedId.value)) selectedId.value = list[0]?.id;
-  },
-  { immediate: true }
-);
 
 const openCreate = () => {
   editing.value = null;
