@@ -35,6 +35,8 @@ export const usePosCheckout = (sale: Sale) => {
   const result = ref<SaleResult | null>(null);
   const printing = ref(false);
   const createMutation = useCreateInvoice();
+  // One per sale: paying again after an error resends it, so a sale that did go through is not made twice.
+  let clientRef = crypto.randomUUID();
 
   const pay = async (payments: PaymentEntry[]) => {
     if (!sale.branchId.value) return;
@@ -51,6 +53,7 @@ export const usePosCheckout = (sale: Sale) => {
           petId: line.petId,
         })),
         payments,
+        clientRef,
       });
     } catch {
       // the mutation already showed the failure toast
@@ -72,6 +75,7 @@ export const usePosCheckout = (sale: Sale) => {
   watch(paymentOpen, (open) => {
     if (open || !result.value) return;
     result.value = null;
+    clientRef = crypto.randomUUID();
     sale.reset();
   });
 

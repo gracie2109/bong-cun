@@ -794,7 +794,9 @@
       "confirm": "Xác nhận thanh toán",
       "done": "Đã thanh toán",
       "print": "In hóa đơn",
-      "newSale": "Đơn mới"
+      "newSale": "Đơn mới",
+      "replayed": "Hóa đơn này đã được lưu ở lần bấm trước (mạng bị gián đoạn), không tạo thêm hóa đơn mới.",
+      "scanBlocked": "Đã chặn mã vạch vừa quét vào ô tiền. Đóng hộp thoại thanh toán trước khi quét hàng."
     },
     "shift": {
       "current": "Ca {code} · mở lúc {time}",
