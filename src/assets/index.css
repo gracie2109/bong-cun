@@ -155,6 +155,20 @@
     box-shadow: inset 0 -1px 0 hsl(var(--border));
   }
 
+  /* A list with no rows: the message takes all the height under the header and sits in the middle. */
+  .admin-table:has([data-table-empty]) > div,
+  .admin-table:has([data-table-empty]) table {
+    height: 100%;
+  }
+
+  .admin-table tr[data-table-empty] {
+    height: 100%;
+  }
+
+  .admin-table tr[data-table-empty]:hover {
+    background: transparent;
+  }
+
   .admin-table td {
     font-variant-numeric: tabular-nums;
   }

@@ -4,8 +4,8 @@
       <td :colspan="colspan" class="px-4 py-3"><Skeleton :class="skeletonClass" /></td>
     </tr>
   </template>
-  <tr v-else-if="empty">
-    <td :colspan="colspan" class="px-4 py-12 text-center text-muted-foreground">
+  <tr v-else-if="empty" data-table-empty>
+    <td :colspan="colspan" class="px-4 py-12 text-center align-middle text-muted-foreground">
       <Inbox class="mx-auto mb-2 size-8 text-primary/60" />
       {{ emptyText }}
     </td>
