@@ -6,7 +6,7 @@
     <p v-else-if="total === 0" class="px-4 py-10 text-center text-sm text-muted-foreground">
       {{ $t("rbac.roles.noPermissions") }}
     </p>
-    <div v-else class="table-scroll">
+    <div v-else class="table-scroll admin-table">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b">

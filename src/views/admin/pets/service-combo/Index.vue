@@ -6,8 +6,8 @@
     </h1>
   </Header>
 
-  <ContentWrap>
-    <div class="space-y-5">
+  <ContentWrap fill>
+    <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">
@@ -24,15 +24,22 @@
 
       <PetsNav />
 
-      <div class="flex items-center justify-between gap-3 rounded-xl border bg-white p-3">
+      <div class="flex shrink-0 items-center justify-between gap-3 rounded-xl border bg-white p-3">
         <label class="flex items-center gap-2 text-sm text-muted-foreground">
           <Switch v-model="showArchived" />
           {{ $t("petCare.combos.showArchived") }}
         </label>
-        <TablePager v-model:page="pageData.pageIndex" :page-count="pageCount" :loading="combosQuery.isFetching.value" />
       </div>
 
-      <div class="table-scroll admin-table rounded-xl border bg-white">
+      <PagedTableCard
+        v-model:page="pageData.pageIndex"
+        v-model:page-size="pageData.pageSize"
+        class="min-h-0 flex-1"
+        :page-count="pageCount"
+        :loading="combosQuery.isFetching.value"
+        :count="combos.length"
+        :total="total"
+      >
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -57,7 +64,7 @@
             />
           </tbody>
         </table>
-      </div>
+      </PagedTableCard>
     </div>
 
     <ComboFormSheet v-model:open="formOpen" :combo="editing" />
@@ -78,7 +85,7 @@
 import { reactive, ref, watch } from "vue";
 import { Layers2, Plus } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
-import TablePager from "@/components/common/TablePager.vue";
+import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";

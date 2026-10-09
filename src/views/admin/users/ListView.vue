@@ -6,8 +6,8 @@
     </h1>
   </Header>
 
-  <ContentWrap>
-    <div class="space-y-5">
+  <ContentWrap fill="xl">
+    <div class="space-y-5 xl:flex xl:min-h-0 xl:flex-1 xl:flex-col xl:gap-5 xl:space-y-0">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">{{ $t("pageMeta.customers") }}</h2>
@@ -23,19 +23,22 @@
 
       <CustomersFilterBar v-model:search="search" v-model:only-new="onlyNew" v-model:sort="sort" />
 
-      <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_26rem]">
+      <div class="grid gap-5 xl:min-h-0 xl:flex-1 xl:grid-cols-[minmax(0,1fr)_26rem] xl:grid-rows-[minmax(0,1fr)]">
         <CustomerTable
           :customers="customers"
           :stats="stats"
           :total="total"
           :page="page.pageIndex"
+          :page-size="page.pageSize"
           :page-count="pageCount"
           :loading="fetching"
           :selected-id="selected?.userId ?? null"
           @select="selectedId = $event"
           @page="page.pageIndex = $event"
+          @page-size="page.pageSize = $event"
         />
         <CustomerDetail
+          class="xl:max-h-full xl:overflow-y-auto"
           :customer="selected"
           :orders="selectedOrders"
           :stats="statsOf(stats, selected?.userId ?? '')"

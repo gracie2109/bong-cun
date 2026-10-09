@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full space-y-3">
+  <div class="flex min-h-0 w-full flex-1 flex-col gap-3">
     <SearchWrap v-if="props.showSearch || props.showSearch === undefined">
       <SearchView
         v-if="
@@ -20,66 +20,47 @@
       </SearchView>
     </SearchWrap>
 
-    <div id="showTable" class="relative bg-white">
-      <div class="bg-white space-y-6 relative">
-        <Table>
-          <TableHeader class="p-4 bg-primary">
-            <TableRow
-              v-for="headerGroup in table.getHeaderGroups()"
-              :key="headerGroup.id"
-            >
-              <TableHead
-                v-for="header in headerGroup.headers"
-                :key="header.id"
-                class="text-black font-bold"
-              >
-                <FlexRender
-                  v-if="!header.isPlaceholder"
-                  :props="header.getContext()"
-                  :render="header.column.columnDef.header"
-                />
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody class="w-full h-full max-h-[100px] overflow-y-scroll">
-            <template v-if="table.getRowModel().rows?.length">
-              <TableRow
-                v-for="row in table.getRowModel().rows"
-                :key="row.id"
-                :data-state="row.getIsSelected() && 'selected'"
-              >
-                <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                  <FlexRender
-                    :props="cell.getContext()"
-                    :render="cell.column.columnDef.cell"
-                  />
-                </TableCell>
-              </TableRow>
-            </template>
-
-            <TableRow v-else>
-              <TableCell :colspan="columns.length" class="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-      <div
-        class="h-12 bg-white pl-5 bottom-0 w-full fixed"
-        v-if="props.pageCount && props.pageData"
-      >
-        <div class="w-full h-full grid place-items-center">
-          <CustomPagination
-            :total-record="pageCount || 0"
-            :page-current="props.pageData ? props.pageData.pageIndex : 1"
-            :page-size="props.pageData.pageSize"
-            @onChange="(vl) => handleChangePage(vl)"
-            @update-page-size="(vl: number) => $emit('updatePageSize', vl)"
+    <PagedTableCard
+      id="showTable"
+      v-model:page="paging.pageIndex"
+      v-model:page-size="paging.pageSize"
+      class="min-h-0 flex-1"
+      :page-count="Math.max(1, Math.ceil((props.pageCount || 0) / (paging.pageSize || 1)))"
+      :count="table.getRowModel().rows.length"
+      :total="props.pageCount || 0"
+      @update:page="(vl) => emits('handlePageChange', vl)"
+    >
+      <Table>
+        <TableHeader>
+          <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+            <TableHead v-for="header in headerGroup.headers" :key="header.id" class="font-semibold text-foreground">
+              <FlexRender
+                v-if="!header.isPlaceholder"
+                :props="header.getContext()"
+                :render="header.column.columnDef.header"
+              />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow
+            v-for="row in table.getRowModel().rows"
+            :key="row.id"
+            :data-state="row.getIsSelected() && 'selected'"
+          >
+            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+              <FlexRender :props="cell.getContext()" :render="cell.column.columnDef.cell" />
+            </TableCell>
+          </TableRow>
+          <TableStateRows
+            :colspan="columns.length"
+            :pending="false"
+            :empty="table.getRowModel().rows.length === 0"
+            :empty-text="$t('petCare.common.noData')"
           />
-        </div>
-      </div>
-    </div>
+        </TableBody>
+      </Table>
+    </PagedTableCard>
   </div>
 </template>
 
@@ -87,7 +68,6 @@
 import {
   FlexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   getExpandedRowModel,
@@ -112,13 +92,13 @@ import {
 } from "@/components/ui/table";
 
 import { valueUpdater } from "@/lib/utils";
-import { CustomPagination } from "@/components/common";
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
+import PagedTableCard from "@/components/common/PagedTableCard.vue";
+import TableStateRows from "@/components/common/TableStateRows.vue";
+import { computed, onMounted, reactive, ref, watchEffect } from "vue";
 import SearchWrap from "@/views/admin/components/SearchWrap.vue";
 import SearchView from "../SearchView.vue";
 import { LOCAL_STORAGE_KEY } from "@/lib/constants";
 import { type IHeaderAdvanced } from "@/types";
-import PaginationEllipsis from "@/components/ui/pagination/PaginationEllipsis.vue";
 
 const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);
@@ -161,7 +141,7 @@ const table = useVueTable({
     return props.columns;
   },
   getCoreRowModel: getCoreRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
+  manualPagination: true,
   getSortedRowModel: getSortedRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
   getExpandedRowModel: getExpandedRowModel(),
@@ -188,13 +168,8 @@ const table = useVueTable({
   }
 });
 
-async function handleChangePage(vl: number) {
-  table.setPageIndex(vl);
-  if (props.pageData) {
-    props.pageData.pageIndex = vl;
-    emits("handlePageChange", vl);
-  }
-}
+// The rows are one server page already, so the page lives in this object and the table does not slice.
+const paging = props.pageData ?? reactive<PaginationState>({ pageIndex: 1, pageSize: Math.max(props.data.length, 1) });
 
 const allColumns = computed(() => {
   return table.getAllColumns().filter((column) => {
@@ -238,7 +213,6 @@ function getColumnSettingLocal() {
 }
 onMounted(async () => {
   getColumnSettingLocal();
-  table.setPageSize(Number(props.pageData && props.pageData.pageSize));
 });
 
 watchEffect(() => {

@@ -3,7 +3,7 @@
     <p class="border-b bg-muted/40 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
       {{ $t("petCare.prices.weightRows") }}
     </p>
-    <div class="table-scroll">
+    <div class="table-scroll admin-table">
       <table class="w-full text-sm">
         <thead>
           <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

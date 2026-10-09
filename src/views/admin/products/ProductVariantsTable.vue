@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="table-scroll rounded-xl border">
+    <div class="table-scroll admin-table rounded-xl border">
       <table class="w-full text-sm">
         <thead>
           <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

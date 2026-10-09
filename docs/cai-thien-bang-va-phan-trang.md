@@ -83,3 +83,10 @@ Mỗi bước là một PR nhỏ. Không có thay đổi cơ sở dữ liệu n�
 - Thêm trong lần này: tìm theo tên cho combo, tìm theo tên/số điện thoại cho đơn hàng, tìm theo mã/người mở cho ca thu ngân.
 - Danh sách trong ô chọn: `useInfiniteOptions` đọc từng trang (20 dòng), tìm kiếm chạy ở server (trễ 500ms) và cuộn tới cuối thì tải trang kế (`InfiniteSelect`, `ScrollSentinel`). Đã dùng cho ô chọn nhà cung cấp ở phiếu nhập và ô thêm sản phẩm vào phiếu kho (`listSupplierOptions`, `listSellableProducts`).
 - Chưa đổi: các danh mục nhỏ, cố định (chi nhánh, loài, vai trò, quyền, thuộc tính, mốc cân nặng, nhân viên) và tìm khách ở POS (hàm `search_customers` chỉ nhận số dòng tối đa, thêm phân trang cần sửa SQL).
+
+## 7. Áp dụng cho tất cả các bảng
+
+- Trang danh sách dùng thẻ bảng chung (`PagedTableCard`, chiều cao đầy đủ, phân trang ở chân): 8 màn đầu, combo dịch vụ, khách hàng (full chiều cao từ màn `xl` trở lên, hẹp hơn thì xếp dọc), lịch dịch vụ (`DataTable`, bỏ thanh phân trang cố định ở đáy màn hình) và danh sách quyền.
+- Trạng thái rỗng căn giữa khung nhờ thuộc tính `data-table-empty` của `TableStateRows` và CSS `.admin-table`.
+- Bảng nhỏ nằm trong form hoặc khung bên (dòng phiếu kho, lô, biến thể, hóa đơn, bảng giá, mốc cân nặng, ma trận quyền) chỉ đổi kiểu header qua class `admin-table`.
+- `DataTable` không còn cắt trang ở phía client (`manualPagination`), vì dữ liệu đã được server phân trang sẵn.

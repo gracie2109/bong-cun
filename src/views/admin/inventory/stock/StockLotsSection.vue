@@ -11,7 +11,7 @@
     <p v-else-if="lots.length === 0" class="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
       {{ $t("inventory.lots.empty") }}
     </p>
-    <div v-else class="overflow-x-auto">
+    <div v-else class="admin-table overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">

@@ -132,6 +132,11 @@
     max-height: none;
   }
 
+  .table-fill .table-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+
   .table-scroll thead {
     @apply sticky top-0 z-10;
   }
