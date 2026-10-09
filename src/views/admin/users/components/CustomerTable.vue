@@ -12,7 +12,7 @@
       <TablePager :page="page" :page-count="pageCount" :loading="loading" @update:page="$emit('page', $event)" />
     </div>
 
-    <div class="table-scroll">
+    <div class="table-scroll admin-table">
       <table class="w-full text-sm">
         <thead>
           <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

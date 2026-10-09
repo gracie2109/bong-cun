@@ -25,6 +25,14 @@
     "settingView": "Cài đặt hiển thị cột",
     "icon": "Biểu tượng",
     "row_per_page": "Hàng trên mỗi trang",
+    "table": {
+      "range": "Hiển thị {from}–{to} / {total}",
+      "pagination": "Phân trang",
+      "first": "Trang đầu",
+      "prev": "Trang trước",
+      "next": "Trang sau",
+      "last": "Trang cuối"
+    },
     "price": "Giá tiền"
   },
   "pageMeta": {

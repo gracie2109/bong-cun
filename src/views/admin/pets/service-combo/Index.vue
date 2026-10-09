@@ -32,7 +32,7 @@
         <TablePager v-model:page="pageData.pageIndex" :page-count="pageCount" :loading="combosQuery.isFetching.value" />
       </div>
 
-      <div class="table-scroll rounded-xl border bg-white">
+      <div class="table-scroll admin-table rounded-xl border bg-white">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

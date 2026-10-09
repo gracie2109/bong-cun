@@ -138,6 +138,25 @@
     @apply whitespace-nowrap;
   }
 
+  /* Shared look of the admin list tables: grey header with bold text, thin row lines, aligned numbers.
+     Set on the th itself so it wins over the uppercase/muted classes a row of headers may carry. */
+  .admin-table thead:not([class*="bg-"]) {
+    @apply bg-muted;
+  }
+
+  .admin-table th {
+    @apply text-xs font-semibold normal-case tracking-normal text-foreground;
+    box-shadow: inset 0 -1px 0 hsl(var(--border));
+  }
+
+  .admin-table td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-table tbody tr:hover {
+    @apply bg-muted/40;
+  }
+
   .hamburger {
     @apply relative z-20 m-0 inline-block cursor-pointer overflow-visible border-0 bg-transparent transition-all;
   }

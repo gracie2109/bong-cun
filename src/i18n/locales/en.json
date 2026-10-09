@@ -25,6 +25,14 @@
     "settingView": "Column display settings",
     "icon": "Icon",
     "row_per_page": "Rows per page",
+    "table": {
+      "range": "Showing {from}–{to} of {total}",
+      "pagination": "Pagination",
+      "first": "First page",
+      "prev": "Previous page",
+      "next": "Next page",
+      "last": "Last page"
+    },
     "price": "Price"
   },
   "pageMeta": {

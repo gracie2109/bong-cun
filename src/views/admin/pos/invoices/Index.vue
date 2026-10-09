@@ -15,7 +15,7 @@
 
       <InvoicesFilterBar v-model:search="search" v-model:period="period" v-model:status="status" />
 
-      <PagedTableCard v-model:page="page.pageIndex" :page-count="pageCount" :count="rows.length" :total="total">
+      <PagedTableCard v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

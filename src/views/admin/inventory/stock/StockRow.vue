@@ -50,7 +50,8 @@ const emit = defineEmits<{ open: [] }>();
 
 const isLow = computed(() => props.row.minQty !== null && props.row.sellable < props.row.minQty);
 const sellableTone = computed(() => {
-  if (props.row.sellable === 0) return "text-red-600";
-  return isLow.value ? "text-amber-700" : "";
+  // Red only when it is below the minimum and gone; an untracked zero is just grey.
+  if (isLow.value) return props.row.sellable === 0 ? "text-red-600" : "text-amber-700";
+  return props.row.sellable === 0 ? "text-muted-foreground" : "";
 });
 </script>

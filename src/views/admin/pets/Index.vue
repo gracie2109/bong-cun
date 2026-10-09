@@ -33,7 +33,7 @@
         :brackets="brackets"
       />
 
-      <PagedTableCard v-model:page="pageData.pageIndex" :page-count="pageCount" :loading="petsQuery.isFetching.value" :count="pets.length" :total="total">
+      <PagedTableCard v-model:page="pageData.pageIndex" v-model:page-size="pageData.pageSize" :page-count="pageCount" :loading="petsQuery.isFetching.value" :count="pets.length" :total="total">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
