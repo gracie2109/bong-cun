@@ -42,70 +42,19 @@
               <p class="text-xs text-muted-foreground">{{ $t("rbac.roles.newHint") }}</p>
             </div>
           </li>
-          <li v-for="role in visibleRoles" :key="role.id" class="relative">
-            <button
-              type="button"
-              class="w-full rounded-lg border border-l-4 px-3 py-3 pr-10 text-left transition-colors"
-              :class="isSelected(role) ? 'border-primary bg-primary/5' : 'border-l-transparent hover:bg-muted/40'"
-              @click="select(role.id)"
-            >
-              <span class="flex items-center gap-2">
-                <span class="truncate font-semibold" :class="isSelected(role) ? 'text-primary' : ''">{{ label(role) }}</span>
-                <span
-                  v-if="role.isSystem"
-                  class="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground"
-                >
-                  {{ $t("rbac.system") }}
-                </span>
-              </span>
-              <span class="mt-0.5 block font-mono text-[11px] text-muted-foreground">{{ role.name }}</span>
-              <span class="mt-2.5 flex items-center justify-between gap-2">
-                <span class="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span v-if="holdersOf(role).length" class="flex -space-x-2">
-                    <Avatar v-for="member in holdersOf(role).slice(0, 3)" :key="member.id" class="size-6 border-2 border-white">
-                      <AvatarImage v-if="member.photoUrl" :src="member.photoUrl" />
-                      <AvatarFallback class="bg-primary/10 text-[9px] text-primary">{{ initials(member.name) }}</AvatarFallback>
-                    </Avatar>
-                    <span
-                      v-if="holdersOf(role).length > 3"
-                      class="flex size-6 items-center justify-center rounded-full border-2 border-white bg-muted text-[9px] font-semibold"
-                    >
-                      +{{ holdersOf(role).length - 3 }}
-                    </span>
-                  </span>
-                  {{ $t("rbac.roles.staffCount", { n: role.staffCount }) }}
-                </span>
-                <span
-                  v-if="role.name !== CUSTOMER_ROLE"
-                  class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                  :class="grantedCount(role, permissions) === permissions.length && permissions.length > 0
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-primary/10 text-primary'"
-                >
-                  {{ role.name === SUPER_ADMIN_ROLE
-                    ? $t("rbac.roles.fullAccess", { n: permissions.length })
-                    : $t("rbac.roles.grantRatio", { n: grantedCount(role, permissions), total: permissions.length }) }}
-                </span>
-              </span>
-            </button>
-            <DropdownMenu v-if="canManage">
-              <DropdownMenuTrigger as-child>
-                <Button variant="ghost" size="icon" class="absolute right-1.5 top-2 size-8" :aria-label="$t('rbac.roles.more')">
-                  <EllipsisVertical class="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem v-if="role.name !== SUPER_ADMIN_ROLE" @click="startNew(role)">
-                  <Copy class="mr-2 size-4" />
-                  {{ $t("rbac.roles.clone") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem :disabled="role.isSystem" class="text-red-600" @click="toDelete = role">
-                  <Trash2 class="mr-2 size-4" />
-                  {{ $t("rbac.roles.delete") }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </li>
+          <RoleListItem
+            v-for="role in visibleRoles"
+            :key="role.id"
+            :role="role"
+            :selected="isSelected(role)"
+            :holders="holdersOf(role)"
+            :granted="grantedCount(role, permissions)"
+            :permission-count="permissions.length"
+            :can-manage="canManage"
+            @select="select(role.id)"
+            @clone="startNew(role)"
+            @remove="toDelete = role"
+          />
           <li v-if="visibleRoles.length === 0" class="px-2 py-6 text-center text-sm text-muted-foreground">
             {{ $t("rbac.roles.noMatch") }}
           </li>
@@ -141,18 +90,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { Copy, EllipsisVertical, Plus, Search, Trash2 } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { Plus, Search } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCanManageRbac } from "@/composables/usePermission";
@@ -161,13 +102,12 @@ import { usePermissionsList } from "@/queries/permissions";
 import { useDeleteRole, useRolesList } from "@/queries/roles";
 import { useStaffList } from "@/queries/staff";
 import type { Role } from "@/repositories/roles";
-import { initials } from "@/views/admin/pets/format";
 import RbacLayout from "../RbacLayout.vue";
-import { CUSTOMER_ROLE, fold, grantedCount, SUPER_ADMIN_ROLE } from "../rbac";
+import { fold, grantedCount } from "../rbac";
 import RoleEditor from "./RoleEditor.vue";
+import RoleListItem from "./RoleListItem.vue";
+import { useRoleSelection } from "./useRoleSelection";
 
-const route = useRoute();
-const router = useRouter();
 const canManage = useCanManageRbac();
 
 const rolesQuery = useRolesList();
@@ -180,10 +120,12 @@ const branchesQuery = useBranches();
 const branches = computed(() => branchesQuery.data.value ?? []);
 const deleteRole = useDeleteRole();
 
+const { creating, template, selected, isSelected, select, startNew, clearIfSelected } = useRoleSelection(
+  () => roles.value,
+  () => canManage.value
+);
+
 const search = ref("");
-const creating = ref(false);
-// Role whose name, description and grants seed a new role ("Nhân bản").
-const template = ref<Role | null>(null);
 const toDelete = ref<Role | null>(null);
 
 const label = (role: Role): string => role.description || role.name;
@@ -200,23 +142,6 @@ const holdersOf = (role: Role) =>
 const assignedStaff = computed(() => staff.value.filter((member) => member.assignments.length > 0).length);
 const unassignedStaff = computed(() => staff.value.length - assignedStaff.value);
 
-// The selected role lives in the URL (?role=cashier) so the matrix can link straight to it.
-const selectedId = computed(() => (typeof route.query.role === "string" ? route.query.role : null));
-const selected = computed(
-  () => roles.value.find((role) => role.id === selectedId.value) ?? roles.value[0] ?? null
-);
-const isSelected = (role: Role): boolean => !creating.value && selected.value?.id === role.id;
-
-const select = (id: string) => {
-  creating.value = false;
-  router.replace({ query: { ...route.query, role: id, new: undefined } });
-};
-
-const startNew = (from: Role | null) => {
-  template.value = from;
-  creating.value = true;
-};
-
 const onSaved = (name: string) => select(name);
 
 const remove = async () => {
@@ -228,19 +153,6 @@ const remove = async () => {
   } catch {
     return; // the mutation already showed the failure toast
   }
-  if (selected.value?.id === target.id) router.replace({ query: { ...route.query, role: undefined } });
+  clearIfSelected(target.id);
 };
-
-watch(selectedId, (id) => {
-  if (id) creating.value = false;
-});
-
-// The matrix screen's "Thêm vai trò" button links here with ?new=1.
-watch(
-  () => route.query.new,
-  (value) => {
-    if (value && canManage.value) startNew(null);
-  },
-  { immediate: true }
-);
 </script>
