@@ -47,8 +47,8 @@ import { Input } from "@/components/ui/input";
 import { supabaseClient } from "@/lib/supabase";
 import { useSellableProducts } from "@/queries/products";
 import { searchSellableProducts, type Product } from "@/repositories/products";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
-const SEARCH_DEBOUNCE_MS = 500;
 const BLUR_CLOSE_MS = 150;
 
 const emit = defineEmits<{ pick: [product: Product] }>();
