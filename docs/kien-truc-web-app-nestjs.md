@@ -156,7 +156,103 @@ Mỗi bước là một PR độc lập, web đang chạy không bị gián đo�
 
 Nếu sau này cần rời Supabase (tự host, yêu cầu pháp lý), NestJS ở bước 2-3 đã có sẵn, và có thể chuyển dần từng module sang phương án C mà không phải làm lại từ đầu.
 
-## 12. Cần chủ dự án quyết
+## 12. Chi tiết: nếu NestJS là BE duy nhất (phương án C)
+
+> Ước tính cho 1 dev full-stack quen NestJS, làm toàn thời gian. Đội 2 người rút được khoảng 40%, không phải một nửa, vì phần chuyển đổi phải làm tuần tự. Số tiền là giá niêm yết tham khảo, cần kiểm lại khi mua.
+
+### 12.1 Khối lượng việc phải làm
+
+Hiện tại "backend" là 19 migration (~4.600 dòng SQL), ~39 Postgres function, RLS trên các bảng, và 53 truy vấn bảng + 36 lời gọi RPC từ `src/repositories/`. Đưa tất cả qua NestJS nghĩa là:
+
+| Hạng mục | Việc | Công (tuần) |
+| --- | --- | --- |
+| Nền NestJS | Cấu trúc module, config, kết nối DB (Prisma/Drizzle/TypeORM), log, xử lý lỗi, deploy, CI | 1-2 |
+| Auth | Vẫn dùng Supabase Auth và kiểm JWT (nhẹ), hoặc tự làm đăng nhập, refresh token, quên mật khẩu, OTP (nặng hơn ~2 tuần) | 1-3 |
+| RBAC | Viết lại `has_permission(perm, method, branch)` thành guard + decorator, lọc dữ liệu theo chi nhánh ở mọi truy vấn | 2-3 |
+| API | ~60-80 endpoint thay cho truy vấn trực tiếp: DTO, validate, phân trang + tìm kiếm theo quy ước hiện có | 4-6 |
+| Nghiệp vụ | Hoặc giữ RPC và gọi từ NestJS (nhanh), hoặc viết lại hóa đơn, FEFO, phiếu kho, ca thu ngân, đổi trả bằng TS trong transaction (chậm, dễ sai) | 0-6 |
+| Web | Đổi tầng `repositories` gọi API thay cho Supabase; sửa lỗi phát sinh ở từng màn hình | 2-3 |
+| Upload, realtime | Upload qua API hoặc cấp signed URL; WebSocket/SSE nếu cần realtime | 1-2 |
+| Kiểm thử, chạy song song | Test phân quyền theo chi nhánh, so số liệu POS/kho giữa bản cũ và mới | 2-3 |
+| **Tổng** | | **~13-28 tuần (3-7 tháng)** |
+
+Trong thời gian đó gần như **không ra tính năng mới** (spa, báo cáo, thanh toán), vì mọi màn hình đều phải sửa lại tầng dữ liệu.
+
+So với phương án B: dựng NestJS cạnh Supabase cho SePay/GHN chỉ tốn ~1-2 tuần cho phần nền, phần còn lại là công của chính tính năng thanh toán, vốn phải làm dù chọn gì.
+
+### 12.2 Chi phí hạ tầng hằng tháng
+
+| | B (khuyến nghị) | C, vẫn giữ Supabase làm DB + Auth | C, rời hẳn Supabase |
+| --- | --- | --- | --- |
+| Postgres | Supabase Pro ~25 USD | Supabase Pro ~25 USD | Postgres managed (Neon, RDS, DigitalOcean...) ~20-60 USD |
+| Auth | Supabase (đã gồm) | Supabase (đã gồm) | Tự làm (0 USD, tốn công) hoặc dịch vụ ngoài theo số người dùng |
+| Lưu file | Supabase Storage (đã gồm) | Supabase Storage | S3 / Cloudflare R2 ~1-5 USD |
+| Host NestJS | 1 instance nhỏ ~5-20 USD | 2 instance để không chết cả hệ thống khi 1 cái lỗi ~20-50 USD | ~20-50 USD |
+| Redis (queue, cache) | Có thể chưa cần | ~0-15 USD | ~0-15 USD |
+| Giám sát, log, cảnh báo | Gói miễn phí đủ | Nên trả phí ~0-30 USD | ~0-30 USD |
+| **Ước tổng** | **~30-45 USD** | **~45-120 USD** | **~45-160 USD** |
+
+Tiền hạ tầng không chênh nhiều. **Chi phí thật của C là công**: 3-7 tháng của 1 dev, cộng việc vận hành server mà Supabase đang làm hộ.
+
+### 12.3 Rủi ro
+
+| Rủi ro | Mức | Giải thích |
+| --- | --- | --- |
+| Lộ dữ liệu giữa chi nhánh | Cao | NestJS kết nối DB bằng một tài khoản quyền cao, nên RLS không còn chặn. Chỉ cần một endpoint quên lọc `branch_id` là nhân viên chi nhánh này xem được hóa đơn, kho chi nhánh khác. Hiện nay DB chặn việc đó dù code client có sai. |
+| Sai số liệu tiền và kho | Cao (nếu viết lại RPC) | Trừ kho FEFO, hoàn kho khi hủy, khóa ca thu ngân đang chạy đúng trong Postgres. Viết lại bằng TS phải xử lý transaction, khóa dòng, chạy đồng thời; sai là lệch tồn kho, lệch tiền ca. |
+| Đóng băng tính năng | Cao | 3-7 tháng không làm spa, báo cáo, thanh toán, trong khi phạm vi đã chốt là Shop + Spa chạy sớm. |
+| Một điểm chết | Trung bình | NestJS sập thì POS, admin, shop, app đều ngừng. Hiện nay chỉ phụ thuộc Supabase. |
+| Gánh vận hành | Trung bình | Tự lo deploy, scale, bảo mật server, cập nhật thư viện, sao lưu (nếu rời Supabase), trực sự cố. Với 1-2 người là gánh nặng lớn. |
+| Chạy hai hệ song song | Trung bình | Trong lúc chuyển, một phần màn hình gọi Supabase, một phần gọi NestJS; quy tắc dễ lệch nhau. |
+| Chậm hơn một chút | Thấp | Thêm một chặng mạng client → NestJS → DB; không đáng kể nếu host gần DB. |
+
+**Được gì:** một API duy nhất cho web và app, test nghiệp vụ bằng TS dễ hơn SQL, không phụ thuộc Supabase, dễ tuyển dev NestJS hơn dev Postgres.
+
+**Cách làm C ít rủi ro hơn (nếu vẫn muốn):** NestJS làm cổng duy nhất nhưng **giữ nguyên RPC** và gọi DB **bằng JWT của người dùng** (supabase-js với header `Authorization`), để RLS vẫn chặn. Công giảm còn ~8-14 tuần, rủi ro lộ dữ liệu và sai số liệu gần như về mức của B. Đây cũng là đích tự nhiên nếu đi theo B rồi chuyển dần.
+
+**Khi nào C đáng làm:** có đội backend riêng; phải tự host (yêu cầu pháp lý, khách hàng doanh nghiệp); bán hệ thống cho nhiều chủ cửa hàng (SaaS nhiều tenant); hoặc Supabase không còn đáp ứng được về giá hay tính năng.
+
+## 13. Chi tiết: chi phí và rủi ro khi làm app bằng Expo
+
+### 13.1 Chi phí tiền
+
+| Hạng mục | Chi phí | Ghi chú |
+| --- | --- | --- |
+| Apple Developer Program | 99 USD/năm | Bắt buộc để lên App Store; đăng ký dạng tổ chức cần mã D-U-N-S (miễn phí, chờ vài ngày đến vài tuần) |
+| Google Play Console | 25 USD một lần | Tài khoản cá nhân mới phải cho ~12 người test kín 14 ngày trước khi phát hành; tài khoản tổ chức thì không |
+| Expo EAS (build + cập nhật OTA) | Free → ~19 USD/tháng (Starter) → ~199 USD/tháng (Production) | Free đủ khi mới làm (giới hạn số lượt build/tháng, xếp hàng chậm); trả phí khi build nhiều hoặc nhiều người dùng nhận OTA. Có thể tự build trên máy để tránh phí |
+| Thông báo đẩy (Expo Push) | 0 USD | Miễn phí; vẫn cần cấu hình APNs (Apple) và FCM (Google) |
+| OTP SMS cho khách | Theo tin, ước vài trăm đến hơn 1.000 đồng/tin tùy nhà cung cấp | Supabase Auth gửi SMS qua Twilio/Vonage/MessageBird...; giá về Việt Nam cao hơn nhà cung cấp trong nước. Rẻ hơn: OTP qua email (miễn phí) hoặc Zalo ZNS (cần tích hợp riêng). Cần báo giá thực tế |
+| Máy test | 0 nếu đã có iPhone + Android | Build iOS chạy trên cloud EAS nên không bắt buộc có Mac; có Mac thì chạy giả lập tiện hơn |
+| Supabase | Không tăng nhiều | Thêm người dùng là khách hàng; gói Pro gồm 100.000 người dùng hoạt động/tháng |
+| **Ước tổng năm đầu** | **~125 USD cố định + 0-230 USD/năm EAS + tiền SMS** | |
+
+### 13.2 Chi phí công (1 dev)
+
+| Hạng mục | Tuần |
+| --- | --- |
+| Học React + React Native (nếu chỉ quen Vue) | 2-4 |
+| Tách monorepo, đưa `repositories`/types/zod thành package dùng chung | 1 (đã tính trong bước 1 lộ trình) |
+| RLS + RPC cho vai trò khách hàng (chỉ thấy dữ liệu của mình, đặt lịch) | 2-3 |
+| App khách ~15 màn: đăng nhập OTP, thú cưng, đặt lịch spa, lịch sử, hóa đơn, điểm, thông báo | 8-10 |
+| Chuẩn bị store: icon, ảnh màn hình, chính sách quyền riêng tư, xóa tài khoản trong app, khai báo dữ liệu | 1-2 |
+| **Tổng** | **~14-20 tuần**, khớp ước tính Phase 3 trong kế hoạch BA (8-10 tuần cho phần app, chưa tính học và chuẩn bị) |
+
+Hằng năm: nâng cấp Expo SDK (~2-3 bản/năm, mỗi lần 1-3 ngày), cập nhật theo yêu cầu mới của Apple/Google.
+
+### 13.3 Rủi ro
+
+| Rủi ro | Mức | Cách giảm |
+| --- | --- | --- |
+| Hai bộ giao diện (Vue cho web, React cho app) | Trung bình | Chấp nhận: app khách vốn là màn hình mới. Chỉ chia sẻ tầng dữ liệu, kiểu, zod. Nếu không muốn học React thì dùng Capacitor + Vue (đổi lại cảm giác kém native) |
+| Bị store từ chối | Trung bình | Apple hay từ chối app quá đơn giản, thiếu chức năng xóa tài khoản, thiếu chính sách quyền riêng tư. Gửi bản test sớm (TestFlight), chuẩn bị đủ giấy tờ. App bán hàng hóa/dịch vụ thật nên không bắt buộc dùng thanh toán trong app của Apple |
+| Lỗi khi nâng SDK, thư viện native | Thấp-Trung bình | Dùng thư viện có sẵn trong Expo; tránh thư viện native lạ; nâng SDK theo từng bản |
+| Chi phí SMS tăng, bị phá bằng spam OTP | Trung bình | Giới hạn số lần gửi theo SĐT/IP, captcha, ưu tiên OTP email hoặc Zalo |
+| Lộ dữ liệu khách khác | Cao nếu làm ẩu | App gọi thẳng Supabase, nên RLS cho khách phải viết và test kỹ trước khi phát hành |
+| Một người giữ ba ứng dụng | Trung bình | Làm app sau khi web Shop + Spa ổn định (Phase 3), đúng lộ trình |
+| Phụ thuộc dịch vụ Expo | Thấp | Expo là mã nguồn mở; nếu bỏ EAS vẫn build được bằng công cụ chuẩn của Apple/Google |
+
+## 14. Cần chủ dự án quyết
 
 1. Đồng ý phương án B (Supabase lõi + NestJS cạnh) thay vì NestJS làm BE duy nhất.
 2. App khách dùng Expo (khuyến nghị) hay Capacitor + Vue (rẻ hơn, kém native hơn).
