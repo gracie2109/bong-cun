@@ -794,7 +794,9 @@
       "confirm": "Confirm payment",
       "done": "Paid",
       "print": "Print receipt",
-      "newSale": "New sale"
+      "newSale": "New sale",
+      "replayed": "This sale was already saved on the previous attempt (the connection dropped); no new invoice was made.",
+      "scanBlocked": "A barcode scanned into the amount was ignored. Close the payment dialog before scanning items."
     },
     "shift": {
       "current": "Shift {code} · opened {time}",

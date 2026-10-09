@@ -6,6 +6,7 @@
     </DialogTitle>
     <DialogDescription>{{ result.code }}</DialogDescription>
   </DialogHeader>
+  <p v-if="result.replayed" class="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{{ $t("pos.payment.replayed") }}</p>
   <div class="space-y-2 rounded-xl bg-muted/50 p-4">
     <div class="flex justify-between text-sm">
       <span class="text-muted-foreground">{{ $t("pos.total") }}</span>
