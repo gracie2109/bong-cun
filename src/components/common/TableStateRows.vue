@@ -1,0 +1,28 @@
+<template>
+  <template v-if="pending">
+    <tr v-for="i in skeletonRows" :key="i" class="border-t">
+      <td :colspan="colspan" class="px-4 py-3"><Skeleton :class="skeletonClass" /></td>
+    </tr>
+  </template>
+  <tr v-else-if="empty">
+    <td :colspan="colspan" class="px-4 py-10 text-center text-muted-foreground">{{ emptyText }}</td>
+  </tr>
+</template>
+
+<script lang="ts" setup>
+import { Skeleton } from "@/components/ui/skeleton";
+
+/** Rows for a table body that has nothing to list yet: placeholders while loading, a message when empty. */
+withDefaults(
+  defineProps<{
+    /** Columns of the table, so the row spans it. */
+    colspan: number;
+    pending: boolean;
+    empty: boolean;
+    emptyText: string;
+    skeletonRows?: number;
+    skeletonClass?: string;
+  }>(),
+  { skeletonRows: 5, skeletonClass: "h-8 w-full" }
+);
+</script>
