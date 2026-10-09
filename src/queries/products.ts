@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
+import { useInfiniteOptions } from "@/composables/useInfiniteOptions";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
@@ -10,6 +11,7 @@ import {
   listProductGroups,
   productErrorHint,
   saveProductGroup,
+  listSellableProducts,
   searchSellableProducts,
   setProductGroupActive,
   type ProductFilter,
@@ -63,6 +65,14 @@ export const useSellableProducts = (text: MaybeRef<string>) =>
     queryKey: computed(() => productKeys.sellable(unref(text).trim())),
     queryFn: () => searchSellableProducts(supabaseClient(), unref(text)),
     placeholderData: keepPreviousData,
+  });
+
+/** Active products for a picker that loads more as it scrolls and searches on the server. */
+export const useSellableProductsPaged = (search: MaybeRef<string>) =>
+  useInfiniteOptions({
+    queryKey: productKeys.sellablePaged,
+    fetchPage: (page, text) => listSellableProducts(supabaseClient(), page, text),
+    search,
   });
 
 const useInvalidateCatalog = () => {

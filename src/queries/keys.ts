@@ -55,8 +55,8 @@ export const servicePriceKeys = {
 
 export const petComboKeys = {
   all: ["pet-combos"] as const,
-  list: (page: PageParams, includeArchived = false) =>
-    [...petComboKeys.all, "list", page, includeArchived] as const,
+  list: (page: PageParams, includeArchived = false, search = "") =>
+    [...petComboKeys.all, "list", page, includeArchived, search] as const,
 };
 
 export const permissionKeys = {
@@ -78,8 +78,8 @@ export const userKeys = {
 
 export const orderKeys = {
   all: ["orders"] as const,
-  list: (page: PageParams, phoneNumber?: string) =>
-    [...orderKeys.all, "list", page, phoneNumber ?? null] as const,
+  list: (page: PageParams, phoneNumber?: string, search = "") =>
+    [...orderKeys.all, "list", page, phoneNumber ?? null, search] as const,
   detail: (id: string) => [...orderKeys.all, "detail", id] as const,
   byUsers: (userIds: string[]) => [...orderKeys.all, "by-users", [...userIds].sort()] as const,
 };
@@ -96,12 +96,14 @@ export const productKeys = {
   sellableGroup: (id: string) => [...productKeys.all, "sellable-group", id] as const,
   attributes: () => [...productKeys.all, "attributes"] as const,
   sellable: (text: string) => [...productKeys.all, "sellable", text] as const,
+  sellablePaged: (text: string) => [...productKeys.all, "sellable-paged", text] as const,
 };
 
 export const posKeys = {
   all: ["pos"] as const,
   myShift: (branchId: string, userId: string) => [...posKeys.all, "my-shift", branchId, userId] as const,
-  shifts: (branchId: string, page: PageParams) => [...posKeys.all, "shifts", branchId, page] as const,
+  shifts: (branchId: string, page: PageParams, search = "") =>
+    [...posKeys.all, "shifts", branchId, page, search] as const,
   shiftSummary: (shiftId: string) => [...posKeys.all, "shift-summary", shiftId] as const,
   invoices: (page: PageParams, filter: InvoiceFilter) => [...posKeys.all, "invoices", page, filter] as const,
   invoice: (id: string) => [...posKeys.all, "invoice", id] as const,
@@ -129,5 +131,5 @@ export const inventoryKeys = {
 export const supplierKeys = {
   all: ["suppliers"] as const,
   list: (page: PageParams, filter: SupplierFilter) => [...supplierKeys.all, "list", page, filter] as const,
-  options: () => [...supplierKeys.all, "options"] as const,
+  options: (search: string) => [...supplierKeys.all, "options", search] as const,
 };

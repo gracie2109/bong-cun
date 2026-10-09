@@ -126,6 +126,12 @@
     max-height: max(20rem, calc(100dvh - 14rem));
   }
 
+  /* A table that takes the height its flex column leaves, with the scroll bars inside it. */
+  .table-scroll.table-fill {
+    @apply min-h-0 flex-1;
+    max-height: none;
+  }
+
   .table-scroll thead {
     @apply sticky top-0 z-10;
   }

@@ -15,13 +15,15 @@ import { notifyFailure, notifySuccess } from "./notify";
 
 export const usePetCombosList = (
   page: MaybeRef<PageParams>,
-  includeArchived: MaybeRef<boolean> = false
+  includeArchived: MaybeRef<boolean> = false,
+  search: MaybeRef<string> = ""
 ) =>
   useQuery({
-    queryKey: computed(() => petComboKeys.list(toPage(unref(page)), unref(includeArchived))),
+    queryKey: computed(() => petComboKeys.list(toPage(unref(page)), unref(includeArchived), unref(search))),
     queryFn: () =>
       listPetCombos(supabaseClient(), toPage(unref(page)), {
         includeArchived: unref(includeArchived),
+        search: unref(search),
       }),
     placeholderData: keepPreviousData,
   });

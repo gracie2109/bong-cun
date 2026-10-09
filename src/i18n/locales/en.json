@@ -25,6 +25,7 @@
     "settingView": "Column display settings",
     "icon": "Icon",
     "row_per_page": "Rows per page",
+    "search": "Search",
     "table": {
       "range": "Showing {from}–{to} of {total}",
       "pagination": "Pagination",

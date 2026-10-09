@@ -73,3 +73,13 @@ Mỗi bước là một PR nhỏ. Không có thay đổi cơ sở dữ liệu n�
 - Header: nền xám chữ đậm như ảnh tham chiếu (khuyên dùng) hay giữ chữ hoa nhỏ như hiện tại?
 - Phân trang: chỉ ở chân bảng (khuyên dùng) hay cả trên lẫn dưới?
 - Phạm vi: áp dụng ngay cho cả 8 màn (khuyên dùng, vì sửa ở component chung) hay thử trên tồn kho và sản phẩm trước?
+
+## 6. Bổ sung: bảng chiếm hết chiều cao và quy ước API danh sách
+
+**Bảng full chiều cao.** `ContentWrap` có thuộc tính `fill`: trang cao đúng bằng màn hình trừ thanh header, xếp theo cột. Phần lọc ở trên giữ chiều cao tự nhiên, `PagedTableCard` chiếm phần còn lại. Hàng cuộn cả hai chiều trong khung, header dính ở trên, phân trang cố định ở chân. Thẻ nhận thêm `height` (chiều cao cố định) và `scroll-x` (độ rộng tối thiểu của bảng, hẹp hơn thì cuộn ngang).
+
+**Quy ước API danh sách.** Hàm lấy danh sách nhận `(client, page, filter)` với `page = { pageIndex, pageSize }` và `filter.search`, trả về `{ rows, total }`.
+- Đã có sẵn: tồn kho, phiếu kho, nhà cung cấp, hóa đơn, thú cưng, dịch vụ, khách hàng, nhóm sản phẩm.
+- Thêm trong lần này: tìm theo tên cho combo, tìm theo tên/số điện thoại cho đơn hàng, tìm theo mã/người mở cho ca thu ngân.
+- Danh sách trong ô chọn: `useInfiniteOptions` đọc từng trang (20 dòng), tìm kiếm chạy ở server (trễ 500ms) và cuộn tới cuối thì tải trang kế (`InfiniteSelect`, `ScrollSentinel`). Đã dùng cho ô chọn nhà cung cấp ở phiếu nhập và ô thêm sản phẩm vào phiếu kho (`listSupplierOptions`, `listSellableProducts`).
+- Chưa đổi: các danh mục nhỏ, cố định (chi nhánh, loài, vai trò, quyền, thuộc tính, mốc cân nặng, nhân viên) và tìm khách ở POS (hàm `search_customers` chỉ nhận số dòng tối đa, thêm phân trang cần sửa SQL).

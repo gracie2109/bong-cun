@@ -1,9 +1,12 @@
 <template>
-  <div class="overflow-hidden rounded-xl border bg-white">
-    <div class="table-scroll admin-table transition-opacity" :class="loading && 'opacity-60'">
-      <slot />
+  <div class="flex min-h-[16rem] flex-col overflow-hidden rounded-xl border bg-white" :style="height ? { height } : undefined">
+    <div class="table-scroll table-fill admin-table transition-opacity" :class="loading && 'opacity-60'">
+      <!-- scroll-x: the table keeps at least this width and scrolls sideways when the card is narrower -->
+      <div :style="scrollX ? { minWidth: typeof scrollX === 'number' ? `${scrollX}px` : scrollX } : undefined">
+        <slot />
+      </div>
     </div>
-    <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t bg-muted/40 px-4 py-2.5">
+    <div class="flex shrink-0 flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t bg-muted/40 px-4 py-2.5">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
         <span>{{ $t("common.table.range", { from, to, total }) }}</span>
         <label v-if="pageSize" class="flex items-center gap-2">
@@ -31,7 +34,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TABLE_PAGE_SIZES } from "@/lib/listing";
 import TablePager from "./TablePager.vue";
 
-/** A table inside a card with its pager at the foot: "from-to of total", rows per page and page buttons. */
+/**
+ * A table card that fills the height its parent column leaves. The rows scroll inside it, both
+ * ways, with the header kept in view and the pager fixed at the foot.
+ */
 const props = defineProps<{
   /** Rows on this page, out of `total`. */
   count: number;
@@ -39,6 +45,10 @@ const props = defineProps<{
   pageCount: number;
   /** Dims the rows and disables the page buttons while a page is loading. */
   loading?: boolean;
+  /** A fixed card height (any CSS length) instead of filling what is left. */
+  height?: string;
+  /** Minimum table width (px or any CSS length); a narrower card scrolls sideways. */
+  scrollX?: number | string;
 }>();
 
 /** 1-based page number. */
