@@ -25,6 +25,8 @@
     "settingView": "Cài đặt hiển thị cột",
     "icon": "Biểu tượng",
     "row_per_page": "Hàng trên mỗi trang",
+    "ok": "Đồng ý",
+    "cancel": "Hủy",
     "search": "Tìm kiếm",
     "table": {
       "range": "Hiển thị {from}–{to} / {total}",

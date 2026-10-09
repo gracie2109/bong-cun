@@ -90,3 +90,13 @@ Mỗi bước là một PR nhỏ. Không có thay đổi cơ sở dữ liệu n�
 - Trạng thái rỗng căn giữa khung nhờ thuộc tính `data-table-empty` của `TableStateRows` và CSS `.admin-table`.
 - Bảng nhỏ nằm trong form hoặc khung bên (dòng phiếu kho, lô, biến thể, hóa đơn, bảng giá, mốc cân nặng, ma trận quyền) chỉ đổi kiểu header qua class `admin-table`.
 - `DataTable` không còn cắt trang ở phía client (`manualPagination`), vì dữ liệu đã được server phân trang sẵn.
+
+## 8. Hộp thoại (modal) dùng chung
+
+`AppDialog` (`src/components/common/AppDialog.vue`) là hộp thoại duy nhất cho các pop-up trong admin:
+- Có thanh tiêu đề với nút đóng ở góc phải trên; thân cuộn được; chân có Hủy / Đồng ý.
+- Esc đóng hộp thoại, Enter bấm Đồng ý (bỏ qua khi đang nhập ô nhiều dòng, đang chọn trong danh sách, hoặc đang đứng trên một nút khác). Khi đang `busy` thì không đóng được.
+- Tùy biến: `title`, `description`, `size` (sm/md/lg/xl), `ok-text`, `cancel-text`, `ok-disabled`, `busy`, `danger`, `hide-cancel`, `hide-footer`, `hide-header`, `persistent`, `form-id` (đặt id của `<form>` trong thân thì Đồng ý sẽ gửi form đó), các slot `title`, `description`, `footer`, và sự kiện `ok`, `cancel`.
+- Khi mở, con trỏ vào ô nhập đầu tiên; không có ô nhập thì vào nút Đồng ý để Enter xác nhận.
+- `ConfirmDialog` là lớp mỏng trên `AppDialog` (giữ nguyên API cũ, thêm `cancel-btn` và `danger`). Đã chuyển sang: mở ca, đóng ca, thanh toán, chọn biến thể ở POS và cài đặt cột hiển thị.
+- Chưa đổi: các hộp thoại của trang bán hàng công khai (xem nhanh sản phẩm, menu) và ảnh phóng to toàn màn hình, vì có bố cục riêng; chúng vẫn có nút đóng và Esc của thư viện.
