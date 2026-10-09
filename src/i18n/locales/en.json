@@ -26,6 +26,9 @@
     "icon": "Icon",
     "row_per_page": "Rows per page",
     "ok": "OK",
+    "delete": "Delete",
+    "deleteFileTitle": "Delete file?",
+    "deleteFileDesc": "Once deleted it cannot be recovered.",
     "cancel": "Cancel",
     "search": "Search",
     "table": {

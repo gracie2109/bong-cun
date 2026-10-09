@@ -9,7 +9,7 @@
     >
       <!-- display: contents keeps the grid layout; the wrapper only exists to catch Enter -->
       <div class="contents" @keydown.enter="onEnter">
-        <DialogHeader :class="cn('space-y-1 border-b px-6 py-4 pr-12 text-left', hideHeader && 'sr-only')">
+        <DialogHeader :class="cn('space-y-1 px-6 py-4 pr-12 text-left', $slots.default && 'border-b', hideHeader && 'sr-only')">
           <DialogTitle>
             <slot name="title">{{ title }}</slot>
           </DialogTitle>
@@ -18,11 +18,11 @@
           </DialogDescription>
         </DialogHeader>
 
-        <div :class="cn('max-h-[70dvh] overflow-y-auto px-6 py-4', bodyClass)">
+        <div v-if="$slots.default" :class="cn('max-h-[70dvh] overflow-y-auto px-6 py-4', bodyClass)">
           <slot />
         </div>
 
-        <DialogFooter v-if="!hideFooter" class="gap-2 border-t px-6 py-3">
+        <DialogFooter v-if="!hideFooter" :class="cn('gap-2 px-6 py-3', $slots.default && 'border-t')">
           <slot name="footer" :ok="ok" :cancel="cancel" :busy="busy">
             <Button v-if="!hideCancel" type="button" variant="outline" :disabled="busy" @click="cancel">
               {{ cancelText ?? $t("common.cancel") }}

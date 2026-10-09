@@ -185,9 +185,10 @@ const handleDelete = async (img: string) => {
 
               <DialogConfirm
                 :open="delImg ? true : false"
-                :ok-btn="'Delete'"
-                :desc="'You may be deleting user data. After you delete this, it can not be recovered.'"
-                :title="'Delete files'"
+                danger
+                :ok-btn="$t('common.delete')"
+                :desc="$t('common.deleteFileDesc')"
+                :title="$t('common.deleteFileTitle')"
                 @cancel="delImg = ''"
                 @open-change="delImg = ''"
                 @handle-ok="handleDelete(toRaw(delImg))"
