@@ -67,6 +67,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCustomerSearch } from "@/queries/customers";
 import { digitsOf, matchKey, type CustomerMatch } from "@/repositories/customers";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
 /** The buyer picked at the counter; null = anonymous walk-in. */
 export type Buyer = {
@@ -78,7 +79,6 @@ export type Buyer = {
   isNew: boolean;
 };
 
-const SEARCH_DEBOUNCE_MS = 500;
 const MIN_PHONE_DIGITS = 8;
 const MAX_PHONE_DIGITS = 15;
 

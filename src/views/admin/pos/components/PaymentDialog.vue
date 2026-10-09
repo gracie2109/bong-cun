@@ -1,32 +1,7 @@
 <template>
   <Dialog :open="open" @update:open="onOpenChange">
     <DialogContent class="sm:max-w-lg">
-      <template v-if="result">
-        <DialogHeader>
-          <DialogTitle class="flex items-center gap-2">
-            <CircleCheck class="size-5 text-primary" />
-            {{ $t("pos.payment.done") }}
-          </DialogTitle>
-          <DialogDescription>{{ result.code }}</DialogDescription>
-        </DialogHeader>
-        <div class="space-y-2 rounded-xl bg-muted/50 p-4">
-          <div class="flex justify-between text-sm">
-            <span class="text-muted-foreground">{{ $t("pos.total") }}</span>
-            <span class="font-semibold">{{ money(result.total) }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-muted-foreground">{{ $t("pos.change") }}</span>
-            <span class="text-2xl font-bold text-primary">{{ money(result.changeAmount) }}</span>
-          </div>
-        </div>
-        <DialogFooter class="gap-2">
-          <Button variant="outline" :disabled="printing" @click="emit('print')">
-            <Printer class="mr-2 size-4" />
-            {{ $t("pos.payment.print") }}
-          </Button>
-          <Button @click="emit('update:open', false)">{{ $t("pos.payment.newSale") }}</Button>
-        </DialogFooter>
-      </template>
+      <PaymentSuccess v-if="result" :result="result" :printing="printing" @print="emit('print')" @new-sale="emit('update:open', false)" />
 
       <template v-else>
         <DialogHeader>
@@ -100,8 +75,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { Banknote, CircleCheck, CreditCard, Landmark, Loader2, Printer } from "lucide-vue-next";
+import { toRef, watch } from "vue";
+import { Banknote, CreditCard, Landmark, Loader2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -113,10 +88,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { PaymentMethod, SaleResult } from "@/repositories/pos";
-import { cashSuggestions, money, parseAmount } from "../format";
-
-export type PaymentEntry = { method: PaymentMethod; amount: number; bankRef?: string | null };
+import type { SaleResult } from "@/repositories/pos";
+import { money } from "../format";
+import { usePaymentSplit, type PaymentEntry } from "../usePaymentSplit";
+import PaymentSuccess from "./PaymentSuccess.vue";
 
 const props = defineProps<{
   open: boolean;
@@ -131,41 +106,18 @@ const emit = defineEmits<{
   print: [];
 }>();
 
-const cash = ref("");
-const transfer = ref("");
-const card = ref("");
-const bankRef = ref("");
+const { cash, transfer, card, bankRef, transferAmount, paid, change, nonCashTooHigh, canConfirm, suggestions, reset, entries } =
+  usePaymentSplit(toRef(props, "total"));
 
 // Each time the dialog opens for a new sale, start with cash = the exact total.
 watch(
   () => props.open,
   (open) => {
-    if (!open || props.result) return;
-    cash.value = String(props.total);
-    transfer.value = "";
-    card.value = "";
-    bankRef.value = "";
+    if (open && !props.result) reset();
   }
 );
 
-const cashAmount = computed(() => parseAmount(cash.value));
-const transferAmount = computed(() => parseAmount(transfer.value));
-const cardAmount = computed(() => parseAmount(card.value));
-const paid = computed(() => cashAmount.value + transferAmount.value + cardAmount.value);
-const change = computed(() => Math.max(0, paid.value - props.total));
-// Only cash can be handed back; transfer and card together may not exceed the total.
-const nonCashTooHigh = computed(() => transferAmount.value + cardAmount.value > props.total);
-const canConfirm = computed(() => paid.value >= props.total && !nonCashTooHigh.value);
-const suggestions = computed(() => cashSuggestions(Math.max(0, props.total - transferAmount.value - cardAmount.value)));
-
-const confirm = () => {
-  const entries: PaymentEntry[] = [
-    { method: "cash", amount: cashAmount.value },
-    { method: "transfer", amount: transferAmount.value, bankRef: bankRef.value.trim() || null },
-    { method: "card", amount: cardAmount.value },
-  ];
-  emit("confirm", entries.filter((entry) => entry.amount > 0));
-};
+const confirm = () => emit("confirm", entries());
 
 const onOpenChange = (value: boolean) => {
   if (!props.busy) emit("update:open", value);
