@@ -8,17 +8,21 @@ import { blankLine, draftTotal, pickLot, toInput, validLine, type EditLine } fro
 export const useDocumentLines = (type: Ref<DocType>, branchId: () => string | undefined) => {
   const fetchLots = useFetchProductLots();
   const lines = ref<EditLine[]>([]);
+  // Bumped on every load, so a lot lookup that resolves after the sheet moved on is dropped.
+  let loadSeq = 0;
 
   const draftValue = computed(() => draftTotal(type.value, lines.value));
 
   const load = async (detail: StockDocumentDetail | null) => {
+    loadSeq++;
     lines.value = (detail?.lines ?? []).map((line) => ({
       ...blankLine({ id: line.productId, name: line.productName, unit: line.unit }),
       lotId: line.lotId,
       lotNo: line.lotNo,
       expiryDate: line.expiryDate ?? "",
       qty: detail?.docType === "count" ? "" : String(line.qty),
-      unitCost: String(line.unitCost),
+      // A receipt's cost field takes whole dong only (parseAmount keeps digits), so drop any decimals.
+      unitCost: String(detail?.docType === "receipt" ? Math.round(line.unitCost) : line.unitCost),
       countedQty: line.countedQty === null ? "" : String(line.countedQty),
       systemQty: line.systemQty,
     }));
@@ -36,7 +40,10 @@ export const useDocumentLines = (type: Ref<DocType>, branchId: () => string | un
       lines.value.push(blankLine(product));
       return;
     }
+    const seq = loadSeq;
+    const docType = type.value;
     const lots = await fetchLots(branch, product.id);
+    if (seq !== loadSeq || docType !== type.value) return;
     if (type.value === "writeoff") {
       // Expired lots first: they are what usually gets written off.
       const line = { ...blankLine(product), lotOptions: lots };

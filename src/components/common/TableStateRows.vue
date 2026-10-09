@@ -4,12 +4,16 @@
       <td :colspan="colspan" class="px-4 py-3"><Skeleton :class="skeletonClass" /></td>
     </tr>
   </template>
-  <tr v-else-if="empty">
-    <td :colspan="colspan" class="px-4 py-10 text-center text-muted-foreground">{{ emptyText }}</td>
+  <tr v-else-if="empty" data-table-empty>
+    <td :colspan="colspan" class="px-4 py-12 text-center align-middle text-muted-foreground">
+      <Inbox class="mx-auto mb-2 size-8 text-primary/60" />
+      {{ emptyText }}
+    </td>
   </tr>
 </template>
 
 <script lang="ts" setup>
+import { Inbox } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /** Rows for a table body that has nothing to list yet: placeholders while loading, a message when empty. */

@@ -13,7 +13,7 @@
       v-if="focused && search.trim()"
       class="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-lg border bg-white py-1 shadow-lg"
     >
-      <li v-if="productsQuery.isFetching.value && results.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
+      <li v-if="loading && results.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
         {{ $t("petCare.common.loading") }}
       </li>
       <li v-else-if="results.length === 0" class="px-3 py-2 text-sm text-muted-foreground">{{ $t("pos.catalog.empty") }}</li>
@@ -35,6 +35,8 @@
           </span>
         </button>
       </li>
+      <li v-if="hasMore"><ScrollSentinel @visible="loadMore" /></li>
+      <li v-if="loadingMore" class="px-3 py-2 text-sm text-muted-foreground">{{ $t("petCare.common.loading") }}</li>
     </ul>
   </div>
 </template>
@@ -43,11 +45,12 @@
 import { computed, ref } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { ScanLine } from "lucide-vue-next";
+import ScrollSentinel from "@/components/common/ScrollSentinel.vue";
 import { Input } from "@/components/ui/input";
-import { supabaseClient } from "@/lib/supabase";
-import { useSellableProducts } from "@/queries/products";
-import { searchSellableProducts, type Product } from "@/repositories/products";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
+import { supabaseClient } from "@/lib/supabase";
+import { useSellableProductsPaged } from "@/queries/products";
+import { searchSellableProducts, type Product } from "@/repositories/products";
 
 const BLUR_CLOSE_MS = 150;
 
@@ -56,8 +59,8 @@ const emit = defineEmits<{ pick: [product: Product] }>();
 const search = ref("");
 const focused = ref(false);
 const debounced = refDebounced(search, SEARCH_DEBOUNCE_MS);
-const productsQuery = useSellableProducts(debounced);
-const results = computed(() => (debounced.value.trim() ? productsQuery.data.value ?? [] : []));
+const { items, loadMore, hasMore, loading, loadingMore } = useSellableProductsPaged(debounced);
+const results = computed(() => (debounced.value.trim() ? items.value : []));
 
 const pick = (product: Product) => {
   if (!product.trackStock) return;

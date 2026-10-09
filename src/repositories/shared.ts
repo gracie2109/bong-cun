@@ -23,6 +23,12 @@ export const pageRange = ({ pageIndex, pageSize }: PageParams) => ({
 /** PostgREST filter values are comma and parenthesis separated, so these are dropped from user text. */
 export const filterSafe = (text: string): string => text.replace(/[,()*%\\]/g, " ").trim();
 
+/** An `or()` condition matching any of the columns against typed text; null when nothing usable was typed. */
+export const searchOr = (columns: string[], text: string): string | null => {
+  const term = filterSafe(text);
+  return term ? columns.map((column) => `${column}.ilike.%${term}%`).join(",") : null;
+};
+
 /** Throws the PostgREST error unchanged so callers can inspect `.code`. */
 export const unwrap = <T>(result: { data: T | null; error: PostgrestError | null }): T => {
   if (result.error) throw result.error;

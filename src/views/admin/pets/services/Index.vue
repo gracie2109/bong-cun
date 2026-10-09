@@ -6,8 +6,8 @@
     </h1>
   </Header>
 
-  <ContentWrap>
-    <div class="space-y-5">
+  <ContentWrap fill>
+    <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="text-2xl font-bold">
@@ -32,7 +32,7 @@
         :species="species"
       />
 
-      <PagedTableCard v-model:page="pageData.pageIndex" :page-count="pageCount" :loading="servicesQuery.isFetching.value" :count="services.length" :total="total">
+      <PagedTableCard class="min-h-0 flex-1" v-model:page="pageData.pageIndex" v-model:page-size="pageData.pageSize" :page-count="pageCount" :loading="servicesQuery.isFetching.value" :count="services.length" :total="total">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

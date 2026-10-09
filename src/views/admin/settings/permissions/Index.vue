@@ -29,44 +29,38 @@
       @reset="resetFilters"
     />
 
-    <div class="overflow-hidden rounded-xl border bg-white">
-      <div class="table-scroll">
-        <table class="w-full text-sm">
-          <thead class="bg-muted/40">
-            <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
-              <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.code") }}</th>
-              <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.desc") }}</th>
-              <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.module") }}</th>
-              <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.methods") }}</th>
-              <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.roles") }}</th>
-              <th class="px-4 py-3 text-right font-semibold"><span class="sr-only">{{ $t("rbac.permissions.col.actions") }}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <TableStateRows :colspan="6" :pending="permissionsQuery.isPending.value" :empty="filtered.length === 0" :empty-text="$t('rbac.permissions.empty')" skeleton-class="h-10 w-full" />
-            <PermissionRow
-              v-for="permission in pageItems"
-              :key="permission.id"
-              :permission="permission"
-              :used-by="rolesUsing(permission.id)"
-              :can-manage="canManage"
-              @edit="openForm"
-              @remove="toDelete = $event"
-            />
-          </tbody>
-        </table>
-      </div>
-
-      <PermissionsPagination
-        v-if="filtered.length > 0"
-        v-model:page="page"
-        v-model:page-size="pageSizeValue"
-        :from="pageFrom"
-        :to="pageTo"
-        :total="filtered.length"
-        :page-count="pageCount"
-      />
-    </div>
+    <PagedTableCard
+      v-model:page="page"
+      v-model:page-size="pageSize"
+      :page-count="pageCount"
+      :count="pageItems.length"
+      :total="filtered.length"
+    >
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
+            <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.code") }}</th>
+            <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.desc") }}</th>
+            <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.module") }}</th>
+            <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.methods") }}</th>
+            <th class="px-4 py-3 font-semibold">{{ $t("rbac.permissions.col.roles") }}</th>
+            <th class="px-4 py-3 text-right font-semibold"><span class="sr-only">{{ $t("rbac.permissions.col.actions") }}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <TableStateRows :colspan="6" :pending="permissionsQuery.isPending.value" :empty="filtered.length === 0" :empty-text="$t('rbac.permissions.empty')" skeleton-class="h-10 w-full" />
+          <PermissionRow
+            v-for="permission in pageItems"
+            :key="permission.id"
+            :permission="permission"
+            :used-by="rolesUsing(permission.id)"
+            :can-manage="canManage"
+            @edit="openForm"
+            @remove="toDelete = $event"
+          />
+        </tbody>
+      </table>
+    </PagedTableCard>
 
     <div class="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
       <span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-primary">
@@ -97,6 +91,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Download, Plus, ShieldCheck } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { useCanManageRbac } from "@/composables/usePermission";
@@ -108,7 +103,6 @@ import { exportPermissionsCsv } from "./exportPermissionsCsv";
 import PermissionFilters from "./PermissionFilters.vue";
 import PermissionFormSheet from "./PermissionFormSheet.vue";
 import PermissionRow from "./PermissionRow.vue";
-import PermissionsPagination from "./PermissionsPagination.vue";
 import PermissionStatCards from "./PermissionStatCards.vue";
 import { usePermissionCatalog } from "./usePermissionCatalog";
 import { usePermissionsFilter } from "./usePermissionsFilter";
@@ -132,12 +126,10 @@ const {
   methodFilter,
   onlyUnused,
   page,
-  pageSizeValue,
+  pageSize,
   filtered,
   pageCount,
   pageItems,
-  pageFrom,
-  pageTo,
   resetFilters,
 } = usePermissionsFilter(() => permissions.value, rolesUsing);
 

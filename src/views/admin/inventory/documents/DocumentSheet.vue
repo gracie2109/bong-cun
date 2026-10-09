@@ -35,13 +35,20 @@
             <template v-if="type === 'receipt'">
               <div class="space-y-2">
                 <Label>{{ $t("inventory.documents.supplier") }}</Label>
-                <Select v-model="form.supplierId" :disabled="!editable">
-                  <SelectTrigger><SelectValue :placeholder="$t('inventory.documents.noSupplier')" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem :value="NONE">{{ $t("inventory.documents.noSupplier") }}</SelectItem>
-                    <SelectItem v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</SelectItem>
-                  </SelectContent>
-                </Select>
+                <InfiniteSelect
+                  :model-value="form.supplierId === NONE ? '' : form.supplierId"
+                  :options="supplierOptions"
+                  :placeholder="$t('inventory.documents.noSupplier')"
+                  :none-label="$t('inventory.documents.noSupplier')"
+                  :selected-fallback="doc?.supplierName ?? undefined"
+                  :has-more="suppliersMore"
+                  :loading="suppliersLoading"
+                  :loading-more="suppliersLoadingMore"
+                  :disabled="!editable"
+                  @update:model-value="(id) => (form.supplierId = id || NONE)"
+                  @update:search="supplierSearch = $event"
+                  @load-more="loadMoreSuppliers"
+                />
               </div>
               <div class="space-y-2">
                 <Label for="supplier-ref">{{ $t("inventory.documents.supplierRef") }}</Label>
@@ -113,10 +120,10 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
 import { BookCheck } from "lucide-vue-next";
+import InfiniteSelect from "@/components/common/InfiniteSelect.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -151,8 +158,15 @@ const emit = defineEmits<{ close: []; saved: [id: string] }>();
 const { canCreate, canUpdate, canDelete } = usePermission("inventory");
 const docQuery = useStockDocument(computed(() => props.documentId));
 const doc = computed<StockDocumentDetail | null>(() => (props.documentId ? docQuery.data.value ?? null : null));
-const suppliersQuery = useSupplierOptions();
-const suppliers = computed(() => suppliersQuery.data.value ?? []);
+const supplierSearch = ref("");
+const {
+  items: suppliers,
+  loadMore: loadMoreSuppliers,
+  hasMore: suppliersMore,
+  loading: suppliersLoading,
+  loadingMore: suppliersLoadingMore,
+} = useSupplierOptions(supplierSearch);
+const supplierOptions = computed(() => suppliers.value.map((supplier) => ({ value: supplier.id, label: supplier.name })));
 const saveMutation = useSaveStockDocument();
 const postMutation = usePostStockDocument();
 const busy = computed(() => saveMutation.isPending.value || postMutation.isPending.value);

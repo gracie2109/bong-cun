@@ -62,7 +62,11 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
   // -------------------------------------------------- by-weight price preview
   const fetchServicePrice = useFetchServicePrice();
   const weightPrices = reactive<Record<string, number | null | "loading">>({});
-  const weightKey = (line: CartLine) => `${branchId.value ?? ""}:${line.item.id}:${line.petId ?? ""}`;
+  // The pet's weight is part of the key, so correcting it prices the line again.
+  const weightKey = (line: CartLine) => {
+    const weight = pets.value.find((item) => item.id === line.petId)?.weightKg ?? "";
+    return `${branchId.value ?? ""}:${line.item.id}:${line.petId ?? ""}:${weight}`;
+  };
 
   watchEffect(() => {
     const branch = branchId.value;

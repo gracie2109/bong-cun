@@ -1,39 +1,27 @@
 <template>
-  <Dialog :open="openSettingView" @update:open="$emit('changeOpenSettingView')">
-    <DialogContent class="w-96 p-0 max-h-[90dvh]">
-      <DialogHeader class="p-6 pb-0">
-        <DialogTitle> {{ $t("common.settingView") }}</DialogTitle>
-      </DialogHeader>
-
-      <div class="grid gap-4 py-4 overflow-y-auto px-6">
-        <div v-for="(i, j) in columns" :key="j" class="flex gap-3 items-center">
-          <Checkbox
-            :id="i.id"
-            :checked="i.getIsVisible()"
-            @update:checked="(value) => i.toggleVisibility(!!value)"
-          />
-          <label :for="i.id" class="cursor-pointer capitalize">{{
-            i.id
-          }}</label>
-        </div>
+  <AppDialog
+    :open="openSettingView"
+    :title="$t('common.settingView')"
+    size="sm"
+    hide-footer
+    @update:open="$emit('changeOpenSettingView')"
+  >
+    <div class="grid gap-4">
+      <div v-for="(i, j) in columns" :key="j" class="flex gap-3 items-center">
+        <Checkbox
+          :id="i.id"
+          :checked="i.getIsVisible()"
+          @update:checked="(value) => i.toggleVisibility(!!value)"
+        />
+        <label :for="i.id" class="cursor-pointer capitalize">{{ i.id }}</label>
       </div>
-    </DialogContent>
-  </Dialog>
+    </div>
+  </AppDialog>
 </template>
 
 <script lang="ts" setup>
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogScrollContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import AppDialog from "@/components/common/AppDialog.vue";
 import { LOCAL_STORAGE_KEY } from "@/lib/constants";
 import type { Table } from "@tanstack/vue-table";
 import { computed, ref, watch } from "vue";

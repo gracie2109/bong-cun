@@ -6,14 +6,14 @@
     </h1>
   </Header>
 
-  <ContentWrap>
-    <div class="space-y-5">
+  <ContentWrap fill>
+    <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <PosNav />
         <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
       </div>
 
-      <PagedTableCard v-model:page="page.pageIndex" :page-count="pageCount" :count="rows.length" :total="total">
+      <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">

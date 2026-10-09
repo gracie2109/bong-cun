@@ -5,7 +5,6 @@ import { fold, methodsOf, type Method } from "../rbac";
 import { FILTER_ALL } from "@/lib/listing";
 
 export const UNGROUPED = "__ungrouped";
-export const PAGE_SIZES = [10, 20, 50];
 
 /** Search, module/method/unused filters and client-side paging over the permission list. */
 export const usePermissionsFilter = (
@@ -17,7 +16,7 @@ export const usePermissionsFilter = (
   const methodFilter = ref(FILTER_ALL);
   const onlyUnused = ref(false);
   const page = ref(1);
-  const pageSizeValue = ref(String(PAGE_SIZES[0]));
+  const pageSizeValue = ref("10");
 
   const filtered = computed(() => {
     const text = fold(search.value);
@@ -32,11 +31,14 @@ export const usePermissionsFilter = (
     });
   });
 
-  const pageSize = computed(() => Number(pageSizeValue.value));
+  const pageSize = computed({
+    get: () => Number(pageSizeValue.value),
+    set: (size: number) => {
+      pageSizeValue.value = String(size);
+    },
+  });
   const pageCount = computed(() => Math.max(1, Math.ceil(filtered.value.length / pageSize.value)));
   const pageItems = computed(() => filtered.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value));
-  const pageFrom = computed(() => (filtered.value.length ? (page.value - 1) * pageSize.value + 1 : 0));
-  const pageTo = computed(() => Math.min(page.value * pageSize.value, filtered.value.length));
 
   watch([search, moduleFilter, methodFilter, onlyUnused, pageSizeValue], () => {
     page.value = 1;
@@ -58,12 +60,10 @@ export const usePermissionsFilter = (
     methodFilter,
     onlyUnused,
     page,
-    pageSizeValue,
+    pageSize,
     filtered,
     pageCount,
     pageItems,
-    pageFrom,
-    pageTo,
     resetFilters,
   };
 };

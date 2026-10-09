@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-auto">
+  <div class="admin-table overflow-x-auto">
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b text-left text-[11px] uppercase tracking-wide text-muted-foreground">

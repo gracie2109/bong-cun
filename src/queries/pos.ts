@@ -52,10 +52,15 @@ export const useMyOpenShift = (branchId: MaybeRef<string | undefined>, userId: M
     enabled: computed(() => !!unref(branchId) && !!unref(userId)),
   });
 
-export const useShiftsList = (branchId: MaybeRef<string | undefined>, page: MaybeRef<PageParams>) =>
+export const useShiftsList = (
+  branchId: MaybeRef<string | undefined>,
+  page: MaybeRef<PageParams>,
+  search: MaybeRef<string> = ""
+) =>
   useQuery({
-    queryKey: computed(() => posKeys.shifts(unref(branchId) ?? "", toPage(unref(page)))),
-    queryFn: () => listShifts(supabaseClient(), unref(branchId) as string, toPage(unref(page))),
+    queryKey: computed(() => posKeys.shifts(unref(branchId) ?? "", toPage(unref(page)), unref(search))),
+    queryFn: () =>
+      listShifts(supabaseClient(), unref(branchId) as string, toPage(unref(page)), { search: unref(search) }),
     enabled: computed(() => !!unref(branchId)),
     placeholderData: keepPreviousData,
   });

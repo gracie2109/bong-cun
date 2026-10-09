@@ -1,7 +1,7 @@
 // Shop products sold at the counter. Stock by lot and expiry lives in repositories/inventory.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
+import { filterSafe, pageRange, searchOr, unwrap, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 
@@ -44,6 +44,27 @@ const searchCondition = (text: string): string | null => {
 };
 
 export type SellableProduct = Product & { groupName: string };
+
+/** Active products a page at a time, for pickers that load more as they scroll. */
+export const listSellableProducts = async (
+  client: Client,
+  page: PageParams,
+  search = ""
+): Promise<Page<SellableProduct>> => {
+  const { from, to } = pageRange(page);
+  let query = client
+    .from("products")
+    .select("*, product_groups(name)", { count: "exact" })
+    .eq("is_active", true)
+    .order("name")
+    .range(from, to);
+  const condition = searchCondition(search);
+  if (condition) query = query.or(condition);
+  const { data, count, error } = await query;
+  if (error) throw error;
+  const rows = (data ?? []).map((row) => ({ ...toProduct(row), groupName: row.product_groups?.name ?? row.name }));
+  return { rows, total: count ?? 0 };
+};
 
 /** Active products for the POS picker; an exact barcode or SKU comes first. */
 export const searchSellableProducts = async (

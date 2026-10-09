@@ -6,8 +6,8 @@
         List Schedule ({{ totalRecord }})
       </h1>
     </Header>
-    <ContentWrap>
-      <div>
+    <ContentWrap fill>
+      <div class="flex min-h-0 flex-1 flex-col">
         <DataTable
           :headerAdvanced="headerAdvanced"
           :data="orders"

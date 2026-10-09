@@ -25,6 +25,20 @@
     "settingView": "Cài đặt hiển thị cột",
     "icon": "Biểu tượng",
     "row_per_page": "Hàng trên mỗi trang",
+    "ok": "Đồng ý",
+    "delete": "Xóa",
+    "deleteFileTitle": "Xóa tệp?",
+    "deleteFileDesc": "Sau khi xóa sẽ không thể khôi phục.",
+    "cancel": "Hủy",
+    "search": "Tìm kiếm",
+    "table": {
+      "range": "Hiển thị {from}–{to} / {total}",
+      "pagination": "Phân trang",
+      "first": "Trang đầu",
+      "prev": "Trang trước",
+      "next": "Trang sau",
+      "last": "Trang cuối"
+    },
     "price": "Giá tiền"
   },
   "pageMeta": {

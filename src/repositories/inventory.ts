@@ -2,7 +2,7 @@
 // counts) and sales; every write is an RPC, and the database takes sold stock FEFO.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
+import { filterSafe, pageRange, searchOr, unwrap, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
 
@@ -459,9 +459,12 @@ export const listSuppliers = async (
   return { rows: (data ?? []).map(toSupplier), total: count ?? 0 };
 };
 
-/** Active suppliers for the receipt picker. */
-export const listSupplierOptions = async (client: Client): Promise<Supplier[]> =>
-  unwrap(await client.from("suppliers").select("*").eq("is_active", true).order("name")).map(toSupplier);
+/** Active suppliers for the receipt picker, a page at a time and searchable by name or phone. */
+export const listSupplierOptions = async (
+  client: Client,
+  page: PageParams,
+  search = ""
+): Promise<Page<Supplier>> => listSuppliers(client, page, { search });
 
 export const createSupplier = async (client: Client, input: SupplierInput): Promise<void> => {
   const { error } = await client.from("suppliers").insert(toSupplierRow(input));

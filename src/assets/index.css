@@ -126,6 +126,17 @@
     max-height: max(20rem, calc(100dvh - 14rem));
   }
 
+  /* A table that takes the height its flex column leaves, with the scroll bars inside it. */
+  .table-scroll.table-fill {
+    @apply min-h-0 flex-1;
+    max-height: none;
+  }
+
+  .table-fill .table-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+
   .table-scroll thead {
     @apply sticky top-0 z-10;
   }
@@ -136,6 +147,39 @@
 
   .table-scroll th {
     @apply whitespace-nowrap;
+  }
+
+  /* Shared look of the admin list tables: grey header with bold text, thin row lines, aligned numbers.
+     Set on the th itself so it wins over the uppercase/muted classes a row of headers may carry. */
+  .admin-table thead:not([class*="bg-"]) {
+    @apply bg-muted;
+  }
+
+  .admin-table th {
+    @apply text-xs font-semibold normal-case tracking-normal text-foreground;
+    box-shadow: inset 0 -1px 0 hsl(var(--border));
+  }
+
+  /* A list with no rows: the message takes all the height under the header and sits in the middle. */
+  .admin-table:has([data-table-empty]) > div,
+  .admin-table:has([data-table-empty]) table {
+    height: 100%;
+  }
+
+  .admin-table tr[data-table-empty] {
+    height: 100%;
+  }
+
+  .admin-table tr[data-table-empty]:hover {
+    background: transparent;
+  }
+
+  .admin-table td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-table tbody tr:hover {
+    @apply bg-muted/40;
   }
 
   .hamburger {

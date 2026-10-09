@@ -1,45 +1,36 @@
-<script setup lang="ts">
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+<template>
+  <AppDialog
+    :open="open"
+    :title="title"
+    :description="desc"
+    :ok-text="okBtn"
+    :cancel-text="cancelBtn"
+    :danger="danger"
+    size="sm"
+    @update:open="(value) => !value && $emit('openChange')"
+    @ok="onOk"
+    @cancel="$emit('cancel')"
+  />
+</template>
 
+<script setup lang="ts">
+import AppDialog from "./AppDialog.vue";
+
+/** A yes/no question; built on `AppDialog`, so Esc cancels, Enter confirms and the corner button closes it. */
 defineProps<{
   open: boolean;
   title: string;
   desc?: string;
   okBtn?: string;
+  cancelBtn?: string;
+  /** A red confirm button, for deleting or cancelling something. */
+  danger?: boolean;
 }>();
 
-defineEmits(["cancel", "openChange", "handleOk"]);
-</script>
+const emit = defineEmits(["cancel", "openChange", "handleOk"]);
 
-<template>
-  <AlertDialog :open="open" @update:open="$emit('openChange')">
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{{
-          title || "Are you absolutely sure?"
-        }}</AlertDialogTitle>
-        <AlertDialogDescription>
-          {{
-            desc ||
-            "  This action cannot be undone. This will permanently delete your   account and remove your data from our servers."
-          }}
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel @click="$emit('cancel')">Cancel</AlertDialogCancel>
-        <AlertDialogAction @click="$emit('handleOk')">{{
-          okBtn || "Continue"
-        }}</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-</template>
+const onOk = () => {
+  emit("handleOk");
+  emit("openChange");
+};
+</script>
