@@ -16,7 +16,7 @@ import {
 import Nav from "@/components/layout/admin/Nav.vue";
 import { canOpenAdminRoute } from "@/lib/access";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
-import { useAuthStore } from "@/stores";
+import { useAppStore, useAuthStore } from "@/stores";
 import { initials } from "@/views/admin/pets/format";
 
 // The admin palette lives on <html> (see index.css) so teleported sheets and dialogs get it too.
@@ -24,6 +24,7 @@ onMounted(() => document.documentElement.classList.add("admin-theme"));
 onBeforeUnmount(() => document.documentElement.classList.remove("admin-theme"));
 
 const auth = useAuthStore();
+const app = useAppStore();
 
 // Menu items the staff member has VIEW on; a section disappears when it has none.
 const sections = computed(() => {
@@ -40,7 +41,7 @@ const userName = computed(
 </script>
 
 <template>
-  <SidebarProvider>
+  <SidebarProvider :open="app.sidebarOpen" @update:open="app.setSidebarOpen">
     <Sidebar collapsible="icon" class="border-r">
       <SidebarHeader class="border-b px-3 py-4 group-data-[collapsible=icon]:px-2">
         <router-link :to="{ name: 'dashboard' }" class="flex items-center gap-3">

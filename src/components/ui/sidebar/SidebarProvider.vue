@@ -9,7 +9,6 @@ import {
   SIDEBAR_WIDTH,
   SIDEBAR_WIDTH_ICON,
 } from "./utils";
-import { PROVIDER_KEYS } from "@/lib/constants";
 
 const props = withDefaults(
   defineProps<{
@@ -37,12 +36,10 @@ const open = useVModel(props, "open", emits, {
 
 function setOpen(value: boolean) {
   open.value = value; // emits('update:open', value)
-  localStorage.setItem(PROVIDER_KEYS.IS_COLLAPSE, JSON.stringify(value));
 }
 
 function setOpenMobile(value: boolean) {
   openMobile.value = value;
-  localStorage.setItem(PROVIDER_KEYS.IS_COLLAPSE, JSON.stringify(value));
 }
 
 function toggleSidebar() {

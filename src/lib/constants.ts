@@ -55,6 +55,7 @@ export const DEFAULT_ROLE = {
 export const LOCAL_STORAGE_KEY = {
   LAYOUT: "layout",
   THEME: "theme",
+  SIDEBAR_OPEN: "sidebarOpen",
   VISIBLE_COLUMN: "visibleColumn",
   SETTING_KEY: "settingKey",
 };
