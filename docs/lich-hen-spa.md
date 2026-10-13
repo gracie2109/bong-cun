@@ -1,6 +1,8 @@
 # Lịch hẹn spa / grooming
 
-Kế hoạch module lịch hẹn spa. Nguồn: kế hoạch BA/kiến trúc v0.3 (M3 Lịch hẹn, M9 Spa/Grooming, mục 2.3 và thứ tự Phase 1 bước 4-5). Đây là bản kế hoạch, chưa có code hay SQL. Module đứng sau POS (PR #43), kho theo lô (PR #44) và biến thể (PR #46), đều đã merge.
+Kế hoạch và tiến độ module lịch hẹn spa. Nguồn: kế hoạch BA/kiến trúc v0.3 (M3 Lịch hẹn, M9 Spa/Grooming, mục 2.3 và thứ tự Phase 1 bước 4-5). Module đứng sau POS (PR #43), kho theo lô (PR #44) và biến thể (PR #46), đều đã merge.
+
+**Tiến độ:** bước 1 (mục 9) đã làm xong: migration `supabase/migrations/20261013030000_spa_appointments.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Các bước 2-4 chưa làm.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi được giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không có tích hợp bên ngoài.
 
@@ -26,10 +28,10 @@ Mọi bảng theo cơ sở có `branch_id not null`. Thời gian lưu `timestamp
 | Bảng | Vai trò |
 | --- | --- |
 | `spa_resources` | Bàn spa / bồn tắm của một cơ sở: `branch_id`, `name`, `is_active`, `sort_order`. |
-| `branch_hours` | Giờ mở cửa theo thứ trong tuần: `branch_id`, `weekday`, `open_time`, `close_time`, `is_closed`. Thiếu dòng = mặc định 08:00-20:00. |
+| `branch_hours` | Giờ mở cửa theo thứ trong tuần: `branch_id`, `weekday` (ISO: 1 = thứ hai ... 7 = chủ nhật), `open_time`, `close_time`, `is_closed`. Thiếu dòng = mặc định 08:00-20:00. |
 | `staff_branches.does_services` | Cột mới, bật cho nhân viên được gán làm dịch vụ tại cơ sở đó. |
 | `appointments` | Một lần hẹn của một khách tại một cơ sở. |
-| `appointment_items` | Phiếu dịch vụ: một dịch vụ hoặc combo cho một con thú, có nhân viên, bàn và khung giờ riêng. |
+| `appointment_items` | Phiếu dịch vụ: một dịch vụ hoặc combo cho một con thú, có nhân viên, bàn và khung giờ riêng. Có thêm `branch_id` (cùng cơ sở với lịch) để RLS và ràng buộc trùng giờ không cần join. |
 
 ### `appointments`
 
@@ -86,20 +88,24 @@ Lịch `cancelled` hoặc `no_show` thì RPC chuyển các phiếu sang `cancell
 
 ## 5. RPC
 
-Theo quy ước của repo: nghiệp vụ nhiều bước nằm trong Postgres function `security definer`, client chỉ đọc bảng qua RLS.
+Theo quy ước của repo: nghiệp vụ nhiều bước nằm trong Postgres function `security definer`, client chỉ đọc bảng qua RLS. Cột **Bước** là bước ở mục 9; các RPC bước 1 đã có trong migration, đã chạy thử trên Postgres 16 cục bộ.
 
-| RPC | Việc làm |
-| --- | --- |
-| `save_appointment(p jsonb, p_id uuid default null)` | Tạo hoặc sửa lịch cùng các phiếu trong một transaction: kiểm tra khách/thú, sao chép tên + thời lượng từ danh mục, tính `est_price`, kiểm tra giờ mở cửa, tính `start_at`/`end_at`. Trùng giờ trả lỗi có `hint = 'slot_taken'` và tên nhân viên/bàn bị trùng |
-| `check_in_appointment(p_id uuid, p_weights jsonb)` | Ghi cân nặng từng thú, chốt `unit_price`, chuyển `checked_in` |
-| `set_appointment_item_status(p_item uuid, p_status text, p_note text default null)` | Bắt đầu / xong / hủy một phiếu, cập nhật trạng thái lịch |
-| `cancel_appointment(p_id uuid, p_reason text)` | Hủy lịch và các phiếu |
-| `mark_no_show(p_id uuid)` | Đánh dấu khách không đến |
-| `list_appointments(p_branch, p_from, p_to, p_status, p_search, p_page, p_page_size)` | Danh sách cho bảng: tìm theo mã, tên, SĐT khách, tên thú; trả `{ rows, total }` |
-| `spa_day_board(p_branch uuid, p_date date)` | Dữ liệu màn lịch ngày: giờ mở cửa, nhân viên, bàn và các phiếu trong ngày |
-| `spa_free_slots(p_branch, p_date, p_duration, p_staff?, p_resource?)` (Should) | Gợi ý khung giờ trống |
-| `billable_appointment_items(p_branch, p_customer)` | Phiếu `done` chưa thanh toán của một khách, cho POS |
-| `create_invoice` (sửa) | Nhận thêm dòng `{ type: 'appointment_item', id }`: đọc giá chốt và thú từ phiếu, ghi `invoice_line_id` lên phiếu. `cancel_invoice` gỡ liên kết |
+| RPC | Bước | Việc làm |
+| --- | --- | --- |
+| `save_appointment(p jsonb, p_id uuid default null)` | 1 | Tạo hoặc sửa lịch cùng các phiếu trong một transaction: kiểm tra khách/thú/loài, sao chép tên + thời lượng từ danh mục (thiếu thời lượng thì 30 phút), tính `est_price`, kiểm tra giờ mở cửa và bội số 15 phút. Chỉ sửa được lịch `booked`; sửa = xóa phiếu cũ rồi tạo lại trong cùng transaction. Lỗi có `hint`: `slot_staff`, `slot_resource` (kèm tên dịch vụ trong `details`), `closed`, `outside_hours`, `bad_time`, `in_past`, `not_editable`, `no_customer`, `no_pet` |
+| `cancel_appointment(p_id, p_reason)` | 1 | Hủy lịch `booked` / `checked_in` và các phiếu, trả lại giờ |
+| `list_appointments(p_branch, p_from, p_to, p_status, p_search, p_page, p_page_size)` | 1 | Danh sách cho bảng: tìm theo mã, tên (không dấu), SĐT hoặc tên thú; trả `{ rows, total }` |
+| `spa_day_board(p_branch, p_date)` | 1 | Dữ liệu màn lịch ngày: giờ mở cửa, nhân viên, bàn và các phiếu chưa hủy trong ngày |
+| `spa_week_hours(p_branch)`, `save_branch_hours(p_branch, p)` | 1 | Đọc / lưu giờ mở cửa 7 ngày |
+| `save_spa_resource(p, p_id)` | 1 | Thêm, đổi tên, ngừng dùng bàn spa |
+| `list_branch_staff(p_branch)`, `set_staff_does_services(p_user, p_branch, p_value)` | 1 | Danh sách nhân viên của cơ sở và bật / tắt cờ làm dịch vụ |
+| `save_staff_branches` (sửa) | 1 | Trước đây xóa hết rồi chèn lại, làm mất cờ `does_services` mỗi lần gán vai trò; nay chỉ xóa cơ sở bị bỏ và cập nhật vai trò tại chỗ |
+| `check_in_appointment(p_id, p_weights jsonb)` | 2 | Ghi cân nặng từng thú, chốt `unit_price`, chuyển `checked_in` |
+| `set_appointment_item_status(p_item, p_status, p_note)` | 2 | Bắt đầu / xong / hủy một phiếu, cập nhật trạng thái lịch |
+| `mark_no_show(p_id)` | 2 | Đánh dấu khách không đến |
+| `spa_free_slots(...)` (Should) | 2 | Gợi ý khung giờ trống |
+| `billable_appointment_items(p_branch, p_customer)` | 3 | Phiếu `done` chưa thanh toán của một khách, cho POS |
+| `create_invoice` / `cancel_invoice` (sửa) | 3 | Nhận dòng `{ type: 'appointment_item', id }`: đọc giá chốt và thú từ phiếu, ghi `invoice_line_id`; hủy hóa đơn gỡ liên kết |
 
 Tìm khách dùng lại `search_customers`; thêm thú nhanh dùng lại `register_pet`.
 
@@ -141,18 +147,26 @@ Không dùng thư viện lịch: FullCalendar tính phí cho dạng xem theo c�
 - `orders` / `order_items`: một migration chuyển mỗi `order` thành một `appointment` `source = 'legacy'` (khách tìm hoặc tạo theo SĐT, `pet_id` null, không nhân viên/bàn, trạng thái quy đổi `PENDING/PROCESSING → booked`, `CONFIRMED → done`, `CANCEL → cancelled`). Sau đó `create_order` và các màn `orders` bị gỡ; bảng `orders` để lại chỉ đọc, xóa ở một migration sau.
 - Nếu dữ liệu `orders` hiện có chỉ là dữ liệu thử, bỏ bước chuyển và gỡ thẳng (xem câu hỏi 1).
 
-## 9. Thứ tự làm (mỗi bước một PR)
+## 9. Thứ tự làm (mỗi bước một lần giao)
 
-| Bước | Nội dung | SQL |
-| --- | --- | --- |
-| 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt lịch | Migration mới `spa_appointments.sql`, chạy sau `product_variants` |
-| 2 | Màn Lịch ngày; check-in, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | Bổ sung RPC `check_in_appointment`, `set_appointment_item_status`, `mark_no_show` |
-| 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ | Migration sửa hàm POS; làm sau khi PR #54 (sửa POS) đã merge vì cùng sửa `create_invoice` |
-| 4 | Chuyển `orders` sang `appointments`, gỡ `create_order` và màn cũ | Migration chuyển dữ liệu |
+| Bước | Nội dung | SQL | Trạng thái |
+| --- | --- | --- | --- |
+| 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt / sửa / hủy, Lịch ngày | `supabase/migrations/20261013030000_spa_appointments.sql`, chạy sau `20261007140000_product_variants.sql` | Đã làm |
+| 2 | Check-in + cân nặng + chốt giá, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | RPC `check_in_appointment`, `set_appointment_item_status`, `mark_no_show` | Chưa làm |
+| 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ | Migration sửa hàm POS; làm sau khi PR #54 (sửa POS) đã merge vì cùng sửa `create_invoice` | Chưa làm |
+| 4 | Chuyển `orders` sang `appointments`, gỡ `create_order` và màn cũ | Migration chuyển dữ liệu | Chưa làm |
 
 Sau đó là báo cáo doanh thu tách Shop / Spa (M11), đọc từ `invoice_lines` theo `item_type`.
 
-Mỗi PR có SQL sẽ ghi rõ tên file và thứ tự chạy; bản để dán vào SQL Editor đặt ở `/mnt/project-files/pet-care-plan/migration-*.sql`.
+Mỗi lần giao có SQL sẽ ghi rõ tên file và thứ tự chạy; bản để dán vào SQL Editor đặt ở `/mnt/project-files/pet-care-plan/migration-*.sql`.
+
+### Bước 1: những gì cần biết
+
+- **Phải chạy `20261013030000_spa_appointments.sql` trên Supabase trước khi dùng các màn mới**, nếu không các màn Lịch spa báo lỗi vì thiếu hàm. File chạy lại được an toàn.
+- Việc đầu tiên sau khi chạy: vào **Lịch spa → Cài đặt spa**, thêm bàn spa, chỉnh giờ mở cửa và bật cờ "Làm dịch vụ" cho nhân viên spa. Chưa có nhân viên được bật thì vẫn đặt lịch được nhưng phiếu để "chưa xếp nhân viên".
+- Màn đặt lịch chỉ chọn khách đã có và thú cưng đã đăng ký; khách mới hoặc thú mới thêm ở màn Thú cưng trước.
+- Trang `/admin/schedule/list-order-schedule` (đơn đặt từ web) vẫn còn, đổi tên menu thành "Yêu cầu đặt chỗ từ web" cho tới bước 4.
+- Lịch đã check-in / đang làm chưa sửa được trên giao diện vì chưa có màn chi tiết (bước 2).
 
 ## 10. Mặc định đã chọn
 
@@ -165,7 +179,9 @@ Mỗi PR có SQL sẽ ghi rõ tên file và thứ tự chạy; bản để dán 
 
 ## 11. Câu hỏi cần chốt
 
-1. Dữ liệu trong `orders` hiện tại là dữ liệu thật hay dữ liệu thử? (mặc định: chuyển sang `appointments`)
-2. Ai được gán làm dịch vụ: bật cờ cho từng nhân viên, hay mọi nhân viên của cơ sở? (mặc định: bật cờ)
-3. Một nhân viên có làm song song hai con cùng lúc không, ví dụ một con đang sấy, một con đang tắm? (mặc định: không)
-4. Bàn spa có bắt buộc cho mọi phiếu không? (mặc định: không bắt buộc)
+Chưa có trả lời, nên bước 1 làm theo mặc định trong ngoặc:
+
+1. Dữ liệu trong `orders` hiện tại là dữ liệu thật hay dữ liệu thử? (mặc định: chuyển sang `appointments` ở bước 4)
+2. Ai được gán làm dịch vụ: bật cờ cho từng nhân viên, hay mọi nhân viên của cơ sở? (đã làm theo mặc định: bật cờ)
+3. Một nhân viên có làm song song hai con cùng lúc không, ví dụ một con đang sấy, một con đang tắm? (đã làm theo mặc định: không, database chặn trùng giờ)
+4. Bàn spa có bắt buộc cho mọi phiếu không? (đã làm theo mặc định: không bắt buộc)

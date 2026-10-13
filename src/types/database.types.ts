@@ -1610,10 +1610,41 @@ export type Database = {
           },
         ]
       }
+      spa_resources: {
+        Row: {
+          branch_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       staff_branches: {
         Row: {
           branch_id: string
           created_at: string
+          does_services: boolean
           role: string
           updated_at: string
           user_id: string
@@ -1621,6 +1652,7 @@ export type Database = {
         Insert: {
           branch_id: string
           created_at?: string
+          does_services?: boolean
           role: string
           updated_at?: string
           user_id: string
@@ -1628,6 +1660,7 @@ export type Database = {
         Update: {
           branch_id?: string
           created_at?: string
+          does_services?: boolean
           role?: string
           updated_at?: string
           user_id?: string
@@ -1856,6 +1889,33 @@ export type Database = {
         }[]
       }
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      list_appointments: {
+        Args: {
+          p_branch: string
+          p_from?: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      list_branch_staff: {
+        Args: { p_branch: string }
+        Returns: { does_services: boolean; name: string; role: string; user_id: string }[]
+      }
+      save_appointment: { Args: { p: Json; p_id?: string }; Returns: Json }
+      save_branch_hours: { Args: { p: Json; p_branch: string }; Returns: undefined }
+      save_spa_resource: { Args: { p: Json; p_id?: string }; Returns: string }
+      set_staff_does_services: {
+        Args: { p_branch: string; p_user: string; p_value: boolean }
+        Returns: undefined
+      }
+      spa_day_board: { Args: { p_branch: string; p_date: string }; Returns: Json }
+      spa_week_hours: { Args: { p_branch: string }; Returns: Json }
       cancel_invoice: { Args: { p_id: string; p_reason: string }; Returns: undefined }
       cash_shift_summary: { Args: { p_shift: string }; Returns: Json }
       close_cash_shift: {

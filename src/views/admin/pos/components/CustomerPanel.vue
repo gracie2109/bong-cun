@@ -21,7 +21,7 @@
         <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input v-model="searchInput" class="pl-9" :placeholder="$t('pos.customer.searchPlaceholder')" />
       </div>
-      <p class="text-xs text-muted-foreground">{{ $t("pos.customer.walkInHint") }}</p>
+      <p v-if="allowNew" class="text-xs text-muted-foreground">{{ $t("pos.customer.walkInHint") }}</p>
 
       <ul v-if="matches.length" class="divide-y rounded-lg border">
         <li v-for="match in matches" :key="matchKey(match)">
@@ -41,8 +41,14 @@
         </li>
       </ul>
 
+      <p
+        v-else-if="!allowNew && searchText.trim().length >= 2 && !matchesQuery.isFetching.value"
+        class="text-xs text-muted-foreground"
+      >
+        {{ $t("pos.customer.notFoundOnly") }}
+      </p>
       <div
-        v-else-if="searchText.trim().length >= 2 && !matchesQuery.isFetching.value"
+        v-else-if="allowNew && searchText.trim().length >= 2 && !matchesQuery.isFetching.value"
         class="space-y-2 rounded-lg border border-dashed p-3"
       >
         <p class="text-xs text-muted-foreground">{{ $t("pos.customer.notFound") }}</p>
@@ -82,7 +88,14 @@ export type Buyer = {
 const MIN_PHONE_DIGITS = 8;
 const MAX_PHONE_DIGITS = 15;
 
-defineProps<{ modelValue: Buyer | null }>();
+withDefaults(
+  defineProps<{
+    modelValue: Buyer | null;
+    /** Offer to type a new customer when nobody matches (the POS does; booking needs a customer with pets). */
+    allowNew?: boolean;
+  }>(),
+  { allowNew: true }
+);
 const emit = defineEmits<{ "update:modelValue": [value: Buyer | null] }>();
 
 const searchInput = ref("");
