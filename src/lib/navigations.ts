@@ -42,7 +42,6 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     items: [
       { title: "adminNav.spaBoard", icon: "lucide:calendar-days", name: "spaBoard" },
       { title: "adminNav.spaAppointments", icon: "lucide:list-checks", name: "spaAppointments" },
-      { title: "adminNav.schedule", icon: "lucide:globe", name: "listOrderSchedule" },
     ],
   },
   {

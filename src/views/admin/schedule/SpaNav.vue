@@ -27,7 +27,6 @@ const tabs = [
   { name: "spaBoard", icon: "lucide:calendar-days", label: "spa.nav.board", method: "VIEW" },
   { name: "spaAppointments", icon: "lucide:list-checks", label: "spa.nav.appointments", method: "VIEW" },
   { name: "spaSettings", icon: "lucide:settings-2", label: "spa.nav.settings", method: "SETTING" },
-  { name: "listOrderSchedule", icon: "lucide:globe", label: "spa.nav.webRequests", method: "VIEW" },
 ];
 const visibleTabs = computed(() => tabs.filter((tab) => auth.can("schedule", tab.method)));
 </script>
