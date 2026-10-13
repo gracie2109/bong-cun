@@ -37,5 +37,8 @@ export const ghnFetch = (event: H3Event, path: string, request: GhnRequest = {})
       ...(request.withShop ? { ShopId: ghn.shopId } : {}),
       ...request.headers,
     },
+  }).catch(() => {
+    // GHN did not answer at all (network, DNS, timeout); callers treat this as "no quote".
+    throw createError({ statusCode: 502, statusMessage: "GHN is unreachable" });
   });
 };
