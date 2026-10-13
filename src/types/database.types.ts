@@ -1894,6 +1894,58 @@ export type Database = {
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       can_report: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
       report_overview: { Args: { p_branch: string | null; p_from: string; p_to: string }; Returns: Json }
+      report_top_items: {
+        Args: {
+          p_branch: string | null
+          p_from: string
+          p_kind?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_sort?: string
+          p_to: string
+        }
+        Returns: {
+          cost: number | null
+          gross_profit: number | null
+          invoice_count: number
+          item_id: string
+          item_type: string
+          name: string
+          net_revenue: number
+          qty_returned: number
+          qty_sold: number
+          refunds: number
+          share: number
+          sku: string | null
+          total_count: number
+          unit: string | null
+        }[]
+      }
+      report_staff_revenue: {
+        Args: {
+          p_branch: string | null
+          p_from: string
+          p_limit?: number
+          p_offset?: number
+          p_role?: string
+          p_search?: string
+          p_to: string
+        }
+        Returns: {
+          avg_ticket: number | null
+          cancelled_count: number | null
+          invoice_count: number | null
+          name: string | null
+          net_sales: number
+          pet_count: number | null
+          refunds: number | null
+          share: number | null
+          staff_id: string | null
+          ticket_count: number | null
+          total_count: number
+        }[]
+      }
       report_revenue_series: {
         Args: { p_branch: string | null; p_bucket?: string; p_from: string; p_to: string }
         Returns: {

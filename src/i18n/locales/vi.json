@@ -80,7 +80,9 @@
     "spaBoard": "Lịch ngày spa",
     "spaAppointments": "Lịch hẹn spa",
     "spaSettings": "Cài đặt spa",
-    "reportsOverview": "Báo cáo doanh thu"
+    "reportsOverview": "Báo cáo doanh thu",
+    "reportsItems": "Báo cáo sản phẩm & dịch vụ",
+    "reportsStaff": "Báo cáo nhân viên"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -720,7 +722,9 @@
     "spaBoard": "Lịch spa theo ngày",
     "spaAppointments": "Lịch hẹn spa",
     "reports": "Báo cáo",
-    "reportsOverview": "Tổng quan doanh thu"
+    "reportsOverview": "Tổng quan doanh thu",
+    "reportsItems": "Sản phẩm & dịch vụ",
+    "reportsStaff": "Doanh thu nhân viên"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1297,7 +1301,9 @@
       "tooLong": "Chỉ xem được tối đa {max} ngày mỗi lần."
     },
     "nav": {
-      "overview": "Tổng quan"
+      "overview": "Tổng quan",
+      "items": "Sản phẩm & dịch vụ",
+      "staff": "Nhân viên"
     },
     "kpi": {
       "netRevenue": "Doanh thu thuần",
@@ -1346,12 +1352,63 @@
       "spa": "Spa",
       "cash": "Tiền mặt",
       "transfer": "CK",
-      "card": "Thẻ"
+      "card": "Thẻ",
+      "name": "Tên",
+      "sku": "SKU",
+      "type": "Loại",
+      "qtySold": "SL bán",
+      "qtyReturned": "SL trả",
+      "itemRevenue": "Doanh thu",
+      "share": "Tỉ trọng",
+      "cost": "Giá vốn",
+      "profit": "Lãi gộp",
+      "margin": "Biên",
+      "staff": "Nhân viên",
+      "netSales": "Doanh thu bán",
+      "cancelled": "HĐ hủy",
+      "avgTicket": "TB / HĐ",
+      "tickets": "Số phiếu",
+      "pets": "Số thú",
+      "serviceRevenue": "Doanh thu dịch vụ"
     },
     "export": {
       "button": "Xuất CSV",
       "truncated": "Chỉ xuất {limit} dòng đầu, hãy thu hẹp khoảng ngày.",
       "failed": "Xuất báo cáo thất bại."
+    },
+    "kinds": {
+      "all": "Tất cả",
+      "product": "Hàng hóa",
+      "service": "Dịch vụ"
+    },
+    "sorts": {
+      "revenue": "Theo doanh thu",
+      "qty": "Theo số lượng",
+      "profit": "Theo lãi gộp"
+    },
+    "itemType": {
+      "product": "Hàng hóa",
+      "service": "Dịch vụ",
+      "combo": "Combo"
+    },
+    "items": {
+      "title": "Sản phẩm & dịch vụ bán chạy",
+      "searchPlaceholder": "Tìm theo tên, SKU hoặc mã vạch",
+      "sort": "Sắp xếp",
+      "note": "Doanh thu đã chia giảm giá hóa đơn theo tỉ lệ. Lãi gộp (ước tính) chỉ có ở hàng hóa, tính theo giá vốn lô, đã trừ hàng trả; dịch vụ chưa có giá vốn."
+    },
+    "staff": {
+      "title": "Doanh thu theo nhân viên",
+      "searchPlaceholder": "Tìm theo tên nhân viên",
+      "unassigned": "Chưa gán nhân viên",
+      "roles": {
+        "cashier": "Thu ngân",
+        "spa": "Nhân viên spa"
+      },
+      "note": {
+        "cashier": "Thu ngân là người lập hóa đơn; hoàn trả tính cho người làm phiếu trả, hóa đơn hủy tính cho người lập hóa đơn.",
+        "spa": "Nhân viên spa là người được gán vào phiếu dịch vụ; dịch vụ bán lẻ hoặc phiếu chưa gán nằm ở dòng 'Chưa gán nhân viên'."
+      }
     }
   }
 }

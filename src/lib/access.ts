@@ -60,6 +60,8 @@ export const ADMIN_ROUTE_PERMISSIONS: Record<string, string> = {
   stockDocuments: "inventory",
   suppliers: "inventory",
   reportsOverview: "reports",
+  reportsItems: "reports",
+  reportsStaff: "reports",
   spaBoard: "schedule",
   spaAppointments: "schedule",
   spaSettings: "schedule",

@@ -6,7 +6,7 @@ import type { PetServiceFilter } from "@/repositories/petServices";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
 import type { ProductFilter } from "@/repositories/products";
-import type { Bucket, ReportFilter } from "@/repositories/reports";
+import type { Bucket, ReportFilter, StaffFilter, TopItemFilter } from "@/repositories/reports";
 import type { AppointmentFilter } from "@/repositories/spa";
 import type { UserListFilter } from "@/repositories/users";
 
@@ -118,6 +118,8 @@ export const reportKeys = {
   all: ["reports"] as const,
   overview: (filter: ReportFilter) => [...reportKeys.all, "overview", filter] as const,
   series: (filter: ReportFilter, bucket: Bucket) => [...reportKeys.all, "series", filter, bucket] as const,
+  items: (page: PageParams, filter: TopItemFilter) => [...reportKeys.all, "items", page, filter] as const,
+  staff: (page: PageParams, filter: StaffFilter) => [...reportKeys.all, "staff", page, filter] as const,
   branches: () => [...reportKeys.all, "branches"] as const,
 };
 

@@ -24,6 +24,10 @@ const route = useRoute();
 const auth = useAuthStore();
 
 // Every tab needs "reports: VIEW"; the filter in the URL query moves with the tab.
-const tabs = [{ name: "reportsOverview", icon: "lucide:chart-column", label: "reports.nav.overview" }];
+const tabs = [
+  { name: "reportsOverview", icon: "lucide:chart-column", label: "reports.nav.overview" },
+  { name: "reportsItems", icon: "lucide:package-search", label: "reports.nav.items" },
+  { name: "reportsStaff", icon: "lucide:users", label: "reports.nav.staff" },
+];
 const visibleTabs = computed(() => (auth.can("reports", "VIEW") ? tabs : []));
 </script>
