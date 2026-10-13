@@ -1422,7 +1422,11 @@
       "cancelHint": "An order can only be cancelled before the shop packs it.",
       "cancelOk": "Cancel order",
       "cancelKeep": "Keep order",
-      "cancelReason": "Reason (optional)"
+      "cancelReason": "Reason (optional)",
+      "all": "All",
+      "listFailed": "The order list could not be loaded.",
+      "empty": "You have no orders yet.",
+      "more": "and {n} more"
     },
     "admin": {
       "title": "Online orders",

@@ -1422,7 +1422,11 @@
       "cancelHint": "Chỉ hủy được khi cửa hàng chưa đóng gói đơn.",
       "cancelOk": "Hủy đơn",
       "cancelKeep": "Giữ đơn",
-      "cancelReason": "Lý do (không bắt buộc)"
+      "cancelReason": "Lý do (không bắt buộc)",
+      "all": "Tất cả",
+      "listFailed": "Không tải được danh sách đơn hàng.",
+      "empty": "Bạn chưa có đơn hàng nào.",
+      "more": "và {n} sản phẩm khác"
     },
     "admin": {
       "title": "Đơn online",

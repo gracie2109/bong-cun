@@ -9,6 +9,12 @@
       <router-link :to="{ name: item.name }">
         <Icon :icon="item.icon || 'lucide:dot'" class="size-[18px] shrink-0" />
         <span class="truncate">{{ $t(item.title) }}</span>
+        <span
+          v-if="badges?.[item.name]"
+          class="ml-auto rounded-full bg-red-600 px-1.5 text-[10px] font-bold leading-4 text-white group-data-[collapsible=icon]:hidden"
+        >
+          {{ badges[item.name] }}
+        </span>
       </router-link>
     </SidebarMenuButton>
   </SidebarMenuItem>
@@ -20,7 +26,8 @@ import { Icon } from "@iconify/vue";
 import type { LinkProp } from "@/types";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
-defineProps<{ items: LinkProp[] }>();
+/** `badges`: a number to show on the item with that route name (orders waiting, for example). */
+defineProps<{ items: LinkProp[]; badges?: Record<string, number> }>();
 
 // Detail pages light up the list they belong to.
 const PARENT_ROUTE: Record<string, string> = {
