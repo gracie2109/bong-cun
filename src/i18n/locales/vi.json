@@ -1266,7 +1266,12 @@
         "codMax": "Nhập giới hạn tiền thu hộ lớn hơn 0.",
         "defaultWeight": "Nhập khối lượng mặc định lớn hơn 0.",
         "fromAddress": "Chọn đủ quận / huyện và phường / xã của kho."
-      }
+      },
+      "testFee": "Thử tính phí",
+      "testNeedsWarehouse": "Chọn quận / huyện và phường / xã của kho rồi thử.",
+      "testOk": "GHN báo phí {fee} cho gói 1 kg tới Hà Đông, Hà Nội.",
+      "testLeadtime": "dự kiến giao {date}",
+      "testFail": "GHN không báo được phí. Kiểm tra token, ShopId và địa chỉ kho (cài trong biến môi trường NUXT_GHN_*)."
     },
     "cart": {
       "title": "Giỏ hàng",

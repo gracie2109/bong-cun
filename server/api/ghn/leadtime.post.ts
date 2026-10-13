@@ -1,15 +1,16 @@
-// Same fixed request the client used to send directly to GHN (test data).
-export default defineEventHandler((event) => {
+// Estimated delivery time from GHN for the same places the fee was priced for.
+export default defineEventHandler(async (event) => {
+  const request = await readValidatedBody(event, leadtimeRequestSchema.parse);
+
   const { ghn } = useRuntimeConfig(event);
+  const serviceId = Number(request.weightG >= HEAVY_FROM_G ? ghn.heavyGoodsServiceId : ghn.lightGoodsServiceId);
+  if (!Number.isInteger(serviceId) || serviceId <= 0) {
+    throw createError({ statusCode: 503, statusMessage: "GHN service is not configured" });
+  }
+
   return ghnFetch(event, "/v2/shipping-order/leadtime", {
     method: "POST",
     withShop: true,
-    body: {
-      from_district_id: 1750,
-      from_ward_code: "511110",
-      to_district_id: 1750,
-      to_ward_code: "511110",
-      service_id: ghn.lightGoodsServiceId,
-    },
+    body: leadtimeBody(request, serviceId),
   });
 });

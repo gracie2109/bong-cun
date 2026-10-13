@@ -63,6 +63,7 @@ export default defineNuxtConfig({
       token: "",
       shopId: "",
       lightGoodsServiceId: "",
+      heavyGoodsServiceId: "",
     },
   },
 

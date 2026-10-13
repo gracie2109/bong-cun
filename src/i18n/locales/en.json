@@ -1266,7 +1266,12 @@
         "codMax": "Enter a COD limit above 0.",
         "defaultWeight": "Enter a default weight above 0.",
         "fromAddress": "Choose both the district and the ward of the warehouse."
-      }
+      },
+      "testFee": "Test shipping fee",
+      "testNeedsWarehouse": "Choose the warehouse district and ward, then test.",
+      "testOk": "GHN quotes {fee} for a 1 kg parcel to Ha Dong, Ha Noi.",
+      "testLeadtime": "delivery by {date}",
+      "testFail": "GHN could not quote a fee. Check the token, ShopId and warehouse address (NUXT_GHN_* variables)."
     },
     "cart": {
       "title": "Cart",

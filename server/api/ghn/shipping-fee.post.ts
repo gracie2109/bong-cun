@@ -1,31 +1,16 @@
-// Same fixed request the client used to send directly to GHN. It is still test
-// data (the order details are not passed through yet).
-export default defineEventHandler((event) =>
-  ghnFetch(event, "/v2/shipping-order/fee", {
+// Prices a parcel with GHN. The client sends the places and the weight; the service type is
+// chosen here from the weight, and the answer is GHN's own JSON (`{ code, message, data }`).
+export default defineEventHandler(async (event) => {
+  const request = await readValidatedBody(event, feeRequestSchema.parse);
+
+  const serviceType = serviceTypeForWeight(request.weightG);
+  if (serviceType === null) {
+    throw createError({ statusCode: 422, statusMessage: "Parcel is too heavy to deliver" });
+  }
+
+  return ghnFetch(event, "/v2/shipping-order/fee", {
     method: "POST",
     withShop: true,
-    body: {
-      service_type_id: 5,
-      from_district_id: 1442,
-      from_ward_code: "21211",
-      to_district_id: 1820,
-      to_ward_code: "030712",
-      length: 30,
-      width: 40,
-      height: 20,
-      weight: 3000,
-      insurance_value: 0,
-      coupon: null,
-      items: [
-        {
-          name: "TEST1",
-          quantity: 1,
-          length: 200,
-          width: 200,
-          height: 200,
-          weight: 1000,
-        },
-      ],
-    },
-  })
-);
+    body: feeBody(request, serviceType),
+  });
+});

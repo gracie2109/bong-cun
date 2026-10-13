@@ -535,3 +535,11 @@ Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy
 - **Đã xóa:** địa chỉ mẫu `userAddress` / `addUserAddress` trong `auth` store và component `AddressForm` cũ.
 - **Khác plan:** bảng `customer_addresses` gắn với **tài khoản** (`user_id`), không gắn `customer_id`. Lý do: `customers.phone` là duy nhất, nên khách có số trùng một khách mua tại quầy chưa gắn tài khoản sẽ không lưu được địa chỉ đầu tiên; còn tự gắn tài khoản vào khách cũ theo số điện thoại thì ai cũng nhận được hồ sơ của người khác bằng cách gõ số. Khách hàng được tìm hoặc tạo lúc đặt đơn (bước 5, đúng mục 3.6) và đơn tự chụp lại địa chỉ. `my_customer_id()` vẫn có sẵn cho bước 5.
 
+### Bước 4: Phí vận chuyển GHN thật
+
+- **Không có migration.** Chỉ đổi server và client.
+- **Có gì mới:** `POST /api/ghn/shipping-fee` nhận địa chỉ gửi, địa chỉ nhận (huyện + xã GHN), khối lượng (gram) và giá trị hàng, kiểm tra bằng zod, tự chọn gói hàng nhẹ (`service_type_id = 2`, dưới 20 kg) hoặc hàng nặng (`5`), từ chối trên 30 kg bằng 422 và trả nguyên JSON của GHN; `POST /api/ghn/leadtime` nhận cùng các tham số. Quy tắc nằm trong `server/utils/ghnQuote.ts`. Phía client: `services/shipment.service.ts` (`quoteShippingFee`, `quoteLeadtime`, lỗi có lý do), `utils/shop/shipping.ts` (khối lượng + 100 g bao bì, giới hạn 30 kg, phí dự phòng, miễn phí ship, kẹp phí vào 0 đến 500.000đ, cảnh báo chênh quá 10.000đ), composable `useShippingQuote` (đợi 500 ms, GHN lỗi hoặc kho chưa cài thì dùng phí dự phòng và đánh dấu "phí dự kiến", ngày giao dự kiến ẩn khi lỗi). Màn "Cài đặt bán online" có nút **Thử tính phí** (kho trong form tới một địa chỉ mẫu ở Hà Đông, gói 1 kg).
+- **Chưa có nút đặt hàng:** `useShippingQuote` được checkout ở bước 5 dùng.
+- **Việc cần làm ở môi trường chạy:** thêm biến `NUXT_GHN_HEAVY_GOODS_SERVICE_ID` (tùy chọn, mẫu trong `.env.example`) nếu muốn ngày giao dự kiến cho gói từ 20 kg; thiếu biến này thì chỉ ẩn dòng ngày giao, phí vẫn tính bình thường. Token, ShopId và `NUXT_GHN_LIGHT_GOODS_SERVICE_ID` như cũ.
+- **Khác plan:** `ghnFetch` trả 502 "GHN is unreachable" khi GHN không trả lời (trước đó là lỗi 500 chung); body của `shipping-fee` dùng tên trường camelCase (`weightG`, `toDistrictId`...) cho khớp phần còn lại của client.
+
