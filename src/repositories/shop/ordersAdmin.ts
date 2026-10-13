@@ -9,6 +9,7 @@ import type {
   OrderListFilter,
 } from "@/types/shopOrderAdmin";
 import { unwrap, type PageParams } from "../shared";
+import type { PaymentMethod } from "../pos";
 
 type Client = SupabaseClient<Database>;
 
@@ -155,7 +156,9 @@ export type OrderStepCall =
   | { step: "ship"; id: string; trackingCode: string }
   | { step: "deliver"; id: string }
   | { step: "return"; id: string; reason: string }
-  | { step: "cancel"; id: string; reason: string };
+  | { step: "cancel"; id: string; reason: string }
+  /** An in-store pickup order, collected and paid at the counter. */
+  | { step: "pay"; id: string; payments: { method: PaymentMethod; amount: number; bankRef?: string | null }[] };
 
 export const runOrderStep = async (client: Client, call: OrderStepCall): Promise<AdminOrder> => {
   const result = async () => {
@@ -172,6 +175,11 @@ export const runOrderStep = async (client: Client, call: OrderStepCall): Promise
         return client.rpc("return_shop_order", { p_id: call.id, p_reason: call.reason });
       case "cancel":
         return client.rpc("cancel_shop_order", { p_id: call.id, p_reason: call.reason });
+      case "pay":
+        return client.rpc("pay_pickup_shop_order", {
+          p_id: call.id,
+          p_payments: call.payments.map((item) => ({ method: item.method, amount: item.amount, bank_ref: item.bankRef ?? null })),
+        });
     }
   };
   return toAdminOrder(unwrap(await result()) as OrderJson);
@@ -186,6 +194,9 @@ export const STEP_ERROR_HINTS = [
   "tracking_required",
   "reason_required",
   "out_of_stock",
+  "no_open_shift",
+  "underpaid",
+  "overpaid",
 ] as const;
 export type StepErrorHint = (typeof STEP_ERROR_HINTS)[number];
 

@@ -28,6 +28,14 @@
     @submit="order && run({ step: 'ship', id: order.id, trackingCode: form.tracking })"
   />
 
+  <PickupPayDialog
+    :open="dialog === 'collect'"
+    :total="order?.total ?? 0"
+    :busy="busy"
+    @update:open="onOpen"
+    @submit="(payments) => order && run({ step: 'pay', id: order.id, payments })"
+  />
+
   <AppDialog
     :open="dialog === 'deliver'"
     :title="$t('shop.admin.dialogs.deliverTitle')"
@@ -55,6 +63,7 @@ import type { useOrderSheet } from "@/composables/shop/useOrderSheet";
 import { parseFee } from "@/utils/shop/orderAdmin";
 import { money } from "@/views/admin/pos/format";
 import ConfirmOrderDialog from "./ConfirmOrderDialog.vue";
+import PickupPayDialog from "./PickupPayDialog.vue";
 import ReasonDialog from "./ReasonDialog.vue";
 import TrackingDialog from "./TrackingDialog.vue";
 

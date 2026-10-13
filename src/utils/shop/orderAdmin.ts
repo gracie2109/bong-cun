@@ -4,9 +4,9 @@ import type { AdminOrder, AdminOrderLine, OrderTab } from "@/types/shopOrderAdmi
 import { formatAddress } from "./address";
 
 /** A step staff can take on an order. */
-export type OrderAction = "confirm" | "pack" | "ship" | "deliver" | "return" | "cancel";
+export type OrderAction = "confirm" | "pack" | "ship" | "collect" | "deliver" | "return" | "cancel";
 
-/** The buttons of an order, main action first. Pickup orders are handed over at the counter (step 7). */
+/** The buttons of an order, main action first. A pickup order is handed over and paid at the counter. */
 export const orderActions = (order: Pick<AdminOrder, "status" | "deliveryMethod">): OrderAction[] => {
   const delivery = order.deliveryMethod === "delivery";
   switch (order.status) {
@@ -15,7 +15,7 @@ export const orderActions = (order: Pick<AdminOrder, "status" | "deliveryMethod"
     case "confirmed":
       return ["pack", "cancel"];
     case "packed":
-      return delivery ? ["ship", "cancel"] : ["cancel"];
+      return delivery ? ["ship", "cancel"] : ["collect", "cancel"];
     case "shipping":
       return ["deliver", "return"];
     default:

@@ -1466,7 +1466,8 @@
         "ship": "Hand to courier",
         "deliver": "Delivered",
         "return": "Returned",
-        "cancel": "Cancel order"
+        "cancel": "Cancel order",
+        "collect": "Customer collects & pays"
       },
       "done": {
         "confirm": "Order confirmed",
@@ -1474,7 +1475,8 @@
         "ship": "Order is on the way",
         "deliver": "COD payment recorded",
         "return": "Return recorded",
-        "cancel": "Order cancelled"
+        "cancel": "Order cancelled",
+        "pay": "Payment taken and order handed over"
       },
       "errors": {
         "generic": "That did not work, please try again.",
@@ -1484,7 +1486,10 @@
         "cod_limit": "The total exceeds the COD limit; lower the fee or split the order.",
         "tracking_required": "Please enter the tracking code.",
         "reason_required": "Please enter a reason.",
-        "out_of_stock": "Not enough stock to pack: {detail}."
+        "out_of_stock": "Not enough stock to pack: {detail}.",
+        "no_open_shift": "You have no open cash shift. Open one in the POS, then take payment again.",
+        "underpaid": "The amount is not enough.",
+        "overpaid": "Transfer and card cannot exceed the amount due."
       },
       "dialogs": {
         "ok": "OK",
@@ -1516,7 +1521,10 @@
         "returnOk": "Mark returned",
         "cancelTitle": "Cancel order",
         "cancelHint": "The order is cancelled; if it was packed, its invoice is cancelled and the stock returns.",
-        "cancelOk": "Cancel order"
+        "cancelOk": "Cancel order",
+        "collectTitle": "Customer collects and pays",
+        "collectHint": "The money goes into your open cash shift.",
+        "collectOk": "Take payment"
       }
     }
   },
@@ -1733,7 +1741,8 @@
     "method": {
       "cash": "Cash",
       "transfer": "Transfer",
-      "card": "Card"
+      "card": "Card",
+      "cod": "Courier cash (COD)"
     },
     "cols": {
       "date": "Date",

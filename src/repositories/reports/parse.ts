@@ -42,6 +42,7 @@ export const toOverview = (json: Json | null): ReportOverview => {
       cash: num(payments.cash),
       transfer: num(payments.transfer),
       card: num(payments.card),
+      cod: num(payments.cod),
       refundCash: num(payments.refund_cash),
       refundTransfer: num(payments.refund_transfer),
     },

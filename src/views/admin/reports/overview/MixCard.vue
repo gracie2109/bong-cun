@@ -13,6 +13,7 @@
       <MixRow :label="$t('reports.method.cash')" :value="data.payments.cash" :total="paymentTotal" />
       <MixRow :label="$t('reports.method.transfer')" :value="data.payments.transfer" :total="paymentTotal" />
       <MixRow :label="$t('reports.method.card')" :value="data.payments.card" :total="paymentTotal" />
+      <MixRow v-if="data.payments.cod > 0" :label="$t('reports.method.cod')" :value="data.payments.cod" :total="paymentTotal" />
     </div>
   </section>
 </template>
@@ -27,5 +28,7 @@ const props = defineProps<{ data: ReportOverview }>();
 // Refunds are all goods, so the Shop share is shown after them.
 const shopNet = computed(() => props.data.segments.shop - props.data.refunds);
 const segmentTotal = computed(() => shopNet.value + props.data.segments.spa);
-const paymentTotal = computed(() => props.data.payments.cash + props.data.payments.transfer + props.data.payments.card);
+const paymentTotal = computed(
+  () => props.data.payments.cash + props.data.payments.transfer + props.data.payments.card + props.data.payments.cod
+);
 </script>
