@@ -320,9 +320,12 @@ export type SaleInput = {
   discountAmount: number;
   payments: { method: PaymentMethod; amount: number; bankRef?: string | null }[];
   note?: string | null;
+  /** Same for every attempt at one sale, so a retry after a lost response returns the first invoice. */
+  clientRef?: string | null;
 };
 
-export type SaleResult = { id: string; code: string; total: number; changeAmount: number };
+/** `replayed`: the sale had already gone through and this is the invoice made then. */
+export type SaleResult = { id: string; code: string; total: number; changeAmount: number; replayed: boolean };
 
 const toCustomerPayload = (customer: SaleCustomer) => {
   if (!customer) return null;
@@ -339,6 +342,7 @@ export const createInvoice = async (client: Client, input: SaleInput): Promise<S
         customer: toCustomerPayload(input.customer),
         discount_amount: input.discountAmount,
         note: input.note ?? null,
+        client_ref: input.clientRef ?? null,
         lines: input.lines.map((line) => ({
           type: line.type,
           id: line.id,
@@ -359,6 +363,7 @@ export const createInvoice = async (client: Client, input: SaleInput): Promise<S
     code: String(raw.code),
     total: num(raw.total),
     changeAmount: num(raw.change_amount),
+    replayed: raw.replayed === true,
   };
 };
 

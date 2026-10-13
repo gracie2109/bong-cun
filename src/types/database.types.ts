@@ -321,6 +321,7 @@ export type Database = {
           cancelled_by: string | null
           cashier_name: string | null
           change_amount: number
+          client_ref: string | null
           code: string
           created_at: string
           created_by: string
@@ -345,6 +346,7 @@ export type Database = {
           cancelled_by?: string | null
           cashier_name?: string | null
           change_amount?: number
+          client_ref?: string | null
           code: string
           created_at?: string
           created_by: string
@@ -369,6 +371,7 @@ export type Database = {
           cancelled_by?: string | null
           cashier_name?: string | null
           change_amount?: number
+          client_ref?: string | null
           code?: string
           created_at?: string
           created_by?: string

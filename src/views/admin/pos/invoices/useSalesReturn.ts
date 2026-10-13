@@ -12,11 +12,11 @@ export const useSalesReturn = (invoice: Ref<InvoiceDetail | null>, salesReturns:
   const reason = ref("");
   const refundMethod = ref<RefundMethod>("cash");
 
-  const returnedQty = (lineId: string): number =>
-    salesReturns.value
-      .flatMap((item) => item.lines)
-      .filter((line) => line.invoiceLineId === lineId)
-      .reduce((sum, line) => sum + line.qty, 0);
+  const returnedLines = (lineId: string) =>
+    salesReturns.value.flatMap((item) => item.lines).filter((line) => line.invoiceLineId === lineId);
+  const returnedQty = (lineId: string): number => returnedLines(lineId).reduce((sum, line) => sum + line.qty, 0);
+  const refundedAmount = (lineId: string): number =>
+    returnedLines(lineId).reduce((sum, line) => sum + line.amount, 0);
 
   // Only goods go back: product lines with something left to return.
   const returnableLines = computed(() =>
@@ -38,14 +38,22 @@ export const useSalesReturn = (invoice: Ref<InvoiceDetail | null>, salesReturns:
     })
   );
 
-  // What the database will refund: each line at what was paid for it, the discount spread over the lines.
+  // Same sum as create_sales_return: whole dong for the units returned so far less what earlier
+  // returns of the line refunded, never more than is left of the invoice total.
   const refundPreview = computed(() => {
     const current = invoice.value;
     if (!current || current.subtotal === 0) return 0;
-    return refundLines.value.reduce(
-      (sum, { line, qty }) => sum + Math.round((line.amount * qty * current.total) / line.qty / current.subtotal),
-      0
-    );
+    let invoiceRefunded = salesReturns.value.reduce((sum, item) => sum + item.refundAmount, 0);
+    let refund = 0;
+    for (const { line, qty } of refundLines.value) {
+      const paidSoFar = Math.round(
+        (((line.amount * (returnedQty(line.id) + qty)) / line.qty) * current.total) / current.subtotal
+      );
+      const amount = Math.max(0, Math.min(paidSoFar - refundedAmount(line.id), current.total - invoiceRefunded));
+      invoiceRefunded += amount;
+      refund += amount;
+    }
+    return refund;
   });
 
   const canSubmit = computed(

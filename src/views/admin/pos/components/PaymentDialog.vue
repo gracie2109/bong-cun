@@ -13,7 +13,7 @@
   >
     <PaymentSuccess v-if="result" :result="result" :printing="printing" @print="emit('print')" @new-sale="emit('update:open', false)" />
 
-    <template v-else>
+    <div v-else class="contents" @keydown="guardScan">
       <div class="rounded-xl bg-primary/5 p-4 text-center">
         <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{{ $t("pos.payment.due") }}</p>
         <p class="text-3xl font-bold text-primary">{{ money(total) }}</p>
@@ -66,19 +66,22 @@
         </div>
         <p v-if="nonCashTooHigh" class="text-xs text-red-600">{{ $t("pos.errors.overpaid") }}</p>
       </div>
-    </template>
+    </div>
   </AppDialog>
 </template>
 
 <script lang="ts" setup>
 import { toRef, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { Banknote, CreditCard, Landmark } from "lucide-vue-next";
+import { toast } from "vue-sonner";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { SaleResult } from "@/repositories/pos";
 import { money } from "../format";
 import { usePaymentSplit, type PaymentEntry } from "../usePaymentSplit";
+import { useScanGuard } from "../useScanGuard";
 import PaymentSuccess from "./PaymentSuccess.vue";
 
 const props = defineProps<{
@@ -96,6 +99,19 @@ const emit = defineEmits<{
 
 const { cash, transfer, card, bankRef, transferAmount, paid, change, nonCashTooHigh, canConfirm, suggestions, reset, entries } =
   usePaymentSplit(toRef(props, "total"));
+
+const { t } = useI18n();
+// A barcode scanned while this dialog is open must not land in an amount and confirm the sale.
+const guardScan = useScanGuard(
+  () => ({ cash: cash.value, transfer: transfer.value, card: card.value, bankRef: bankRef.value }),
+  (saved) => {
+    cash.value = saved.cash;
+    transfer.value = saved.transfer;
+    card.value = saved.card;
+    bankRef.value = saved.bankRef;
+  },
+  () => toast.warning(t("pos.payment.scanBlocked"))
+);
 
 // Each time the dialog opens for a new sale, start with cash = the exact total.
 watch(
