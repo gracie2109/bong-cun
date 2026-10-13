@@ -1,11 +1,13 @@
 import { computed, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useAllPetServices } from "@/queries/petServices";
+import { useBranchPrices } from "@/queries/branchPrices";
 import { useSellableStock } from "@/queries/inventory";
 import { useSellableCombos } from "@/queries/pos";
 import { useSellableProducts } from "@/queries/products";
 import type { LineType } from "@/repositories/pos";
 import { fold } from "@/views/admin/settings/rbac";
+import { priceAtBranch } from "./branchPricing";
 import { groupProductItems, type CatalogItem } from "./catalog";
 
 /** The tiles of the POS catalog for the open tab, with their stock at the branch. */
@@ -22,9 +24,14 @@ export const useCatalogItems = (
   const servicesQuery = useAllPetServices();
   const combosQuery = useSellableCombos();
 
-  const productItems = computed(() =>
-    groupProductItems(productsQuery.data.value ?? [], (n) => t("pos.variant.count", { n }))
+  // Branch prices come in a second call, so tiles first show the general price.
+  const productIds = computed(() => (productsQuery.data.value ?? []).map((product) => product.id));
+  const branchPricesQuery = useBranchPrices(computed(branchId), productIds);
+  const pricedProducts = computed(() =>
+    (productsQuery.data.value ?? []).map((product) => priceAtBranch(product, branchPricesQuery.data.value))
   );
+
+  const productItems = computed(() => groupProductItems(pricedProducts.value, (n) => t("pos.variant.count", { n })));
 
   const matches = (name: string) => fold(name).includes(fold(search.value));
 
@@ -48,7 +55,6 @@ export const useCatalogItems = (
   });
 
   // Unexpired stock at this branch for the product tiles; products that do not track stock have none.
-  const productIds = computed(() => (productsQuery.data.value ?? []).map((product) => product.id));
   const stockQuery = useSellableStock(computed(branchId), productIds);
 
   /** Units in stock for a product tile, or undefined when stock is not tracked or not known yet. */

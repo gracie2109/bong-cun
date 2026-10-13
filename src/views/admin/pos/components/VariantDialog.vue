@@ -35,7 +35,12 @@
           </span>
         </span>
         <span v-else class="text-muted-foreground">{{ $t("pos.variant.pickAll") }}</span>
-        <span v-if="selected" class="whitespace-nowrap font-bold text-primary">{{ money(selected.price) }}</span>
+        <span v-if="selected" class="whitespace-nowrap font-bold text-primary">
+          <s v-if="selected.generalPrice !== undefined" class="mr-1 text-xs font-normal text-muted-foreground">
+            {{ money(selected.generalPrice) }}
+          </s>
+          {{ money(selected.price) }}
+        </span>
       </div>
     </template>
   </AppDialog>
@@ -47,25 +52,36 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import VariantOptions from "@/components/VariantOptions.vue";
 import { useVariantChoice } from "@/composables/useVariantChoice";
+import { useBranchPrices } from "@/queries/branchPrices";
 import { useSellableStock } from "@/queries/inventory";
 import { useSellableGroup } from "@/queries/products";
-import type { ProductVariant } from "@/repositories/products";
+import type { ProductGroup, ProductVariant } from "@/repositories/products";
 import { qty } from "@/views/admin/inventory/format";
 import ProductThumb from "@/views/admin/products/ProductThumb.vue";
+import { priceAtBranch, type Priced } from "../branchPricing";
 import { money } from "../format";
 
 const props = defineProps<{ groupId: string | undefined; title: string; branchId: string | undefined }>();
-const emit = defineEmits<{ close: []; pick: [variant: ProductVariant] }>();
+const emit = defineEmits<{ close: []; pick: [variant: Priced<ProductVariant>] }>();
 
 const groupQuery = useSellableGroup(toRef(props, "groupId"));
-const group = computed(() => groupQuery.data.value ?? null);
+const loadedGroup = computed(() => groupQuery.data.value ?? null);
 
-const variantIds = computed(() => group.value?.variants.map((variant) => variant.id) ?? []);
+const variantIds = computed(() => loadedGroup.value?.variants.map((variant) => variant.id) ?? []);
+const branchPricesQuery = useBranchPrices(toRef(props, "branchId"), variantIds);
+// The variants with the price they have at this branch.
+const group = computed<(ProductGroup & { variants: Priced<ProductVariant>[] }) | null>(() => {
+  const loaded = loadedGroup.value;
+  if (!loaded) return null;
+  const prices = branchPricesQuery.data.value;
+  return { ...loaded, variants: loaded.variants.map((variant) => priceAtBranch(variant, prices)) };
+});
 const stockQuery = useSellableStock(toRef(props, "branchId"), variantIds);
 const stockOf = (variant: ProductVariant): number | undefined => stockQuery.data.value?.[variant.id];
 
 const choice = useVariantChoice(group, (variant) => stockOf(variant) !== 0);
-const selected = computed(() => choice.variant.value);
+// The variant comes from `group`, so it carries the branch price.
+const selected = computed(() => choice.variant.value as Priced<ProductVariant> | undefined);
 
 // Stock arrives after the group: start again on a variant that is in stock.
 watch(() => stockQuery.data.value, choice.reset);

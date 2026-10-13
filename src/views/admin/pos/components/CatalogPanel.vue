@@ -59,8 +59,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { supabaseClient } from "@/lib/supabase";
 import type { LineType } from "@/repositories/pos";
+import { getBranchPrices } from "@/repositories/branchPrices";
 import type { ProductVariant } from "@/repositories/products";
 import { searchSellableProducts } from "@/repositories/products";
+import { priceAtBranch, type Priced } from "../branchPricing";
 import { CATALOG_TABS as TABS, toProductItem, type CatalogItem } from "../catalog";
 import { useCatalogItems } from "../useCatalogItems";
 import { useCategoryChips } from "../useCategoryChips";
@@ -78,7 +80,7 @@ const debounced = refDebounced(search, SEARCH_DEBOUNCE_MS);
 const { chips, selected: selectedCategory, categoryIds } = useCategoryChips();
 const { items, loading, stockOf } = useCatalogItems(kind, search, debounced, () => props.branchId, categoryIds);
 
-const fromVariant = (variant: ProductVariant): CatalogItem => toProductItem(variant);
+const fromVariant = (variant: Priced<ProductVariant>): CatalogItem => toProductItem(variant);
 
 const openGroup = ref<CatalogItem | null>(null);
 const choose = (item: CatalogItem) => {
@@ -86,15 +88,21 @@ const choose = (item: CatalogItem) => {
   else emit("add", item);
 };
 
+/** Products matching a scanned code, at the price this branch sells them for. */
+const scannedItems = async (code: string): Promise<CatalogItem[]> => {
+  const found = await searchSellableProducts(supabaseClient(), code);
+  const prices = props.branchId
+    ? await getBranchPrices(supabaseClient(), props.branchId, found.map((product) => product.id))
+    : undefined;
+  return found.map((product) => toProductItem(priceAtBranch(product, prices)));
+};
+
 // A barcode scanner types the code and presses Enter, faster than the search debounce, so the
 // code is looked up right away: the exact barcode or SKU, else the only result.
 const addExactMatch = async () => {
   const code = search.value.trim();
   if (!code) return;
-  const pool =
-    kind.value === "product"
-      ? (await searchSellableProducts(supabaseClient(), code)).map(toProductItem)
-      : items.value;
+  const pool = kind.value === "product" ? await scannedItems(code) : items.value;
   const exact = pool.find((item) => item.barcode === code || item.sku === code);
   const pick = exact ?? (pool.length === 1 ? pool[0] : undefined);
   if (!pick || stockOf(pick) === 0) return;

@@ -779,7 +779,8 @@
       "noProducts": "No products yet. Add them under Products.",
       "outOfStock": "Out of stock",
       "inStock": "{n} left",
-      "allCategories": "All"
+      "allCategories": "All",
+      "branchPrice": "This branch's own price (general price {price})"
     },
     "customer": {
       "title": "Customer",
@@ -995,7 +996,8 @@
     "tabs": {
       "general": "General",
       "variants": "Variants",
-      "images": "Images ({n})"
+      "images": "Images ({n})",
+      "branchPrices": "Branch prices"
     },
     "filter": {
       "pickCategory": "Choose a category",
@@ -1014,6 +1016,14 @@
       "max": "A product has {n} images at most.",
       "picked": "Own image",
       "useCover": "Use the cover"
+    },
+    "branchPrices": {
+      "title": "Prices by branch",
+      "hint": "Leave a cell empty to use the general price. You can only change a branch's price if you may edit products at that branch.",
+      "general": "General price",
+      "saveFirst": "Save the product first, then set a price for each branch.",
+      "newVariants": "New variants show up here after saving.",
+      "noPermission": "You may not change prices at this branch"
     }
   },
   "inventory": {

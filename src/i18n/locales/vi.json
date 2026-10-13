@@ -779,7 +779,8 @@
       "noProducts": "Chưa có sản phẩm nào. Thêm sản phẩm ở mục Sản phẩm.",
       "outOfStock": "Hết hàng",
       "inStock": "Còn {n}",
-      "allCategories": "Tất cả"
+      "allCategories": "Tất cả",
+      "branchPrice": "Giá riêng của cơ sở này (giá chung {price})"
     },
     "customer": {
       "title": "Khách hàng",
@@ -995,7 +996,8 @@
     "tabs": {
       "general": "Thông tin",
       "variants": "Biến thể",
-      "images": "Ảnh ({n})"
+      "images": "Ảnh ({n})",
+      "branchPrices": "Giá theo cơ sở"
     },
     "filter": {
       "pickCategory": "Chọn danh mục",
@@ -1014,6 +1016,14 @@
       "max": "Mỗi sản phẩm tối đa {n} ảnh.",
       "picked": "Ảnh riêng",
       "useCover": "Dùng ảnh bìa"
+    },
+    "branchPrices": {
+      "title": "Giá theo cơ sở",
+      "hint": "Để trống thì dùng giá chung. Mỗi cơ sở chỉ sửa được giá nếu có quyền Sửa sản phẩm ở cơ sở đó.",
+      "general": "Giá chung",
+      "saveFirst": "Lưu sản phẩm trước, rồi đặt giá riêng cho từng cơ sở.",
+      "newVariants": "Biến thể mới sẽ có ở đây sau khi lưu.",
+      "noPermission": "Bạn không có quyền sửa giá ở cơ sở này"
     }
   },
   "inventory": {

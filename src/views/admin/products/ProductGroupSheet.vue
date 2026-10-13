@@ -13,7 +13,7 @@
       <form v-else id="product-group-form" class="flex min-h-0 flex-1 flex-col" @submit.prevent="submit">
         <Tabs v-model="tab" class="flex min-h-0 flex-1 flex-col">
           <TabsList class="shrink-0 justify-start border-b px-6">
-            <TabsTrigger v-for="item in TABS" :key="item" :value="item">
+            <TabsTrigger v-for="item in tabs" :key="item" :value="item">
               {{ item === "images" ? $t("products.tabs.images", { n: gallery.images.value.length }) : $t(`products.tabs.${item}`) }}
               <span v-if="tabErrors[item]" class="ml-1.5 size-2 rounded-full bg-red-500" />
             </TabsTrigger>
@@ -43,6 +43,14 @@
                 :submitted="submitted"
               />
             </TabsContent>
+            <TabsContent v-if="priceGrid.visible.value" value="branchPrices" class="mt-0">
+              <BranchPricesTab
+                :rows="rows"
+                :branches="priceGrid.branches.value"
+                :cells="priceGrid.cells"
+                :can-edit="priceGrid.canEdit"
+              />
+            </TabsContent>
           </div>
         </Tabs>
       </form>
@@ -58,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { toRef } from "vue";
+import { computed, toRef } from "vue";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -70,16 +78,20 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BranchPricesTab from "./tabs/BranchPricesTab.vue";
 import GeneralTab from "./tabs/GeneralTab.vue";
 import ImagesTab from "./tabs/ImagesTab.vue";
 import VariantsTab from "./tabs/VariantsTab.vue";
 import { useProductGroupForm, type ProductTab } from "./useProductGroupForm";
 
-const TABS: ProductTab[] = ["general", "images", "variants"];
+const BASE_TABS: ProductTab[] = ["general", "images", "variants"];
 
 const props = defineProps<{ open: boolean; groupId: string | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
-const { form, attributes, rows, bulk, knownAttributes, gallery, submitted, tab, tabErrors, loading, saving, submit } =
+const { form, attributes, rows, bulk, knownAttributes, gallery, priceGrid, submitted, tab, tabErrors, loading, saving, submit } =
   useProductGroupForm(toRef(props, "open"), toRef(props, "groupId"), () => emit("update:open", false));
+
+// The price grid only makes sense with more than one branch.
+const tabs = computed<ProductTab[]>(() => (priceGrid.visible.value ? [...BASE_TABS, "branchPrices"] : BASE_TABS));
 </script>
