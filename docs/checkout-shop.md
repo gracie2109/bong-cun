@@ -528,3 +528,10 @@ Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy
 - **Đã xóa:** store giỏ mẫu `cartProduct.ts`, `components/Cart/*` (CartMobile, CartSimple) và `components/Checkout/CheckoutMobile/*` (kèm `VoucherList`).
 - **Khác plan:** trang `/checkout` tạm hiện "đang hoàn thiện" cho tới bước 5 (thay vì giữ trang mock); trang đăng nhập nhận `?redirect=/đường-dẫn-nội-bộ` để khách chưa đăng nhập bấm "Thanh toán" quay lại đúng chỗ; đăng nhập bằng Google vẫn về trang chủ. `shop_cart_lines` kẹp số lượng gửi lên về 1 đến 99 và từ chối quá 30 dòng. Trang giỏ đổi sang layout client (có header) thay vì layout trống.
 
+### Bước 3: Địa chỉ giao hàng
+
+- **Migration** (tự chạy sau khi merge): `20261016030000_customer_addresses.sql` (bảng, RLS, chỉ đọc dòng của mình) và `20261016030100_my_addresses.sql` (`my_customer_id`, `my_addresses`, `save_my_address`, `set_default_my_address`, `delete_my_address`).
+- **Có gì mới:** tab "Địa chỉ" trong hồ sơ là sổ địa chỉ thật (thêm, sửa, xóa có hỏi lại, đặt mặc định, tối đa 10); địa chỉ đầu tiên tự thành mặc định, xóa địa chỉ mặc định thì địa chỉ mới nhất lên thay. Component dùng lại cho checkout ở bước 5: `components/shop/AddressCard.vue`, `AddressFormDialog.vue`, composable `useAddressBook` và `useAddressForm`.
+- **Đã xóa:** địa chỉ mẫu `userAddress` / `addUserAddress` trong `auth` store và component `AddressForm` cũ.
+- **Khác plan:** bảng `customer_addresses` gắn với **tài khoản** (`user_id`), không gắn `customer_id`. Lý do: `customers.phone` là duy nhất, nên khách có số trùng một khách mua tại quầy chưa gắn tài khoản sẽ không lưu được địa chỉ đầu tiên; còn tự gắn tài khoản vào khách cũ theo số điện thoại thì ai cũng nhận được hồ sơ của người khác bằng cách gõ số. Khách hàng được tìm hoặc tạo lúc đặt đơn (bước 5, đúng mục 3.6) và đơn tự chụp lại địa chỉ. `my_customer_id()` vẫn có sẵn cho bước 5.
+

@@ -2181,6 +2181,11 @@ export type Database = {
       delete_product_brand: { Args: { p_id: string }; Returns: undefined }
       product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
       save_product_group: { Args: { p: Json }; Returns: string }
+      my_customer_id: { Args: never; Returns: string }
+      my_addresses: { Args: never; Returns: Json }
+      save_my_address: { Args: { p: Json }; Returns: Json }
+      set_default_my_address: { Args: { p_id: string }; Returns: undefined }
+      delete_my_address: { Args: { p_id: string }; Returns: undefined }
       shop_cart_lines: { Args: { p_lines: Json }; Returns: Json }
       shop_public_settings: { Args: never; Returns: Json }
       shop_admin_settings: { Args: never; Returns: Json }

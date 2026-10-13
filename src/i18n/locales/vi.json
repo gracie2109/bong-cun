@@ -1298,6 +1298,30 @@
       "title": "Thanh toán",
       "soon": "Trang thanh toán đang được hoàn thiện, bạn quay lại sau nhé.",
       "backToCart": "Về giỏ hàng"
+    },
+    "address": {
+      "title": "Sổ địa chỉ",
+      "hint": "Địa chỉ nhận hàng, tối đa {max} địa chỉ. Địa chỉ mặc định được chọn sẵn khi thanh toán.",
+      "add": "Thêm địa chỉ",
+      "empty": "Bạn chưa có địa chỉ nhận hàng nào.",
+      "default": "Mặc định",
+      "makeDefault": "Đặt làm mặc định",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "deleteTitle": "Xóa địa chỉ này?",
+      "addTitle": "Thêm địa chỉ",
+      "editTitle": "Sửa địa chỉ",
+      "receiver": "Người nhận",
+      "phone": "Số điện thoại",
+      "street": "Số nhà, đường",
+      "setDefault": "Đặt làm địa chỉ mặc định",
+      "errors": {
+        "address_required": "Nhập tên người nhận và địa chỉ.",
+        "invalid_phone": "Số điện thoại phải có 8 đến 15 chữ số.",
+        "address_location": "Chọn đủ tỉnh, quận / huyện và phường / xã.",
+        "address_limit": "Mỗi tài khoản lưu tối đa 10 địa chỉ.",
+        "address_not_found": "Không tìm thấy địa chỉ này."
+      }
     }
   },
   "spa": {

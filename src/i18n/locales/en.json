@@ -1298,6 +1298,30 @@
       "title": "Checkout",
       "soon": "The checkout page is being finished, please come back soon.",
       "backToCart": "Back to cart"
+    },
+    "address": {
+      "title": "Address book",
+      "hint": "Delivery addresses, up to {max}. The default one is pre-selected at checkout.",
+      "add": "Add address",
+      "empty": "You have no delivery address yet.",
+      "default": "Default",
+      "makeDefault": "Make default",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete this address?",
+      "addTitle": "Add address",
+      "editTitle": "Edit address",
+      "receiver": "Receiver",
+      "phone": "Phone number",
+      "street": "House number, street",
+      "setDefault": "Use as default address",
+      "errors": {
+        "address_required": "Enter the receiver and the street.",
+        "invalid_phone": "The phone number needs 8 to 15 digits.",
+        "address_location": "Choose province, district and ward.",
+        "address_limit": "An account keeps 10 addresses at most.",
+        "address_not_found": "This address was not found."
+      }
     }
   },
   "spa": {

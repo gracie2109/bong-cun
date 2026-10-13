@@ -76,3 +76,26 @@ export type CartLineView = CartLine & {
 
 /** What blocks a line from being ordered: it is off sale, or the quantity is above the stock. */
 export type CartLineIssue = { kind: "unavailable" } | { kind: "over_stock"; available: number };
+
+// --------------------------------------------------------------- addresses
+
+/** A delivery address of the signed-in shopper. Names print on the order, ids price the delivery. */
+export type Address = {
+  id: string;
+  receiverName: string;
+  phone: string;
+  street: string;
+  provinceName: string;
+  districtName: string;
+  wardName: string;
+  ghnProvinceId: number;
+  ghnDistrictId: number;
+  ghnWardCode: string;
+  isDefault: boolean;
+};
+
+/** An address being saved; without `id` it is a new one. */
+export type AddressInput = Omit<Address, "id" | "isDefault"> & { id?: string; isDefault?: boolean };
+
+/** Addresses an account may keep. */
+export const MAX_ADDRESSES = 10;

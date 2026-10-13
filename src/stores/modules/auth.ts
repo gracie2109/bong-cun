@@ -75,19 +75,6 @@ export const useAuthStore = defineStore("auth", () => {
   const can = (permission: string, method = "VIEW"): boolean =>
     !!adminGrants.value && canUse(adminGrants.value, permission, method);
 
-  const userAddress = ref([
-    {
-      id: "1",
-      name: "Trijnh Phuong Thao",
-      phone_number: "0327072255",
-      district_id: 1820,
-      ward_code: "030712",
-      specific_address: "Quán bia bích triệu, số 47, đường Yên Bình",
-      address_title: "Phường Yên Nghĩa, Quận Hà Đông, Hà Nội",
-      is_default: true,
-    },
-  ]);
-
   // ---------------------------------------------------------------- session
   // `undefined` = never applied. Applying the same access token twice returns
   // the in-flight promise, so login() and the onAuthStateChange event do not
@@ -389,16 +376,6 @@ export const useAuthStore = defineStore("auth", () => {
     toast.success("Logout success!");
   }
 
-  function addUserAddress(data: any) {
-    userAddress.value = [
-      ...userAddress.value,
-      {
-        id: (userAddress.value.length + 1).toString(),
-        ...data,
-      },
-    ];
-  }
-
   return {
     loading,
     signUp,
@@ -413,8 +390,6 @@ export const useAuthStore = defineStore("auth", () => {
     currentUser,
     isSuccess,
     signoutHdl,
-    userAddress,
-    addUserAddress,
     loginGoogle,
     linkGoogleIdentity,
     session,
