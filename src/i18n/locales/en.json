@@ -88,7 +88,8 @@
     "productCategories": "Product categories",
     "productBrands": "Product brands",
     "productImport": "Product Excel import / export",
-    "shopOrderSettings": "Online shop settings"
+    "shopOrderSettings": "Online shop settings",
+    "order": "Order"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -1301,8 +1302,60 @@
     },
     "checkout": {
       "title": "Checkout",
-      "soon": "The checkout page is being finished, please come back soon.",
-      "backToCart": "Back to cart"
+      "backToCart": "Back to cart",
+      "empty": "Your cart is empty, so there is nothing to pay for.",
+      "noMethod": "The shop is not taking online orders for this cart. Please contact the shop.",
+      "method": "How to receive it",
+      "methods": {
+        "delivery": "Home delivery",
+        "pickup": "Pick up in store"
+      },
+      "methodHint": {
+        "delivery": "Delivered by GHN, pay on delivery.",
+        "pickup": "Collect it at the shop and pay at the counter."
+      },
+      "address": "Delivery address",
+      "changeAddress": "Change",
+      "noAddress": "You have no delivery address yet. Add one to see the delivery fee.",
+      "pickAddress": "Choose a delivery address",
+      "pickup": "Pick up in store",
+      "pickupName": "Receiver",
+      "items": "Items ({n})",
+      "editCart": "Edit cart",
+      "noShipping": "No fee",
+      "quoting": "Calculating...",
+      "freeShip": "Free",
+      "estimated": "Estimated; the shop will confirm it",
+      "leadtime": "Expected delivery",
+      "payment": {
+        "delivery": "Cash on delivery (COD)",
+        "pickup": "Pay at the shop"
+      },
+      "paymentHint": {
+        "delivery": "You pay the courier in cash.",
+        "pickup": "You pay when you collect the order."
+      },
+      "note": "Note",
+      "notePlaceholder": "For example: deliver during office hours",
+      "place": "Place order",
+      "errors": {
+        "generic": "The order could not be placed, please try again later.",
+        "client_ref_required": "The order could not be placed, please reload the page and try again.",
+        "invalid_delivery": "Please choose how to receive your order.",
+        "delivery_disabled": "The shop has paused home delivery.",
+        "pickup_disabled": "The shop has paused in-store pickup orders.",
+        "address_not_found": "Please choose a delivery address.",
+        "receiver_required": "Please enter the receiver's name.",
+        "invalid_phone": "The phone number is not valid.",
+        "cart_empty": "Your cart is empty.",
+        "cart_too_big": "An order has 30 lines at most.",
+        "invalid_qty": "A quantity is not valid, please check your cart.",
+        "product_unavailable": "A product is no longer sold, please check your cart.",
+        "in_store_only": "{names} is sold in store only, please choose in-store pickup.",
+        "out_of_stock": "Not enough stock: {names}. Please lower the quantity.",
+        "too_heavy": "The parcel is too heavy to deliver. Choose in-store pickup or split the order.",
+        "cod_limit": "Home delivery orders are limited to {max}. Split the order or pick it up in store."
+      }
     },
     "address": {
       "title": "Address book",
@@ -1327,6 +1380,41 @@
         "address_limit": "An account keeps 10 addresses at most.",
         "address_not_found": "This address was not found."
       }
+    },
+    "order": {
+      "title": "Order {code}",
+      "notFound": "This order was not found.",
+      "backHome": "Back to home",
+      "loadFailed": "The order could not be loaded.",
+      "placedTitle": "Order placed!",
+      "placedHint": {
+        "delivery": "The shop will confirm your order and the delivery fee soon.",
+        "pickup": "The shop will prepare your order. Come and collect it when it is ready."
+      },
+      "status": {
+        "pending": "Waiting for confirmation",
+        "confirmed": "Confirmed",
+        "packed": "Packed",
+        "shipping": "On the way",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "returned": "Returned"
+      },
+      "receiver": "Deliver to",
+      "pickupBy": "Collected by",
+      "tracking": "{carrier} tracking code:",
+      "feePending": "Estimated; the shop will confirm it",
+      "feeWentUp": "The real delivery fee is higher than the estimate. The shop will contact you if needed.",
+      "payment": {
+        "paid": "Paid",
+        "unpaid": "Not paid yet"
+      },
+      "cancel": "Cancel order",
+      "cancelTitle": "Cancel this order?",
+      "cancelHint": "An order can only be cancelled before the shop packs it.",
+      "cancelOk": "Cancel order",
+      "cancelKeep": "Keep order",
+      "cancelReason": "Reason (optional)"
     }
   },
   "spa": {

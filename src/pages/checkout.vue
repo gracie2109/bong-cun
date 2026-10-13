@@ -5,6 +5,7 @@ import { PAGE_LAYOUT } from "@/lib/constants";
 definePageMeta({
   name: "checkout",
   titleKey: "checkout",
+  requiresAuth: true,
   layout: PAGE_LAYOUT.CLIENT,
 });
 </script>

@@ -88,7 +88,8 @@
     "productCategories": "Danh mục sản phẩm",
     "productBrands": "Thương hiệu sản phẩm",
     "productImport": "Nhập / xuất Excel sản phẩm",
-    "shopOrderSettings": "Cài đặt bán online"
+    "shopOrderSettings": "Cài đặt bán online",
+    "order": "Đơn hàng"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -1301,8 +1302,60 @@
     },
     "checkout": {
       "title": "Thanh toán",
-      "soon": "Trang thanh toán đang được hoàn thiện, bạn quay lại sau nhé.",
-      "backToCart": "Về giỏ hàng"
+      "backToCart": "Về giỏ hàng",
+      "empty": "Giỏ hàng đang trống nên chưa có gì để thanh toán.",
+      "noMethod": "Cửa hàng chưa mở nhận đơn online cho giỏ hàng này. Bạn liên hệ cửa hàng nhé.",
+      "method": "Cách nhận hàng",
+      "methods": {
+        "delivery": "Giao tận nơi",
+        "pickup": "Nhận tại cửa hàng"
+      },
+      "methodHint": {
+        "delivery": "Nhân viên giao qua GHN, thanh toán khi nhận hàng.",
+        "pickup": "Bạn đến cửa hàng lấy và thanh toán tại quầy."
+      },
+      "address": "Địa chỉ nhận hàng",
+      "changeAddress": "Đổi địa chỉ",
+      "noAddress": "Bạn chưa có địa chỉ nhận hàng. Thêm một địa chỉ để tính phí giao hàng.",
+      "pickAddress": "Chọn địa chỉ nhận hàng",
+      "pickup": "Nhận tại cửa hàng",
+      "pickupName": "Người nhận",
+      "items": "Sản phẩm ({n})",
+      "editCart": "Sửa giỏ hàng",
+      "noShipping": "Không mất phí",
+      "quoting": "Đang tính phí...",
+      "freeShip": "Miễn phí",
+      "estimated": "Phí dự kiến, cửa hàng sẽ xác nhận lại",
+      "leadtime": "Dự kiến giao",
+      "payment": {
+        "delivery": "Thanh toán khi nhận hàng (COD)",
+        "pickup": "Thanh toán tại cửa hàng"
+      },
+      "paymentHint": {
+        "delivery": "Bạn trả tiền mặt cho nhân viên giao hàng.",
+        "pickup": "Bạn trả khi đến lấy hàng."
+      },
+      "note": "Ghi chú",
+      "notePlaceholder": "Ví dụ: giao giờ hành chính",
+      "place": "Đặt hàng",
+      "errors": {
+        "generic": "Không đặt được hàng, bạn thử lại sau nhé.",
+        "client_ref_required": "Không đặt được hàng, bạn tải lại trang rồi thử lại nhé.",
+        "invalid_delivery": "Bạn chọn cách nhận hàng nhé.",
+        "delivery_disabled": "Cửa hàng đang tạm ngừng giao hàng.",
+        "pickup_disabled": "Cửa hàng đang tạm ngừng nhận đơn lấy tại quầy.",
+        "address_not_found": "Bạn chọn địa chỉ nhận hàng nhé.",
+        "receiver_required": "Bạn nhập tên người nhận nhé.",
+        "invalid_phone": "Số điện thoại chưa đúng.",
+        "cart_empty": "Giỏ hàng đang trống.",
+        "cart_too_big": "Mỗi đơn tối đa 30 dòng sản phẩm.",
+        "invalid_qty": "Số lượng chưa đúng, bạn kiểm tra lại giỏ hàng nhé.",
+        "product_unavailable": "Có sản phẩm đã ngừng bán, bạn kiểm tra lại giỏ hàng nhé.",
+        "in_store_only": "{names} chỉ bán tại cửa hàng, bạn chọn nhận tại cửa hàng nhé.",
+        "out_of_stock": "Không đủ hàng: {names}. Bạn giảm số lượng nhé.",
+        "too_heavy": "Đơn quá nặng để giao, bạn chọn nhận tại cửa hàng hoặc tách đơn nhé.",
+        "cod_limit": "Đơn giao tận nơi tối đa {max}, bạn tách đơn hoặc nhận tại cửa hàng nhé."
+      }
     },
     "address": {
       "title": "Sổ địa chỉ",
@@ -1327,6 +1380,41 @@
         "address_limit": "Mỗi tài khoản lưu tối đa 10 địa chỉ.",
         "address_not_found": "Không tìm thấy địa chỉ này."
       }
+    },
+    "order": {
+      "title": "Đơn hàng {code}",
+      "notFound": "Không tìm thấy đơn hàng này.",
+      "backHome": "Về trang chủ",
+      "loadFailed": "Không tải được đơn hàng.",
+      "placedTitle": "Đặt hàng thành công!",
+      "placedHint": {
+        "delivery": "Cửa hàng sẽ xác nhận đơn và phí giao hàng với bạn sớm.",
+        "pickup": "Cửa hàng sẽ chuẩn bị hàng, bạn đến lấy khi đơn sẵn sàng."
+      },
+      "status": {
+        "pending": "Chờ xác nhận",
+        "confirmed": "Đã xác nhận",
+        "packed": "Đã đóng gói",
+        "shipping": "Đang giao",
+        "completed": "Hoàn tất",
+        "cancelled": "Đã hủy",
+        "returned": "Hoàn hàng"
+      },
+      "receiver": "Giao đến",
+      "pickupBy": "Người nhận hàng",
+      "tracking": "Mã vận đơn {carrier}:",
+      "feePending": "Phí dự kiến, cửa hàng sẽ xác nhận",
+      "feeWentUp": "Phí giao hàng thực tế cao hơn dự kiến. Cửa hàng sẽ liên hệ nếu cần.",
+      "payment": {
+        "paid": "Đã thanh toán",
+        "unpaid": "Chưa thanh toán"
+      },
+      "cancel": "Hủy đơn hàng",
+      "cancelTitle": "Hủy đơn hàng này?",
+      "cancelHint": "Chỉ hủy được khi cửa hàng chưa đóng gói đơn.",
+      "cancelOk": "Hủy đơn",
+      "cancelKeep": "Giữ đơn",
+      "cancelReason": "Lý do (không bắt buộc)"
     }
   },
   "spa": {

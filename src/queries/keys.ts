@@ -191,6 +191,10 @@ export const shopKeys = {
   publicSettings: () => [...shopKeys.all, "public-settings"] as const,
   addresses: () => [...shopKeys.all, "addresses"] as const,
   cart: (lineKeys: string[]) => [...shopKeys.all, "cart", lineKeys] as const,
+  orders: () => [...shopKeys.all, "orders"] as const,
+  orderList: (status: string | null, page: number, pageSize: number) =>
+    [...shopKeys.orders(), "list", status, page, pageSize] as const,
+  order: (code: string) => [...shopKeys.orders(), "detail", code] as const,
 };
 
 export const ghnLocationKeys = {
