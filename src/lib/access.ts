@@ -56,6 +56,8 @@ export const ADMIN_ROUTE_PERMISSIONS: Record<string, string> = {
   invoices: "pos",
   cashShifts: "pos",
   adminProducts: "products",
+  productCategories: "products",
+  productBrands: "products",
   inventoryStock: "inventory",
   stockDocuments: "inventory",
   suppliers: "inventory",

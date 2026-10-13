@@ -13,11 +13,12 @@ export const useCatalogItems = (
   kind: Ref<LineType>,
   search: Ref<string>,
   debouncedSearch: Ref<string>,
-  branchId: () => string | undefined
+  branchId: () => string | undefined,
+  categoryIds: Ref<readonly string[]>
 ) => {
   const { t } = useI18n();
 
-  const productsQuery = useSellableProducts(debouncedSearch);
+  const productsQuery = useSellableProducts(debouncedSearch, categoryIds);
   const servicesQuery = useAllPetServices();
   const combosQuery = useSellableCombos();
 

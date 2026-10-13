@@ -19,6 +19,13 @@
       </div>
     </td>
     <td class="px-4 py-3">
+      <template v-if="group.categoryName">
+        <span v-if="group.categoryParentName" class="text-muted-foreground">{{ group.categoryParentName }} › </span>{{ group.categoryName }}
+      </template>
+      <span v-else class="text-muted-foreground">—</span>
+    </td>
+    <td class="px-4 py-3">{{ group.brandName ?? "—" }}</td>
+    <td class="px-4 py-3">
       <template v-if="group.attributes.length">
         <p class="font-medium">{{ $t("products.variantsCount", { n: group.variants.length }) }}</p>
         <p class="text-xs text-muted-foreground">

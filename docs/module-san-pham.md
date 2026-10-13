@@ -2,7 +2,7 @@
 
 Kế hoạch ngày 13/10/2026 cho phần còn lại của module sản phẩm (M6 trong kế hoạch BA/kiến trúc v0.3): danh mục và thương hiệu, ảnh dùng chung với shop, giá theo cơ sở, quy đổi đơn vị, nhập/xuất Excel. Đi sau biến thể sản phẩm (PR #46, [bien-the-san-pham.md](bien-the-san-pham.md)), kho theo lô (PR #44), POS (PR #43, #54), lịch spa (PR #55, #56) và báo cáo (PR #60 đến #63), đều đã merge.
 
-**Tiến độ:** mới là kế hoạch, chưa code. Kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10.
+**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Bước 1 (danh mục và thương hiệu) đã code; các bước 2 đến 5 chưa làm.
 
 Dự án là pet project cá nhân, nên ưu tiên đơn giản và rẻ: thêm bảng nhỏ, logic giá và tồn nằm trong Postgres RPC, không thêm dịch vụ ngoài, chỉ thêm một thư viện đọc/ghi Excel nhỏ và tải lười (lazy).
 

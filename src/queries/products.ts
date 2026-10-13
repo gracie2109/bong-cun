@@ -59,11 +59,11 @@ export const useProductAttributes = () =>
     queryFn: () => listProductAttributes(supabaseClient()),
   });
 
-/** Active products matching the typed name, SKU or barcode (all of them while empty). */
-export const useSellableProducts = (text: MaybeRef<string>) =>
+/** Active products matching the typed name, SKU or barcode (all of them while empty), optionally of some categories only. */
+export const useSellableProducts = (text: MaybeRef<string>, categoryIds: MaybeRef<readonly string[]> = []) =>
   useQuery({
-    queryKey: computed(() => productKeys.sellable(unref(text).trim())),
-    queryFn: () => searchSellableProducts(supabaseClient(), unref(text)),
+    queryKey: computed(() => productKeys.sellable(unref(text).trim(), unref(categoryIds))),
+    queryFn: () => searchSellableProducts(supabaseClient(), unref(text), undefined, unref(categoryIds)),
     placeholderData: keepPreviousData,
   });
 

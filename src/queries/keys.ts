@@ -5,6 +5,7 @@ import type { PageParams } from "@/repositories/shared";
 import type { PetServiceFilter } from "@/repositories/petServices";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
+import type { CatalogFilter } from "@/repositories/productCategories";
 import type { ProductFilter } from "@/repositories/products";
 import type {
   AdjustmentFilter,
@@ -101,8 +102,21 @@ export const productKeys = {
   group: (id: string) => [...productKeys.all, "group", id] as const,
   sellableGroup: (id: string) => [...productKeys.all, "sellable-group", id] as const,
   attributes: () => [...productKeys.all, "attributes"] as const,
-  sellable: (text: string) => [...productKeys.all, "sellable", text] as const,
+  sellable: (text: string, categoryIds: readonly string[] = []) =>
+    [...productKeys.all, "sellable", text, [...categoryIds].sort()] as const,
   sellablePaged: (text: string) => [...productKeys.all, "sellable-paged", text] as const,
+};
+
+export const productCategoryKeys = {
+  all: ["product-categories"] as const,
+  list: (page: PageParams, filter: CatalogFilter) => [...productCategoryKeys.all, "list", page, filter] as const,
+  options: (search: string, rootsOnly: boolean) => [...productCategoryKeys.all, "options", search, rootsOnly] as const,
+};
+
+export const productBrandKeys = {
+  all: ["product-brands"] as const,
+  list: (page: PageParams, filter: CatalogFilter) => [...productBrandKeys.all, "list", page, filter] as const,
+  options: (search: string) => [...productBrandKeys.all, "options", search] as const,
 };
 
 export const posKeys = {

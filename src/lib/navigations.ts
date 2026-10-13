@@ -15,6 +15,8 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
       { title: "adminNav.invoices", icon: "lucide:receipt", name: "invoices" },
       { title: "adminNav.cashShifts", icon: "lucide:wallet", name: "cashShifts" },
       { title: "adminNav.products", icon: "lucide:package", name: "adminProducts" },
+      { title: "adminNav.productCategories", icon: "lucide:folder-tree", name: "productCategories" },
+      { title: "adminNav.productBrands", icon: "lucide:badge-check", name: "productBrands" },
     ],
   },
   {

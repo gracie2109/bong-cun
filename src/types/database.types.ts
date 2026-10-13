@@ -1011,6 +1011,8 @@ export type Database = {
       }
       product_groups: {
         Row: {
+          brand_id: string | null
+          category_id: string | null
           created_at: string
           created_by: string | null
           description: string | null
@@ -1021,6 +1023,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          brand_id?: string | null
+          category_id?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -1031,6 +1035,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          brand_id?: string | null
+          category_id?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -1040,7 +1046,96 @@ export type Database = {
           name?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "product_groups_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "product_brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_groups_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_brands: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
         Relationships: []
+      }
+      product_categories: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          parent_id: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          parent_id?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_group_attributes: {
         Row: { attribute_id: string; group_id: string; sort_order: number }
@@ -1854,9 +1949,35 @@ export type Database = {
         Returns: { product_id: string; qty: number }[]
       }
       list_product_groups: {
-        Args: { p_include_archived?: boolean; p_limit?: number; p_offset?: number; p_search?: string }
+        Args: {
+          p_brand?: string
+          p_category?: string
+          p_include_archived?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+        }
         Returns: Json
       }
+      list_product_categories: {
+        Args: {
+          p_include_inactive?: boolean
+          p_limit?: number
+          p_offset?: number
+          p_roots_only?: boolean
+          p_search?: string
+        }
+        Returns: Json
+      }
+      list_product_brands: {
+        Args: { p_include_inactive?: boolean; p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: Json
+      }
+      save_product_category: { Args: { p: Json }; Returns: string }
+      save_product_brand: { Args: { p: Json }; Returns: string }
+      move_product_category: { Args: { p_direction: string; p_id: string }; Returns: undefined }
+      delete_product_category: { Args: { p_id: string }; Returns: undefined }
+      delete_product_brand: { Args: { p_id: string }; Returns: undefined }
       product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
       save_product_group: { Args: { p: Json }; Returns: string }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }

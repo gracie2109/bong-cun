@@ -6,45 +6,38 @@
         <SheetDescription>{{ $t("products.subtitle") }}</SheetDescription>
       </SheetHeader>
 
-      <div v-if="groupId && groupQuery.isPending.value" class="space-y-3 p-6">
+      <div v-if="loading" class="space-y-3 p-6">
         <Skeleton v-for="i in 4" :key="i" class="h-10 w-full" />
       </div>
 
-      <form v-else id="product-group-form" class="flex-1 space-y-6 overflow-y-auto px-6 py-5" @submit.prevent="submit">
-        <!-- General -->
-        <section class="grid gap-4 md:grid-cols-[1fr_auto]">
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <Label for="group-name">{{ $t("products.form.name") }}</Label>
-              <Input id="group-name" v-model="form.name" />
-              <p v-if="submitted && !form.name.trim()" class="text-sm text-red-600">{{ $t("petCare.common.required") }}</p>
-            </div>
-            <div class="space-y-2">
-              <Label for="group-desc">{{ $t("products.form.desc") }}</Label>
-              <Textarea id="group-desc" v-model="form.desc" rows="2" class="resize-none" />
-            </div>
+      <form v-else id="product-group-form" class="flex min-h-0 flex-1 flex-col" @submit.prevent="submit">
+        <Tabs v-model="tab" class="flex min-h-0 flex-1 flex-col">
+          <TabsList class="shrink-0 justify-start border-b px-6">
+            <TabsTrigger v-for="item in TABS" :key="item" :value="item">
+              {{ $t(`products.tabs.${item}`) }}
+              <span v-if="tabErrors[item]" class="ml-1.5 size-2 rounded-full bg-red-500" />
+            </TabsTrigger>
+          </TabsList>
+          <div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+            <TabsContent value="general" class="mt-0">
+              <GeneralTab :form="form" :submitted="submitted" />
+            </TabsContent>
+            <TabsContent value="variants" class="mt-0">
+              <VariantsTab
+                v-model:attributes="attributes"
+                v-model:rows="rows"
+                v-model:bulk="bulk"
+                :known-attributes="knownAttributes"
+                :submitted="submitted"
+              />
+            </TabsContent>
           </div>
-          <div class="space-y-2">
-            <Label>{{ $t("products.form.image") }}</Label>
-            <UploadFields
-              folder-name="products"
-              :limit="1"
-              :show-control="false"
-              keep-files
-              :model-value="toImages(form.imageUrl)"
-              @set-images="(list: string[]) => (form.imageUrl = list[0] ?? '')"
-            />
-          </div>
-        </section>
-
-        <ProductAttributesEditor v-model:attributes="attributes" :known-attributes="knownAttributes" :submitted="submitted" />
-
-        <ProductVariantsTable v-model:rows="rows" v-model:bulk="bulk" :submitted="submitted" />
+        </Tabs>
       </form>
 
       <SheetFooter class="gap-2 border-t px-6 py-4">
         <Button type="button" variant="outline" @click="emit('update:open', false)">{{ $t("petCare.common.cancel") }}</Button>
-        <Button type="submit" form="product-group-form" :disabled="mutation.isPending.value || (Boolean(groupId) && groupQuery.isPending.value)">
+        <Button type="submit" form="product-group-form" :disabled="saving || loading">
           {{ $t("petCare.common.save") }}
         </Button>
       </SheetFooter>
@@ -53,11 +46,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { toRef } from "vue";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -67,81 +57,16 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
-import { useProductAttributes, useProductGroup, useSaveProductGroup } from "@/queries/products";
-import type { ProductGroup } from "@/repositories/products";
-import UploadFields from "@/components/common/UploadFields.vue";
-import { parseAmount } from "@/views/admin/pos/format";
-import ProductAttributesEditor from "./ProductAttributesEditor.vue";
-import { attributeError, commitDraft } from "./productVariantForm";
-import ProductVariantsTable from "./ProductVariantsTable.vue";
-import { useProductVariants } from "./useProductVariants";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import GeneralTab from "./tabs/GeneralTab.vue";
+import VariantsTab from "./tabs/VariantsTab.vue";
+import { useProductGroupForm, type ProductTab } from "./useProductGroupForm";
 
-/** The single-image list the upload box shows. */
-const toImages = (url: string) => (url ? [url] : []);
+const TABS: ProductTab[] = ["general", "variants"];
 
 const props = defineProps<{ open: boolean; groupId: string | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
-const { t } = useI18n();
 
-const form = reactive({ name: "", desc: "", imageUrl: "", isActive: true });
-const { attributes, rows, bulk, fill: fillVariants } = useProductVariants();
-const submitted = ref(false);
-
-const groupQuery = useProductGroup(computed(() => (props.open && props.groupId) || undefined));
-const attributesQuery = useProductAttributes();
-const knownAttributes = computed(() => attributesQuery.data.value ?? []);
-const mutation = useSaveProductGroup();
-
-const fill = (group: ProductGroup | null) => {
-  form.name = group?.name ?? "";
-  form.desc = group?.desc ?? "";
-  form.imageUrl = group?.imageUrl ?? "";
-  form.isActive = group?.isActive ?? true;
-  submitted.value = false;
-  fillVariants(group);
-};
-
-watch(
-  () => [props.open, props.groupId, groupQuery.data.value] as const,
-  ([open, groupId, group]) => {
-    if (!open) return;
-    if (!groupId) fill(null);
-    else if (group && group.id === groupId) fill(group);
-  },
-  { immediate: true }
-);
-
-const submit = async () => {
-  for (const attribute of attributes.value) commitDraft(attribute);
-  submitted.value = true;
-  if (!form.name.trim()) return;
-  if (attributes.value.some((attribute) => attributeError(attributes.value, attribute, t))) return;
-  if (rows.value.some((row) => !row.unit.trim())) return;
-
-  try {
-    await mutation.mutateAsync({
-      id: props.groupId ?? undefined,
-      name: form.name,
-      desc: form.desc,
-      imageUrl: form.imageUrl,
-      isActive: form.isActive,
-      attributes: attributes.value.map((attribute) => ({ name: attribute.name.trim(), values: attribute.values })),
-      variants: rows.value.map((row) => ({
-        id: row.id,
-        options: row.options,
-        sku: row.sku,
-        barcode: row.barcode,
-        unit: row.unit,
-        price: parseAmount(row.price),
-        trackStock: row.trackStock,
-        isActive: row.isActive,
-        imageUrl: row.imageUrl,
-      })),
-    });
-    emit("update:open", false);
-  } catch {
-    // the mutation already showed the failure toast
-  }
-};
+const { form, attributes, rows, bulk, knownAttributes, submitted, tab, tabErrors, loading, saving, submit } =
+  useProductGroupForm(toRef(props, "open"), toRef(props, "groupId"), () => emit("update:open", false));
 </script>

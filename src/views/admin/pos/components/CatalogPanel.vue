@@ -15,6 +15,7 @@
           {{ $t(tab.label) }}
         </button>
       </div>
+      <CategoryChips v-if="kind === 'product'" v-model="selectedCategory" :chips="chips" />
       <div class="relative">
         <ScanLine v-if="kind === 'product'" class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Search v-else class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -62,7 +63,9 @@ import type { ProductVariant } from "@/repositories/products";
 import { searchSellableProducts } from "@/repositories/products";
 import { CATALOG_TABS as TABS, toProductItem, type CatalogItem } from "../catalog";
 import { useCatalogItems } from "../useCatalogItems";
+import { useCategoryChips } from "../useCategoryChips";
 import CatalogTile from "./CatalogTile.vue";
+import CategoryChips from "./CategoryChips.vue";
 import VariantDialog from "./VariantDialog.vue";
 
 const props = defineProps<{ branchId: string | undefined }>();
@@ -72,7 +75,8 @@ const kind = ref<LineType>("product");
 const search = ref("");
 const debounced = refDebounced(search, SEARCH_DEBOUNCE_MS);
 
-const { items, loading, stockOf } = useCatalogItems(kind, search, debounced, () => props.branchId);
+const { chips, selected: selectedCategory, categoryIds } = useCategoryChips();
+const { items, loading, stockOf } = useCatalogItems(kind, search, debounced, () => props.branchId, categoryIds);
 
 const fromVariant = (variant: ProductVariant): CatalogItem => toProductItem(variant);
 
