@@ -84,7 +84,9 @@
     "reportsItems": "Products & services report",
     "reportsStaff": "Staff report",
     "reportsAdjustments": "Returns & cancellations report",
-    "reportsShifts": "Cash shift reconciliation"
+    "reportsShifts": "Cash shift reconciliation",
+    "productCategories": "Product categories",
+    "productBrands": "Product brands"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -728,7 +730,9 @@
     "reportsItems": "Products & services",
     "reportsStaff": "Staff revenue",
     "reportsAdjustments": "Returns & cancellations",
-    "reportsShifts": "Shift reconciliation"
+    "reportsShifts": "Shift reconciliation",
+    "productCategories": "Product categories",
+    "productBrands": "Brands"
   },
   "pos": {
     "title": "Point of sale",
@@ -774,7 +778,8 @@
       "empty": "Nothing matches.",
       "noProducts": "No products yet. Add them under Products.",
       "outOfStock": "Out of stock",
-      "inStock": "{n} left"
+      "inStock": "{n} left",
+      "allCategories": "All"
     },
     "customer": {
       "title": "Customer",
@@ -928,7 +933,9 @@
     "empty": "No products yet.",
     "col": {
       "product": "Product",
-      "variants": "Variants"
+      "variants": "Variants",
+      "category": "Category",
+      "brand": "Brand"
     },
     "form": {
       "name": "Product name",
@@ -939,7 +946,11 @@
       "desc": "Description",
       "trackStock": "Track stock by lot",
       "trackStockHint": "Sales take the earliest expiry first (FEFO) and stop when stock runs out. Turn off for items sold without stock, such as carry bags.",
-      "image": "Image"
+      "image": "Image",
+      "category": "Category",
+      "brand": "Brand",
+      "noCategory": "No category",
+      "noBrand": "No brand"
     },
     "noStock": "No stock tracking",
     "variantsCount": "{n} variants",
@@ -976,7 +987,20 @@
       "duplicate_variant": "Two variants have the same values.",
       "duplicate_attribute": "An attribute is listed twice.",
       "variant_options": "Each variant needs a value for every attribute.",
-      "no_variants": "A product needs at least one variant."
+      "no_variants": "A product needs at least one variant.",
+      "invalid_category": "This category is switched off. Choose another one.",
+      "invalid_brand": "This brand is switched off. Choose another one."
+    },
+    "tabs": {
+      "general": "General",
+      "variants": "Variants"
+    },
+    "filter": {
+      "pickCategory": "Choose a category",
+      "pickBrand": "Choose a brand",
+      "allCategories": "All categories",
+      "allBrands": "All brands",
+      "selected": "Selected"
     }
   },
   "inventory": {
@@ -1462,6 +1486,48 @@
     "today": {
       "title": "Today",
       "open": "Open report"
+    }
+  },
+  "productCatalog": {
+    "name": "Name",
+    "slug": "URL name",
+    "image": "Image",
+    "productCount": "Products",
+    "order": "Order",
+    "inactive": "Switched off",
+    "activate": "Switch on",
+    "deactivate": "Switch off",
+    "showInactive": "Show switched-off items",
+    "moveUp": "Up",
+    "moveDown": "Down",
+    "deleteDesc": "This cannot be undone.",
+    "errors": {
+      "duplicate_name": "\"{value}\" already exists.",
+      "name_required": "A name is required.",
+      "too_deep": "Categories have two levels at most.",
+      "invalid_parent": "The parent category is not valid.",
+      "in_use": "Products still use this item, so it cannot be deleted. Switch it off instead.",
+      "has_children": "The category still has sub-categories, so it cannot be deleted."
+    },
+    "categories": {
+      "title": "Product categories",
+      "add": "Add category",
+      "edit": "Edit category",
+      "parent": "Parent category",
+      "noParent": "None (top level)",
+      "hasChildrenHint": "This category has sub-categories, so it cannot be placed under another one.",
+      "searchPlaceholder": "Category name...",
+      "empty": "No categories yet.",
+      "deleteTitle": "Delete category \"{name}\"?"
+    },
+    "brands": {
+      "title": "Product brands",
+      "add": "Add brand",
+      "edit": "Edit brand",
+      "logo": "Logo",
+      "searchPlaceholder": "Brand name...",
+      "empty": "No brands yet.",
+      "deleteTitle": "Delete brand \"{name}\"?"
     }
   }
 }

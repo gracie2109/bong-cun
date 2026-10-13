@@ -84,7 +84,9 @@
     "reportsItems": "Báo cáo sản phẩm & dịch vụ",
     "reportsStaff": "Báo cáo nhân viên",
     "reportsAdjustments": "Báo cáo hoàn trả & hủy",
-    "reportsShifts": "Đối chiếu ca thu ngân"
+    "reportsShifts": "Đối chiếu ca thu ngân",
+    "productCategories": "Danh mục sản phẩm",
+    "productBrands": "Thương hiệu sản phẩm"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -728,7 +730,9 @@
     "reportsItems": "Sản phẩm & dịch vụ",
     "reportsStaff": "Doanh thu nhân viên",
     "reportsAdjustments": "Hoàn trả & hủy",
-    "reportsShifts": "Đối chiếu ca"
+    "reportsShifts": "Đối chiếu ca",
+    "productCategories": "Danh mục sản phẩm",
+    "productBrands": "Thương hiệu"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -774,7 +778,8 @@
       "empty": "Không có mục nào phù hợp.",
       "noProducts": "Chưa có sản phẩm nào. Thêm sản phẩm ở mục Sản phẩm.",
       "outOfStock": "Hết hàng",
-      "inStock": "Còn {n}"
+      "inStock": "Còn {n}",
+      "allCategories": "Tất cả"
     },
     "customer": {
       "title": "Khách hàng",
@@ -928,7 +933,9 @@
     "empty": "Chưa có sản phẩm nào.",
     "col": {
       "product": "Sản phẩm",
-      "variants": "Biến thể"
+      "variants": "Biến thể",
+      "category": "Danh mục",
+      "brand": "Thương hiệu"
     },
     "form": {
       "name": "Tên sản phẩm",
@@ -939,7 +946,11 @@
       "desc": "Mô tả",
       "trackStock": "Quản lý tồn kho theo lô",
       "trackStockHint": "Bán sẽ trừ kho theo hạn dùng gần nhất trước (FEFO) và không bán khi hết hàng. Tắt cho hàng không cần tồn kho như túi đựng.",
-      "image": "Ảnh"
+      "image": "Ảnh",
+      "category": "Danh mục",
+      "brand": "Thương hiệu",
+      "noCategory": "Không có danh mục",
+      "noBrand": "Không có thương hiệu"
     },
     "noStock": "Không quản lý tồn",
     "variantsCount": "{n} biến thể",
@@ -976,7 +987,20 @@
       "duplicate_variant": "Có hai biến thể trùng giá trị.",
       "duplicate_attribute": "Một thuộc tính bị khai báo hai lần.",
       "variant_options": "Mỗi biến thể cần đủ giá trị cho mọi thuộc tính.",
-      "no_variants": "Sản phẩm cần ít nhất một biến thể."
+      "no_variants": "Sản phẩm cần ít nhất một biến thể.",
+      "invalid_category": "Danh mục này đã ngừng dùng, hãy chọn danh mục khác.",
+      "invalid_brand": "Thương hiệu này đã ngừng dùng, hãy chọn thương hiệu khác."
+    },
+    "tabs": {
+      "general": "Thông tin",
+      "variants": "Biến thể"
+    },
+    "filter": {
+      "pickCategory": "Chọn danh mục",
+      "pickBrand": "Chọn thương hiệu",
+      "allCategories": "Tất cả danh mục",
+      "allBrands": "Tất cả thương hiệu",
+      "selected": "Đã chọn"
     }
   },
   "inventory": {
@@ -1462,6 +1486,48 @@
     "today": {
       "title": "Hôm nay",
       "open": "Xem báo cáo"
+    }
+  },
+  "productCatalog": {
+    "name": "Tên",
+    "slug": "Đường dẫn",
+    "image": "Ảnh",
+    "productCount": "Số sản phẩm",
+    "order": "Thứ tự",
+    "inactive": "Ngừng dùng",
+    "activate": "Dùng lại",
+    "deactivate": "Ngừng dùng",
+    "showInactive": "Hiện cả mục đã ngừng dùng",
+    "moveUp": "Lên",
+    "moveDown": "Xuống",
+    "deleteDesc": "Xóa rồi không khôi phục được.",
+    "errors": {
+      "duplicate_name": "Đã có \"{value}\".",
+      "name_required": "Cần nhập tên.",
+      "too_deep": "Danh mục chỉ có tối đa 2 cấp.",
+      "invalid_parent": "Danh mục cha không hợp lệ.",
+      "in_use": "Đang có sản phẩm dùng mục này nên không xóa được. Hãy chọn \"Ngừng dùng\".",
+      "has_children": "Danh mục còn danh mục con nên không xóa được."
+    },
+    "categories": {
+      "title": "Danh mục sản phẩm",
+      "add": "Thêm danh mục",
+      "edit": "Sửa danh mục",
+      "parent": "Danh mục cha",
+      "noParent": "Không có (danh mục gốc)",
+      "hasChildrenHint": "Danh mục đã có danh mục con nên không thể đặt dưới danh mục khác.",
+      "searchPlaceholder": "Tên danh mục...",
+      "empty": "Chưa có danh mục nào.",
+      "deleteTitle": "Xóa danh mục \"{name}\"?"
+    },
+    "brands": {
+      "title": "Thương hiệu sản phẩm",
+      "add": "Thêm thương hiệu",
+      "edit": "Sửa thương hiệu",
+      "logo": "Logo",
+      "searchPlaceholder": "Tên thương hiệu...",
+      "empty": "Chưa có thương hiệu nào.",
+      "deleteTitle": "Xóa thương hiệu \"{name}\"?"
     }
   }
 }
