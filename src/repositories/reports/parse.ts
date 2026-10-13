@@ -1,6 +1,6 @@
 // Row mappers of the report RPCs: snake_case JSON from the database to camelCase numbers.
 import type { Json } from "@/types/database.types";
-import type { OverviewComparison, ReportOverview, SeriesPoint, StaffRevenue, TopItem } from "./types";
+import type { Adjustment, OverviewComparison, ReportOverview, SeriesPoint, ShiftRecon, StaffRevenue, TopItem } from "./types";
 
 export const num = (value: unknown): number => Number(value ?? 0);
 
@@ -139,4 +139,76 @@ export const toStaffRevenue = (row: StaffRow): StaffRevenue => ({
   ticketCount: num(row.ticket_count),
   petCount: num(row.pet_count),
   share: num(row.share),
+});
+
+type AdjustmentRow = {
+  kind: string;
+  id: string;
+  branch_id: string;
+  code: string;
+  invoice_id: string;
+  invoice_code: string;
+  at: string;
+  amount: number;
+  method: string | null;
+  reason: string | null;
+  by_name: string | null;
+  item_summary: string | null;
+};
+
+export const toAdjustment = (row: AdjustmentRow): Adjustment => ({
+  kind: row.kind === "cancel" ? "cancel" : "return",
+  id: row.id,
+  branchId: row.branch_id,
+  code: row.code,
+  invoiceId: row.invoice_id,
+  invoiceCode: row.invoice_code,
+  at: row.at,
+  amount: num(row.amount),
+  method: row.method,
+  reason: row.reason,
+  byName: row.by_name,
+  itemSummary: row.item_summary,
+});
+
+type ShiftRow = {
+  id: string;
+  code: string;
+  branch_code: string;
+  status: string;
+  opened_by_name: string | null;
+  opened_at: string;
+  closed_by_name: string | null;
+  closed_at: string | null;
+  opening_cash: number;
+  invoice_count: number;
+  sales_total: number;
+  cash_in: number;
+  transfer_in: number;
+  card_in: number;
+  refund_cash: number;
+  expected_cash: number | null;
+  counted_cash: number | null;
+  difference: number | null;
+};
+
+export const toShiftRecon = (row: ShiftRow): ShiftRecon => ({
+  id: row.id,
+  code: row.code,
+  branchCode: row.branch_code,
+  status: row.status === "closed" ? "closed" : "open",
+  openedByName: row.opened_by_name,
+  openedAt: row.opened_at,
+  closedByName: row.closed_by_name,
+  closedAt: row.closed_at,
+  openingCash: num(row.opening_cash),
+  invoiceCount: num(row.invoice_count),
+  salesTotal: num(row.sales_total),
+  cashIn: num(row.cash_in),
+  transferIn: num(row.transfer_in),
+  cardIn: num(row.card_in),
+  refundCash: num(row.refund_cash),
+  expectedCash: nullableNum(row.expected_cash),
+  countedCash: nullableNum(row.counted_cash),
+  difference: nullableNum(row.difference),
 });

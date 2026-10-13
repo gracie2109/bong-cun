@@ -1946,6 +1946,64 @@ export type Database = {
           total_count: number
         }[]
       }
+      report_adjustments: {
+        Args: {
+          p_branch: string | null
+          p_from: string
+          p_kind?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_to: string
+        }
+        Returns: {
+          amount: number
+          at: string
+          branch_id: string
+          by_name: string | null
+          code: string
+          id: string
+          invoice_code: string
+          invoice_id: string
+          item_summary: string | null
+          kind: string
+          method: string | null
+          reason: string | null
+          total_count: number
+        }[]
+      }
+      report_shifts: {
+        Args: {
+          p_branch: string | null
+          p_from: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_status?: string
+          p_to: string
+        }
+        Returns: {
+          branch_code: string
+          card_in: number
+          cash_in: number
+          closed_at: string | null
+          closed_by_name: string | null
+          code: string
+          counted_cash: number | null
+          difference: number | null
+          expected_cash: number | null
+          id: string
+          invoice_count: number
+          opened_at: string
+          opened_by_name: string | null
+          opening_cash: number
+          refund_cash: number
+          sales_total: number
+          status: string
+          total_count: number
+          transfer_in: number
+        }[]
+      }
       report_revenue_series: {
         Args: { p_branch: string | null; p_bucket?: string; p_from: string; p_to: string }
         Returns: {

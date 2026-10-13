@@ -107,3 +107,50 @@ export type StaffRevenue = {
   /** Percent of all spa revenue (spa list only). */
   share: number;
 };
+
+export type AdjustmentKind = "all" | "return" | "cancel";
+
+export type AdjustmentFilter = ReportFilter & { kind: AdjustmentKind; search?: string };
+
+/** A goods return ("return") or a cancelled invoice ("cancel"). */
+export type Adjustment = {
+  kind: "return" | "cancel";
+  id: string;
+  branchId: string;
+  code: string;
+  invoiceId: string;
+  invoiceCode: string;
+  at: string;
+  amount: number;
+  /** How the refund was paid; null for a cancelled invoice. */
+  method: string | null;
+  reason: string | null;
+  byName: string | null;
+  itemSummary: string | null;
+};
+
+export type ShiftStatusFilter = "all" | "open" | "closed" | "mismatch";
+
+export type ShiftReconFilter = ReportFilter & { status: ShiftStatusFilter; search?: string };
+
+export type ShiftRecon = {
+  id: string;
+  code: string;
+  branchCode: string;
+  status: "open" | "closed";
+  openedByName: string | null;
+  openedAt: string;
+  closedByName: string | null;
+  closedAt: string | null;
+  openingCash: number;
+  invoiceCount: number;
+  salesTotal: number;
+  cashIn: number;
+  transferIn: number;
+  cardIn: number;
+  refundCash: number;
+  expectedCash: number | null;
+  countedCash: number | null;
+  /** Counted minus expected; null while the shift is open. */
+  difference: number | null;
+};

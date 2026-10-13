@@ -4,11 +4,15 @@ import { supabaseClient } from "@/lib/supabase";
 import {
   getOverview,
   getRevenueSeries,
+  listAdjustments,
   listReportBranchIds,
+  listShiftRecon,
   listStaffRevenue,
   listTopItems,
+  type AdjustmentFilter,
   type Bucket,
   type ReportFilter,
+  type ShiftReconFilter,
   type StaffFilter,
   type TopItemFilter,
 } from "@/repositories/reports";
@@ -49,6 +53,22 @@ export const useStaffRevenue = (page: MaybeRef<PageParams>, filter: MaybeRef<Sta
   useQuery({
     queryKey: computed(() => reportKeys.staff(toPage(unref(page)), unref(filter) as StaffFilter)),
     queryFn: () => listStaffRevenue(supabaseClient(), toPage(unref(page)), unref(filter) as StaffFilter),
+    enabled: computed(() => !!unref(filter)),
+    placeholderData: keepPreviousData,
+  });
+
+export const useAdjustments = (page: MaybeRef<PageParams>, filter: MaybeRef<AdjustmentFilter | null>) =>
+  useQuery({
+    queryKey: computed(() => reportKeys.adjustments(toPage(unref(page)), unref(filter) as AdjustmentFilter)),
+    queryFn: () => listAdjustments(supabaseClient(), toPage(unref(page)), unref(filter) as AdjustmentFilter),
+    enabled: computed(() => !!unref(filter)),
+    placeholderData: keepPreviousData,
+  });
+
+export const useShiftRecon = (page: MaybeRef<PageParams>, filter: MaybeRef<ShiftReconFilter | null>) =>
+  useQuery({
+    queryKey: computed(() => reportKeys.shifts(toPage(unref(page)), unref(filter) as ShiftReconFilter)),
+    queryFn: () => listShiftRecon(supabaseClient(), toPage(unref(page)), unref(filter) as ShiftReconFilter),
     enabled: computed(() => !!unref(filter)),
     placeholderData: keepPreviousData,
   });
