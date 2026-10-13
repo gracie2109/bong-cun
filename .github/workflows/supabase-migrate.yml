@@ -1,11 +1,11 @@
 name: Supabase migrate
 
-# Applies new files in supabase/migrations to the production database when they land on main.
+# Applies new files in supabase/migrations to the production database when it is run.
 # Needs the repo secrets SUPABASE_ACCESS_TOKEN, SUPABASE_DB_PASSWORD and SUPABASE_PROJECT_REF.
+# Manual only until "Supabase mark migrations applied" has run once; then add back
+#   push: { branches: [main], paths: ["supabase/migrations/**"] }
+# so that every merged migration is applied automatically.
 on:
-  push:
-    branches: [main]
-    paths: ["supabase/migrations/**"]
   workflow_dispatch:
 
 concurrency: supabase-migrate
