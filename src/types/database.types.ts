@@ -2190,6 +2190,10 @@ export type Database = {
       shop_public_settings: { Args: never; Returns: Json }
       shop_admin_settings: { Args: never; Returns: Json }
       save_shop_settings: { Args: { p: Json }; Returns: Json }
+      place_shop_order: { Args: { p: Json }; Returns: Json }
+      my_shop_orders: { Args: { p_status?: string | null; p_page?: number; p_page_size?: number }; Returns: Json }
+      my_shop_order: { Args: { p_code: string }; Returns: Json }
+      cancel_my_shop_order: { Args: { p_code: string; p_reason?: string | null }; Returns: Json }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
       branch_prices: {
         Args: { p_branch: string; p_products: string[] }

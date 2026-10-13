@@ -51,6 +51,7 @@ export default defineNuxtConfig({
     "/admin/**": { ssr: false },
     "/cart": { ssr: false },
     "/checkout": { ssr: false },
+    "/orders/**": { ssr: false },
     "/profile": { ssr: false },
     "/login": { ssr: false },
     "/register": { ssr: false },
