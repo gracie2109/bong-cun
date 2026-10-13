@@ -87,7 +87,8 @@
     "reportsShifts": "Cash shift reconciliation",
     "productCategories": "Product categories",
     "productBrands": "Product brands",
-    "productImport": "Product Excel import / export"
+    "productImport": "Product Excel import / export",
+    "shopOrderSettings": "Online shop settings"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -734,7 +735,9 @@
     "reportsShifts": "Shift reconciliation",
     "productCategories": "Product categories",
     "productBrands": "Brands",
-    "productImport": "Excel import / export"
+    "productImport": "Excel import / export",
+    "shopOnline": "Online shop",
+    "shopOrderSettings": "Online shop settings"
   },
   "pos": {
     "title": "Point of sale",
@@ -987,7 +990,13 @@
       "bulkPrice": "Price for all",
       "bulkUnit": "Unit for all",
       "new": "New",
-      "many": "{n} variants, quite a lot. Check the attribute values."
+      "many": "{n} variants, quite a lot. Check the attribute values.",
+      "weight": "Weight (g)",
+      "weightDefault": "Default",
+      "weightRange": "1 to 50,000 g",
+      "shipping": "Shipping",
+      "shippable": "Deliverable",
+      "inStoreOnly": "In-store only"
     },
     "errors": {
       "duplicate_name": "A product named \"{value}\" already exists.",
@@ -1003,7 +1012,9 @@
       "unit_name_required": "Every unit needs a name.",
       "duplicate_unit": "Unit {value} is listed twice.",
       "unit_factor": "Unit {value} must be worth more than one base unit.",
-      "unit_in_use": "Unit {value} is already on invoices or stock documents, so its factor cannot change; switch it off and add a new unit."
+      "unit_in_use": "Unit {value} is already on invoices or stock documents, so its factor cannot change; switch it off and add a new unit.",
+      "invalid_weight": "Weight must be 1 to 50,000 grams.",
+      "invalid_ship_policy": "Invalid shipping policy."
     },
     "tabs": {
       "general": "General",
@@ -1212,7 +1223,51 @@
     "more": "More",
     "pickVariant": "Pick every option to add it to the cart.",
     "addToCart": "Add to cart",
-    "added": "Added {name} to the cart"
+    "added": "Added {name} to the cart",
+    "nav": {
+      "settings": "Online shop settings"
+    },
+    "location": {
+      "province": "Province / City",
+      "district": "District",
+      "ward": "Ward",
+      "pick": "Choose"
+    },
+    "settings": {
+      "title": "Online shop settings",
+      "readOnly": "You can view these settings. Editing needs the \"Online shop: All\" permission.",
+      "methods": "Selling methods",
+      "methodsHint": "The branch that sells online and how customers pay and receive.",
+      "branch": "Online branch",
+      "branchHint": "Stock and invoices of online orders are counted at this branch.",
+      "allowCod": "Cash on delivery (COD)",
+      "allowCodHint": "The customer pays the courier on delivery.",
+      "allowPickup": "In-store pickup",
+      "allowPickupHint": "The customer orders online, collects at the shop and pays at the counter.",
+      "codMax": "COD limit (VND)",
+      "codMaxHint": "Delivery orders above this amount cannot use COD (GHN allows up to 10,000,000).",
+      "shipping": "Shipping",
+      "shippingHint": "Used for the estimated shipping fee at checkout.",
+      "defaultWeight": "Default weight (g)",
+      "flatFee": "Fallback shipping fee (VND)",
+      "flatFeeHint": "Used when GHN cannot quote a fee.",
+      "freeShipFrom": "Free shipping from (VND)",
+      "freeShipHint": "Leave empty for no free shipping.",
+      "fromAddress": "Warehouse address (GHN)",
+      "fromStreet": "House number, street",
+      "fromAddressHint": "GHN collects parcels here; needed for real shipping quotes.",
+      "pickup": "In-store pickup",
+      "pickupHint": "Shown to customers who choose to collect at the shop.",
+      "pickupAddress": "Shop address",
+      "pickupNote": "Note for customers",
+      "pickupNotePlaceholder": "Open 8:00-20:00, bring your order code",
+      "errors": {
+        "branch": "Choose the online branch.",
+        "codMax": "Enter a COD limit above 0.",
+        "defaultWeight": "Enter a default weight above 0.",
+        "fromAddress": "Choose both the district and the ward of the warehouse."
+      }
+    }
   },
   "spa": {
     "title": "Spa schedule",

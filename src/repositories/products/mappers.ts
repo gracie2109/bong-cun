@@ -1,4 +1,5 @@
 import type { Tables } from "@/types/database.types";
+import type { ShipPolicy } from "@/types/shop";
 import type { Product, ProductAttribute, ProductGroup, ProductUnit } from "./types";
 
 export const toProduct = (row: Tables<"products">): Product => ({
@@ -66,6 +67,8 @@ export type GroupJson = {
     is_active: boolean;
     image_url: string | null;
     units?: UnitJson[];
+    weight_g?: number | null;
+    ship_policy?: ShipPolicy;
   }[];
 };
 
@@ -96,5 +99,7 @@ export const toGroup = (row: GroupJson): ProductGroup => ({
     isActive: variant.is_active,
     imageUrl: variant.image_url,
     units: (variant.units ?? []).map(toUnit),
+    weightG: variant.weight_g ?? null,
+    shipPolicy: variant.ship_policy ?? "shippable",
   })),
 });

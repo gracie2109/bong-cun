@@ -82,6 +82,8 @@ export const saveProductGroup = async (client: Client, input: ProductGroupInput)
         track_stock: variant.trackStock,
         is_active: variant.isActive,
         image_url: variant.imageUrl,
+        weight_g: variant.weightG,
+        ship_policy: variant.shipPolicy,
         // Left out (not null) when the caller does not edit units, so the database keeps them.
         units: variant.units?.map((unit) => ({
           id: unit.id ?? null,
@@ -122,6 +124,8 @@ export const PRODUCT_ERROR_HINTS = [
   "duplicate_unit",
   "unit_factor",
   "unit_in_use",
+  "invalid_weight",
+  "invalid_ship_policy",
 ] as const;
 export type ProductErrorHint = (typeof PRODUCT_ERROR_HINTS)[number];
 

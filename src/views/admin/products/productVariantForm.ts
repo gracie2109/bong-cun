@@ -1,3 +1,4 @@
+import type { ShipPolicy } from "@/types/shop";
 import type { UnitRow } from "./units/productUnitForm";
 
 /** An attribute being edited: `draft` is the value still being typed. */
@@ -14,6 +15,9 @@ export type VariantRow = {
   trackStock: boolean;
   isActive: boolean;
   imageUrl: string;
+  /** Grams of one base unit as typed; empty uses the shop default. */
+  weightG: string;
+  shipPolicy: ShipPolicy;
   /** Conversion units (hộp, thùng...) of this variant. */
   units: UnitRow[];
 };

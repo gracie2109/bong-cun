@@ -20,6 +20,10 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     ],
   },
   {
+    title: "adminNav.shopOnline",
+    items: [{ title: "adminNav.shopOrderSettings", icon: "lucide:shopping-bag", name: "shopOrderSettings" }],
+  },
+  {
     title: "adminNav.reports",
     items: [
       { title: "adminNav.reportsOverview", icon: "lucide:chart-column", name: "reportsOverview" },

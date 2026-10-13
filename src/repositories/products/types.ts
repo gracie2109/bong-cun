@@ -1,5 +1,6 @@
 // Shapes of the product catalog as the screens use them. Reading and writing is in the
 // other files of this folder; "@/repositories/products" re-exports everything.
+import type { ShipPolicy } from "@/types/shop";
 
 export type Product = {
   id: string;
@@ -64,6 +65,10 @@ export type ProductVariant = {
   isActive: boolean;
   imageUrl: string | null;
   units: ProductUnit[];
+  /** Grams of one base unit; null uses the shop's default weight. */
+  weightG: number | null;
+  /** In-store-only items are never delivered, only picked up at the shop. */
+  shipPolicy: ShipPolicy;
 };
 
 /** One picture of a group's gallery; `storagePath` is empty for a link to an image kept elsewhere. */
@@ -115,6 +120,9 @@ export type ProductVariantInput = {
   imageUrl: string;
   /** Leave out to keep the variant's units as they are. */
   units?: ProductUnitInput[];
+  /** Grams of one base unit; null uses the shop's default weight. */
+  weightG: number | null;
+  shipPolicy: ShipPolicy;
 };
 
 export type ProductGroupInput = {
