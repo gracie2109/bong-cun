@@ -34,6 +34,8 @@ export const useProductVariants = () => {
     trackStock: true,
     isActive: true,
     imageUrl: "",
+    weightG: "",
+    shipPolicy: "shippable",
     units: [],
   });
 
@@ -87,6 +89,8 @@ export const useProductVariants = () => {
         trackStock: variant.trackStock,
         isActive: variant.isActive,
         imageUrl: variant.imageUrl ?? "",
+        weightG: variant.weightG === null ? "" : String(variant.weightG),
+        shipPolicy: variant.shipPolicy,
         units: variant.units.map(toUnitRow),
       });
     }

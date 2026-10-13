@@ -87,7 +87,8 @@
     "reportsShifts": "Đối chiếu ca thu ngân",
     "productCategories": "Danh mục sản phẩm",
     "productBrands": "Thương hiệu sản phẩm",
-    "productImport": "Nhập / xuất Excel sản phẩm"
+    "productImport": "Nhập / xuất Excel sản phẩm",
+    "shopOrderSettings": "Cài đặt bán online"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -734,7 +735,9 @@
     "reportsShifts": "Đối chiếu ca",
     "productCategories": "Danh mục sản phẩm",
     "productBrands": "Thương hiệu",
-    "productImport": "Nhập / xuất Excel"
+    "productImport": "Nhập / xuất Excel",
+    "shopOnline": "Bán online",
+    "shopOrderSettings": "Cài đặt bán online"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -987,7 +990,13 @@
       "bulkPrice": "Giá chung",
       "bulkUnit": "Đơn vị chung",
       "new": "Mới",
-      "many": "{n} biến thể, khá nhiều. Kiểm tra lại các giá trị thuộc tính."
+      "many": "{n} biến thể, khá nhiều. Kiểm tra lại các giá trị thuộc tính.",
+      "weight": "Khối lượng (g)",
+      "weightDefault": "Mặc định",
+      "weightRange": "1 đến 50.000 g",
+      "shipping": "Vận chuyển",
+      "shippable": "Giao được",
+      "inStoreOnly": "Chỉ bán tại cửa hàng"
     },
     "errors": {
       "duplicate_name": "Đã có sản phẩm tên \"{value}\".",
@@ -1003,7 +1012,9 @@
       "unit_name_required": "Mỗi đơn vị cần có tên.",
       "duplicate_unit": "Đơn vị {value} bị trùng.",
       "unit_factor": "Đơn vị {value} phải lớn hơn 1 đơn vị gốc.",
-      "unit_in_use": "Đơn vị {value} đã dùng trên hóa đơn hoặc phiếu kho nên không đổi hệ số được; hãy tắt đơn vị này và tạo đơn vị mới."
+      "unit_in_use": "Đơn vị {value} đã dùng trên hóa đơn hoặc phiếu kho nên không đổi hệ số được; hãy tắt đơn vị này và tạo đơn vị mới.",
+      "invalid_weight": "Khối lượng phải từ 1 đến 50.000 gram.",
+      "invalid_ship_policy": "Quy định vận chuyển không hợp lệ."
     },
     "tabs": {
       "general": "Thông tin",
@@ -1212,7 +1223,51 @@
     "more": "Thêm",
     "pickVariant": "Chọn đủ phân loại để thêm vào giỏ.",
     "addToCart": "Thêm vào giỏ hàng",
-    "added": "Đã thêm {name} vào giỏ"
+    "added": "Đã thêm {name} vào giỏ",
+    "nav": {
+      "settings": "Cài đặt bán online"
+    },
+    "location": {
+      "province": "Tỉnh / Thành phố",
+      "district": "Quận / Huyện",
+      "ward": "Phường / Xã",
+      "pick": "Chọn"
+    },
+    "settings": {
+      "title": "Cài đặt bán online",
+      "readOnly": "Bạn chỉ có quyền xem. Cần quyền \"Bán online: Tất cả\" để sửa cài đặt.",
+      "methods": "Phương thức bán",
+      "methodsHint": "Cơ sở bán hàng online và cách khách thanh toán, nhận hàng.",
+      "branch": "Cơ sở bán online",
+      "branchHint": "Tồn kho và hóa đơn của đơn online tính ở cơ sở này.",
+      "allowCod": "Giao hàng thu tiền (COD)",
+      "allowCodHint": "Khách trả tiền cho shipper khi nhận hàng.",
+      "allowPickup": "Nhận tại cửa hàng",
+      "allowPickupHint": "Khách đặt online, đến cửa hàng lấy và trả tiền tại quầy.",
+      "codMax": "Giới hạn tiền thu hộ (đ)",
+      "codMaxHint": "Đơn giao hàng có tổng thu vượt mức này không được chọn COD (GHN cho tối đa 10.000.000đ).",
+      "shipping": "Vận chuyển",
+      "shippingHint": "Dùng để tính phí ship dự kiến khi khách thanh toán.",
+      "defaultWeight": "Khối lượng mặc định (g)",
+      "flatFee": "Phí ship dự phòng (đ)",
+      "flatFeeHint": "Dùng khi GHN không báo được phí.",
+      "freeShipFrom": "Miễn phí ship từ (đ)",
+      "freeShipHint": "Để trống nếu không miễn phí ship.",
+      "fromAddress": "Địa chỉ kho gửi hàng (GHN)",
+      "fromStreet": "Số nhà, đường",
+      "fromAddressHint": "GHN lấy hàng ở đây; cần để tính phí ship thật.",
+      "pickup": "Nhận tại cửa hàng",
+      "pickupHint": "Hiện cho khách khi họ chọn nhận tại cửa hàng.",
+      "pickupAddress": "Địa chỉ cửa hàng",
+      "pickupNote": "Ghi chú cho khách",
+      "pickupNotePlaceholder": "Mở cửa 8h–20h, mang mã đơn khi đến lấy",
+      "errors": {
+        "branch": "Chọn cơ sở bán online.",
+        "codMax": "Nhập giới hạn tiền thu hộ lớn hơn 0.",
+        "defaultWeight": "Nhập khối lượng mặc định lớn hơn 0.",
+        "fromAddress": "Chọn đủ quận / huyện và phường / xã của kho."
+      }
+    }
   },
   "spa": {
     "title": "Lịch spa",

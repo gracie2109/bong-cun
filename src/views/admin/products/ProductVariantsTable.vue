@@ -21,6 +21,8 @@
             <th class="px-3 py-2 font-semibold">{{ $t("products.form.barcode") }}</th>
             <th class="px-3 py-2 font-semibold">{{ $t("products.form.unit") }}</th>
             <th class="px-3 py-2 text-right font-semibold">{{ $t("products.form.price") }}</th>
+            <th class="px-3 py-2 font-semibold">{{ $t("products.variants.weight") }}</th>
+            <th class="px-3 py-2 font-semibold">{{ $t("products.variants.shipping") }}</th>
             <th class="px-3 py-2 text-center font-semibold">{{ $t("products.variants.stock") }}</th>
             <th class="px-3 py-2 text-center font-semibold">{{ $t("products.variants.sell") }}</th>
             <th class="px-3 py-2 font-semibold">{{ $t("products.variants.image") }}</th>
@@ -44,6 +46,19 @@
               <Input v-model="row.price" class="h-8 w-28 text-right" inputmode="numeric" />
               <p class="mt-0.5 text-right text-[11px] text-muted-foreground">{{ money(parseAmount(row.price)) }}</p>
             </td>
+            <td class="px-3 py-2">
+              <Input v-model="row.weightG" class="h-8 w-20 text-right" inputmode="numeric" :placeholder="$t('products.variants.weightDefault')" />
+              <p v-if="weightInvalid(row)" class="text-xs text-red-600">{{ $t("products.variants.weightRange") }}</p>
+            </td>
+            <td class="px-3 py-2">
+              <Select v-model="row.shipPolicy">
+                <SelectTrigger class="h-8 w-36"><SelectValue /></SelectTrigger>
+                <SelectContent side="bottom">
+                  <SelectItem value="shippable">{{ $t("products.variants.shippable") }}</SelectItem>
+                  <SelectItem value="in_store_only">{{ $t("products.variants.inStoreOnly") }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </td>
             <td class="px-3 py-2 text-center"><Switch v-model:checked="row.trackStock" /></td>
             <td class="px-3 py-2 text-center"><Switch v-model:checked="row.isActive" /></td>
             <td class="px-3 py-2">
@@ -62,6 +77,7 @@
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { money, parseAmount } from "@/views/admin/pos/format";
 import VariantImagePicker from "./images/VariantImagePicker.vue";
@@ -69,6 +85,14 @@ import type { GalleryImage } from "./images/useImageGallery";
 import { type VariantRow } from "./productVariantForm";
 
 const MANY_VARIANTS = 100;
+const MAX_WEIGHT_G = 50000;
+
+/** A typed weight outside 1..50000 grams (empty is fine: the shop default applies). */
+const weightInvalid = (row: VariantRow): boolean => {
+  if (!row.weightG.trim()) return false;
+  const grams = parseAmount(row.weightG);
+  return grams < 1 || grams > MAX_WEIGHT_G;
+};
 
 defineProps<{
   /** Whether a save was attempted, which shows the errors. */

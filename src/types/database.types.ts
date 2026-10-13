@@ -934,6 +934,60 @@ export type Database = {
           },
         ]
       }
+      shop_settings: {
+        Row: {
+          id: boolean
+          online_branch_id: string
+          allow_cod: boolean
+          allow_pickup: boolean
+          cod_max: number
+          default_weight_g: number
+          flat_shipping_fee: number
+          free_ship_from: number | null
+          ghn_from_province_id: number | null
+          ghn_from_district_id: number | null
+          ghn_from_ward_code: string | null
+          from_address_text: string | null
+          pickup_address: string | null
+          pickup_note: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          online_branch_id: string
+          allow_cod?: boolean
+          allow_pickup?: boolean
+          cod_max?: number
+          default_weight_g?: number
+          flat_shipping_fee?: number
+          free_ship_from?: number | null
+          ghn_from_province_id?: number | null
+          ghn_from_district_id?: number | null
+          ghn_from_ward_code?: string | null
+          from_address_text?: string | null
+          pickup_address?: string | null
+          pickup_note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          online_branch_id?: string
+          allow_cod?: boolean
+          allow_pickup?: boolean
+          cod_max?: number
+          default_weight_g?: number
+          flat_shipping_fee?: number
+          free_ship_from?: number | null
+          ghn_from_province_id?: number | null
+          ghn_from_district_id?: number | null
+          ghn_from_ward_code?: string | null
+          from_address_text?: string | null
+          pickup_address?: string | null
+          pickup_note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           track_stock: boolean
@@ -951,6 +1005,8 @@ export type Database = {
           sort_order: number
           unit: string
           updated_at: string
+          weight_g: number | null
+          ship_policy: string
         }
         Insert: {
           track_stock?: boolean
@@ -968,6 +1024,8 @@ export type Database = {
           sort_order?: number
           unit?: string
           updated_at?: string
+          weight_g?: number | null
+          ship_policy?: string
         }
         Update: {
           track_stock?: boolean
@@ -985,6 +1043,8 @@ export type Database = {
           sort_order?: number
           unit?: string
           updated_at?: string
+          weight_g?: number | null
+          ship_policy?: string
         }
         Relationships: [
           {
@@ -2121,6 +2181,9 @@ export type Database = {
       delete_product_brand: { Args: { p_id: string }; Returns: undefined }
       product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
       save_product_group: { Args: { p: Json }; Returns: string }
+      shop_public_settings: { Args: never; Returns: Json }
+      shop_admin_settings: { Args: never; Returns: Json }
+      save_shop_settings: { Args: { p: Json }; Returns: Json }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
       branch_prices: {
         Args: { p_branch: string; p_products: string[] }

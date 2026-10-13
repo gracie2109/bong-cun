@@ -2,7 +2,7 @@
 
 Kế hoạch ngày 13/10/2026 cho luồng mua hàng của shop công khai: giỏ hàng, địa chỉ, phí vận chuyển GHN, thanh toán, tạo đơn, xử lý đơn ở admin và trang theo dõi đơn. Đi sau POS (PR #43, #54), kho theo lô (PR #44), biến thể (PR #46) và module sản phẩm (PR #64 đến #70), đều đã merge. Tham khảo bản nghiên cứu [thanh-toan-van-chuyen.md](thanh-toan-van-chuyen.md) (SePay + GHN).
 
-**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Chưa code bước nào.
+**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Đang code theo mục 8; kết quả từng bước ở mục 12.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên kế hoạch chọn cách **đơn giản và rẻ nhất mà vẫn đúng sổ sách**:
 
@@ -512,4 +512,11 @@ Bước 1 và 3 độc lập, làm song song được nếu cần. Mỗi PR ch�
 
 ## 12. Kết quả
 
-Chưa làm. Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy, khác plan ở đâu).
+Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy, khác plan ở đâu).
+
+### Bước 1: Nền (cài đặt bán online, quyền, khối lượng)
+
+- **Migration** (tự chạy sau khi merge): `20261016010000_shop_settings.sql`, `20261016010100_product_shipping_fields.sql`, `20261016010200_save_product_group_shipping.sql`, `20261016010300_product_group_json_shipping.sql`.
+- **Có gì mới:** bảng `shop_settings` (một dòng, seed cơ sở CS01), quyền `shop_orders` (admin `ALL`, cashier `VIEW` + `UPDATE`) và hàm `can_shop_orders`, RPC `shop_public_settings`, `shop_admin_settings`, `save_shop_settings`. Cột `products.weight_g` và `products.ship_policy`; `save_product_group` và `product_group_json` được chép lại để nhận và trả hai trường này (import Excel vẫn chạy vì nó đi qua hai hàm đó).
+- **Màn hình:** menu admin "Bán online" > "Cài đặt bán online" (`/admin/shop-orders/settings`); form sản phẩm thêm cột "Khối lượng (g)" và "Vận chuyển" cho từng biến thể. Component dùng lại được `GhnLocationPicker` (tỉnh, huyện, xã GHN).
+- **Khác plan:** thêm cột `ghn_from_province_id` và `from_address_text` vào `shop_settings` để mở lại form kho gửi hàng đúng tỉnh/huyện/xã (plan chỉ lưu mã huyện và mã xã); thêm RPC `shop_admin_settings` cho nhân viên đọc (bảng chỉ cho đọc qua RLS, còn RPC công khai không trả địa chỉ kho dạng chữ); chưa có nút "Thử tính phí" vì route phí GHN còn là dữ liệu mẫu, nút được thêm ở bước 4. Tên thư mục bám plan nhưng dùng `GhnLocationPicker` thay cho `ProvinceAddress` (component cũ buộc vào vee-validate và dùng chữ tiếng Anh).

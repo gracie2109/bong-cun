@@ -117,6 +117,8 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
           trackStock: row.trackStock,
           isActive: row.isActive,
           imageUrl: row.imageUrl,
+          weightG: row.weightG.trim() ? parseAmount(row.weightG) : null,
+          shipPolicy: row.shipPolicy,
           units: row.units.map(toUnitInput),
         })),
       });

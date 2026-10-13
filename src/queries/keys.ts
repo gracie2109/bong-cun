@@ -184,3 +184,16 @@ export const spaKeys = {
   appointment: (id: string) => [...spaKeys.all, "appointment", id] as const,
   board: (branchId: string, date: string) => [...spaKeys.all, "board", branchId, date] as const,
 };
+
+export const shopKeys = {
+  all: ["shop"] as const,
+  settings: () => [...shopKeys.all, "settings"] as const,
+  publicSettings: () => [...shopKeys.all, "public-settings"] as const,
+};
+
+export const ghnLocationKeys = {
+  all: ["ghn-locations"] as const,
+  provinces: () => [...ghnLocationKeys.all, "provinces"] as const,
+  districts: (provinceId: number) => [...ghnLocationKeys.all, "districts", provinceId] as const,
+  wards: (districtId: number) => [...ghnLocationKeys.all, "wards", districtId] as const,
+};
