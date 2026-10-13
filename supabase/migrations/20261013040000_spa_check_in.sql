@@ -1,5 +1,5 @@
--- Spa appointments, step 2: check-in with the real weight (locks the price), ticket progress
--- (waiting -> in progress -> done) and no-show. Run after 20261013030000_spa_appointments.sql.
+-- Spa appointments, step 2 (check-in): check-in with the real weight (locks the price), ticket progress
+-- (waiting -> in progress -> done) and no-show. Run after 20261013030300_spa_views.sql.
 -- Re-runnable.
 
 -- ------------------------------------------------------------------- status

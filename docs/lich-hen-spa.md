@@ -2,7 +2,7 @@
 
 Kế hoạch và tiến độ module lịch hẹn spa. Nguồn: kế hoạch BA/kiến trúc v0.3 (M3 Lịch hẹn, M9 Spa/Grooming, mục 2.3 và thứ tự Phase 1 bước 4-5). Module đứng sau POS (PR #43), kho theo lô (PR #44) và biến thể (PR #46), đều đã merge.
 
-**Tiến độ:** bước 1 (mục 9) đã làm xong: migration `supabase/migrations/20261013030000_spa_appointments.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Bước 2 (mục 9) cũng đã làm: migration `supabase/migrations/20261013040000_spa_check_in.sql`, hộp thoại Chi tiết lịch hẹn (check-in, bắt đầu / xong, không đến, hủy) và nút "Việc của tôi" trên Lịch ngày. Các bước 3-4 chưa làm.
+**Tiến độ:** bước 1 (mục 9) đã làm xong: các migration `supabase/migrations/20261013030000_spa_schema.sql`, `..030100_spa_settings.sql`, `..030200_spa_booking.sql`, `..030300_spa_views.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Bước 2 (mục 9) cũng đã làm: migration `supabase/migrations/20261013040000_spa_check_in.sql`, hộp thoại Chi tiết lịch hẹn (check-in, bắt đầu / xong, không đến, hủy) và nút "Việc của tôi" trên Lịch ngày. Các bước 3-4 chưa làm.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi được giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không có tích hợp bên ngoài.
 
@@ -152,7 +152,7 @@ Không dùng thư viện lịch: FullCalendar tính phí cho dạng xem theo c�
 
 | Bước | Nội dung | SQL | Trạng thái |
 | --- | --- | --- | --- |
-| 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt / sửa / hủy, Lịch ngày | `supabase/migrations/20261013030000_spa_appointments.sql`, chạy sau `20261007140000_product_variants.sql` | Đã làm |
+| 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt / sửa / hủy, Lịch ngày | 4 file `supabase/migrations/2026101303*.sql` (schema, settings, booking, views), chạy theo thứ tự sau `20261007140000_product_variants.sql` | Đã làm |
 | 2 | Check-in + cân nặng + chốt giá, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | `supabase/migrations/20261013040000_spa_check_in.sql`, chạy sau file bước 1 | Đã làm |
 | 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ | Migration sửa hàm POS; làm sau khi PR #54 (sửa POS) đã merge vì cùng sửa `create_invoice` | Chưa làm |
 | 4 | Chuyển `orders` sang `appointments`, gỡ `create_order` và màn cũ | Migration chuyển dữ liệu | Chưa làm |
@@ -163,14 +163,14 @@ Mỗi lần giao có SQL sẽ ghi rõ tên file và thứ tự chạy; bản đ�
 
 ### Bước 1: những gì cần biết
 
-- **Phải chạy `20261013030000_spa_appointments.sql` trên Supabase trước khi dùng các màn mới**, nếu không các màn Lịch spa báo lỗi vì thiếu hàm. File chạy lại được an toàn.
+- **Phải chạy 4 file `2026101303*.sql` trên Supabase (hoặc file gộp `migration-spa-gop.sql`, gồm cả bước 2) trước khi dùng các màn mới**, nếu không các màn Lịch spa báo lỗi vì thiếu hàm. File chạy lại được an toàn.
 - Việc đầu tiên sau khi chạy: vào **Lịch spa → Cài đặt spa**, thêm bàn spa, chỉnh giờ mở cửa và bật cờ "Làm dịch vụ" cho nhân viên spa. Chưa có nhân viên được bật thì vẫn đặt lịch được nhưng phiếu để "chưa xếp nhân viên".
 - Màn đặt lịch chỉ chọn khách đã có và thú cưng đã đăng ký; khách mới hoặc thú mới thêm ở màn Thú cưng trước.
 - Trang `/admin/schedule/list-order-schedule` (đơn đặt từ web) vẫn còn, đổi tên menu thành "Yêu cầu đặt chỗ từ web" cho tới bước 4.
 
 ### Bước 2: những gì cần biết
 
-- **Chạy `20261013040000_spa_check_in.sql` sau file bước 1.** Chạy lại được an toàn. Chưa chạy thì các nút Check-in, Bắt đầu, Xong, Không đến báo lỗi thiếu hàm.
+- **Chạy `20261013040000_spa_check_in.sql` sau các file bước 1.** Chạy lại được an toàn. Chưa chạy thì các nút Check-in, Bắt đầu, Xong, Không đến báo lỗi thiếu hàm.
 - Chi tiết lịch hẹn làm thành hộp thoại thay vì trang riêng (`/appointments/[id]`) và "Việc của tôi" làm thành nút lọc trên Lịch ngày thay vì trang riêng: ít route, ít quyền phải thêm, cùng chức năng. Muốn trang riêng thì làm sau.
 - Check-in: dịch vụ tính theo cân bắt buộc nhập cân nặng, cân nặng được ghi vào nhật ký cân của thú; giá mỗi phiếu chốt lúc đó và không đổi theo bảng giá nữa. Combo và dịch vụ giá chung giữ giá danh mục.
 - Phiếu đi Chờ → Đang làm → Xong, bấm nhầm thì lùi một bước. Lịch tự đổi trạng thái theo các phiếu.
