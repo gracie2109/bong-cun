@@ -583,7 +583,7 @@ Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy
 | 5 Đặt hàng | #76 |
 | 6 Admin xử lý đơn | #77 |
 | 7 Nhận tại cửa hàng + COD | #78 |
-| 8 Hoàn thiện | PR bước 8 |
+| 8 Hoàn thiện | #79 |
 
 - Bước 9 đến 11 (API GHN tạo vận đơn, VietQR, SePay) chưa làm, đúng phạm vi đã chốt.
 - Môi trường chạy: biến tùy chọn `NUXT_GHN_HEAVY_GOODS_SERVICE_ID` cho ngày giao dự kiến của gói từ 20 kg; các biến GHN còn lại như cũ. Kho gửi hàng và địa chỉ GHN phải nhập trong "Cài đặt bán online" thì mới tính được phí GHN thật (không thì dùng phí dự phòng).
