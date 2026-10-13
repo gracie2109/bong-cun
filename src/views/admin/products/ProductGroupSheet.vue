@@ -14,7 +14,7 @@
         <Tabs v-model="tab" class="flex min-h-0 flex-1 flex-col">
           <TabsList class="shrink-0 justify-start border-b px-6">
             <TabsTrigger v-for="item in TABS" :key="item" :value="item">
-              {{ $t(`products.tabs.${item}`) }}
+              {{ item === "images" ? $t("products.tabs.images", { n: gallery.images.value.length }) : $t(`products.tabs.${item}`) }}
               <span v-if="tabErrors[item]" class="ml-1.5 size-2 rounded-full bg-red-500" />
             </TabsTrigger>
           </TabsList>
@@ -22,12 +22,24 @@
             <TabsContent value="general" class="mt-0">
               <GeneralTab :form="form" :submitted="submitted" />
             </TabsContent>
+            <TabsContent value="images" class="mt-0">
+              <ImagesTab
+                :images="gallery.images.value"
+                :uploading="gallery.uploading.value"
+                :error="gallery.error.value"
+                @add="gallery.add"
+                @remove="gallery.remove"
+                @move="gallery.move"
+                @make-cover="gallery.makeCover"
+              />
+            </TabsContent>
             <TabsContent value="variants" class="mt-0">
               <VariantsTab
                 v-model:attributes="attributes"
                 v-model:rows="rows"
                 v-model:bulk="bulk"
                 :known-attributes="knownAttributes"
+                :images="gallery.images.value"
                 :submitted="submitted"
               />
             </TabsContent>
@@ -59,14 +71,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GeneralTab from "./tabs/GeneralTab.vue";
+import ImagesTab from "./tabs/ImagesTab.vue";
 import VariantsTab from "./tabs/VariantsTab.vue";
 import { useProductGroupForm, type ProductTab } from "./useProductGroupForm";
 
-const TABS: ProductTab[] = ["general", "variants"];
+const TABS: ProductTab[] = ["general", "images", "variants"];
 
 const props = defineProps<{ open: boolean; groupId: string | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
-const { form, attributes, rows, bulk, knownAttributes, submitted, tab, tabErrors, loading, saving, submit } =
+const { form, attributes, rows, bulk, knownAttributes, gallery, submitted, tab, tabErrors, loading, saving, submit } =
   useProductGroupForm(toRef(props, "open"), toRef(props, "groupId"), () => emit("update:open", false));
 </script>

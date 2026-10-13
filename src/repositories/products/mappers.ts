@@ -27,6 +27,7 @@ export type GroupJson = {
   category_parent_name: string | null;
   brand_id: string | null;
   brand_name: string | null;
+  images: { id: string; url: string; storage_path: string | null }[];
   min_price: number | null;
   max_price: number | null;
   attributes: ProductAttribute[];
@@ -55,6 +56,7 @@ export const toGroup = (row: GroupJson): ProductGroup => ({
   categoryParentName: row.category_parent_name,
   brandId: row.brand_id,
   brandName: row.brand_name,
+  images: (row.images ?? []).map((image) => ({ id: image.id, url: image.url, storagePath: image.storage_path })),
   minPrice: row.min_price === null ? null : Number(row.min_price),
   maxPrice: row.max_price === null ? null : Number(row.max_price),
   attributes: row.attributes,

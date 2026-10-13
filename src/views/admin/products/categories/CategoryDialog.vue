@@ -32,6 +32,7 @@
           folder-name="categories"
           :limit="1"
           :show-control="false"
+          shared
           keep-files
           :model-value="form.imageUrl ? [form.imageUrl] : []"
           @set-images="(list: string[]) => (form.imageUrl = list[0] ?? '')"

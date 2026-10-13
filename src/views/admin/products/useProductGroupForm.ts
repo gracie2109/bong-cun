@@ -1,12 +1,15 @@
 import { computed, reactive, ref, watch, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { supabaseClient } from "@/lib/supabase";
 import { useProductAttributes, useProductGroup, useSaveProductGroup } from "@/queries/products";
 import type { ProductGroup } from "@/repositories/products";
+import { deleteImagesQuietly } from "@/repositories/storage";
 import { parseAmount } from "@/views/admin/pos/format";
+import { useImageGallery } from "./images/useImageGallery";
 import { attributeError, commitDraft } from "./productVariantForm";
 import { useProductVariants } from "./useProductVariants";
 
-export type ProductTab = "general" | "variants";
+export type ProductTab = "general" | "images" | "variants";
 
 /** Everything the product sheet edits: the group's own fields plus its attributes and variants. */
 export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | null>, close: () => void) => {
@@ -15,7 +18,6 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
   const form = reactive({
     name: "",
     desc: "",
-    imageUrl: "",
     isActive: true,
     categoryId: "",
     categoryName: "",
@@ -23,6 +25,9 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
     brandName: "",
   });
   const { attributes, rows, bulk, fill: fillVariants } = useProductVariants();
+  // Uploads go to catalog/<group id>; a new group has no id yet, so it gets a throwaway folder name.
+  const draftFolder = globalThis.crypto.randomUUID();
+  const gallery = useImageGallery(computed(() => groupId.value ?? draftFolder));
   const submitted = ref(false);
   const tab = ref<string>("general");
 
@@ -35,7 +40,6 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
   const fill = (group: ProductGroup | null) => {
     form.name = group?.name ?? "";
     form.desc = group?.desc ?? "";
-    form.imageUrl = group?.imageUrl ?? "";
     form.isActive = group?.isActive ?? true;
     form.categoryId = group?.categoryId ?? "";
     form.categoryName = group?.categoryName ?? "";
@@ -44,7 +48,16 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
     submitted.value = false;
     tab.value = "general";
     fillVariants(group);
+    gallery.fill(group?.images ?? []);
   };
+
+  // A variant cannot keep a picture that was taken out of the gallery.
+  watch(
+    () => gallery.images.value.map((image) => image.url),
+    (urls) => {
+      for (const row of rows.value) if (row.imageUrl && !urls.includes(row.imageUrl)) row.imageUrl = "";
+    }
+  );
 
   watch(
     () => [open.value, groupId.value, groupQuery.data.value] as const,
@@ -59,6 +72,7 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
   /** Tabs that hold a mistake, shown after the first save attempt. */
   const tabErrors = computed<Record<ProductTab, boolean>>(() => ({
     general: submitted.value && !form.name.trim(),
+    images: false,
     variants:
       submitted.value &&
       (attributes.value.some((attribute) => attributeError(attributes.value, attribute, t)) ||
@@ -78,8 +92,9 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
         id: groupId.value ?? undefined,
         name: form.name,
         desc: form.desc,
-        imageUrl: form.imageUrl,
+        imageUrl: gallery.images.value[0]?.url ?? "",
         isActive: form.isActive,
+        images: gallery.images.value.map((image) => ({ url: image.url, storagePath: image.storagePath })),
         categoryId: form.categoryId || null,
         brandId: form.brandId || null,
         attributes: attributes.value.map((attribute) => ({ name: attribute.name.trim(), values: attribute.values })),
@@ -95,6 +110,8 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
           imageUrl: row.imageUrl,
         })),
       });
+      // Files of pictures taken out of the gallery; a failure only leaves them behind.
+      void deleteImagesQuietly(supabaseClient(), gallery.removedPaths());
       close();
     } catch {
       // the mutation already showed the failure toast
@@ -107,6 +124,7 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
     rows,
     bulk,
     knownAttributes,
+    gallery,
     submitted,
     tab,
     tabErrors,

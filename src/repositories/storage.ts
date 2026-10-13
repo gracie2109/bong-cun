@@ -46,3 +46,28 @@ export const deleteImage = async (client: Client, path: string): Promise<void> =
   const { error } = await client.storage.from(IMAGE_BUCKET).remove([path]);
   if (error) throw error;
 };
+
+/**
+ * Uploads into the shared `catalog/<folder>/` area. Anyone who may edit products can add and
+ * delete there, unlike the personal `<userId>/` folders.
+ */
+export const uploadCatalogImage = async (
+  client: Client,
+  args: { folder: string; file: File }
+): Promise<{ path: string; url: string }> => {
+  const extension = args.file.type === "image/webp" ? "webp" : (args.file.name.split(".").pop() ?? "img").replace(/[^a-zA-Z0-9]/g, "");
+  const path = `catalog/${args.folder}/${globalThis.crypto.randomUUID()}.${extension}`;
+
+  const { error } = await client.storage
+    .from(IMAGE_BUCKET)
+    .upload(path, args.file, { contentType: args.file.type, upsert: false });
+  if (error) throw error;
+
+  return { path, url: client.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl };
+};
+
+/** Deletes files best effort: a file that cannot be removed is only left behind, never an error. */
+export const deleteImagesQuietly = async (client: Client, paths: string[]): Promise<void> => {
+  if (paths.length === 0) return;
+  await client.storage.from(IMAGE_BUCKET).remove(paths);
+};

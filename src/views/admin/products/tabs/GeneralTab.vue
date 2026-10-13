@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-4 md:grid-cols-[1fr_auto]">
+  <div class="grid gap-4">
     <div class="space-y-4">
       <div class="space-y-2">
         <Label for="group-name">{{ $t("products.form.name") }}</Label>
@@ -25,34 +25,21 @@
         <Textarea id="group-desc" v-model="form.desc" rows="2" class="resize-none" />
       </div>
     </div>
-    <div class="space-y-2">
-      <Label>{{ $t("products.form.image") }}</Label>
-      <UploadFields
-        folder-name="products"
-        :limit="1"
-        :show-control="false"
-        keep-files
-        :model-value="form.imageUrl ? [form.imageUrl] : []"
-        @set-images="(list: string[]) => (form.imageUrl = list[0] ?? '')"
-      />
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import UploadFields from "@/components/common/UploadFields.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import BrandSelect from "../pickers/BrandSelect.vue";
 import CategorySelect from "../pickers/CategorySelect.vue";
 
-/** The group's own fields: name, category, brand, description and its cover image. */
+/** The group's own fields: name, category, brand and description. */
 defineProps<{
   form: {
     name: string;
     desc: string;
-    imageUrl: string;
     categoryId: string;
     categoryName: string;
     brandId: string;

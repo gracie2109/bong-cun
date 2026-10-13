@@ -47,6 +47,12 @@ export type ProductVariant = {
   imageUrl: string | null;
 };
 
+/** One picture of a group's gallery; `storagePath` is empty for a link to an image kept elsewhere. */
+export type ProductImage = { id: string; url: string; storagePath: string | null };
+
+/** A group shows at most this many pictures; the first is the cover. */
+export const MAX_GROUP_IMAGES = 8;
+
 export type ProductGroup = {
   id: string;
   name: string;
@@ -59,6 +65,8 @@ export type ProductGroup = {
   categoryParentName: string | null;
   brandId: string | null;
   brandName: string | null;
+  /** The gallery in order, cover first. */
+  images: ProductImage[];
   minPrice: number | null;
   maxPrice: number | null;
   attributes: ProductAttribute[];
@@ -85,6 +93,8 @@ export type ProductGroupInput = {
   isActive: boolean;
   categoryId: string | null;
   brandId: string | null;
+  /** The whole gallery in order; the first becomes the cover and a variant may only pick from it. */
+  images: { url: string; storagePath: string | null }[];
   attributes: { name: string; values: string[] }[];
   variants: ProductVariantInput[];
 };
