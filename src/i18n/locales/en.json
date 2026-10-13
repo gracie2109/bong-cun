@@ -1458,6 +1458,10 @@
         "mismatch": "Mismatch"
       },
       "note": "Difference = counted − expected cash (red when short, amber when over). An open shift has no count yet."
+    },
+    "today": {
+      "title": "Today",
+      "open": "Open report"
     }
   }
 }

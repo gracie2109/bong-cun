@@ -2,7 +2,7 @@
 
 Kế hoạch module báo cáo (M11 trong kế hoạch BA/kiến trúc v0.3, mục 2.3 và thứ tự Phase 1 bước 5). Module đứng sau POS (PR #43, #54), kho theo lô (PR #44) và lịch hẹn spa (PR #55, #56, #58), đều đã merge.
 
-**Tiến độ:** đã lên plan, chưa code. Plan này đủ chi tiết để một thread khác code theo, không cần hỏi lại. Các câu hỏi mở đã được chọn mặc định ở mục 11.
+**Tiến độ:** cả 4 bước đã code và merge (PR #60, #61, #62 và #63), xem mục 12. Các câu hỏi mở đã được chọn mặc định ở mục 11.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên ưu tiên đơn giản, rẻ, dễ hiểu: tính trực tiếp từ bảng gốc bằng Postgres RPC, không bảng tổng hợp, không thư viện biểu đồ mới, xuất CSV ở trình duyệt.
 
@@ -404,3 +404,23 @@ Dữ liệu mẫu: một ngày có 3 hóa đơn ở CS01.
 | Bảng tổng hợp / materialized view | Không | Dữ liệu nhỏ; tính trực tiếp luôn đúng, không phải làm mới |
 | "Tất cả cơ sở" | Có, khi có quyền từ 2 cơ sở | Thiết kế sẵn đa cơ sở, chưa tốn công khi chỉ có 1 |
 | Tuần bắt đầu | Thứ hai (ISO) | Thói quen ở Việt Nam |
+
+## 12. Kết quả triển khai
+
+Cả 4 bước đã làm đúng thứ tự ở mục 8, mỗi bước một PR squash merge vào main.
+
+| Bước | PR | Migration (workflow "Supabase migrate" tự chạy khi merge) | Có gì |
+| --- | --- | --- | --- |
+| 1 | #60 | `20261014010000_reports_access`, `20261014010100_reports_sales_lines`, `20261014010200_reports_overview` | Quyền `reports`, bộ lọc cơ sở + khoảng ngày trên URL, tab Tổng quan (KPI so kỳ trước, biểu đồ cột chồng Shop/Spa, cơ cấu, bảng theo ngày), xuất CSV |
+| 2 | #61 | `20261014010300_reports_rankings` | Tab Sản phẩm & dịch vụ, tab Nhân viên (thu ngân, nhân viên spa), xuất CSV |
+| 3 | #62 | `20261014010400_reports_audit` | Tab Hoàn trả & hủy (bấm mã hóa đơn mở phiếu của POS), tab Đối chiếu ca, xuất CSV |
+| 4 | #63 | không | Ô "Hôm nay" trên Dashboard; bán, hủy, trả hàng làm mới số liệu báo cáo (`reportKeys` trong `invalidatePos`, đã làm cùng bước 1) |
+
+Khác với plan, có chủ đích:
+
+- Khoảng ngày "Tùy chọn" dùng hai ô chọn ngày của trình duyệt thay cho `RangeDateShadcn` (component đó đang có giá trị cố định, khó dùng lại), cùng chức năng.
+- `report_staff_revenue` trả thêm cột `share` (tỉ trọng doanh thu spa) và `report_adjustments` trả thêm `branch_id` (để mở đúng hóa đơn khi xem "Tất cả cơ sở").
+- Mã hóa đơn ở tab Hoàn trả & hủy chỉ bấm được khi người xem có `pos: VIEW`.
+- Quyền `reports` mới chỉ cấp cho `admin`; chủ quán cấp thêm cho vai trò khác ở màn Phân quyền.
+
+Đã kiểm tra: toàn bộ chuỗi migration chạy trên Postgres 16 cục bộ (hai lần liên tiếp để chắc chắn chạy lại được) với dữ liệu mẫu theo kịch bản T1 đến T9 ở mục 9 (hóa đơn có giảm giá, spa theo lịch hẹn, hóa đơn hủy, hóa đơn 23:30, trả hàng hôm sau, ca lệch tiền, người không có quyền bị `42501`, khoảng quá 366 ngày bị `range_too_long`). Giao diện chỉ kiểm tra bằng `nuxt typecheck` và `nuxt build`, chưa bấm thử trên dữ liệu thật; nên xem lại các tab bằng tài khoản admin sau khi deploy.
