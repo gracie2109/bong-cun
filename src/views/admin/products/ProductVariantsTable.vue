@@ -47,15 +47,7 @@
             <td class="px-3 py-2 text-center"><Switch v-model:checked="row.trackStock" /></td>
             <td class="px-3 py-2 text-center"><Switch v-model:checked="row.isActive" /></td>
             <td class="px-3 py-2">
-              <UploadFields
-                folder-name="products"
-                :limit="1"
-                :show-control="false"
-                size="sm"
-                keep-files
-                :model-value="toImages(row.imageUrl)"
-                @set-images="(list: string[]) => (row.imageUrl = list[0] ?? '')"
-              />
+              <VariantImagePicker v-model="row.imageUrl" :images="images" />
             </td>
           </tr>
         </tbody>
@@ -68,20 +60,21 @@
 </template>
 
 <script lang="ts" setup>
-import UploadFields from "@/components/common/UploadFields.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { money, parseAmount } from "@/views/admin/pos/format";
+import VariantImagePicker from "./images/VariantImagePicker.vue";
+import type { GalleryImage } from "./images/useImageGallery";
 import { type VariantRow } from "./productVariantForm";
 
 const MANY_VARIANTS = 100;
-/** The single-image list the upload box shows. */
-const toImages = (url: string) => (url ? [url] : []);
 
 defineProps<{
   /** Whether a save was attempted, which shows the errors. */
   submitted: boolean;
+  /** The group's gallery, where a variant picks its own picture from. */
+  images: GalleryImage[];
 }>();
 
 const rows = defineModel<VariantRow[]>("rows", { required: true });

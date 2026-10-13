@@ -5,7 +5,7 @@ import { computed, ref, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { supabaseClient } from "@/lib/supabase";
 import { useAuthStore } from "@/stores";
-import { deleteImage, pathFromPublicUrl, uploadImage, validateImage } from "@/repositories/storage";
+import { deleteImage, pathFromPublicUrl, uploadCatalogImage, uploadImage, validateImage } from "@/repositories/storage";
 import { DialogConfirm, LoadingSpin } from "@/components/common";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-icons/vue";
@@ -25,6 +25,8 @@ const props = defineProps<{
   size?: "sm" | "md";
   /** Removing only unlinks the image; the file stays (the form may still be cancelled). */
   keepFiles?: boolean;
+  /** Upload to the shared catalog area (`catalog/<folderName>/`) instead of the user's own folder. */
+  shared?: boolean;
 }>();
 
 const errors = ref<string | null>(null);
@@ -71,11 +73,9 @@ const uploadFile = async (file: File) => {
   // Supabase uploads report no per-chunk progress, so this is a plain busy flag.
   progress.value = true;
   try {
-    const { url } = await uploadImage(supabaseClient(), {
-      userId: session.value.user.id,
-      folder: props.folderName,
-      file,
-    });
+    const { url } = props.shared
+      ? await uploadCatalogImage(supabaseClient(), { folder: props.folderName, file })
+      : await uploadImage(supabaseClient(), { userId: session.value.user.id, folder: props.folderName, file });
     images.value = [...images.value, url];
     emit("setImages", images.value);
   } catch (error: any) {

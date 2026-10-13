@@ -70,6 +70,7 @@ export const saveProductGroup = async (client: Client, input: ProductGroupInput)
       is_active: input.isActive,
       category_id: input.categoryId,
       brand_id: input.brandId,
+      images: input.images.map((image) => ({ url: image.url, storage_path: image.storagePath })),
       attributes: input.attributes,
       variants: input.variants.map((variant) => ({
         id: variant.id ?? null,
@@ -105,6 +106,7 @@ export const PRODUCT_ERROR_HINTS = [
   "no_variants",
   "invalid_category",
   "invalid_brand",
+  "too_many_images",
 ] as const;
 export type ProductErrorHint = (typeof PRODUCT_ERROR_HINTS)[number];
 

@@ -4,7 +4,17 @@ import { INTRO_CATEGORIES } from "../constants";
 import "vue3-carousel/carousel.css";
 import { Carousel, Slide, Pagination, Navigation, type CarouselConfig } from "vue3-carousel";
 import { useResizeObserver } from "@vueuse/core";
-import { ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
+import { useProductCategories } from "@/queries/productCategories";
+
+// Top-level categories that have a picture; until there are some, the sample tiles stay.
+const categoriesQuery = useProductCategories({ pageIndex: 1, pageSize: 24 }, { rootsOnly: true });
+const items = computed(() => {
+  const real = (categoriesQuery.data.value?.rows ?? []).flatMap((row) =>
+    row.imageUrl ? [{ image: row.imageUrl, label: row.name }] : []
+  );
+  return real.length > 0 ? real : INTRO_CATEGORIES;
+});
 
 const el = ref<HTMLElement | null>(null);
 const widthEl = ref<Number>(0);
@@ -43,7 +53,7 @@ watch(widthEl, (newWidth:Number) => {
     <div class="relative h-full">
       <Carousel v-bind="carouselConfig">
         <Slide
-          v-for="(i, j) of INTRO_CATEGORIES"
+          v-for="(i, j) of items"
           :key="j"
           class="flex-none first:pl-4 last:pr-4 cursor-pointer md:h-[200px] sm:h-[150px]"
         >

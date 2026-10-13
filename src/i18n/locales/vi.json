@@ -989,11 +989,13 @@
       "variant_options": "Mỗi biến thể cần đủ giá trị cho mọi thuộc tính.",
       "no_variants": "Sản phẩm cần ít nhất một biến thể.",
       "invalid_category": "Danh mục này đã ngừng dùng, hãy chọn danh mục khác.",
-      "invalid_brand": "Thương hiệu này đã ngừng dùng, hãy chọn thương hiệu khác."
+      "invalid_brand": "Thương hiệu này đã ngừng dùng, hãy chọn thương hiệu khác.",
+      "too_many_images": "Mỗi sản phẩm tối đa 8 ảnh."
     },
     "tabs": {
       "general": "Thông tin",
-      "variants": "Biến thể"
+      "variants": "Biến thể",
+      "images": "Ảnh ({n})"
     },
     "filter": {
       "pickCategory": "Chọn danh mục",
@@ -1001,6 +1003,17 @@
       "allCategories": "Tất cả danh mục",
       "allBrands": "Tất cả thương hiệu",
       "selected": "Đã chọn"
+    },
+    "images": {
+      "title": "Ảnh sản phẩm ({n}/{max})",
+      "hint": "Ảnh đầu tiên là ảnh bìa. Kéo để đổi thứ tự. Ảnh được nén sang WebP trước khi tải lên.",
+      "add": "Thêm ảnh",
+      "empty": "Chưa có ảnh nào.",
+      "cover": "Ảnh bìa",
+      "makeCover": "Đặt làm bìa",
+      "max": "Mỗi sản phẩm tối đa {n} ảnh.",
+      "picked": "Ảnh riêng",
+      "useCover": "Dùng ảnh bìa"
     }
   },
   "inventory": {

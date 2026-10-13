@@ -989,11 +989,13 @@
       "variant_options": "Each variant needs a value for every attribute.",
       "no_variants": "A product needs at least one variant.",
       "invalid_category": "This category is switched off. Choose another one.",
-      "invalid_brand": "This brand is switched off. Choose another one."
+      "invalid_brand": "This brand is switched off. Choose another one.",
+      "too_many_images": "A product has 8 images at most."
     },
     "tabs": {
       "general": "General",
-      "variants": "Variants"
+      "variants": "Variants",
+      "images": "Images ({n})"
     },
     "filter": {
       "pickCategory": "Choose a category",
@@ -1001,6 +1003,17 @@
       "allCategories": "All categories",
       "allBrands": "All brands",
       "selected": "Selected"
+    },
+    "images": {
+      "title": "Product images ({n}/{max})",
+      "hint": "The first image is the cover. Drag to reorder. Images are compressed to WebP before upload.",
+      "add": "Add images",
+      "empty": "No images yet.",
+      "cover": "Cover",
+      "makeCover": "Make cover",
+      "max": "A product has {n} images at most.",
+      "picked": "Own image",
+      "useCover": "Use the cover"
     }
   },
   "inventory": {

@@ -22,12 +22,7 @@
   <Dialog :open="open" @update:open="(value) => (open = value)">
     <DialogContent class="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
       <div class="grid gap-6 md:grid-cols-2">
-        <div class="aspect-square overflow-hidden rounded-md bg-muted/30">
-          <img v-if="image" :src="image" alt="" class="size-full object-contain" />
-          <div v-else class="grid size-full place-content-center">
-            <ImageIcon class="size-16 text-muted-foreground" />
-          </div>
-        </div>
+        <ShopGroupGallery :images="galleryImages" :preferred="image" />
 
         <div class="flex flex-col gap-5">
           <DialogHeader class="text-left">
@@ -76,6 +71,7 @@ import { Image as ImageIcon, Minus, Plus } from "lucide-vue-next";
 import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
 import VariantOptions from "@/components/VariantOptions.vue";
 import { useVariantChoice } from "@/composables/useVariantChoice";
 import i18n from "@/i18n";
@@ -90,6 +86,11 @@ const quantity = ref(1);
 const cart = useCartLocal();
 const choice = useVariantChoice(toRef(props, "group"));
 
+/** The gallery's pictures, or the cover alone for a group saved before galleries. */
+const galleryImages = computed(() => {
+  const urls = props.group.images.map((item) => item.url);
+  return urls.length > 0 ? urls : cover.value ? [cover.value] : [];
+});
 const cover = computed(() => props.group.imageUrl || props.group.variants.find((item) => item.imageUrl)?.imageUrl);
 // The picked variant's own photo when it has one.
 const image = computed(() => choice.variant.value?.imageUrl || cover.value);
