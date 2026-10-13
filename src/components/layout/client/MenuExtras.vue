@@ -5,7 +5,7 @@
     </div>
 
     <Separator class="hidden !h-5 lg:block z-[10]" orientation="vertical" />
-    <CartMenu :type="String(route.name)" />
+    <CartMenu />
     <div v-if="user" class="z-[10]">
       <BaseAvatar />
     </div>
@@ -46,12 +46,10 @@ import RegisterView from "@/views/auth/RegisterView.vue";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores";
-import { useRoute } from "vue-router";
 import MenuButton from "./MenuButton.vue";
 import CartMenu from "./CartMenu.vue";
 
 const emit = defineEmits(["toggleMenu"]);
-const route = useRoute();
 const component = ref<string | null>(null);
 const { currentUser: user } = storeToRefs(useAuthStore());
 const open = ref(false);

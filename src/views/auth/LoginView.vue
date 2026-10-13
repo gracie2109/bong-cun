@@ -97,9 +97,16 @@ function redirectPath(name: "register" | "forgotPw") {
   }
 }
 
+/** Where to go after signing in on /login: a path of this site passed as ?redirect=, else home. */
+const redirectTarget = () => {
+  const target = route.query.redirect;
+  return typeof target === "string" && target.startsWith("/") && !target.startsWith("//") ? target : null;
+};
+
 function finishLogin() {
   if (route.fullPath?.includes("login")) {
-    router.push({ name: "home" });
+    const target = redirectTarget();
+    router.push(target ?? { name: "home" });
     setTimeout(() => {
       router.go(0);
     }, 500);

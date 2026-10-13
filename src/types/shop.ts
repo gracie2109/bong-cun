@@ -40,3 +40,39 @@ export const emptyGhnLocation = (): GhnLocation => ({
 
 /** A product's shipping rule: in-store-only items cannot be delivered. */
 export type ShipPolicy = "shippable" | "in_store_only";
+
+// ------------------------------------------------------------------- cart
+
+/** What the browser remembers of a cart line; everything else is read from the database. */
+export type CartLine = {
+  productId: string;
+  /** The conversion unit sold (thùng, hộp...); null is the product's own unit. */
+  unitId: string | null;
+  qty: number;
+};
+
+/** Why a cart line cannot be bought, as shop_cart_lines reports it. */
+export type CartLineReason = "not_found" | "inactive" | "unit_inactive";
+
+/** A cart line with its live name, picture, shared shop price, weight and stock. */
+export type CartLineView = CartLine & {
+  groupId: string | null;
+  name: string;
+  /** "Gà / 85g": the variant's values; null for a product without attributes. */
+  variant: string | null;
+  imageUrl: string | null;
+  unitName: string | null;
+  /** Base units in one of this unit. */
+  factor: number;
+  unitPrice: number | null;
+  /** Grams of one of this unit. */
+  weightG: number;
+  shipPolicy: ShipPolicy;
+  /** How many of this unit can be bought now, at most 99. */
+  available: number;
+  isSellable: boolean;
+  reason: CartLineReason | null;
+};
+
+/** What blocks a line from being ordered: it is off sale, or the quantity is above the stock. */
+export type CartLineIssue = { kind: "unavailable" } | { kind: "over_stock"; available: number };

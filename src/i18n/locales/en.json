@@ -1267,6 +1267,37 @@
         "defaultWeight": "Enter a default weight above 0.",
         "fromAddress": "Choose both the district and the ward of the warehouse."
       }
+    },
+    "cart": {
+      "title": "Cart",
+      "empty": "Your cart is empty",
+      "emptyHint": "Pick something for your pet.",
+      "continue": "Continue shopping",
+      "summary": "Order summary",
+      "items": "Subtotal ({n} items)",
+      "shipping": "Shipping",
+      "shippingAtCheckout": "Calculated at checkout",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "clear": "Clear cart",
+      "viewCart": "View cart",
+      "remove": "Remove from cart",
+      "unavailable": "No longer sold",
+      "onlyLeft": "Only {n} left",
+      "inStoreOnly": "In-store only, cannot be delivered",
+      "inStoreOnlyNote": "Your cart has in-store-only items, so you can only choose pickup.",
+      "fixIssues": "Remove or reduce the items with a problem to check out.",
+      "loadFailed": "Could not load your cart.",
+      "retry": "Try again",
+      "more": "and {n} more",
+      "full": "A cart holds at most 30 different items.",
+      "cappedQty": "At most 99 of each item; the quantity was set to 99."
+    },
+    "checkout": {
+      "title": "Checkout",
+      "soon": "The checkout page is being finished, please come back soon.",
+      "backToCart": "Back to cart"
     }
   },
   "spa": {
