@@ -733,6 +733,13 @@
       "invoices": "Invoices",
       "shifts": "Cash shifts"
     },
+    "spaTickets": {
+      "title": "Spa tickets to pay ({count})",
+      "add": "Add",
+      "added": "Added",
+      "addAll": "Add all",
+      "fromAppointment": "Spa ticket of appointment {code}, price fixed at check-in"
+    },
     "lineType": {
       "product": "Product",
       "service": "Service",
@@ -871,6 +878,7 @@
     },
     "errors": {
       "no_open_shift": "Open a cash shift before selling.",
+      "ticket_not_billable": "This spa ticket is not finished, is already paid, or belongs to another customer.",
       "discount_limit": "A discount above 10% needs a manager.",
       "underpaid": "The payment does not cover the total.",
       "overpaid": "Transfer and card cannot exceed the total.",
@@ -1203,6 +1211,8 @@
       "cancelled": "Cancelled"
     },
     "detail": {
+      "payHint": "Finished tickets are paid at the POS: pick the customer, then add the spa tickets to the cart.",
+      "openPos": "Open POS",
       "title": "Appointment {code}",
       "subtitle": "Check in when the customer arrives, then start and finish each ticket.",
       "checkedInAt": "arrived {time}",

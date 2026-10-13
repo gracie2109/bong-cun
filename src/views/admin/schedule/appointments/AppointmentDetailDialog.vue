@@ -57,6 +57,10 @@
         <p class="text-right text-sm">
           {{ $t("spa.detail.total") }}: <span class="font-semibold">{{ money(total) }}</span>
         </p>
+        <p v-if="payable" class="rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
+          {{ $t("spa.detail.payHint") }}
+          <router-link :to="{ name: 'pos' }" class="font-semibold text-primary underline">{{ $t("spa.detail.openPos") }}</router-link>
+        </p>
       </section>
 
       <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
@@ -111,7 +115,7 @@ const emit = defineEmits<{ "update:open": [value: boolean]; edit: [appointment: 
 
 const {
   current, total, pets, weights, weightsValid,
-  canCheckIn, canServe, canEdit, canNoShow, canCancel,
+  canCheckIn, canServe, canEdit, canNoShow, canCancel, payable,
   busy, checkIn, setStatus, confirm, confirmTitle, runConfirmed,
 } = useAppointmentDetail(toRef(props, "open"), toRef(props, "appointment"));
 </script>

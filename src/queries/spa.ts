@@ -12,6 +12,7 @@ import {
   getDayBoard,
   getWeekHours,
   listAppointments,
+  listBillableTickets,
   listBranchStaff,
   listSpaResources,
   markNoShow,
@@ -172,6 +173,14 @@ export const useSetTicketStatus = () =>
   );
 
 export const useMarkNoShow = () => useSpaAction((id: string) => markNoShow(supabaseClient(), id));
+
+/** Finished spa tickets of a customer that are not on an invoice yet, for the POS cart. */
+export const useBillableTickets = (branchId: MaybeRef<string | undefined>, customerId: MaybeRef<string | undefined>) =>
+  useQuery({
+    queryKey: computed(() => spaKeys.billable(unref(branchId) ?? "", unref(customerId) ?? "")),
+    queryFn: () => listBillableTickets(supabaseClient(), unref(branchId) as string, unref(customerId) as string),
+    enabled: computed(() => !!unref(branchId) && !!unref(customerId)),
+  });
 
 // ------------------------------------------------------------- day board
 export const useDayBoard = (branchId: MaybeRef<string | undefined>, date: MaybeRef<string>) =>

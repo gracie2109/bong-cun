@@ -62,6 +62,11 @@ export const useAppointmentDetail = (open: Ref<boolean>, appointment: Ref<Appoin
       liveTickets.value.every((ticket) => ticket.status === "waiting")
   );
 
+  // Finished tickets still waiting for an invoice can be paid at the POS.
+  const payable = computed(
+    () => !!status.value && isServing(status.value) && liveTickets.value.some((ticket) => ticket.status === "done" && !ticket.billed)
+  );
+
   const checkInMutation = useCheckInAppointment();
   const statusMutation = useSetTicketStatus();
   const noShowMutation = useMarkNoShow();
@@ -103,7 +108,7 @@ export const useAppointmentDetail = (open: Ref<boolean>, appointment: Ref<Appoin
 
   return {
     current, liveTickets, total, pets, weights, weightsValid,
-    canCheckIn, canServe, canEdit, canNoShow, canCancel,
+    canCheckIn, canServe, canEdit, canNoShow, canCancel, payable,
     busy, checkIn, setStatus, confirm, confirmTitle, runConfirmed,
   };
 };

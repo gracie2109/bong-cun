@@ -1893,6 +1893,7 @@ export type Database = {
       }
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       check_in_appointment: { Args: { p_id: string; p_weights?: Json }; Returns: undefined }
       get_appointment: { Args: { p_id: string }; Returns: Json }
