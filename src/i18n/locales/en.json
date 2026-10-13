@@ -86,7 +86,8 @@
     "reportsAdjustments": "Returns & cancellations report",
     "reportsShifts": "Cash shift reconciliation",
     "productCategories": "Product categories",
-    "productBrands": "Product brands"
+    "productBrands": "Product brands",
+    "productImport": "Product Excel import / export"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -732,7 +733,8 @@
     "reportsAdjustments": "Returns & cancellations",
     "reportsShifts": "Shift reconciliation",
     "productCategories": "Product categories",
-    "productBrands": "Brands"
+    "productBrands": "Brands",
+    "productImport": "Excel import / export"
   },
   "pos": {
     "title": "Point of sale",
@@ -1584,6 +1586,44 @@
       "searchPlaceholder": "Brand name...",
       "empty": "No brands yet.",
       "deleteTitle": "Delete brand \"{name}\"?"
+    }
+  },
+  "productImport": {
+    "title": "Excel import / export",
+    "template": "Download template",
+    "exportAll": "Export all products",
+    "dropTitle": "Drop an Excel file here or click to choose",
+    "dropHint": ".xlsx file in the template layout: sheet \"San pham\", plus sheet \"Don vi\" for conversion units",
+    "noPermission": "You can only export. Importing needs permission to create and edit products.",
+    "readFailed": "The file could not be read. Use an .xlsx file in the template layout.",
+    "rowCount": "{n} rows",
+    "checking": "Checking {done}/{total} rows...",
+    "importing": "Importing {done}/{total} rows...",
+    "cancel": "Discard file",
+    "another": "Import another file",
+    "import": "Import into the system",
+    "done": "Import finished. Running the same file again only updates, it never duplicates.",
+    "newCategories": "New categories will be created: {names}",
+    "newBrands": "New brands will be created: {names}",
+    "onlyErrors": "Show error rows only",
+    "empty": "No rows",
+    "stat": {
+      "createdVariants": "New variants",
+      "updatedVariants": "Updated variants",
+      "createdGroups": "New product groups",
+      "errorRows": "Error rows"
+    },
+    "col": {
+      "row": "Row",
+      "group": "Product group",
+      "sku": "SKU",
+      "price": "Price",
+      "result": "Result"
+    },
+    "action": {
+      "create": "Create",
+      "update": "Update",
+      "skip": "Skipped"
     }
   }
 }

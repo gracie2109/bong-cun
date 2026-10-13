@@ -86,7 +86,8 @@
     "reportsAdjustments": "Báo cáo hoàn trả & hủy",
     "reportsShifts": "Đối chiếu ca thu ngân",
     "productCategories": "Danh mục sản phẩm",
-    "productBrands": "Thương hiệu sản phẩm"
+    "productBrands": "Thương hiệu sản phẩm",
+    "productImport": "Nhập / xuất Excel sản phẩm"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -732,7 +733,8 @@
     "reportsAdjustments": "Hoàn trả & hủy",
     "reportsShifts": "Đối chiếu ca",
     "productCategories": "Danh mục sản phẩm",
-    "productBrands": "Thương hiệu"
+    "productBrands": "Thương hiệu",
+    "productImport": "Nhập / xuất Excel"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1584,6 +1586,44 @@
       "searchPlaceholder": "Tên thương hiệu...",
       "empty": "Chưa có thương hiệu nào.",
       "deleteTitle": "Xóa thương hiệu \"{name}\"?"
+    }
+  },
+  "productImport": {
+    "title": "Nhập / xuất Excel",
+    "template": "Tải file mẫu",
+    "exportAll": "Xuất tất cả sản phẩm",
+    "dropTitle": "Kéo file Excel vào đây hoặc bấm để chọn",
+    "dropHint": "File .xlsx theo mẫu: sheet \"San pham\", thêm sheet \"Don vi\" nếu có đơn vị quy đổi",
+    "noPermission": "Bạn chỉ được xuất file. Nhập sản phẩm cần quyền tạo và sửa sản phẩm.",
+    "readFailed": "Không đọc được file. Hãy dùng file .xlsx theo mẫu.",
+    "rowCount": "{n} dòng",
+    "checking": "Đang kiểm tra {done}/{total} dòng...",
+    "importing": "Đang nhập {done}/{total} dòng...",
+    "cancel": "Bỏ file",
+    "another": "Nhập file khác",
+    "import": "Nhập vào hệ thống",
+    "done": "Đã nhập xong. Chạy lại cùng file sẽ chỉ cập nhật, không tạo trùng.",
+    "newCategories": "Sẽ tạo danh mục mới: {names}",
+    "newBrands": "Sẽ tạo thương hiệu mới: {names}",
+    "onlyErrors": "Chỉ hiện dòng lỗi",
+    "empty": "Không có dòng nào",
+    "stat": {
+      "createdVariants": "Biến thể tạo mới",
+      "updatedVariants": "Biến thể cập nhật",
+      "createdGroups": "Nhóm sản phẩm mới",
+      "errorRows": "Dòng lỗi"
+    },
+    "col": {
+      "row": "Dòng",
+      "group": "Nhóm sản phẩm",
+      "sku": "SKU",
+      "price": "Giá",
+      "result": "Kết quả"
+    },
+    "action": {
+      "create": "Tạo mới",
+      "update": "Cập nhật",
+      "skip": "Bỏ qua"
     }
   }
 }

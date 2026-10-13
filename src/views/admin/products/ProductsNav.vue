@@ -24,5 +24,6 @@ const TABS = [
   { name: "adminProducts", icon: "lucide:package", label: "adminNav.products" },
   { name: "productCategories", icon: "lucide:folder-tree", label: "adminNav.productCategories" },
   { name: "productBrands", icon: "lucide:badge-check", label: "adminNav.productBrands" },
+  { name: "productImport", icon: "lucide:file-spreadsheet", label: "adminNav.productImport" },
 ];
 </script>

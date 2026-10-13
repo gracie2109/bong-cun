@@ -1070,6 +1070,36 @@ export type Database = {
           },
         ]
       }
+      product_imports: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          created_count: number
+          file_name: string | null
+          id: string
+          row_count: number
+          updated_count: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          created_count?: number
+          file_name?: string | null
+          id?: string
+          row_count?: number
+          updated_count?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          created_count?: number
+          file_name?: string | null
+          id?: string
+          row_count?: number
+          updated_count?: number
+        }
+        Relationships: []
+      }
       product_branch_prices: {
         Row: {
           branch_id: string
@@ -2099,6 +2129,8 @@ export type Database = {
       product_unit_price: { Args: { p_branch?: string; p_product: string; p_unit?: string }; Returns: number }
       set_product_branch_prices: { Args: { p_prices: Json; p_product: string }; Returns: undefined }
       find_by_barcode: { Args: { p_branch?: string; p_code: string }; Returns: Json }
+      import_products: { Args: { p_dry_run?: boolean; p_file_name?: string; p_rows: Json }; Returns: Json }
+      export_products: { Args: { p_limit?: number; p_offset?: number }; Returns: Json }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined

@@ -2,7 +2,7 @@
 
 Kế hoạch ngày 13/10/2026 cho phần còn lại của module sản phẩm (M6 trong kế hoạch BA/kiến trúc v0.3): danh mục và thương hiệu, ảnh dùng chung với shop, giá theo cơ sở, quy đổi đơn vị, nhập/xuất Excel. Đi sau biến thể sản phẩm (PR #46, [bien-the-san-pham.md](bien-the-san-pham.md)), kho theo lô (PR #44), POS (PR #43, #54), lịch spa (PR #55, #56) và báo cáo (PR #60 đến #63), đều đã merge.
 
-**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Bước 1 (danh mục và thương hiệu) đã merge (#65); bước 2 (thư viện ảnh) đã merge (#67); bước 3 (giá theo cơ sở) đã merge (#68); bước 4 (đơn vị quy đổi) đã code; bước 5 chưa làm. Khác plan ở bước 2: policy kho ảnh `catalog/` cho phép CREATE hoặc UPDATE sản phẩm; client tự tính các file ảnh bị gỡ để xoá (thay cho `removed_paths`); mỗi ảnh có thêm `storage_path`. Khác plan ở bước 3: tab Giá theo cơ sở chỉ cho sửa ô của cơ sở mà nhân viên có quyền Sửa sản phẩm (admin sửa mọi cơ sở), biến thể mới phải lưu trước rồi mới đặt giá riêng; `create_invoice` được sao chép nguyên văn và chỉ đổi dòng tính giá sản phẩm. Khác plan ở bước 4: 9 file migration `20261015040000` đến `040800` (tách `save_product_units` ra hàm nội bộ gọi từ `save_product_group`; `create_invoice`, `create_sales_return`, `save_stock_document` mỗi hàm một file); dòng phiếu nhập nhận `unit_id`, `qty`, `unit_cost` theo đơn vị đã chọn và lưu quy ra đơn vị gốc; `report_sales_lines` và `report_top_items` dùng số lượng đơn vị gốc; chưa làm phần Should: lọc danh mục ở tồn kho và quét mã vạch của đơn vị ở phiếu nhập.
+**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Bước 1 (danh mục và thương hiệu) đã merge (#65); bước 2 (thư viện ảnh) đã merge (#67); bước 3 (giá theo cơ sở) đã merge (#68); bước 4 (đơn vị quy đổi) đã merge (#69); bước 5 (nhập/xuất Excel) làm xong ở PR #70. Cả 5 bước đã xong, xem mục 12. Khác plan ở bước 2: policy kho ảnh `catalog/` cho phép CREATE hoặc UPDATE sản phẩm; client tự tính các file ảnh bị gỡ để xoá (thay cho `removed_paths`); mỗi ảnh có thêm `storage_path`. Khác plan ở bước 3: tab Giá theo cơ sở chỉ cho sửa ô của cơ sở mà nhân viên có quyền Sửa sản phẩm (admin sửa mọi cơ sở), biến thể mới phải lưu trước rồi mới đặt giá riêng; `create_invoice` được sao chép nguyên văn và chỉ đổi dòng tính giá sản phẩm. Khác plan ở bước 4: 9 file migration `20261015040000` đến `040800` (tách `save_product_units` ra hàm nội bộ gọi từ `save_product_group`; `create_invoice`, `create_sales_return`, `save_stock_document` mỗi hàm một file); dòng phiếu nhập nhận `unit_id`, `qty`, `unit_cost` theo đơn vị đã chọn và lưu quy ra đơn vị gốc; `report_sales_lines` và `report_top_items` dùng số lượng đơn vị gốc; chưa làm phần Should: lọc danh mục ở tồn kho và quét mã vạch của đơn vị ở phiếu nhập.
 
 Dự án là pet project cá nhân, nên ưu tiên đơn giản và rẻ: thêm bảng nhỏ, logic giá và tồn nằm trong Postgres RPC, không thêm dịch vụ ngoài, chỉ thêm một thư viện đọc/ghi Excel nhỏ và tải lười (lazy).
 
@@ -453,3 +453,25 @@ Chạy trên Postgres local với dữ liệu mẫu (như các module trước),
 | `drop function list_product_groups` cũ làm client cũ gọi lỗi trong lúc deploy | Tham số mới đều có mặc định, client cũ gọi bằng tên tham số vẫn chạy với bản mới |
 | File Excel lớn làm treo trình duyệt | Giới hạn 2.000 dòng, đọc bằng thư viện nhẹ, gửi lô 200 dòng |
 | Ảnh mồ côi trong storage | Vô hại; dọn dẹp là Could |
+
+## 12. Kết quả
+
+| Bước | PR | Migration đã chạy tự động (workflow "Supabase migrate") |
+| --- | --- | --- |
+| 1. Danh mục và thương hiệu | #65 | `20261015010000` đến `010400` |
+| 2. Thư viện ảnh dùng chung | #67 | `20261015020000` đến `020200` |
+| 3. Giá theo cơ sở | #68 | `20261015030000`, `030100` |
+| 4. Đơn vị quy đổi | #69 | `20261015040000` đến `040800` |
+| 5. Nhập/xuất Excel | #70 | `20261015050000` đến `050300` (chạy sau khi merge) |
+
+Hotfix đi kèm: #66 (lỗi 500 ở /admin do link treo sau #58).
+
+Khác plan ở bước 5:
+
+- Không tách `apply_product_group` khỏi `save_product_group`. `import_one_group` dựng payload gồm cả biến thể và đơn vị hiện có của nhóm rồi gọi `save_product_group`, nên nhập file không bao giờ xoá biến thể hay đơn vị nào (kịch bản 13).
+- `import_products` chạy từng nhóm trong một khối `begin/exception`; nhóm có dòng lỗi thì không ghi, các dòng của nhóm đó đều nhận ghi chú lỗi. Chạy thử dùng `raise` mã `P0099` rồi bắt lại.
+- Client kiểm tra thêm SKU và mã vạch trùng trong cả file, vì mỗi lô chạy thử riêng và không thấy nhau.
+- Đã thêm bảng `product_imports` để ghi lịch sử, nhưng chưa có màn hình xem lịch sử.
+- Thư viện mới: `read-excel-file` và `write-excel-file`, chỉ nạp khi bấm chọn file hoặc tải file (`import()` động).
+
+Đã kiểm tra trên Postgres cục bộ: file 50 dòng có 3 lỗi báo đúng 3 dòng và không ghi gì; sửa xong nhập đủ 50 biến thể; nhập lại cùng file chuyển thành cập nhật và dữ liệu không đổi; xuất rồi nhập lại không đổi gì; nhóm thiếu một biến thể vẫn giữ biến thể đó; người chỉ có quyền xem xuất được nhưng nhập bị chặn (42501).
