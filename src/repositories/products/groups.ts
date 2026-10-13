@@ -82,6 +82,17 @@ export const saveProductGroup = async (client: Client, input: ProductGroupInput)
         track_stock: variant.trackStock,
         is_active: variant.isActive,
         image_url: variant.imageUrl,
+        // Left out (not null) when the caller does not edit units, so the database keeps them.
+        units: variant.units?.map((unit) => ({
+          id: unit.id ?? null,
+          name: unit.name,
+          factor: unit.factor,
+          barcode: unit.barcode,
+          price: unit.price,
+          for_sale: unit.forSale,
+          for_purchase: unit.forPurchase,
+          is_active: unit.isActive,
+        })),
       })),
     },
   });
@@ -107,6 +118,10 @@ export const PRODUCT_ERROR_HINTS = [
   "invalid_category",
   "invalid_brand",
   "too_many_images",
+  "unit_name_required",
+  "duplicate_unit",
+  "unit_factor",
+  "unit_in_use",
 ] as const;
 export type ProductErrorHint = (typeof PRODUCT_ERROR_HINTS)[number];
 

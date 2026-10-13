@@ -1,3 +1,4 @@
+import type { UnitRow } from "./units/productUnitForm";
 
 /** An attribute being edited: `draft` is the value still being typed. */
 export type AttributeForm = { uid: number; name: string; values: string[]; draft: string };
@@ -13,6 +14,8 @@ export type VariantRow = {
   trackStock: boolean;
   isActive: boolean;
   imageUrl: string;
+  /** Conversion units (hộp, thùng...) of this variant. */
+  units: UnitRow[];
 };
 
 type Translate = (key: string) => string;

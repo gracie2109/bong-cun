@@ -17,7 +17,25 @@ export type Product = {
   imageUrl: string | null;
 };
 
-export type SellableProduct = Product & { groupName: string };
+/** A larger unit a variant is sold or received in: 1 `name` = `factor` base units (the variant's `unit`). */
+export type ProductUnit = {
+  id: string;
+  name: string;
+  factor: number;
+  barcode: string | null;
+  /** Own price, or null when the price is the base price x factor. */
+  price: number | null;
+  forSale: boolean;
+  forPurchase: boolean;
+  isActive: boolean;
+};
+
+/** What the screens that sell or receive in a unit may pick from. */
+export const sellableUnits = (units: readonly ProductUnit[]) => units.filter((unit) => unit.isActive && unit.forSale);
+export const purchasableUnits = (units: readonly ProductUnit[]) =>
+  units.filter((unit) => unit.isActive && unit.forPurchase);
+
+export type SellableProduct = Product & { groupName: string; units: ProductUnit[] };
 
 export type ProductFilter = {
   search?: string;
@@ -45,6 +63,7 @@ export type ProductVariant = {
   trackStock: boolean;
   isActive: boolean;
   imageUrl: string | null;
+  units: ProductUnit[];
 };
 
 /** One picture of a group's gallery; `storagePath` is empty for a link to an image kept elsewhere. */
@@ -73,6 +92,17 @@ export type ProductGroup = {
   variants: ProductVariant[];
 };
 
+export type ProductUnitInput = {
+  id?: string;
+  name: string;
+  factor: number;
+  barcode: string;
+  price: number | null;
+  forSale: boolean;
+  forPurchase: boolean;
+  isActive: boolean;
+};
+
 export type ProductVariantInput = {
   id?: string;
   options: string[];
@@ -83,6 +113,8 @@ export type ProductVariantInput = {
   trackStock: boolean;
   isActive: boolean;
   imageUrl: string;
+  /** Leave out to keep the variant's units as they are. */
+  units?: ProductUnitInput[];
 };
 
 export type ProductGroupInput = {

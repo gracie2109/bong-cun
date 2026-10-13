@@ -43,6 +43,9 @@
                 :submitted="submitted"
               />
             </TabsContent>
+            <TabsContent value="units" class="mt-0">
+              <UnitsTab v-model:rows="rows" :submitted="submitted" />
+            </TabsContent>
             <TabsContent v-if="priceGrid.visible.value" value="branchPrices" class="mt-0">
               <BranchPricesTab
                 :rows="rows"
@@ -80,11 +83,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BranchPricesTab from "./tabs/BranchPricesTab.vue";
 import GeneralTab from "./tabs/GeneralTab.vue";
+import UnitsTab from "./tabs/UnitsTab.vue";
 import ImagesTab from "./tabs/ImagesTab.vue";
 import VariantsTab from "./tabs/VariantsTab.vue";
 import { useProductGroupForm, type ProductTab } from "./useProductGroupForm";
 
-const BASE_TABS: ProductTab[] = ["general", "images", "variants"];
+const BASE_TABS: ProductTab[] = ["general", "images", "variants", "units"];
 
 const props = defineProps<{ open: boolean; groupId: string | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();

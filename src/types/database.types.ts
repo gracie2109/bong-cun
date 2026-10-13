@@ -409,6 +409,9 @@ export type Database = {
           unit: string | null
           unit_price: number
           weight_kg: number | null
+          base_qty: number | null
+          unit_factor: number
+          unit_id: string | null
         }
         Insert: {
           cost_amount?: number | null
@@ -427,6 +430,8 @@ export type Database = {
           unit?: string | null
           unit_price: number
           weight_kg?: number | null
+          unit_factor?: number
+          unit_id?: string | null
         }
         Update: {
           cost_amount?: number | null
@@ -445,6 +450,8 @@ export type Database = {
           unit?: string | null
           unit_price?: number
           weight_kg?: number | null
+          unit_factor?: number
+          unit_id?: string | null
         }
         Relationships: [
           {
@@ -1102,6 +1109,56 @@ export type Database = {
           },
         ]
       }
+      product_units: {
+        Row: {
+          barcode: string | null
+          created_at: string
+          factor: number
+          for_purchase: boolean
+          for_sale: boolean
+          id: string
+          is_active: boolean
+          name: string
+          price: number | null
+          product_id: string
+          sort_order: number
+        }
+        Insert: {
+          barcode?: string | null
+          created_at?: string
+          factor: number
+          for_purchase?: boolean
+          for_sale?: boolean
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number | null
+          product_id: string
+          sort_order?: number
+        }
+        Update: {
+          barcode?: string | null
+          created_at?: string
+          factor?: number
+          for_purchase?: boolean
+          for_sale?: boolean
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number | null
+          product_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_units_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_brands: {
         Row: {
           created_at: string
@@ -1416,6 +1473,11 @@ export type Database = {
           qty: number
           system_qty: number | null
           unit_cost: number
+          entered_cost: number | null
+          entered_qty: number | null
+          unit_factor: number
+          unit_id: string | null
+          unit_name: string | null
         }
         Insert: {
           counted_qty?: number | null
@@ -1430,6 +1492,11 @@ export type Database = {
           qty?: number
           system_qty?: number | null
           unit_cost?: number
+          entered_cost?: number | null
+          entered_qty?: number | null
+          unit_factor?: number
+          unit_id?: string | null
+          unit_name?: string | null
         }
         Update: {
           counted_qty?: number | null
@@ -1444,6 +1511,11 @@ export type Database = {
           qty?: number
           system_qty?: number | null
           unit_cost?: number
+          entered_cost?: number | null
+          entered_qty?: number | null
+          unit_factor?: number
+          unit_id?: string | null
+          unit_name?: string | null
         }
         Relationships: [
           {
@@ -2026,6 +2098,7 @@ export type Database = {
       }
       product_unit_price: { Args: { p_branch?: string; p_product: string; p_unit?: string }; Returns: number }
       set_product_branch_prices: { Args: { p_prices: Json; p_product: string }; Returns: undefined }
+      find_by_barcode: { Args: { p_branch?: string; p_code: string }; Returns: Json }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined

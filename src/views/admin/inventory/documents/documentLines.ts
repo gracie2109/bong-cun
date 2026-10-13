@@ -1,4 +1,5 @@
 import type { DocType, StockLot, StockDocumentLineInput } from "@/repositories/inventory";
+import { purchasableUnits, type ProductUnit } from "@/repositories/products";
 import { parseAmount } from "@/views/admin/pos/format";
 import { parseQty } from "../format";
 
@@ -8,6 +9,10 @@ export type EditLine = {
   productId: string;
   productName: string;
   unit: string;
+  /** Receipt only: the conversion unit qty and unitCost are in; null for the base unit. */
+  unitId: string | null;
+  /** Units a receipt line may be entered in, besides the base unit. */
+  units: ProductUnit[];
   lotId: string | null;
   lotNo: string;
   expiryDate: string;
@@ -20,11 +25,14 @@ export type EditLine = {
 
 let keySeq = 0;
 
-export const blankLine = (product: { id: string; name: string; unit: string }): EditLine => ({
+export const blankLine = (product: { id: string; name: string; unit: string; units?: ProductUnit[] }): EditLine => ({
   key: `line-${++keySeq}`,
   productId: product.id,
   productName: product.name,
   unit: product.unit,
+  // A new receipt line starts in the unit goods are bought in, when the product has one.
+  unitId: purchasableUnits(product.units ?? [])[0]?.id ?? null,
+  units: (product.units ?? []).filter((unit) => unit.isActive),
   lotId: null,
   lotNo: "",
   expiryDate: "",
@@ -34,6 +42,17 @@ export const blankLine = (product: { id: string; name: string; unit: string }): 
   systemQty: null,
   lotOptions: [],
 });
+
+export const selectedUnit = (line: EditLine): ProductUnit | undefined =>
+  line.units.find((unit) => unit.id === line.unitId);
+
+/** What a receipt line comes to in base units: "= 60 viên" at "1.500đ/viên"; null in the base unit. */
+export const baseEquivalent = (line: EditLine): { qty: number; cost: number; unit: string } | null => {
+  const unit = selectedUnit(line);
+  const value = parseQty(line.qty);
+  if (!unit || !Number.isFinite(value)) return null;
+  return { qty: Math.round(value * unit.factor * 100) / 100, cost: Math.round((parseAmount(line.unitCost) / unit.factor) * 100) / 100, unit: line.unit };
+};
 
 export const selectedLot = (line: EditLine): StockLot | undefined =>
   line.lotOptions.find((lot) => lot.id === line.lotId);
@@ -88,6 +107,7 @@ export const toInput = (type: DocType, line: EditLine): StockDocumentLineInput =
   if (type === "receipt") {
     return {
       productId: line.productId,
+      unitId: line.unitId,
       lotNo: line.lotNo.trim(),
       expiryDate: line.expiryDate || null,
       qty: parseQty(line.qty),

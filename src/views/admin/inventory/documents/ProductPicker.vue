@@ -50,11 +50,11 @@ import { Input } from "@/components/ui/input";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { supabaseClient } from "@/lib/supabase";
 import { useSellableProductsPaged } from "@/queries/products";
-import { searchSellableProducts, type Product } from "@/repositories/products";
+import { searchSellableProducts, type SellableProduct } from "@/repositories/products";
 
 const BLUR_CLOSE_MS = 150;
 
-const emit = defineEmits<{ pick: [product: Product] }>();
+const emit = defineEmits<{ pick: [product: SellableProduct] }>();
 
 const search = ref("");
 const focused = ref(false);
@@ -62,7 +62,7 @@ const debounced = refDebounced(search, SEARCH_DEBOUNCE_MS);
 const { items, loadMore, hasMore, loading, loadingMore } = useSellableProductsPaged(debounced);
 const results = computed(() => (debounced.value.trim() ? items.value : []));
 
-const pick = (product: Product) => {
+const pick = (product: SellableProduct) => {
   if (!product.trackStock) return;
   emit("pick", product);
   search.value = "";

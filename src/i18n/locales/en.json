@@ -903,7 +903,8 @@
       "has_returns": "This invoice has returns and cannot be cancelled.",
       "return_too_much": "More than what is left to return of {name}.",
       "return_products_only": "Only products can be returned, not services or combos.",
-      "reason_required": "A reason is required."
+      "reason_required": "A reason is required.",
+      "unit_not_available": "This unit can no longer be used, pick another."
     },
     "returns": {
       "title": "Returns",
@@ -922,6 +923,11 @@
       "add": "Add to invoice",
       "count": "{n} variants",
       "from": "From {price}"
+    },
+    "units": {
+      "pick": "Choose a unit",
+      "subtitle": "This product can be sold in several units.",
+      "unit": "Unit"
     }
   },
   "products": {
@@ -991,13 +997,18 @@
       "no_variants": "A product needs at least one variant.",
       "invalid_category": "This category is switched off. Choose another one.",
       "invalid_brand": "This brand is switched off. Choose another one.",
-      "too_many_images": "A product has 8 images at most."
+      "too_many_images": "A product has 8 images at most.",
+      "unit_name_required": "Every unit needs a name.",
+      "duplicate_unit": "Unit {value} is listed twice.",
+      "unit_factor": "Unit {value} must be worth more than one base unit.",
+      "unit_in_use": "Unit {value} is already on invoices or stock documents, so its factor cannot change; switch it off and add a new unit."
     },
     "tabs": {
       "general": "General",
       "variants": "Variants",
       "images": "Images ({n})",
-      "branchPrices": "Branch prices"
+      "branchPrices": "Branch prices",
+      "units": "Units"
     },
     "filter": {
       "pickCategory": "Choose a category",
@@ -1024,6 +1035,25 @@
       "saveFirst": "Save the product first, then set a price for each branch.",
       "newVariants": "New variants show up here after saving.",
       "noPermission": "You may not change prices at this branch"
+    },
+    "units": {
+      "title": "Conversion units",
+      "hint": "The base unit is the smallest one; stock is counted in it. Add box, case... and how many base units each holds.",
+      "variant": "Variant",
+      "copyAll": "Apply to all variants",
+      "name": "Unit name",
+      "factor": "Equals how many {unit}",
+      "sell": "Sell",
+      "purchase": "Receive",
+      "active": "In use",
+      "add": "Add unit",
+      "remove": "Remove unit",
+      "empty": "No conversion units; sold in the base unit only.",
+      "problem": {
+        "name": "Enter a unit name",
+        "duplicate": "Same name as another unit or the base unit",
+        "factor": "The factor must be more than 1"
+      }
     }
   },
   "inventory": {
@@ -1145,7 +1175,9 @@
       "cancelDraft": "Cancel draft",
       "cancelPosted": "Cancel receipt",
       "saveDraft": "Save draft",
-      "post": "Save and post"
+      "post": "Save and post",
+      "unit": "Receiving unit",
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
     },
     "suppliers": {
       "title": "Suppliers",
@@ -1168,7 +1200,8 @@
       "no_lines": "The document has no lines.",
       "posted_not_receipt": "A posted write-off or count cannot be cancelled; correct it with a new count.",
       "reason_required": "A reason is required.",
-      "untracked_product": "{name} does not track stock."
+      "untracked_product": "{name} does not track stock.",
+      "unit_not_available": "This unit can no longer be used, pick another."
     }
   },
   "shop": {

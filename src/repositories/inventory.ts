@@ -2,6 +2,8 @@
 // counts) and sales; every write is an RPC, and the database takes sold stock FEFO.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
+import { toUnit } from "./products/mappers";
+import type { ProductUnit } from "./products/types";
 import { filterSafe, pageRange, searchOr, unwrap, type Page, type PageParams } from "./shared";
 
 type Client = SupabaseClient<Database>;
@@ -254,6 +256,14 @@ export type StockDocumentLine = {
   expiryDate: string | null;
   qty: number;
   unitCost: number;
+  /** A receipt line keeps what was typed: `enteredQty` of `unitName` at `enteredCost` each. */
+  unitId: string | null;
+  unitName: string | null;
+  unitFactor: number;
+  enteredQty: number | null;
+  enteredCost: number | null;
+  /** The product's conversion units, to pick another unit while the draft is edited. */
+  productUnits: ProductUnit[];
   systemQty: number | null;
   countedQty: number | null;
   note: string | null;
@@ -262,7 +272,9 @@ export type StockDocumentLine = {
 export type StockDocumentDetail = StockDocument & { lines: StockDocumentLine[] };
 
 type DocumentRow = Tables<"stock_documents"> & { suppliers: { name: string } | null };
-type DocumentLineRow = Tables<"stock_document_lines"> & { products: { name: string; unit: string } | null };
+type DocumentLineRow = Tables<"stock_document_lines"> & {
+  products: { name: string; unit: string; product_units: Tables<"product_units">[] } | null;
+};
 
 const toDocType = (value: string): DocType => DOC_TYPES.find((type) => type === value) ?? "receipt";
 const toDocStatus = (value: string): DocStatus => DOC_STATUSES.find((status) => status === value) ?? "draft";
@@ -321,7 +333,7 @@ export const getStockDocument = async (client: Client, id: string): Promise<Stoc
   const row = unwrap(
     await client
       .from("stock_documents")
-      .select("*, suppliers(name), stock_document_lines(*, products(name, unit))")
+      .select("*, suppliers(name), stock_document_lines(*, products(name, unit, product_units(*)))")
       .eq("id", id)
       .maybeSingle()
   ) as unknown as (DocumentRow & { stock_document_lines: DocumentLineRow[] }) | null;
@@ -341,6 +353,12 @@ export const getStockDocument = async (client: Client, id: string): Promise<Stoc
         expiryDate: line.expiry_date,
         qty: num(line.qty),
         unitCost: num(line.unit_cost),
+        unitId: line.unit_id,
+        unitName: line.unit_name,
+        unitFactor: num(line.unit_factor),
+        enteredQty: line.entered_qty === null ? null : num(line.entered_qty),
+        enteredCost: line.entered_cost === null ? null : num(line.entered_cost),
+        productUnits: (line.products?.product_units ?? []).map(toUnit),
         systemQty: line.system_qty === null ? null : num(line.system_qty),
         countedQty: line.counted_qty === null ? null : num(line.counted_qty),
         note: line.note,
@@ -350,7 +368,16 @@ export const getStockDocument = async (client: Client, id: string): Promise<Stoc
 
 /** Receipt lines name a lot; write-off and count lines point at an existing one. */
 export type StockDocumentLineInput =
-  | { productId: string; lotNo: string; expiryDate: string | null; qty: number; unitCost: number; note?: string | null }
+  | {
+      productId: string;
+      /** The conversion unit qty and unitCost are in; missing: the base unit. */
+      unitId?: string | null;
+      lotNo: string;
+      expiryDate: string | null;
+      qty: number;
+      unitCost: number;
+      note?: string | null;
+    }
   | { lotId: string; qty: number; note?: string | null }
   | { lotId: string; countedQty: number; note?: string | null };
 
@@ -368,6 +395,7 @@ const toLinePayload = (line: StockDocumentLineInput) => {
   if ("productId" in line) {
     return {
       product_id: line.productId,
+      unit_id: line.unitId ?? null,
       lot_no: line.lotNo,
       expiry_date: line.expiryDate,
       qty: line.qty,
@@ -486,6 +514,7 @@ export const INVENTORY_ERROR_HINTS = [
   "posted_not_receipt",
   "reason_required",
   "untracked_product",
+  "unit_not_available",
 ] as const;
 export type InventoryErrorHint = (typeof INVENTORY_ERROR_HINTS)[number];
 

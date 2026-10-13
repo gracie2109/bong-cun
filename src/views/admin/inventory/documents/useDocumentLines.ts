@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import { useFetchProductLots } from "@/queries/inventory";
 import { isExpired, type DocType, type StockDocumentDetail } from "@/repositories/inventory";
-import type { Product } from "@/repositories/products";
+import type { Product, ProductUnit } from "@/repositories/products";
 import { blankLine, draftTotal, pickLot, toInput, validLine, type EditLine } from "./documentLines";
 
 /** The editable lines of a stock document, loaded from a saved one or built by picking products. */
@@ -20,9 +20,14 @@ export const useDocumentLines = (type: Ref<DocType>, branchId: () => string | un
       lotId: line.lotId,
       lotNo: line.lotNo,
       expiryDate: line.expiryDate ?? "",
-      qty: detail?.docType === "count" ? "" : String(line.qty),
+      // A receipt shows what was typed (in its unit); the stored qty and cost are in base units.
+      qty: detail?.docType === "count" ? "" : String(line.enteredQty ?? line.qty),
       // A receipt's cost field takes whole dong only (parseAmount keeps digits), so drop any decimals.
-      unitCost: String(detail?.docType === "receipt" ? Math.round(line.unitCost) : line.unitCost),
+      unitCost: String(
+        detail?.docType === "receipt" ? Math.round(line.enteredCost ?? line.unitCost) : line.unitCost
+      ),
+      unitId: detail?.docType === "receipt" ? line.unitId : null,
+      units: line.productUnits.filter((unit) => unit.isActive || unit.id === line.unitId),
       countedQty: line.countedQty === null ? "" : String(line.countedQty),
       systemQty: line.systemQty,
     }));
@@ -33,7 +38,7 @@ export const useDocumentLines = (type: Ref<DocType>, branchId: () => string | un
     }
   };
 
-  const addProduct = async (product: Product) => {
+  const addProduct = async (product: Product & { units?: ProductUnit[] }) => {
     const branch = branchId();
     if (!branch) return;
     if (type.value === "receipt") {

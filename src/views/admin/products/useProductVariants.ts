@@ -1,6 +1,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import type { ProductGroup } from "@/repositories/products";
 import { comboKey, newAttribute, type AttributeForm, type VariantRow } from "./productVariantForm";
+import { toUnitRow } from "./units/productUnitForm";
 
 const DEFAULT_UNIT = "cái";
 
@@ -33,6 +34,7 @@ export const useProductVariants = () => {
     trackStock: true,
     isActive: true,
     imageUrl: "",
+    units: [],
   });
 
   /**
@@ -85,6 +87,7 @@ export const useProductVariants = () => {
         trackStock: variant.trackStock,
         isActive: variant.isActive,
         imageUrl: variant.imageUrl ?? "",
+        units: variant.units.map(toUnitRow),
       });
     }
     attributes.value = (group?.attributes ?? []).map((item) =>
