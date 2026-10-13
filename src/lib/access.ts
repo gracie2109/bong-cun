@@ -69,8 +69,6 @@ export const ADMIN_ROUTE_PERMISSIONS: Record<string, string> = {
   spaBoard: "schedule",
   spaAppointments: "schedule",
   spaSettings: "schedule",
-  listOrderSchedule: "schedule",
-  detailOrderScheduleDetail: "schedule",
   settings: "settings",
   permissions: "settings",
   permissionMatrix: "settings",

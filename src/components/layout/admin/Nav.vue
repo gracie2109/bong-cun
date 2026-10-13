@@ -25,7 +25,6 @@ defineProps<{ items: LinkProp[] }>();
 // Detail pages light up the list they belong to.
 const PARENT_ROUTE: Record<string, string> = {
   petDetail: "pets",
-  detailOrderScheduleDetail: "listOrderSchedule",
   usersGroup: "users",
 };
 
