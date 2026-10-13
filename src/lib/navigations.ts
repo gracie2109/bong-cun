@@ -23,6 +23,8 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
       { title: "adminNav.reportsOverview", icon: "lucide:chart-column", name: "reportsOverview" },
       { title: "adminNav.reportsItems", icon: "lucide:package-search", name: "reportsItems" },
       { title: "adminNav.reportsStaff", icon: "lucide:users", name: "reportsStaff" },
+      { title: "adminNav.reportsAdjustments", icon: "lucide:undo-2", name: "reportsAdjustments" },
+      { title: "adminNav.reportsShifts", icon: "lucide:scale", name: "reportsShifts" },
     ],
   },
   {

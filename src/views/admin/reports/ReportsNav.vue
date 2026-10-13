@@ -28,6 +28,8 @@ const tabs = [
   { name: "reportsOverview", icon: "lucide:chart-column", label: "reports.nav.overview" },
   { name: "reportsItems", icon: "lucide:package-search", label: "reports.nav.items" },
   { name: "reportsStaff", icon: "lucide:users", label: "reports.nav.staff" },
+  { name: "reportsAdjustments", icon: "lucide:undo-2", label: "reports.nav.adjustments" },
+  { name: "reportsShifts", icon: "lucide:scale", label: "reports.nav.shifts" },
 ];
 const visibleTabs = computed(() => (auth.can("reports", "VIEW") ? tabs : []));
 </script>

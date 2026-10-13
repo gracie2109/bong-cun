@@ -82,7 +82,9 @@
     "spaSettings": "Spa settings",
     "reportsOverview": "Revenue report",
     "reportsItems": "Products & services report",
-    "reportsStaff": "Staff report"
+    "reportsStaff": "Staff report",
+    "reportsAdjustments": "Returns & cancellations report",
+    "reportsShifts": "Cash shift reconciliation"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -724,7 +726,9 @@
     "reports": "Reports",
     "reportsOverview": "Revenue overview",
     "reportsItems": "Products & services",
-    "reportsStaff": "Staff revenue"
+    "reportsStaff": "Staff revenue",
+    "reportsAdjustments": "Returns & cancellations",
+    "reportsShifts": "Shift reconciliation"
   },
   "pos": {
     "title": "Point of sale",
@@ -1303,7 +1307,9 @@
     "nav": {
       "overview": "Overview",
       "items": "Products & services",
-      "staff": "Staff"
+      "staff": "Staff",
+      "adjustments": "Returns & cancellations",
+      "shifts": "Shift reconciliation"
     },
     "kpi": {
       "netRevenue": "Net revenue",
@@ -1369,7 +1375,25 @@
       "avgTicket": "Avg / invoice",
       "tickets": "Tickets",
       "pets": "Pets",
-      "serviceRevenue": "Service revenue"
+      "serviceRevenue": "Service revenue",
+      "kind": "Type",
+      "code": "Code",
+      "invoiceCode": "Original invoice",
+      "time": "Time",
+      "items": "Items",
+      "amount": "Amount",
+      "refundMethod": "Refund method",
+      "reason": "Reason",
+      "by": "Done by",
+      "shiftCode": "Shift",
+      "branch": "Branch",
+      "cashier": "Cashier",
+      "openedAt": "Opened",
+      "closedAt": "Closed",
+      "sales": "Sales",
+      "expectedCash": "Expected cash",
+      "countedCash": "Counted cash",
+      "difference": "Difference"
     },
     "export": {
       "button": "Export CSV",
@@ -1409,6 +1433,31 @@
         "cashier": "The cashier is who rang the invoice; refunds count for who made the return, cancelled invoices for who rang them.",
         "spa": "Spa staff is who was assigned to the ticket; walk-in services and unassigned tickets are on the 'Not assigned' row."
       }
+    },
+    "adjustments": {
+      "title": "Returns & cancelled invoices",
+      "searchPlaceholder": "Search by code, invoice code or reason",
+      "kinds": {
+        "return": "Return",
+        "cancel": "Cancelled"
+      },
+      "filter": {
+        "all": "All",
+        "return": "Returns",
+        "cancel": "Cancelled"
+      }
+    },
+    "shifts": {
+      "title": "Cash shift reconciliation",
+      "searchPlaceholder": "Search by shift code or cashier",
+      "open": "Open",
+      "filter": {
+        "all": "All",
+        "open": "Open",
+        "closed": "Closed",
+        "mismatch": "Mismatch"
+      },
+      "note": "Difference = counted − expected cash (red when short, amber when over). An open shift has no count yet."
     }
   }
 }

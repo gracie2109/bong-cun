@@ -82,7 +82,9 @@
     "spaSettings": "Cài đặt spa",
     "reportsOverview": "Báo cáo doanh thu",
     "reportsItems": "Báo cáo sản phẩm & dịch vụ",
-    "reportsStaff": "Báo cáo nhân viên"
+    "reportsStaff": "Báo cáo nhân viên",
+    "reportsAdjustments": "Báo cáo hoàn trả & hủy",
+    "reportsShifts": "Đối chiếu ca thu ngân"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -724,7 +726,9 @@
     "reports": "Báo cáo",
     "reportsOverview": "Tổng quan doanh thu",
     "reportsItems": "Sản phẩm & dịch vụ",
-    "reportsStaff": "Doanh thu nhân viên"
+    "reportsStaff": "Doanh thu nhân viên",
+    "reportsAdjustments": "Hoàn trả & hủy",
+    "reportsShifts": "Đối chiếu ca"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1303,7 +1307,9 @@
     "nav": {
       "overview": "Tổng quan",
       "items": "Sản phẩm & dịch vụ",
-      "staff": "Nhân viên"
+      "staff": "Nhân viên",
+      "adjustments": "Hoàn trả & hủy",
+      "shifts": "Đối chiếu ca"
     },
     "kpi": {
       "netRevenue": "Doanh thu thuần",
@@ -1369,7 +1375,25 @@
       "avgTicket": "TB / HĐ",
       "tickets": "Số phiếu",
       "pets": "Số thú",
-      "serviceRevenue": "Doanh thu dịch vụ"
+      "serviceRevenue": "Doanh thu dịch vụ",
+      "kind": "Loại",
+      "code": "Mã",
+      "invoiceCode": "Hóa đơn gốc",
+      "time": "Thời gian",
+      "items": "Hàng",
+      "amount": "Số tiền",
+      "refundMethod": "Hình thức hoàn",
+      "reason": "Lý do",
+      "by": "Người làm",
+      "shiftCode": "Mã ca",
+      "branch": "Cơ sở",
+      "cashier": "Thu ngân",
+      "openedAt": "Mở lúc",
+      "closedAt": "Đóng lúc",
+      "sales": "Doanh thu",
+      "expectedCash": "Tiền mặt dự kiến",
+      "countedCash": "Tiền đếm",
+      "difference": "Chênh lệch"
     },
     "export": {
       "button": "Xuất CSV",
@@ -1409,6 +1433,31 @@
         "cashier": "Thu ngân là người lập hóa đơn; hoàn trả tính cho người làm phiếu trả, hóa đơn hủy tính cho người lập hóa đơn.",
         "spa": "Nhân viên spa là người được gán vào phiếu dịch vụ; dịch vụ bán lẻ hoặc phiếu chưa gán nằm ở dòng 'Chưa gán nhân viên'."
       }
+    },
+    "adjustments": {
+      "title": "Hoàn trả & hủy hóa đơn",
+      "searchPlaceholder": "Tìm theo mã phiếu, mã hóa đơn hoặc lý do",
+      "kinds": {
+        "return": "Trả hàng",
+        "cancel": "Hủy hóa đơn"
+      },
+      "filter": {
+        "all": "Tất cả",
+        "return": "Trả hàng",
+        "cancel": "Hủy hóa đơn"
+      }
+    },
+    "shifts": {
+      "title": "Đối chiếu ca thu ngân",
+      "searchPlaceholder": "Tìm theo mã ca hoặc thu ngân",
+      "open": "Đang mở",
+      "filter": {
+        "all": "Tất cả",
+        "open": "Đang mở",
+        "closed": "Đã đóng",
+        "mismatch": "Lệch tiền"
+      },
+      "note": "Chênh lệch = tiền đếm − tiền mặt dự kiến (đỏ khi thiếu, cam khi thừa). Ca đang mở chưa có tiền đếm."
     }
   }
 }
