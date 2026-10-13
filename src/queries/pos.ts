@@ -26,7 +26,7 @@ import {
 } from "@/repositories/pos";
 import { toPage, type PageParams } from "@/repositories/shared";
 import type { RestfullMethod } from "@/types";
-import { customerKeys, inventoryKeys, posKeys } from "./keys";
+import { customerKeys, inventoryKeys, posKeys, spaKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 
 /** Failure toast that turns the POS functions' hints (no open shift, underpaid...) into text. */
@@ -42,6 +42,8 @@ const invalidatePos = (queryClient: ReturnType<typeof useQueryClient>) =>
   Promise.all([
     queryClient.invalidateQueries({ queryKey: posKeys.all }),
     queryClient.invalidateQueries({ queryKey: inventoryKeys.all }),
+    // Paying or cancelling moves spa tickets between "to pay" and "paid".
+    queryClient.invalidateQueries({ queryKey: spaKeys.all }),
   ]);
 
 // ------------------------------------------------------------------ shifts

@@ -28,6 +28,8 @@ export type AppointmentTicket = {
   weightKg: number | null;
   /** The price fixed at check-in. */
   unitPrice: number | null;
+  /** Already on an invoice. */
+  billed: boolean;
 };
 
 export type Appointment = {
@@ -64,6 +66,7 @@ const toTicket = (raw: unknown): AppointmentTicket => {
     estPrice: numOrNull(row.est_price),
     weightKg: numOrNull(row.weight_kg),
     unitPrice: numOrNull(row.unit_price),
+    billed: row.billed === true,
   };
 };
 

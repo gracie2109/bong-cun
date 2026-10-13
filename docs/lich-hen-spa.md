@@ -2,7 +2,7 @@
 
 Kế hoạch và tiến độ module lịch hẹn spa. Nguồn: kế hoạch BA/kiến trúc v0.3 (M3 Lịch hẹn, M9 Spa/Grooming, mục 2.3 và thứ tự Phase 1 bước 4-5). Module đứng sau POS (PR #43), kho theo lô (PR #44) và biến thể (PR #46), đều đã merge.
 
-**Tiến độ:** bước 1 (mục 9) đã làm xong: các migration `supabase/migrations/20261013030000_spa_schema.sql`, `..030100_spa_settings.sql`, `..030200_spa_booking.sql`, `..030300_spa_views.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Bước 2 (mục 9) cũng đã làm: migration `supabase/migrations/20261013040000_spa_check_in.sql`, hộp thoại Chi tiết lịch hẹn (check-in, bắt đầu / xong, không đến, hủy) và nút "Việc của tôi" trên Lịch ngày. Các bước 3-4 chưa làm.
+**Tiến độ:** bước 1 (mục 9) đã làm xong: các migration `supabase/migrations/20261013030000_spa_schema.sql`, `..030100_spa_settings.sql`, `..030200_spa_booking.sql`, `..030300_spa_views.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Bước 2 (mục 9) cũng đã làm: migration `supabase/migrations/20261013040000_spa_check_in.sql`, hộp thoại Chi tiết lịch hẹn (check-in, bắt đầu / xong, không đến, hủy) và nút "Việc của tôi" trên Lịch ngày. Bước 3 (nối POS) cũng đã làm: hai migration `20261013050000_spa_billing.sql` và `20261013050100_pos_invoice_appointments.sql`, ô "Phiếu spa chờ thanh toán" trong giỏ POS. Bước 4 chưa làm.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi được giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không có tích hợp bên ngoài.
 
@@ -154,7 +154,7 @@ Không dùng thư viện lịch: FullCalendar tính phí cho dạng xem theo c�
 | --- | --- | --- | --- |
 | 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt / sửa / hủy, Lịch ngày | 4 file `supabase/migrations/2026101303*.sql` (schema, settings, booking, views), chạy theo thứ tự sau `20261007140000_product_variants.sql` | Đã làm |
 | 2 | Check-in + cân nặng + chốt giá, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | `supabase/migrations/20261013040000_spa_check_in.sql`, chạy sau file bước 1 | Đã làm |
-| 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ | Migration sửa hàm POS; làm sau khi PR #54 (sửa POS) đã merge vì cùng sửa `create_invoice` | Chưa làm |
+| 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ 2 file `20261013050000_spa_billing.sql` (trạng thái "paid", danh sách phiếu chờ thanh toán) và `20261013050100_pos_invoice_appointments.sql` (sửa `create_invoice` / `cancel_invoice`, là bản sao của bản P1 kèm phần phiếu spa) | Đã làm |
 | 4 | Chuyển `orders` sang `appointments`, gỡ `create_order` và màn cũ | Migration chuyển dữ liệu | Chưa làm |
 
 Sau đó là báo cáo doanh thu tách Shop / Spa (M11), đọc từ `invoice_lines` theo `item_type`.
@@ -176,6 +176,13 @@ Mỗi lần giao có SQL sẽ ghi rõ tên file và thứ tự chạy; bản đ�
 - Phiếu đi Chờ → Đang làm → Xong, bấm nhầm thì lùi một bước. Lịch tự đổi trạng thái theo các phiếu.
 - Hủy chỉ khi chưa phiếu nào bắt đầu. Không đến chỉ khi đã qua giờ hẹn.
 - Chưa làm: dời lịch đã check-in, ghi chú riêng từng phiếu, số lần không đến của khách khi đặt lịch, gợi ý giờ trống.
+
+### Bước 3: những gì cần biết
+
+- Trong POS, chọn khách thì hiện ô "Phiếu spa chờ thanh toán": các phiếu đã Xong, chưa có hóa đơn, kèm giá đã chốt lúc check-in. Bấm Thêm hoặc Thêm tất cả. Dòng phiếu spa trong giỏ có giá cố định, không đổi số lượng hay thú cưng, và vẫn trộn được với hàng shop trong một hóa đơn.
+- Một phiếu chỉ vào được một hóa đơn; trả tiền rồi thì phiếu không đổi trạng thái được nữa. Lịch chuyển sang "Đã thanh toán" khi mọi phiếu còn hiệu lực đã vào hóa đơn.
+- Hủy hóa đơn thì các phiếu của nó chưa thanh toán trở lại, lịch về "Xong".
+- SQL này chạy tự động khi PR được merge (workflow `Supabase migrate`).
 
 ## 10. Mặc định đã chọn
 

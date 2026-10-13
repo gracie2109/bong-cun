@@ -19,7 +19,8 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <p v-if="line.appointmentItemId" class="text-xs text-muted-foreground">{{ $t("pos.spaTickets.fromAppointment", { code: line.item.hint }) }}</p>
+    <div v-else class="flex flex-wrap items-center gap-2">
       <div class="flex items-center rounded-lg border">
         <Button variant="ghost" size="icon" class="size-8" :aria-label="$t('pos.cart.less')" @click="emit('changeQty', -1)">
           <Minus class="size-3.5" />

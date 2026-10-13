@@ -733,6 +733,13 @@
       "invoices": "Hóa đơn",
       "shifts": "Ca thu ngân"
     },
+    "spaTickets": {
+      "title": "Phiếu spa chờ thanh toán ({count})",
+      "add": "Thêm",
+      "added": "Đã thêm",
+      "addAll": "Thêm tất cả",
+      "fromAppointment": "Phiếu spa của lịch {code}, giá đã chốt lúc check-in"
+    },
     "lineType": {
       "product": "Sản phẩm",
       "service": "Dịch vụ",
@@ -871,6 +878,7 @@
     },
     "errors": {
       "no_open_shift": "Bạn cần mở ca trước khi bán.",
+      "ticket_not_billable": "Phiếu spa này chưa xong, đã thanh toán hoặc không thuộc khách này.",
       "discount_limit": "Giảm giá trên 10% cần quản lý duyệt.",
       "underpaid": "Số tiền khách trả chưa đủ.",
       "overpaid": "Chuyển khoản và thẻ không được vượt quá tổng tiền.",
@@ -1203,6 +1211,8 @@
       "cancelled": "Đã hủy"
     },
     "detail": {
+      "payHint": "Các phiếu đã xong được thanh toán ở POS: chọn khách, rồi thêm phiếu spa vào giỏ.",
+      "openPos": "Mở POS",
       "title": "Lịch hẹn {code}",
       "subtitle": "Check-in khi khách đến, rồi bắt đầu và hoàn thành từng phiếu.",
       "checkedInAt": "đến lúc {time}",

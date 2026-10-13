@@ -306,7 +306,8 @@ export type SaleCustomer =
   | null;
 
 export type SaleLineInput = {
-  type: LineType;
+  /** "appointment_item": a finished spa ticket, `id` is the ticket id. */
+  type: LineType | "appointment_item";
   id: string;
   qty: number;
   petId?: string | null;
@@ -486,6 +487,7 @@ export const previewServicePrice = async (
 /** Error hints raised by the POS and stock functions, for readable messages. */
 export const POS_ERROR_HINTS = [
   "no_open_shift",
+  "ticket_not_billable",
   "discount_limit",
   "underpaid",
   "overpaid",
