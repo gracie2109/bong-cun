@@ -8,6 +8,7 @@
 | [lich-hen-spa.md](lich-hen-spa.md) | Kế hoạch module lịch hẹn spa: bàn spa, chặn trùng giờ, check-in chốt giá, nối POS |
 | [bao-cao-doanh-thu.md](bao-cao-doanh-thu.md) | Kế hoạch module báo cáo doanh thu: định nghĩa số liệu, RPC, màn hình, quyền, chia file |
 | [module-san-pham.md](module-san-pham.md) | Kế hoạch phần còn lại của module sản phẩm: danh mục, thương hiệu, bộ ảnh, giá theo cơ sở, đơn vị quy đổi, nhập/xuất Excel |
+| [checkout-shop.md](checkout-shop.md) | Kế hoạch checkout shop online: giỏ hàng thống nhất, địa chỉ, phí GHN, COD và nhận tại cửa hàng, đơn online dùng chung hóa đơn/kho, trang theo dõi đơn |
 | [pos-luong-va-kich-ban-test.md](pos-luong-va-kich-ban-test.md) | POS bán tại quầy: luồng thực tế, kịch bản test, edge case, lỗi và khoảng trống |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
