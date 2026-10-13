@@ -8,6 +8,10 @@ on:
       up_to:
         description: "Last migration version already applied by hand (e.g. 20261007140000)"
         required: true
+      reverted:
+        description: "Versions in the database history that have no local file (space separated); removed from the history only, data is not touched"
+        required: false
+        default: ""
 
 jobs:
   mark:
@@ -24,7 +28,12 @@ jobs:
       - name: Mark migrations up to the given version as applied
         env:
           UP_TO: ${{ inputs.up_to }}
+          REVERTED: ${{ inputs.reverted }}
         run: |
           versions=$(ls supabase/migrations | grep -o '^[0-9]\+' | awk -v max="$UP_TO" '$1 <= max')
           echo "Marking as applied: $versions"
           supabase migration repair --status applied $versions
+          if [ -n "$REVERTED" ]; then
+            echo "Removing from history: $REVERTED"
+            supabase migration repair --status reverted $REVERTED
+          fi
