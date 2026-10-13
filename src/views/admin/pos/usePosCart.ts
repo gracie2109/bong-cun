@@ -4,9 +4,11 @@ import { usePermission } from "@/composables/usePermission";
 import { useCustomerPets, useFetchServicePrice } from "@/queries/pos";
 import { DISCOUNT_LIMIT } from "@/repositories/pos";
 import type { BillableTicket } from "@/repositories/spa";
+import type { ProductUnit } from "@/repositories/products";
 import type { CatalogItem } from "./catalog";
 import type { Buyer } from "./components/CustomerPanel.vue";
 import { parseAmount } from "./format";
+import { itemInUnit } from "./unitPricing";
 
 /** `appointmentItemId` marks a finished spa ticket: fixed price and pet, one per sale. */
 export type CartLine = { key: string; item: CatalogItem; qty: number; petId: string | null; appointmentItemId?: string };
@@ -26,8 +28,11 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
   const pets = computed(() => (buyer.value?.customerId ? petsQuery.data.value ?? [] : []));
 
   const addItem = (item: CatalogItem) => {
-    // Scanning the same product again adds one more; services and combos get a line per pet.
-    const existing = item.type === "product" ? lines.value.find((line) => line.item.id === item.id) : undefined;
+    // Scanning the same product (in the same unit) again adds one more; services and combos get a line per pet.
+    const existing =
+      item.type === "product"
+        ? lines.value.find((line) => line.item.id === item.id && (line.item.unitId ?? null) === (item.unitId ?? null))
+        : undefined;
     if (existing) {
       existing.qty += 1;
       return;
@@ -62,6 +67,11 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     const next = line.qty + delta;
     if (next <= 0) removeLine(line.key);
     else line.qty = next;
+  };
+
+  /** Sells the line's product in another of its units (null: the base unit); the price follows. */
+  const changeUnit = (line: CartLine, unit: ProductUnit | null) => {
+    line.item = itemInUnit(line.item, unit);
   };
 
   const setPet = (line: CartLine, petId: string | null) => {
@@ -174,6 +184,7 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     addTicket,
     removeLine,
     changeQty,
+    changeUnit,
     setPet,
     unitPrice,
     lineProblem,

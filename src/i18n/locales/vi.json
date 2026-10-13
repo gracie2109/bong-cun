@@ -903,7 +903,8 @@
       "has_returns": "Hóa đơn đã có phiếu trả hàng, không thể hủy.",
       "return_too_much": "Số lượng trả vượt quá số còn lại của {name}.",
       "return_products_only": "Chỉ trả được sản phẩm, không trả dịch vụ hay combo.",
-      "reason_required": "Cần nhập lý do."
+      "reason_required": "Cần nhập lý do.",
+      "unit_not_available": "Đơn vị bán này không dùng được nữa, hãy chọn lại."
     },
     "returns": {
       "title": "Phiếu trả hàng",
@@ -922,6 +923,11 @@
       "add": "Thêm vào hóa đơn",
       "count": "{n} biến thể",
       "from": "Từ {price}"
+    },
+    "units": {
+      "pick": "Chọn đơn vị bán",
+      "subtitle": "Sản phẩm này bán được theo nhiều đơn vị.",
+      "unit": "Đơn vị"
     }
   },
   "products": {
@@ -991,13 +997,18 @@
       "no_variants": "Sản phẩm cần ít nhất một biến thể.",
       "invalid_category": "Danh mục này đã ngừng dùng, hãy chọn danh mục khác.",
       "invalid_brand": "Thương hiệu này đã ngừng dùng, hãy chọn thương hiệu khác.",
-      "too_many_images": "Mỗi sản phẩm tối đa 8 ảnh."
+      "too_many_images": "Mỗi sản phẩm tối đa 8 ảnh.",
+      "unit_name_required": "Mỗi đơn vị cần có tên.",
+      "duplicate_unit": "Đơn vị {value} bị trùng.",
+      "unit_factor": "Đơn vị {value} phải lớn hơn 1 đơn vị gốc.",
+      "unit_in_use": "Đơn vị {value} đã dùng trên hóa đơn hoặc phiếu kho nên không đổi hệ số được; hãy tắt đơn vị này và tạo đơn vị mới."
     },
     "tabs": {
       "general": "Thông tin",
       "variants": "Biến thể",
       "images": "Ảnh ({n})",
-      "branchPrices": "Giá theo cơ sở"
+      "branchPrices": "Giá theo cơ sở",
+      "units": "Đơn vị"
     },
     "filter": {
       "pickCategory": "Chọn danh mục",
@@ -1024,6 +1035,25 @@
       "saveFirst": "Lưu sản phẩm trước, rồi đặt giá riêng cho từng cơ sở.",
       "newVariants": "Biến thể mới sẽ có ở đây sau khi lưu.",
       "noPermission": "Bạn không có quyền sửa giá ở cơ sở này"
+    },
+    "units": {
+      "title": "Đơn vị quy đổi",
+      "hint": "Đơn vị gốc là đơn vị nhỏ nhất, tồn kho tính theo đơn vị này. Thêm hộp, thùng... và số đơn vị gốc trong mỗi loại.",
+      "variant": "Biến thể",
+      "copyAll": "Áp dụng cho mọi biến thể",
+      "name": "Tên đơn vị",
+      "factor": "Bằng bao nhiêu {unit}",
+      "sell": "Bán",
+      "purchase": "Nhập",
+      "active": "Đang dùng",
+      "add": "Thêm đơn vị",
+      "remove": "Xóa đơn vị",
+      "empty": "Chưa có đơn vị quy đổi, chỉ bán theo đơn vị gốc.",
+      "problem": {
+        "name": "Nhập tên đơn vị",
+        "duplicate": "Tên trùng đơn vị khác hoặc đơn vị gốc",
+        "factor": "Hệ số phải lớn hơn 1"
+      }
     }
   },
   "inventory": {
@@ -1145,7 +1175,9 @@
       "cancelDraft": "Hủy phiếu nháp",
       "cancelPosted": "Hủy phiếu nhập",
       "saveDraft": "Lưu nháp",
-      "post": "Lưu và ghi sổ"
+      "post": "Lưu và ghi sổ",
+      "unit": "Đơn vị nhập",
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
     },
     "suppliers": {
       "title": "Nhà cung cấp",
@@ -1168,7 +1200,8 @@
       "no_lines": "Phiếu chưa có dòng nào.",
       "posted_not_receipt": "Phiếu xuất hủy và kiểm kê đã ghi sổ không hủy được; hãy lập phiếu kiểm kê mới để điều chỉnh.",
       "reason_required": "Cần nhập lý do hủy.",
-      "untracked_product": "{name} không quản lý tồn kho."
+      "untracked_product": "{name} không quản lý tồn kho.",
+      "unit_not_available": "Đơn vị nhập này không dùng được nữa, hãy chọn lại."
     }
   },
   "shop": {

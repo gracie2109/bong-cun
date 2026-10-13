@@ -50,6 +50,7 @@ export const usePosCheckout = (sale: Sale) => {
           type: line.appointmentItemId ? "appointment_item" : line.item.type,
           id: line.appointmentItemId ?? line.item.id,
           qty: line.qty,
+          unitId: line.item.unitId ?? null,
           petId: line.petId,
         })),
         payments,

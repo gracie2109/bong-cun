@@ -26,6 +26,15 @@
         />
       </div>
 
+      <UnitOptions
+        v-if="selected && sellable(selected.units).length"
+        v-model="unitId"
+        :base-unit="selected.unit"
+        :base-price="selected.price"
+        :units="sellable(selected.units)"
+        :stock="stockOf(selected)"
+      />
+
       <div class="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm">
         <span v-if="selected" class="min-w-0 truncate text-muted-foreground">
           {{ [selected.sku, selected.unit].filter(Boolean).join(" · ") }}
@@ -36,10 +45,10 @@
         </span>
         <span v-else class="text-muted-foreground">{{ $t("pos.variant.pickAll") }}</span>
         <span v-if="selected" class="whitespace-nowrap font-bold text-primary">
-          <s v-if="selected.generalPrice !== undefined" class="mr-1 text-xs font-normal text-muted-foreground">
-            {{ money(selected.generalPrice) }}
+          <s v-if="shownGeneralPrice !== undefined" class="mr-1 text-xs font-normal text-muted-foreground">
+            {{ money(shownGeneralPrice) }}
           </s>
-          {{ money(selected.price) }}
+          {{ money(shownPrice) }}
         </span>
       </div>
     </template>
@@ -47,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, toRef, watch } from "vue";
+import { computed, ref, toRef, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import VariantOptions from "@/components/VariantOptions.vue";
@@ -55,14 +64,16 @@ import { useVariantChoice } from "@/composables/useVariantChoice";
 import { useBranchPrices } from "@/queries/branchPrices";
 import { useSellableStock } from "@/queries/inventory";
 import { useSellableGroup } from "@/queries/products";
-import type { ProductGroup, ProductVariant } from "@/repositories/products";
+import { sellableUnits, type ProductGroup, type ProductUnit, type ProductVariant } from "@/repositories/products";
 import { qty } from "@/views/admin/inventory/format";
 import ProductThumb from "@/views/admin/products/ProductThumb.vue";
 import { priceAtBranch, type Priced } from "../branchPricing";
 import { money } from "../format";
+import { unitPrice } from "../unitPricing";
+import UnitOptions from "./UnitOptions.vue";
 
 const props = defineProps<{ groupId: string | undefined; title: string; branchId: string | undefined }>();
-const emit = defineEmits<{ close: []; pick: [variant: Priced<ProductVariant>] }>();
+const emit = defineEmits<{ close: []; pick: [variant: Priced<ProductVariant>, unit: ProductUnit | null] }>();
 
 const groupQuery = useSellableGroup(toRef(props, "groupId"));
 const loadedGroup = computed(() => groupQuery.data.value ?? null);
@@ -86,9 +97,20 @@ const selected = computed(() => choice.variant.value as Priced<ProductVariant> |
 // Stock arrives after the group: start again on a variant that is in stock.
 watch(() => stockQuery.data.value, choice.reset);
 
+// The conversion unit picked for the chosen variant; null sells it in its base unit.
+const unitId = ref<string | null>(null);
+watch(selected, () => (unitId.value = null));
+const sellable = sellableUnits;
+const pickedUnit = computed(() => selected.value?.units.find((unit) => unit.id === unitId.value) ?? null);
+const shownPrice = computed(() => {
+  const variant = selected.value;
+  return variant && pickedUnit.value ? unitPrice(variant.price, pickedUnit.value) : variant?.price ?? 0;
+});
+const shownGeneralPrice = computed(() => (pickedUnit.value ? undefined : selected.value?.generalPrice));
+
 const add = () => {
   if (!selected.value) return;
-  emit("pick", selected.value);
+  emit("pick", selected.value, pickedUnit.value);
   emit("close");
 };
 </script>

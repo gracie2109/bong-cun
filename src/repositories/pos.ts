@@ -310,6 +310,8 @@ export type SaleLineInput = {
   type: LineType | "appointment_item";
   id: string;
   qty: number;
+  /** A product's conversion unit; qty then counts that unit. Missing: the base unit. */
+  unitId?: string | null;
   petId?: string | null;
   weightKg?: number | null;
 };
@@ -348,6 +350,7 @@ export const createInvoice = async (client: Client, input: SaleInput): Promise<S
           type: line.type,
           id: line.id,
           qty: line.qty,
+          unit_id: line.unitId ?? null,
           pet_id: line.petId ?? null,
           weight_kg: line.weightKg ?? null,
         })),
@@ -497,6 +500,7 @@ export const POS_ERROR_HINTS = [
   "return_too_much",
   "return_products_only",
   "reason_required",
+  "unit_not_available",
 ] as const;
 export type PosErrorHint = (typeof POS_ERROR_HINTS)[number];
 

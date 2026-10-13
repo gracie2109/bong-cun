@@ -63,6 +63,7 @@
                 :problem="lineProblem(line)"
                 @remove="removeLine(line.key)"
                 @change-qty="changeQty(line, $event)"
+                @change-unit="changeUnit(line, $event)"
                 @set-pet="setPet(line, $event)"
               />
             </ul>
@@ -146,6 +147,7 @@ const {
   addTicket,
   removeLine,
   changeQty,
+  changeUnit,
   setPet,
   unitPrice,
   lineProblem,

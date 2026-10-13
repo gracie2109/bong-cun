@@ -23,7 +23,18 @@
         <tr v-for="line in lines" :key="line.key" class="border-b align-top last:border-0">
           <td class="py-2 pr-2">
             <p class="font-medium">{{ line.productName }}</p>
-            <p class="text-xs text-muted-foreground">{{ line.unit }}</p>
+            <Select
+              v-if="editable && type === 'receipt' && line.units.length"
+              :model-value="line.unitId ?? BASE_UNIT"
+              @update:model-value="(value) => (line.unitId = value === BASE_UNIT ? null : String(value))"
+            >
+              <SelectTrigger class="mt-1 h-7 w-32 text-xs" :aria-label="$t('inventory.documents.unit')"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem :value="BASE_UNIT">{{ line.unit }}</SelectItem>
+                <SelectItem v-for="unit in line.units" :key="unit.id" :value="unit.id">{{ unit.name }} (= {{ unit.factor }} {{ line.unit }})</SelectItem>
+              </SelectContent>
+            </Select>
+            <p v-else class="text-xs text-muted-foreground">{{ type === "receipt" ? selectedUnit(line)?.name ?? line.unit : line.unit }}</p>
           </td>
 
           <!-- lot -->
@@ -79,6 +90,9 @@
                 :class="submitted && !validQty(type, line) ? 'border-red-500' : ''"
               />
               <span v-else class="font-semibold">{{ line.qty }}</span>
+              <p v-if="type === 'receipt' && baseEquivalent(line)" class="mt-1 whitespace-nowrap text-[11px] text-muted-foreground">
+                {{ $t("inventory.documents.baseEquivalent", { qty: qty(baseEquivalent(line)?.qty), unit: baseEquivalent(line)?.unit, cost: money(baseEquivalent(line)?.cost ?? 0) }) }}
+              </p>
               <p v-if="editable && type === 'writeoff' && selectedLot(line)" class="mt-1 text-[11px] text-muted-foreground">
                 {{ $t("inventory.documents.lotHolds", { n: qty(selectedLot(line)?.qtyOnHand) }) }}
               </p>
@@ -115,12 +129,14 @@ import { isExpired, type DocType } from "@/repositories/inventory";
 import { money } from "@/views/admin/pos/format";
 import { day, qty } from "../format";
 import {
+  baseEquivalent,
   countDiff,
   diffTone,
   lineAmount,
   lineCost,
   pickLot,
   selectedLot,
+  selectedUnit,
   validCounted,
   validQty,
   type EditLine,
@@ -134,6 +150,8 @@ defineProps<{
 }>();
 
 const lines = defineModel<EditLine[]>("lines", { required: true });
+
+const BASE_UNIT = "base";
 
 const removeLine = (key: string) => {
   lines.value = lines.value.filter((line) => line.key !== key);

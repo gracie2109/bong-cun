@@ -1,11 +1,16 @@
 // Shop products sold at the counter. Stock by lot and expiry lives in repositories/inventory.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database, Tables } from "@/types/database.types";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "../shared";
-import { toProduct } from "./mappers";
+import { toProduct, toUnit } from "./mappers";
 import type { SellableProduct } from "./types";
 
 type Client = SupabaseClient<Database>;
+
+type UnitRow = Tables<"product_units">;
+
+const sortedUnits = (rows: UnitRow[] | null) =>
+  [...(rows ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.factor - b.factor).map(toUnit);
 
 /** Name, SKU or barcode contains the typed text. */
 const searchCondition = (text: string): string | null => {
@@ -22,7 +27,7 @@ export const listSellableProducts = async (
   const { from, to } = pageRange(page);
   let query = client
     .from("products")
-    .select("*, product_groups(name)", { count: "exact" })
+    .select("*, product_groups(name), product_units(*)", { count: "exact" })
     .eq("is_active", true)
     .order("name")
     .range(from, to);
@@ -30,7 +35,11 @@ export const listSellableProducts = async (
   if (condition) query = query.or(condition);
   const { data, count, error } = await query;
   if (error) throw error;
-  const rows = (data ?? []).map((row) => ({ ...toProduct(row), groupName: row.product_groups?.name ?? row.name }));
+  const rows = (data ?? []).map((row) => ({
+    ...toProduct(row),
+    groupName: row.product_groups?.name ?? row.name,
+    units: sortedUnits(row.product_units),
+  }));
   return { rows, total: count ?? 0 };
 };
 
@@ -46,7 +55,7 @@ export const searchSellableProducts = async (
 ): Promise<SellableProduct[]> => {
   let query = client
     .from("products")
-    .select("*, product_groups!inner(name, category_id)")
+    .select("*, product_groups!inner(name, category_id), product_units(*)")
     .eq("is_active", true)
     .order("name")
     .limit(limit);
@@ -56,9 +65,35 @@ export const searchSellableProducts = async (
   const rows = unwrap(await query).map((row) => ({
     ...toProduct(row),
     groupName: row.product_groups?.name ?? row.name,
+    units: sortedUnits(row.product_units),
   }));
   const code = text.trim();
   return [...rows].sort(
     (a, b) => Number(b.barcode === code || b.sku === code) - Number(a.barcode === code || a.sku === code)
   );
+};
+
+/** What find_by_barcode answers: the product a code belongs to and the unit when it is a unit's code. */
+export type BarcodeHit = { productId: string; unitId: string | null };
+
+/** The sellable product or unit with exactly this barcode, or null. */
+export const findByBarcode = async (client: Client, code: string, branchId?: string): Promise<BarcodeHit | null> => {
+  const hit = unwrap(await client.rpc("find_by_barcode", { p_code: code, p_branch: branchId })) as {
+    product_id: string;
+    unit_id: string | null;
+  } | null;
+  return hit ? { productId: hit.product_id, unitId: hit.unit_id } : null;
+};
+
+/** One active product with its conversion units, for the POS once a scan found it. */
+export const getSellableProduct = async (client: Client, id: string): Promise<SellableProduct | null> => {
+  const { data: row, error } = await client
+    .from("products")
+    .select("*, product_groups(name), product_units(*)")
+    .eq("id", id)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (error) throw error;
+  if (!row) return null;
+  return { ...toProduct(row), groupName: row.product_groups?.name ?? row.name, units: sortedUnits(row.product_units) };
 };

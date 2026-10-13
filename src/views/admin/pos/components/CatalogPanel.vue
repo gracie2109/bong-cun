@@ -45,8 +45,9 @@
       :title="openGroup?.name ?? ''"
       :branch-id="branchId"
       @close="openGroup = null"
-      @pick="(variant) => emit('add', fromVariant(variant))"
+      @pick="(variant, unit) => emit('add', itemInUnit(fromVariant(variant), unit))"
     />
+    <UnitPicker :item="unitItem" :stock="unitItem ? stockOf(unitItem) : undefined" @close="unitItem = null" @pick="emit('add', $event)" />
   </section>
 </template>
 
@@ -57,17 +58,17 @@ import { ScanLine, Search } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
-import { supabaseClient } from "@/lib/supabase";
 import type { LineType } from "@/repositories/pos";
-import { getBranchPrices } from "@/repositories/branchPrices";
 import type { ProductVariant } from "@/repositories/products";
-import { searchSellableProducts } from "@/repositories/products";
-import { priceAtBranch, type Priced } from "../branchPricing";
+import { type Priced } from "../branchPricing";
 import { CATALOG_TABS as TABS, toProductItem, type CatalogItem } from "../catalog";
+import { itemForBarcode, searchedItems } from "../scanItems";
+import { itemInUnit } from "../unitPricing";
 import { useCatalogItems } from "../useCatalogItems";
 import { useCategoryChips } from "../useCategoryChips";
 import CatalogTile from "./CatalogTile.vue";
 import CategoryChips from "./CategoryChips.vue";
+import UnitPicker from "./UnitPicker.vue";
 import VariantDialog from "./VariantDialog.vue";
 
 const props = defineProps<{ branchId: string | undefined }>();
@@ -83,27 +84,22 @@ const { items, loading, stockOf } = useCatalogItems(kind, search, debounced, () 
 const fromVariant = (variant: Priced<ProductVariant>): CatalogItem => toProductItem(variant);
 
 const openGroup = ref<CatalogItem | null>(null);
+const unitItem = ref<CatalogItem | null>(null);
 const choose = (item: CatalogItem) => {
   if (item.groupId) openGroup.value = item;
+  else if (item.units?.length) unitItem.value = item;
   else emit("add", item);
 };
 
-/** Products matching a scanned code, at the price this branch sells them for. */
-const scannedItems = async (code: string): Promise<CatalogItem[]> => {
-  const found = await searchSellableProducts(supabaseClient(), code);
-  const prices = props.branchId
-    ? await getBranchPrices(supabaseClient(), props.branchId, found.map((product) => product.id))
-    : undefined;
-  return found.map((product) => toProductItem(priceAtBranch(product, prices)));
-};
-
 // A barcode scanner types the code and presses Enter, faster than the search debounce, so the
-// code is looked up right away: the exact barcode or SKU, else the only result.
+// code is looked up right away: an exact barcode (a box code adds a box), else the exact SKU, else
+// the only result.
 const addExactMatch = async () => {
   const code = search.value.trim();
   if (!code) return;
-  const pool = kind.value === "product" ? await scannedItems(code) : items.value;
-  const exact = pool.find((item) => item.barcode === code || item.sku === code);
+  const scanned = kind.value === "product" ? await itemForBarcode(code, props.branchId) : null;
+  const pool = scanned ? [scanned] : kind.value === "product" ? await searchedItems(code, props.branchId) : items.value;
+  const exact = scanned ?? pool.find((item) => item.barcode === code || item.sku === code);
   const pick = exact ?? (pool.length === 1 ? pool[0] : undefined);
   if (!pick || stockOf(pick) === 0) return;
   emit("add", pick);

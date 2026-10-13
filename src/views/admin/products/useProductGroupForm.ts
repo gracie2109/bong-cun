@@ -9,9 +9,10 @@ import { parseAmount } from "@/views/admin/pos/format";
 import { useImageGallery } from "./images/useImageGallery";
 import { useBranchPriceGrid } from "./prices/useBranchPriceGrid";
 import { attributeError, commitDraft } from "./productVariantForm";
+import { hasUnitProblem, toUnitInput } from "./units/productUnitForm";
 import { useProductVariants } from "./useProductVariants";
 
-export type ProductTab = "general" | "images" | "variants" | "branchPrices";
+export type ProductTab = "general" | "images" | "variants" | "units" | "branchPrices";
 
 /** Everything the product sheet edits: the group's own fields plus its attributes and variants. */
 export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | null>, close: () => void) => {
@@ -77,6 +78,7 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
   const tabErrors = computed<Record<ProductTab, boolean>>(() => ({
     general: submitted.value && !form.name.trim(),
     images: false,
+    units: submitted.value && rows.value.some((row) => hasUnitProblem(row.units, row.unit)),
     branchPrices: false,
     variants:
       submitted.value &&
@@ -87,8 +89,8 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
   const submit = async () => {
     for (const attribute of attributes.value) commitDraft(attribute);
     submitted.value = true;
-    if (tabErrors.value.general || tabErrors.value.variants) {
-      tab.value = tabErrors.value.general ? "general" : "variants";
+    if (tabErrors.value.general || tabErrors.value.variants || tabErrors.value.units) {
+      tab.value = tabErrors.value.general ? "general" : tabErrors.value.variants ? "variants" : "units";
       return;
     }
 
@@ -115,6 +117,7 @@ export const useProductGroupForm = (open: Ref<boolean>, groupId: Ref<string | nu
           trackStock: row.trackStock,
           isActive: row.isActive,
           imageUrl: row.imageUrl,
+          units: row.units.map(toUnitInput),
         })),
       });
       // Files of pictures taken out of the gallery; a failure only leaves them behind.

@@ -37,6 +37,18 @@
       </div>
 
       <Select
+        v-if="line.item.units?.length"
+        :model-value="line.item.unitId ?? BASE_UNIT"
+        @update:model-value="(value) => emit('changeUnit', line.item.units?.find((unit) => unit.id === value) ?? null)"
+      >
+        <SelectTrigger class="h-8 w-28 text-xs" :aria-label="$t('pos.units.unit')"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem :value="BASE_UNIT">{{ line.item.baseUnit }}</SelectItem>
+          <SelectItem v-for="unit in line.item.units" :key="unit.id" :value="unit.id">{{ unit.name }}</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select
         v-if="line.item.type !== 'product' && pets.length"
         :model-value="line.petId ?? NO_PET"
         @update:model-value="(value) => emit('setPet', value === NO_PET ? null : String(value))"
@@ -63,10 +75,12 @@ import { Minus, PawPrint, Plus, X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CustomerPet } from "@/repositories/pos";
+import type { ProductUnit } from "@/repositories/products";
 import { money } from "../format";
 import type { CartLine } from "../usePosCart";
 
 const NO_PET = "none";
+const BASE_UNIT = "base";
 
 defineProps<{
   line: CartLine;
@@ -78,5 +92,10 @@ defineProps<{
   problem: string;
 }>();
 
-const emit = defineEmits<{ remove: []; changeQty: [delta: number]; setPet: [petId: string | null] }>();
+const emit = defineEmits<{
+  remove: [];
+  changeQty: [delta: number];
+  changeUnit: [unit: ProductUnit | null];
+  setPet: [petId: string | null];
+}>();
 </script>

@@ -1,5 +1,5 @@
 import type { Tables } from "@/types/database.types";
-import type { Product, ProductAttribute, ProductGroup } from "./types";
+import type { Product, ProductAttribute, ProductGroup, ProductUnit } from "./types";
 
 export const toProduct = (row: Tables<"products">): Product => ({
   id: row.id,
@@ -13,6 +13,29 @@ export const toProduct = (row: Tables<"products">): Product => ({
   trackStock: row.track_stock,
   groupId: row.group_id,
   imageUrl: row.image_url,
+});
+
+/** A unit as stored in product_units and as product_group_json returns it. */
+export type UnitJson = {
+  id: string;
+  name: string;
+  factor: number;
+  barcode: string | null;
+  price: number | null;
+  for_sale: boolean;
+  for_purchase: boolean;
+  is_active: boolean;
+};
+
+export const toUnit = (row: UnitJson): ProductUnit => ({
+  id: row.id,
+  name: row.name,
+  factor: Number(row.factor),
+  barcode: row.barcode,
+  price: row.price === null ? null : Number(row.price),
+  forSale: row.for_sale,
+  forPurchase: row.for_purchase,
+  isActive: row.is_active,
 });
 
 /** A group as the product_group_json function returns it. */
@@ -42,6 +65,7 @@ export type GroupJson = {
     track_stock: boolean;
     is_active: boolean;
     image_url: string | null;
+    units?: UnitJson[];
   }[];
 };
 
@@ -71,5 +95,6 @@ export const toGroup = (row: GroupJson): ProductGroup => ({
     trackStock: variant.track_stock,
     isActive: variant.is_active,
     imageUrl: variant.image_url,
+    units: (variant.units ?? []).map(toUnit),
   })),
 });
