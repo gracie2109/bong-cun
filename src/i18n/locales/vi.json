@@ -89,7 +89,8 @@
     "productBrands": "Thương hiệu sản phẩm",
     "productImport": "Nhập / xuất Excel sản phẩm",
     "shopOrderSettings": "Cài đặt bán online",
-    "order": "Đơn hàng"
+    "order": "Đơn hàng",
+    "shopOrders": "Đơn online"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -738,7 +739,8 @@
     "productBrands": "Thương hiệu",
     "productImport": "Nhập / xuất Excel",
     "shopOnline": "Bán online",
-    "shopOrderSettings": "Cài đặt bán online"
+    "shopOrderSettings": "Cài đặt bán online",
+    "shopOrders": "Đơn online"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -768,11 +770,13 @@
     "method": {
       "cash": "Tiền mặt",
       "transfer": "Chuyển khoản",
-      "card": "Thẻ"
+      "card": "Thẻ",
+      "cod": "Thu hộ (COD)"
     },
     "status": {
       "paid": "Đã thanh toán",
-      "cancelled": "Đã hủy"
+      "cancelled": "Đã hủy",
+      "unpaid": "Chờ thu"
     },
     "catalog": {
       "products": "Sản phẩm",
@@ -934,6 +938,9 @@
       "pick": "Chọn đơn vị bán",
       "subtitle": "Sản phẩm này bán được theo nhiều đơn vị.",
       "unit": "Đơn vị"
+    },
+    "channel": {
+      "online": "Online"
     }
   },
   "products": {
@@ -1226,7 +1233,8 @@
     "addToCart": "Thêm vào giỏ hàng",
     "added": "Đã thêm {name} vào giỏ",
     "nav": {
-      "settings": "Cài đặt bán online"
+      "settings": "Cài đặt bán online",
+      "orders": "Danh sách đơn"
     },
     "location": {
       "province": "Tỉnh / Thành phố",
@@ -1415,6 +1423,101 @@
       "cancelOk": "Hủy đơn",
       "cancelKeep": "Giữ đơn",
       "cancelReason": "Lý do (không bắt buộc)"
+    },
+    "admin": {
+      "title": "Đơn online",
+      "searchPlaceholder": "Tìm theo mã đơn, tên, số điện thoại, mã vận đơn",
+      "empty": "Chưa có đơn nào.",
+      "detail": "Chi tiết đơn",
+      "tabs": {
+        "pending": "Chờ xác nhận",
+        "confirmed": "Đã xác nhận",
+        "packed": "Đã đóng gói",
+        "shipping": "Đang giao",
+        "completed": "Hoàn tất",
+        "closed": "Hủy / Hoàn",
+        "all": "Tất cả"
+      },
+      "cols": {
+        "code": "Mã đơn",
+        "placed": "Đặt lúc",
+        "customer": "Khách",
+        "method": "Cách nhận",
+        "lines": "Dòng",
+        "total": "Tổng",
+        "status": "Trạng thái",
+        "tracking": "Mã vận đơn"
+      },
+      "address": "Địa chỉ",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép địa chỉ",
+      "weight": "Khối lượng",
+      "invoice": "Hóa đơn",
+      "reason": "Lý do",
+      "estimate": "dự kiến",
+      "codTotal": "Tổng thu của khách",
+      "short": "Có sản phẩm không đủ hàng, chưa đóng gói được.",
+      "available": "Có thể bán: {n}",
+      "timeline": "Tiến trình",
+      "actions": {
+        "confirm": "Xác nhận",
+        "pack": "Đóng gói",
+        "ready": "Chuẩn bị xong",
+        "ship": "Giao vận chuyển",
+        "deliver": "Đã giao",
+        "return": "Hoàn hàng",
+        "cancel": "Hủy đơn"
+      },
+      "done": {
+        "confirm": "Đã xác nhận đơn",
+        "pack": "Đã đóng gói, hóa đơn chờ thu đã được tạo",
+        "ship": "Đã chuyển sang đang giao",
+        "deliver": "Đã ghi nhận thu COD",
+        "return": "Đã ghi nhận hoàn hàng",
+        "cancel": "Đã hủy đơn"
+      },
+      "errors": {
+        "generic": "Không thực hiện được, bạn thử lại nhé.",
+        "order_not_found": "Không tìm thấy đơn này.",
+        "bad_status": "Đơn đã được người khác chuyển trạng thái, màn hình đã tải lại.",
+        "invalid_fee": "Phí giao hàng phải từ 0 đến 500.000đ.",
+        "cod_limit": "Tổng thu vượt giới hạn COD, bạn giảm phí hoặc tách đơn nhé.",
+        "tracking_required": "Bạn nhập mã vận đơn nhé.",
+        "reason_required": "Bạn nhập lý do nhé.",
+        "out_of_stock": "Không đủ hàng để đóng gói: {detail}."
+      },
+      "dialogs": {
+        "ok": "Đồng ý",
+        "confirmTitle": "Xác nhận đơn hàng",
+        "confirmHint": "Chốt phí giao hàng cuối cùng. Khách sẽ thấy tổng tiền mới.",
+        "confirmPickupHint": "Đơn nhận tại cửa hàng, không có phí giao hàng.",
+        "confirmOk": "Xác nhận",
+        "estimate": "Khách đã thấy phí dự kiến {fee}.",
+        "fee": "Phí giao hàng",
+        "requote": "Tính lại phí GHN",
+        "noWarehouse": "Chưa cài kho gửi hàng hoặc địa chỉ GHN, hãy nhập phí tay.",
+        "quoteFailed": {
+          "unavailable": "GHN chưa trả được phí, bạn nhập tay nhé.",
+          "too_heavy": "Đơn quá nặng để GHN tính phí."
+        },
+        "feeWarn": "Phí cao hơn dự kiến hơn 10.000đ. Nên gọi báo khách trước khi giao.",
+        "packTitle": "Đóng gói đơn này?",
+        "readyTitle": "Chuẩn bị xong đơn này?",
+        "packHint": "Hệ thống tạo hóa đơn chờ thu và trừ kho theo hạn dùng gần nhất.",
+        "shipTitle": "Giao cho đơn vị vận chuyển",
+        "shipHint": "Tạo đơn trên khachhang.ghn.vn, tiền thu hộ (COD) là {amount}, rồi nhập mã vận đơn vào đây.",
+        "tracking": "Mã vận đơn GHN",
+        "shipOk": "Bắt đầu giao",
+        "deliverTitle": "Đơn đã giao thành công?",
+        "deliverHint": "Ghi nhận đã thu COD {amount}. Hóa đơn chuyển sang đã thanh toán.",
+        "deliverOk": "Đã giao",
+        "returnTitle": "Hoàn hàng",
+        "returnHint": "Giao thất bại hoặc hàng đã về kho. Hóa đơn bị hủy và hàng được trả lại kho.",
+        "returnOk": "Hoàn hàng",
+        "cancelTitle": "Hủy đơn hàng",
+        "cancelHint": "Đơn bị hủy; nếu đã đóng gói thì hóa đơn bị hủy và hàng được trả lại kho.",
+        "cancelOk": "Hủy đơn"
+      }
     }
   },
   "spa": {

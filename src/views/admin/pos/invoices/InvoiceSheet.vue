@@ -4,13 +4,7 @@
       <SheetHeader class="border-b px-6 py-4">
         <SheetTitle class="flex items-center gap-2">
           {{ invoice?.code ?? $t("pos.invoices.detail") }}
-          <span
-            v-if="invoice"
-            class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-            :class="invoice.status === 'paid' ? 'bg-primary/10 text-primary' : 'bg-red-50 text-red-600'"
-          >
-            {{ $t(`pos.status.${invoice.status}`) }}
-          </span>
+          <InvoiceStatusPill v-if="invoice" :invoice="invoice" />
         </SheetTitle>
         <SheetDescription>{{ invoice ? dateTime(invoice.createdAt) : "" }}</SheetDescription>
       </SheetHeader>
@@ -69,7 +63,7 @@
 
       <SheetFooter v-if="invoice" class="gap-2 border-t px-6 py-4">
         <Button
-          v-if="canDelete && invoice.status === 'paid' && !cancelling && !returning && salesReturns.length === 0"
+          v-if="canDelete && counterSale && !cancelling && !returning && salesReturns.length === 0"
           variant="outline"
           class="text-red-600"
           @click="cancelling = true"
@@ -77,7 +71,7 @@
           {{ $t("pos.invoices.cancel") }}
         </Button>
         <Button
-          v-if="canDelete && invoice.status === 'paid' && !cancelling && !returning && returnableLines.length"
+          v-if="canDelete && counterSale && !cancelling && !returning && returnableLines.length"
           variant="outline"
           @click="startReturn"
         >
@@ -116,6 +110,7 @@ import InvoiceCancelForm from "./InvoiceCancelForm.vue";
 import InvoiceItemsTable from "./InvoiceItemsTable.vue";
 import InvoiceReturnForm from "./InvoiceReturnForm.vue";
 import InvoiceReturnsList from "./InvoiceReturnsList.vue";
+import InvoiceStatusPill from "./InvoiceStatusPill.vue";
 import InvoiceTotals from "./InvoiceTotals.vue";
 import { useSalesReturn } from "./useSalesReturn";
 
@@ -126,6 +121,8 @@ const { t } = useI18n();
 const { canDelete } = usePermission("pos");
 const invoiceQuery = useInvoice(computed(() => props.invoiceId));
 const invoice = computed(() => invoiceQuery.data.value ?? null);
+// Online invoices are cancelled and returned through their order, not at the counter.
+const counterSale = computed(() => invoice.value?.status === "paid" && invoice.value.channel === "pos");
 const returnsQuery = useInvoiceReturns(computed(() => props.invoiceId));
 const salesReturns = computed(() => returnsQuery.data.value ?? []);
 

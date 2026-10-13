@@ -15,12 +15,7 @@
       {{ money(invoice.total) }}
     </td>
     <td class="px-4 py-3">
-      <span
-        class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-        :class="invoice.status === 'paid' ? 'bg-primary/10 text-primary' : 'bg-red-50 text-red-600'"
-      >
-        {{ $t(`pos.status.${invoice.status}`) }}
-      </span>
+      <InvoiceStatusPill :invoice="invoice" />
     </td>
   </tr>
 </template>
@@ -28,6 +23,7 @@
 <script lang="ts" setup>
 import type { Invoice } from "@/repositories/pos";
 import { dateTime, money } from "../format";
+import InvoiceStatusPill from "./InvoiceStatusPill.vue";
 
 defineProps<{ invoice: Invoice }>();
 

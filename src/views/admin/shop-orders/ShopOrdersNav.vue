@@ -23,6 +23,9 @@ const route = useRoute();
 const auth = useAuthStore();
 
 // Everything here is read with "shop_orders: VIEW"; the settings form only saves with "ALL".
-const tabs = [{ name: "shopOrderSettings", icon: "lucide:settings-2", label: "shop.nav.settings", method: "VIEW" }];
+const tabs = [
+  { name: "shopOrders", icon: "lucide:shopping-bag", label: "shop.nav.orders", method: "VIEW" },
+  { name: "shopOrderSettings", icon: "lucide:settings-2", label: "shop.nav.settings", method: "VIEW" },
+];
 const visibleTabs = computed(() => tabs.filter((tab) => auth.can("shop_orders", tab.method)));
 </script>

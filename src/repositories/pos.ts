@@ -8,7 +8,9 @@ type Client = SupabaseClient<Database>;
 
 export type LineType = "product" | "service" | "combo";
 export type PaymentMethod = "cash" | "transfer" | "card";
-export type InvoiceStatus = "paid" | "cancelled";
+export type InvoiceStatus = "paid" | "unpaid" | "cancelled";
+/** Where an invoice was made: at the counter, or from an online order. */
+export type InvoiceChannel = "pos" | "online";
 export type ShiftStatus = "open" | "closed";
 
 export const PAYMENT_METHODS: readonly PaymentMethod[] = ["cash", "transfer", "card"];
@@ -173,13 +175,16 @@ export type InvoiceLine = {
   weightKg: number | null;
 };
 
-export type Payment = { id: string; method: PaymentMethod; amount: number; bankRef: string | null };
+/** "cod" is cash collected by the courier; it is never entered at the counter. */
+export type Payment = { id: string; method: PaymentMethod | "cod"; amount: number; bankRef: string | null };
 
 export type Invoice = {
   id: string;
   code: string;
   branchId: string;
-  shiftId: string;
+  /** Null for an online invoice that was not paid at the counter. */
+  shiftId: string | null;
+  channel: InvoiceChannel;
   status: InvoiceStatus;
   customerId: string | null;
   customerName: string | null;
@@ -200,14 +205,16 @@ export type InvoiceDetail = Invoice & { lines: InvoiceLine[]; payments: Payment[
 
 const LINE_TYPES: readonly LineType[] = ["product", "service", "combo"];
 const toLineType = (value: string): LineType => LINE_TYPES.find((type) => type === value) ?? "product";
-const toMethod = (value: string): PaymentMethod => PAYMENT_METHODS.find((method) => method === value) ?? "cash";
+const toMethod = (value: string): PaymentMethod | "cod" =>
+  value === "cod" ? "cod" : (PAYMENT_METHODS.find((method) => method === value) ?? "cash");
 
 export const toInvoice = (row: Tables<"invoices">): Invoice => ({
   id: row.id,
   code: row.code,
   branchId: row.branch_id,
   shiftId: row.shift_id,
-  status: row.status === "cancelled" ? "cancelled" : "paid",
+  channel: row.channel === "online" ? "online" : "pos",
+  status: row.status === "cancelled" ? "cancelled" : row.status === "unpaid" ? "unpaid" : "paid",
   customerId: row.customer_id,
   customerName: row.customer_name,
   customerPhone: row.customer_phone,

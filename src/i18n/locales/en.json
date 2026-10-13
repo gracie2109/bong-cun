@@ -89,7 +89,8 @@
     "productBrands": "Product brands",
     "productImport": "Product Excel import / export",
     "shopOrderSettings": "Online shop settings",
-    "order": "Order"
+    "order": "Order",
+    "shopOrders": "Online orders"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -738,7 +739,8 @@
     "productBrands": "Brands",
     "productImport": "Excel import / export",
     "shopOnline": "Online shop",
-    "shopOrderSettings": "Online shop settings"
+    "shopOrderSettings": "Online shop settings",
+    "shopOrders": "Online orders"
   },
   "pos": {
     "title": "Point of sale",
@@ -768,11 +770,13 @@
     "method": {
       "cash": "Cash",
       "transfer": "Bank transfer",
-      "card": "Card"
+      "card": "Card",
+      "cod": "Cash on delivery"
     },
     "status": {
       "paid": "Paid",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "unpaid": "Awaiting payment"
     },
     "catalog": {
       "products": "Products",
@@ -934,6 +938,9 @@
       "pick": "Choose a unit",
       "subtitle": "This product can be sold in several units.",
       "unit": "Unit"
+    },
+    "channel": {
+      "online": "Online"
     }
   },
   "products": {
@@ -1226,7 +1233,8 @@
     "addToCart": "Add to cart",
     "added": "Added {name} to the cart",
     "nav": {
-      "settings": "Online shop settings"
+      "settings": "Online shop settings",
+      "orders": "Orders"
     },
     "location": {
       "province": "Province / City",
@@ -1415,6 +1423,101 @@
       "cancelOk": "Cancel order",
       "cancelKeep": "Keep order",
       "cancelReason": "Reason (optional)"
+    },
+    "admin": {
+      "title": "Online orders",
+      "searchPlaceholder": "Search by order code, name, phone or tracking code",
+      "empty": "No orders yet.",
+      "detail": "Order details",
+      "tabs": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "packed": "Packed",
+        "shipping": "Shipping",
+        "completed": "Completed",
+        "closed": "Cancelled / Returned",
+        "all": "All"
+      },
+      "cols": {
+        "code": "Order",
+        "placed": "Placed",
+        "customer": "Customer",
+        "method": "Method",
+        "lines": "Lines",
+        "total": "Total",
+        "status": "Status",
+        "tracking": "Tracking code"
+      },
+      "address": "Address",
+      "copy": "Copy",
+      "copied": "Address copied",
+      "weight": "Weight",
+      "invoice": "Invoice",
+      "reason": "Reason",
+      "estimate": "estimate",
+      "codTotal": "Customer pays",
+      "short": "Some items are short in stock; the order cannot be packed yet.",
+      "available": "Can be sold: {n}",
+      "timeline": "Progress",
+      "actions": {
+        "confirm": "Confirm",
+        "pack": "Pack",
+        "ready": "Mark ready",
+        "ship": "Hand to courier",
+        "deliver": "Delivered",
+        "return": "Returned",
+        "cancel": "Cancel order"
+      },
+      "done": {
+        "confirm": "Order confirmed",
+        "pack": "Packed; an unpaid invoice was created",
+        "ship": "Order is on the way",
+        "deliver": "COD payment recorded",
+        "return": "Return recorded",
+        "cancel": "Order cancelled"
+      },
+      "errors": {
+        "generic": "That did not work, please try again.",
+        "order_not_found": "This order was not found.",
+        "bad_status": "Someone else already moved this order; the screen was reloaded.",
+        "invalid_fee": "The shipping fee must be between 0 and 500,000.",
+        "cod_limit": "The total exceeds the COD limit; lower the fee or split the order.",
+        "tracking_required": "Please enter the tracking code.",
+        "reason_required": "Please enter a reason.",
+        "out_of_stock": "Not enough stock to pack: {detail}."
+      },
+      "dialogs": {
+        "ok": "OK",
+        "confirmTitle": "Confirm order",
+        "confirmHint": "Fix the final shipping fee. The customer will see the new total.",
+        "confirmPickupHint": "Pickup order, there is no shipping fee.",
+        "confirmOk": "Confirm",
+        "estimate": "The customer saw an estimate of {fee}.",
+        "fee": "Shipping fee",
+        "requote": "Ask GHN again",
+        "noWarehouse": "The warehouse or the GHN address is not set up; enter the fee by hand.",
+        "quoteFailed": {
+          "unavailable": "GHN could not price it; enter the fee by hand.",
+          "too_heavy": "The parcel is too heavy for GHN to price."
+        },
+        "feeWarn": "The fee is more than 10,000 above the estimate. Call the customer before delivering.",
+        "packTitle": "Pack this order?",
+        "readyTitle": "Mark this order ready?",
+        "packHint": "An unpaid invoice is created and stock is taken, earliest expiry first.",
+        "shipTitle": "Hand to the courier",
+        "shipHint": "Create the order on khachhang.ghn.vn with COD {amount}, then enter its tracking code here.",
+        "tracking": "GHN tracking code",
+        "shipOk": "Start delivery",
+        "deliverTitle": "Delivered successfully?",
+        "deliverHint": "Records the COD cash of {amount}. The invoice becomes paid.",
+        "deliverOk": "Delivered",
+        "returnTitle": "Return",
+        "returnHint": "Delivery failed or the parcel is back. The invoice is cancelled and the stock returns.",
+        "returnOk": "Mark returned",
+        "cancelTitle": "Cancel order",
+        "cancelHint": "The order is cancelled; if it was packed, its invoice is cancelled and the stock returns.",
+        "cancelOk": "Cancel order"
+      }
     }
   },
   "spa": {
