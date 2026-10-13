@@ -6,6 +6,7 @@ import type { PetServiceFilter } from "@/repositories/petServices";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
 import type { ProductFilter } from "@/repositories/products";
+import type { Bucket, ReportFilter } from "@/repositories/reports";
 import type { AppointmentFilter } from "@/repositories/spa";
 import type { UserListFilter } from "@/repositories/users";
 
@@ -110,6 +111,14 @@ export const posKeys = {
   customerPets: (customerId: string) => [...posKeys.all, "customer-pets", customerId] as const,
   servicePrice: (speciesId: string, serviceId: string, weightKg: number, branchId: string) =>
     [...posKeys.all, "service-price", speciesId, serviceId, weightKg, branchId] as const,
+};
+
+// Sales, cancellations and returns change the figures, so POS mutations invalidate these too.
+export const reportKeys = {
+  all: ["reports"] as const,
+  overview: (filter: ReportFilter) => [...reportKeys.all, "overview", filter] as const,
+  series: (filter: ReportFilter, bucket: Bucket) => [...reportKeys.all, "series", filter, bucket] as const,
+  branches: () => [...reportKeys.all, "branches"] as const,
 };
 
 // Sales change stock, so POS mutations invalidate these too.

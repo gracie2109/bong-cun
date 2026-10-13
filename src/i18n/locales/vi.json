@@ -26,7 +26,6 @@
     "icon": "Biểu tượng",
     "row_per_page": "Hàng trên mỗi trang",
     "ok": "Đồng ý",
-    "delete": "Xóa",
     "deleteFileTitle": "Xóa tệp?",
     "deleteFileDesc": "Sau khi xóa sẽ không thể khôi phục.",
     "cancel": "Hủy",
@@ -80,7 +79,8 @@
     "stockDocuments": "Phiếu kho",
     "spaBoard": "Lịch ngày spa",
     "spaAppointments": "Lịch hẹn spa",
-    "spaSettings": "Cài đặt spa"
+    "spaSettings": "Cài đặt spa",
+    "reportsOverview": "Báo cáo doanh thu"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -718,7 +718,9 @@
     "stockDocuments": "Phiếu kho",
     "suppliers": "Nhà cung cấp",
     "spaBoard": "Lịch spa theo ngày",
-    "spaAppointments": "Lịch hẹn spa"
+    "spaAppointments": "Lịch hẹn spa",
+    "reports": "Báo cáo",
+    "reportsOverview": "Tổng quan doanh thu"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1270,6 +1272,86 @@
       "no_price": "Chưa có giá cho cân nặng này ({name}). Kiểm tra bảng giá dịch vụ.",
       "not_due": "Chưa tới giờ hẹn nên chưa đánh dấu không đến được.",
       "bad_status": "Không chuyển được phiếu sang trạng thái này."
+    }
+  },
+  "reports": {
+    "title": "Báo cáo doanh thu",
+    "allBranches": "Tất cả cơ sở",
+    "noBranch": "Tài khoản này chưa được cấp quyền xem báo cáo ở cơ sở nào.",
+    "loading": "Đang tải...",
+    "empty": "Không có số liệu trong khoảng này.",
+    "total": "Tổng",
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "vsPrevious": "so kỳ trước",
+    "presets": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "last7": "7 ngày",
+      "thisMonth": "Tháng này",
+      "lastMonth": "Tháng trước",
+      "custom": "Tùy chọn"
+    },
+    "problems": {
+      "order": "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.",
+      "tooLong": "Chỉ xem được tối đa {max} ngày mỗi lần."
+    },
+    "nav": {
+      "overview": "Tổng quan"
+    },
+    "kpi": {
+      "netRevenue": "Doanh thu thuần",
+      "invoiceCount": "Số hóa đơn",
+      "avgTicket": "TB / hóa đơn",
+      "refunds": "Hoàn trả",
+      "grossProfit": "Lãi gộp hàng (ước tính)",
+      "cancelled": "{n} hóa đơn hủy",
+      "returnCount": "{n} phiếu trả",
+      "missingCost": "{n} dòng chưa có giá vốn",
+      "estimated": "Ước tính theo giá vốn lô"
+    },
+    "chart": {
+      "title": "Doanh thu theo thời gian",
+      "weekOf": "Tuần từ {day}"
+    },
+    "buckets": {
+      "day": "Ngày",
+      "week": "Tuần",
+      "month": "Tháng"
+    },
+    "segment": {
+      "shop": "Shop",
+      "spa": "Spa"
+    },
+    "mix": {
+      "segments": "Cơ cấu doanh thu",
+      "payments": "Phương thức thanh toán",
+      "spaAppointment": "Spa theo lịch hẹn",
+      "spaWalkIn": "Spa bán lẻ tại quầy",
+      "discountNote": "Giảm giá hóa đơn đã được chia theo tỉ lệ tiền từng dòng; Shop đã trừ hoàn trả."
+    },
+    "method": {
+      "cash": "Tiền mặt",
+      "transfer": "Chuyển khoản",
+      "card": "Thẻ"
+    },
+    "cols": {
+      "date": "Ngày",
+      "invoices": "HĐ",
+      "gross": "Tiền hàng",
+      "discount": "Giảm giá",
+      "refunds": "Hoàn trả",
+      "netRevenue": "Thuần",
+      "shop": "Shop",
+      "spa": "Spa",
+      "cash": "Tiền mặt",
+      "transfer": "CK",
+      "card": "Thẻ"
+    },
+    "export": {
+      "button": "Xuất CSV",
+      "truncated": "Chỉ xuất {limit} dòng đầu, hãy thu hẹp khoảng ngày.",
+      "failed": "Xuất báo cáo thất bại."
     }
   }
 }
