@@ -1267,6 +1267,37 @@
         "defaultWeight": "Nhập khối lượng mặc định lớn hơn 0.",
         "fromAddress": "Chọn đủ quận / huyện và phường / xã của kho."
       }
+    },
+    "cart": {
+      "title": "Giỏ hàng",
+      "empty": "Giỏ hàng đang trống",
+      "emptyHint": "Chọn vài món cho bé nhé.",
+      "continue": "Mua sắm tiếp",
+      "summary": "Tóm tắt đơn hàng",
+      "items": "Tạm tính ({n} sản phẩm)",
+      "shipping": "Phí vận chuyển",
+      "shippingAtCheckout": "Tính ở bước thanh toán",
+      "total": "Tổng cộng",
+      "subtotal": "Tạm tính",
+      "checkout": "Thanh toán",
+      "clear": "Xóa hết giỏ hàng",
+      "viewCart": "Xem giỏ hàng",
+      "remove": "Xóa khỏi giỏ",
+      "unavailable": "Ngừng bán",
+      "onlyLeft": "Chỉ còn {n}",
+      "inStoreOnly": "Chỉ bán tại cửa hàng, không giao hàng",
+      "inStoreOnlyNote": "Giỏ có hàng chỉ bán tại cửa hàng, bạn chỉ chọn được nhận tại cửa hàng.",
+      "fixIssues": "Xóa hoặc giảm số lượng các sản phẩm báo lỗi để thanh toán.",
+      "loadFailed": "Không tải được giỏ hàng.",
+      "retry": "Thử lại",
+      "more": "và {n} sản phẩm khác",
+      "full": "Giỏ hàng tối đa 30 sản phẩm khác nhau.",
+      "cappedQty": "Mỗi sản phẩm tối đa 99, số lượng đã được đặt về 99."
+    },
+    "checkout": {
+      "title": "Thanh toán",
+      "soon": "Trang thanh toán đang được hoàn thiện, bạn quay lại sau nhé.",
+      "backToCart": "Về giỏ hàng"
     }
   },
   "spa": {

@@ -189,6 +189,7 @@ export const shopKeys = {
   all: ["shop"] as const,
   settings: () => [...shopKeys.all, "settings"] as const,
   publicSettings: () => [...shopKeys.all, "public-settings"] as const,
+  cart: (lineKeys: string[]) => [...shopKeys.all, "cart", lineKeys] as const,
 };
 
 export const ghnLocationKeys = {

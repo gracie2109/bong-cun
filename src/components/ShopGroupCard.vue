@@ -31,7 +31,7 @@
           </DialogHeader>
 
           <p class="text-2xl font-bold text-primary">
-            {{ choice.variant.value ? formatPrice(choice.variant.value.price) : priceLabel }}
+            {{ choice.variant.value && addToCart.price.value !== null ? formatPrice(addToCart.price.value) : priceLabel }}
           </p>
 
           <VariantOptions
@@ -42,14 +42,27 @@
             @pick="choice.pick"
           />
 
+          <div v-if="addToCart.unitOptions.value.length > 1" class="flex flex-wrap items-center gap-2">
+            <button
+              v-for="option in addToCart.unitOptions.value"
+              :key="option.id ?? 'base'"
+              type="button"
+              class="rounded-full border px-3 py-1 text-sm transition-colors"
+              :class="addToCart.unitId.value === option.id ? 'border-primary bg-primary/10 font-semibold text-primary' : 'hover:bg-muted'"
+              @click="addToCart.unitId.value = option.id"
+            >
+              {{ option.label }}
+            </button>
+          </div>
+
           <div class="flex items-center gap-3">
             <span class="text-sm font-medium">{{ $t("shop.quantity") }}</span>
             <div class="flex items-center rounded-md border">
-              <button type="button" class="grid size-9 place-content-center" :aria-label="$t('shop.less')" @click="quantity = Math.max(1, quantity - 1)">
+              <button type="button" class="grid size-9 place-content-center" :aria-label="$t('shop.less')" @click="addToCart.quantity.value = Math.max(1, addToCart.quantity.value - 1)">
                 <Minus class="size-4" />
               </button>
-              <span class="w-10 text-center tabular-nums">{{ quantity }}</span>
-              <button type="button" class="grid size-9 place-content-center" :aria-label="$t('shop.more')" @click="quantity += 1">
+              <span class="w-10 text-center tabular-nums">{{ addToCart.quantity.value }}</span>
+              <button type="button" class="grid size-9 place-content-center" :aria-label="$t('shop.more')" @click="addToCart.quantity.value = Math.min(99, addToCart.quantity.value + 1)">
                 <Plus class="size-4" />
               </button>
             </div>
@@ -68,23 +81,20 @@
 <script lang="ts" setup>
 import { computed, ref, toRef, watch } from "vue";
 import { Image as ImageIcon, Minus, Plus } from "lucide-vue-next";
-import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
 import VariantOptions from "@/components/VariantOptions.vue";
+import { useAddToCart } from "@/composables/shop/useAddToCart";
 import { useVariantChoice } from "@/composables/useVariantChoice";
-import i18n from "@/i18n";
 import { formatPrice } from "@/lib/utils";
 import type { ProductGroup } from "@/repositories/products";
-import { useCartLocal } from "@/stores/modules/cartProduct";
 
 const props = defineProps<{ group: ProductGroup; showBorder?: boolean }>();
 
 const open = ref(false);
-const quantity = ref(1);
-const cart = useCartLocal();
 const choice = useVariantChoice(toRef(props, "group"));
+const addToCart = useAddToCart(choice.variant);
 
 /** The gallery's pictures, or the cover alone for a group saved before galleries. */
 const galleryImages = computed(() => {
@@ -110,21 +120,10 @@ const optionHint = computed(() =>
 );
 
 watch(open, (value) => {
-  if (value) quantity.value = 1;
+  if (value) addToCart.reset();
 });
 
 const add = () => {
-  const variant = choice.variant.value;
-  if (!variant) return;
-  cart.addToCart({
-    id: variant.id,
-    image: image.value ?? "",
-    name: props.group.name,
-    variant: variant.options.join(" / "),
-    price: variant.price,
-    quantity: quantity.value,
-  });
-  toast.success(i18n.global.t("shop.added", { name: variant.name }));
-  open.value = false;
+  if (addToCart.add()) open.value = false;
 };
 </script>
