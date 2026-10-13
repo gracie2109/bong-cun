@@ -1466,7 +1466,8 @@
         "ship": "Giao vận chuyển",
         "deliver": "Đã giao",
         "return": "Hoàn hàng",
-        "cancel": "Hủy đơn"
+        "cancel": "Hủy đơn",
+        "collect": "Khách nhận & thanh toán"
       },
       "done": {
         "confirm": "Đã xác nhận đơn",
@@ -1474,7 +1475,8 @@
         "ship": "Đã chuyển sang đang giao",
         "deliver": "Đã ghi nhận thu COD",
         "return": "Đã ghi nhận hoàn hàng",
-        "cancel": "Đã hủy đơn"
+        "cancel": "Đã hủy đơn",
+        "pay": "Đã thu tiền và giao hàng cho khách"
       },
       "errors": {
         "generic": "Không thực hiện được, bạn thử lại nhé.",
@@ -1484,7 +1486,10 @@
         "cod_limit": "Tổng thu vượt giới hạn COD, bạn giảm phí hoặc tách đơn nhé.",
         "tracking_required": "Bạn nhập mã vận đơn nhé.",
         "reason_required": "Bạn nhập lý do nhé.",
-        "out_of_stock": "Không đủ hàng để đóng gói: {detail}."
+        "out_of_stock": "Không đủ hàng để đóng gói: {detail}.",
+        "no_open_shift": "Bạn chưa mở ca thu ngân. Mở ca ở màn POS rồi thu tiền lại nhé.",
+        "underpaid": "Số tiền chưa đủ.",
+        "overpaid": "Chuyển khoản và thẻ không được vượt quá số tiền cần thu."
       },
       "dialogs": {
         "ok": "Đồng ý",
@@ -1516,7 +1521,10 @@
         "returnOk": "Hoàn hàng",
         "cancelTitle": "Hủy đơn hàng",
         "cancelHint": "Đơn bị hủy; nếu đã đóng gói thì hóa đơn bị hủy và hàng được trả lại kho.",
-        "cancelOk": "Hủy đơn"
+        "cancelOk": "Hủy đơn",
+        "collectTitle": "Khách nhận hàng và thanh toán",
+        "collectHint": "Tiền được ghi vào ca thu ngân đang mở của bạn.",
+        "collectOk": "Thu tiền"
       }
     }
   },
@@ -1733,7 +1741,8 @@
     "method": {
       "cash": "Tiền mặt",
       "transfer": "Chuyển khoản",
-      "card": "Thẻ"
+      "card": "Thẻ",
+      "cod": "Thu hộ (COD)"
     },
     "cols": {
       "date": "Ngày",

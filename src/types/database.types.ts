@@ -2208,6 +2208,7 @@ export type Database = {
       deliver_shop_order: { Args: { p_id: string }; Returns: Json }
       return_shop_order: { Args: { p_id: string; p_reason: string }; Returns: Json }
       cancel_shop_order: { Args: { p_id: string; p_reason: string }; Returns: Json }
+      pay_pickup_shop_order: { Args: { p_id: string; p_payments: Json }; Returns: Json }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
       branch_prices: {
         Args: { p_branch: string; p_products: string[] }

@@ -36,7 +36,8 @@ export type ReportOverview = {
   cancelledAmount: number;
   returnCount: number;
   segments: { shop: number; spa: number; spaAppointment: number; spaWalkIn: number };
-  payments: { cash: number; transfer: number; card: number; refundCash: number; refundTransfer: number };
+  /** `cod` is cash collected by couriers; it is not in the till. */
+  payments: { cash: number; transfer: number; card: number; cod: number; refundCash: number; refundTransfer: number };
   /** Estimated gross profit of goods (spa has no cost). */
   grossProfit: number;
   missingCostLines: number;
