@@ -146,6 +146,10 @@ export const listShopOrders = async (
   return { rows: json.rows.map(toRow), total: Number(json.total_count), counts: json.counts };
 };
 
+/** Orders waiting for confirmation, for the number on the menu. */
+export const getShopOrderBadge = async (client: Client): Promise<number> =>
+  Number(unwrap(await client.rpc("shop_order_badge", {})) ?? 0);
+
 export const getShopOrder = async (client: Client, id: string): Promise<AdminOrder> =>
   toAdminOrder(unwrap(await client.rpc("get_shop_order", { p_id: id })) as OrderJson);
 

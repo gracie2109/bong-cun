@@ -565,3 +565,26 @@ Thread code cập nhật mục này sau mỗi bước (PR, migration đã chạy
 - **Có gì mới:** đơn nhận tại cửa hàng đã đóng gói có nút **Khách nhận & thanh toán**: dialog thu tiền dùng lại `usePaymentSplit` của POS (tiền mặt, chuyển khoản, thẻ, tiền thừa). `pay_pickup_shop_order` cần quyền `pos: CREATE` và ca thu ngân đang mở của người thu (khóa `for share` như `create_invoice`; chưa mở ca thì báo "Bạn chưa mở ca thu ngân"), ghi các dòng `payments`, gán `shift_id` cho hóa đơn online, hóa đơn thành `paid`, đơn thành `completed`. Thu thiếu hoặc chuyển khoản và thẻ vượt tổng thì từ chối và không ghi gì. Bấm lại trên đơn đã hoàn tất chỉ trả lại đơn, không thu thêm. Báo cáo tổng quan có thêm dòng **Thu hộ (COD)** trong cơ cấu thanh toán (chỉ hiện khi có), không tính vào "Tiền mặt" vì tiền COD không qua két. Nhãn "Online" và trạng thái "Chờ thu" ở danh sách hóa đơn POS đã làm ở bước 6.
 - **Kiểm tra bằng DB thử:** thu trước khi đóng gói, đơn giao hàng bị từ chối, chưa mở ca, thu thiếu, thẻ vượt tổng, thu đúng (chuyển khoản + tiền mặt có tiền thừa), bấm lại không thu hai lần, tổng kết ca đúng (tiền mặt dự kiến trừ tiền thừa, chuyển khoản riêng), báo cáo thấy COD 200.000đ của đơn giao và không lẫn vào tiền mặt. Giao diện chỉ kiểm tra typecheck và build.
 - **Khác plan:** `pay_pickup_shop_order(p_id, p_payments)` không nhận `client_ref` vì đơn đã được khóa và đơn hoàn tất thì trả lại nguyên trạng, nên gửi lại không thu hai lần. Báo cáo tính hóa đơn theo ngày xuất hóa đơn (lúc đóng gói), không theo ngày thu tiền, giống cách báo cáo hiện tại đếm theo ngày tạo hóa đơn.
+
+### Bước 8: Hoàn thiện (Đơn của tôi, huy hiệu đơn chờ, làm mới chi tiết đơn)
+
+- **Migration** (tự chạy sau khi merge): `20261016080000_shop_order_badge.sql` (`shop_order_badge`).
+- **Có gì mới:** tab "orders" trong hồ sơ thay cho tab "transactions" còn là trang trống: danh sách đơn của tôi lọc theo trạng thái, phân trang 10 đơn mỗi trang, bấm vào mở `/orders/:code`. Menu admin "Đơn online" có số đơn chờ xác nhận (đỏ, ẩn khi thu gọn menu), hỏi lại mỗi 60 giây và sau mỗi bước xử lý đơn; nhân viên không có quyền xem đơn thì không bị hỏi. Trang chi tiết đơn của khách tự tải lại mỗi 20 giây khi đơn còn đang xử lý (đã làm ở bước 5), danh sách đơn của nhân viên mỗi 30 giây (bước 6).
+- **Kiểm tra bằng DB thử:** huy hiệu đếm đúng đơn chờ xác nhận (giảm khi xác nhận), khách thường thấy 0, anon bị chặn. Giao diện chỉ kiểm tra typecheck và build.
+
+### Tổng kết
+
+| Bước | PR |
+| --- | --- |
+| 1 Nền | #72 |
+| 2 Giỏ hàng | #73 |
+| 3 Địa chỉ | #74 |
+| 4 Phí GHN | #75 |
+| 5 Đặt hàng | #76 |
+| 6 Admin xử lý đơn | #77 |
+| 7 Nhận tại cửa hàng + COD | #78 |
+| 8 Hoàn thiện | PR bước 8 |
+
+- Bước 9 đến 11 (API GHN tạo vận đơn, VietQR, SePay) chưa làm, đúng phạm vi đã chốt.
+- Môi trường chạy: biến tùy chọn `NUXT_GHN_HEAVY_GOODS_SERVICE_ID` cho ngày giao dự kiến của gói từ 20 kg; các biến GHN còn lại như cũ. Kho gửi hàng và địa chỉ GHN phải nhập trong "Cài đặt bán online" thì mới tính được phí GHN thật (không thì dùng phí dự phòng).
+- Phần SQL đã chạy thử trên Postgres cục bộ cho từng bước; phần giao diện chỉ kiểm tra typecheck và build, chưa mở bằng trình duyệt, nên cần đi thử một vòng: đặt đơn giao và nhận tại cửa hàng ở shop, rồi xử lý ở admin (xác nhận, đóng gói, giao, đã giao, hoàn, hủy, thu tiền tại quầy).

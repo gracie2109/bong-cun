@@ -1,12 +1,13 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { getShopOrder, listShopOrders, runOrderStep, type OrderStepCall } from "@/repositories/shop";
+import { getShopOrder, getShopOrderBadge, listShopOrders, runOrderStep, type OrderStepCall } from "@/repositories/shop";
 import type { PageParams } from "@/repositories/shared";
 import type { OrderListFilter } from "@/types/shopOrderAdmin";
 import { shopKeys } from "./keys";
 
 const FAST_REFRESH_MS = 30_000;
+const BADGE_REFRESH_MS = 60_000;
 
 /** One page of online orders. Read again every 30 seconds so new orders show up. */
 export const useShopOrderList = (page: MaybeRef<PageParams>, filter: MaybeRef<OrderListFilter>) =>
@@ -15,6 +16,15 @@ export const useShopOrderList = (page: MaybeRef<PageParams>, filter: MaybeRef<Or
     queryFn: () => listShopOrders(supabaseClient(), { ...unref(page) }, { ...unref(filter) }),
     placeholderData: keepPreviousData,
     refetchInterval: FAST_REFRESH_MS,
+  });
+
+/** The number of orders waiting for confirmation; `enabled` is off for staff who cannot see orders. */
+export const useShopOrderBadge = (enabled: MaybeRef<boolean>) =>
+  useQuery({
+    queryKey: computed(() => [...shopKeys.staffOrders(), "badge"] as const),
+    queryFn: () => getShopOrderBadge(supabaseClient()),
+    enabled: computed(() => unref(enabled)),
+    refetchInterval: BADGE_REFRESH_MS,
   });
 
 export const useShopOrderDetail = (id: MaybeRef<string | undefined>) =>

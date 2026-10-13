@@ -80,7 +80,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
 export const PROFILE_KEYS = {
   GENERAL: "general",
   ADDRESS: 'address',
-  TRANSACTION: 'transactions'
+  ORDERS: 'orders'
 
 }
 export const navigation = {
@@ -98,9 +98,9 @@ export const navigation = {
       label: "address",
     },
     {
-      path: "transactions",
-      key: PROFILE_KEYS.TRANSACTION,
-      label: "transactions",
+      path: "orders",
+      key: PROFILE_KEYS.ORDERS,
+      label: "orders",
       icon: "",
     },
   ],

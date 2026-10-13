@@ -14,7 +14,7 @@
 
       <div id="render_profile_tab">
         <GeneralInfo v-if="activeKey === PROFILE_KEYS.GENERAL" />
-        <Transactions v-if="activeKey === PROFILE_KEYS.TRANSACTION" />
+        <MyOrders v-if="activeKey === PROFILE_KEYS.ORDERS" />
         <ProfileAddress v-if="activeKey === PROFILE_KEYS.ADDRESS" />
 
       </div>
@@ -33,7 +33,7 @@
 import { navigation, PROFILE_KEYS } from "@/lib/navigations";
 import { ref } from "vue";
 import GeneralInfo from "./components/GeneralInfo/Index.vue";
-import Transactions from "./components/Transactions/Index.vue";
+import MyOrders from "./components/Orders/Index.vue";
 import ProfileAddress from "./components/Address/Index.vue";
 
 import { useAuthStore } from "@/stores";

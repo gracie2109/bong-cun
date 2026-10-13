@@ -16,6 +16,7 @@ import {
 import Nav from "@/components/layout/admin/Nav.vue";
 import { canOpenAdminRoute } from "@/lib/access";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
+import { useShopOrderBadge } from "@/queries/shopOrdersAdmin";
 import { useAppStore, useAuthStore } from "@/stores";
 import { initials } from "@/views/admin/pets/format";
 
@@ -34,6 +35,11 @@ const sections = computed(() => {
     items: section.items.filter((item) => canOpenAdminRoute(grants, item.name)),
   })).filter((section) => section.items.length > 0);
 });
+
+// Online orders waiting for confirmation, on the "Đơn online" item (only asked when it can be seen).
+const canSeeOrders = computed(() => canOpenAdminRoute(auth.adminGrants ?? {}, "shopOrders"));
+const orderBadge = useShopOrderBadge(canSeeOrders);
+const badges = computed(() => ({ shopOrders: orderBadge.data.value ?? 0 }));
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""
@@ -66,7 +72,7 @@ const userName = computed(
             {{ $t(section.title) }}
           </SidebarGroupLabel>
           <SidebarMenu class="gap-0.5">
-            <Nav :items="section.items" />
+            <Nav :items="section.items" :badges="badges" />
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
