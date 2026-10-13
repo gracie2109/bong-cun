@@ -6,6 +6,7 @@ import type { PetServiceFilter } from "@/repositories/petServices";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
 import type { ProductFilter } from "@/repositories/products";
+import type { AppointmentFilter } from "@/repositories/spa";
 import type { UserListFilter } from "@/repositories/users";
 
 export const speciesKeys = {
@@ -132,4 +133,15 @@ export const supplierKeys = {
   all: ["suppliers"] as const,
   list: (page: PageParams, filter: SupplierFilter) => [...supplierKeys.all, "list", page, filter] as const,
   options: (search: string) => [...supplierKeys.all, "options", search] as const,
+};
+
+export const spaKeys = {
+  all: ["spa"] as const,
+  resources: (branchId: string) => [...spaKeys.all, "resources", branchId] as const,
+  hours: (branchId: string) => [...spaKeys.all, "hours", branchId] as const,
+  staff: (branchId: string) => [...spaKeys.all, "staff", branchId] as const,
+  appointments: (branchId: string, page: PageParams, filter: AppointmentFilter) =>
+    [...spaKeys.all, "appointments", branchId, page, filter] as const,
+  appointment: (id: string) => [...spaKeys.all, "appointment", id] as const,
+  board: (branchId: string, date: string) => [...spaKeys.all, "board", branchId, date] as const,
 };

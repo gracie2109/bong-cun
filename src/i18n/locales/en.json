@@ -77,7 +77,10 @@
     "cashShifts": "Cash shifts",
     "adminProducts": "Products",
     "inventoryStock": "Stock",
-    "stockDocuments": "Stock documents"
+    "stockDocuments": "Stock documents",
+    "spaBoard": "Spa day view",
+    "spaAppointments": "Spa appointments",
+    "spaSettings": "Spa settings"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -688,7 +691,7 @@
     "overview": "Overview",
     "dashboard": "Dashboard",
     "scheduling": "Scheduling",
-    "schedule": "Bookings",
+    "schedule": "Web booking requests",
     "customersPets": "Customers & pets",
     "customers": "Customers",
     "pets": "Pet profiles",
@@ -713,7 +716,9 @@
     "inventory": "Inventory",
     "stock": "Stock",
     "stockDocuments": "Stock documents",
-    "suppliers": "Suppliers"
+    "suppliers": "Suppliers",
+    "spaBoard": "Spa day view",
+    "spaAppointments": "Spa appointments"
   },
   "pos": {
     "title": "Point of sale",
@@ -765,7 +770,8 @@
       "fullName": "Full name",
       "phone": "Phone",
       "useNew": "Use this new customer",
-      "newBadge": "New"
+      "newBadge": "New",
+      "notFoundOnly": "No customer found."
     },
     "cart": {
       "empty": "Pick products, services or combos on the left to add them.",
@@ -1107,5 +1113,153 @@
     "pickVariant": "Pick every option to add it to the cart.",
     "addToCart": "Add to cart",
     "added": "Added {name} to the cart"
+  },
+  "spa": {
+    "title": "Spa schedule",
+    "nav": {
+      "board": "Day view",
+      "appointments": "Appointments",
+      "settings": "Spa settings",
+      "webRequests": "Web requests"
+    },
+    "weekdays": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "status": {
+      "booked": "Booked",
+      "checked_in": "Checked in",
+      "in_progress": "In progress",
+      "done": "Done",
+      "paid": "Paid",
+      "cancelled": "Cancelled",
+      "no_show": "No-show"
+    },
+    "board": {
+      "prev": "Previous day",
+      "next": "Next day",
+      "today": "Today",
+      "closed": "The branch is closed that day, or there is no data yet.",
+      "unassigned": "Unassigned",
+      "by": {
+        "staff": "By staff",
+        "table": "By table"
+      }
+    },
+    "appointments": {
+      "title": "Spa appointments",
+      "new": "Book",
+      "searchPlaceholder": "Code, customer name or phone, pet name...",
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "code": "Code",
+      "time": "Time",
+      "customer": "Customer",
+      "tickets": "Pets and services",
+      "empty": "No appointments yet."
+    },
+    "dialog": {
+      "newTitle": "Book a spa appointment",
+      "editTitle": "Edit appointment {code}",
+      "subtitle": "Each pet and service is a ticket with its own staff member and table.",
+      "book": "Book",
+      "customer": "Customer",
+      "noPets": "This customer has no pets yet. Add a pet before booking.",
+      "openPets": "Open Pets",
+      "date": "Date",
+      "openHours": "Open {open} – {close}",
+      "ticket": "Ticket {n}",
+      "removeTicket": "Remove ticket",
+      "pet": "Pet",
+      "pickPet": "Pick a pet",
+      "service": "Service",
+      "pickService": "Pick a service or combo",
+      "services": "Services",
+      "combos": "Combos",
+      "time": "Start time",
+      "pickTime": "Pick a time",
+      "staff": "Staff",
+      "unassigned": "Not assigned yet",
+      "table": "Spa table",
+      "noTable": "No table",
+      "addTicket": "Add ticket",
+      "note": "Note",
+      "notePlaceholder": "Skin condition, behavior, customer requests...",
+      "cancelAppointment": "Cancel appointment",
+      "cancelTitle": "Cancel appointment {code}?",
+      "cancelDesc": "Its tickets are cancelled and the staff and table time is released.",
+      "keep": "Keep"
+    },
+    "ticketStatus": {
+      "waiting": "Waiting",
+      "in_progress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "title": "Appointment {code}",
+      "subtitle": "Check in when the customer arrives, then start and finish each ticket.",
+      "checkedInAt": "arrived {time}",
+      "checkIn": "Customer has arrived",
+      "checkInHint": "Enter the real weight to fix the price. By-weight services need a weight.",
+      "checkInAction": "Check in",
+      "weight": "Weight of {name}",
+      "tickets": "Tickets",
+      "estimate": "Estimate",
+      "finalPrice": "Fixed",
+      "total": "Total",
+      "start": "Start",
+      "finish": "Done",
+      "undo": "Back one step",
+      "noShow": "No-show",
+      "noShowTitle": "Mark {code} as a no-show?",
+      "noShowDesc": "Its tickets are cancelled and the staff and table time is released.",
+      "open": "Details",
+      "mine": "My tickets",
+      "close": "Close",
+      "loading": "Loading..."
+    },
+    "settings": {
+      "title": "Spa settings",
+      "readOnly": "You can only view this. The Schedule \"Setting\" permission is needed to change it.",
+      "tables": "Spa tables",
+      "tablesHint": "A table takes one ticket at a time.",
+      "addTable": "Add table",
+      "editTable": "Edit table",
+      "tableName": "Table name",
+      "tableNamePlaceholder": "For example: Table 1",
+      "noTables": "No tables yet.",
+      "active": "In use",
+      "hours": "Opening hours",
+      "hoursHint": "Appointments can only be booked inside opening hours, starting on a multiple of 15 minutes.",
+      "open": "Open",
+      "closed": "Closed",
+      "staff": "Staff who do services",
+      "staffHint": "Only the ones switched on appear when scheduling.",
+      "noStaff": "This branch has no staff yet.",
+      "doesServices": "Does services"
+    },
+    "errors": {
+      "slot_staff": "The staff member already has a ticket at this time ({name}).",
+      "slot_resource": "The table already has a ticket at this time ({name}).",
+      "closed": "The branch is closed that day.",
+      "outside_hours": "The time is outside opening hours.",
+      "bad_time": "The start time must be a multiple of 15 minutes.",
+      "in_past": "That time has passed.",
+      "not_editable": "This appointment can no longer be edited or cancelled.",
+      "no_customer": "Pick a customer.",
+      "no_pet": "Pick a pet.",
+      "bad_hours": "Closing time must be after opening time.",
+      "need_weight": "A by-weight service needs the pet's weight ({name}).",
+      "no_price": "No price for this weight yet ({name}). Check the service prices.",
+      "not_due": "The appointment time has not come yet, so it cannot be a no-show.",
+      "bad_status": "The ticket cannot move to that status."
+    }
   }
 }

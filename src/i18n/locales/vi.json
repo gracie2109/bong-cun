@@ -77,7 +77,10 @@
     "cashShifts": "Ca thu ngân",
     "adminProducts": "Sản phẩm",
     "inventoryStock": "Tồn kho",
-    "stockDocuments": "Phiếu kho"
+    "stockDocuments": "Phiếu kho",
+    "spaBoard": "Lịch ngày spa",
+    "spaAppointments": "Lịch hẹn spa",
+    "spaSettings": "Cài đặt spa"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -688,7 +691,7 @@
     "overview": "Tổng quan",
     "dashboard": "Bảng điều khiển",
     "scheduling": "Quản lý lịch",
-    "schedule": "Lịch hẹn đặt chỗ",
+    "schedule": "Yêu cầu đặt chỗ từ web",
     "customersPets": "Khách hàng & Pet",
     "customers": "Khách hàng",
     "pets": "Hồ sơ thú cưng",
@@ -713,7 +716,9 @@
     "inventory": "Kho",
     "stock": "Tồn kho",
     "stockDocuments": "Phiếu kho",
-    "suppliers": "Nhà cung cấp"
+    "suppliers": "Nhà cung cấp",
+    "spaBoard": "Lịch spa theo ngày",
+    "spaAppointments": "Lịch hẹn spa"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -765,7 +770,8 @@
       "fullName": "Họ tên",
       "phone": "Số điện thoại",
       "useNew": "Dùng khách mới này",
-      "newBadge": "Khách mới"
+      "newBadge": "Khách mới",
+      "notFoundOnly": "Không tìm thấy khách hàng."
     },
     "cart": {
       "empty": "Chọn sản phẩm, dịch vụ hoặc combo bên trái để thêm vào hóa đơn.",
@@ -1107,5 +1113,153 @@
     "pickVariant": "Chọn đủ phân loại để thêm vào giỏ.",
     "addToCart": "Thêm vào giỏ hàng",
     "added": "Đã thêm {name} vào giỏ"
+  },
+  "spa": {
+    "title": "Lịch spa",
+    "nav": {
+      "board": "Lịch ngày",
+      "appointments": "Lịch hẹn",
+      "settings": "Cài đặt spa",
+      "webRequests": "Yêu cầu từ web"
+    },
+    "weekdays": {
+      "1": "Thứ hai",
+      "2": "Thứ ba",
+      "3": "Thứ tư",
+      "4": "Thứ năm",
+      "5": "Thứ sáu",
+      "6": "Thứ bảy",
+      "7": "Chủ nhật"
+    },
+    "status": {
+      "booked": "Đã đặt",
+      "checked_in": "Đã đến",
+      "in_progress": "Đang làm",
+      "done": "Xong",
+      "paid": "Đã thanh toán",
+      "cancelled": "Đã hủy",
+      "no_show": "Không đến"
+    },
+    "board": {
+      "prev": "Ngày trước",
+      "next": "Ngày sau",
+      "today": "Hôm nay",
+      "closed": "Cơ sở nghỉ ngày này hoặc chưa có dữ liệu.",
+      "unassigned": "Chưa xếp",
+      "by": {
+        "staff": "Theo nhân viên",
+        "table": "Theo bàn"
+      }
+    },
+    "appointments": {
+      "title": "Lịch hẹn spa",
+      "new": "Đặt lịch",
+      "searchPlaceholder": "Mã, tên hoặc SĐT khách, tên thú cưng...",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "status": "Trạng thái",
+      "code": "Mã lịch",
+      "time": "Giờ hẹn",
+      "customer": "Khách hàng",
+      "tickets": "Thú cưng và dịch vụ",
+      "empty": "Chưa có lịch hẹn nào."
+    },
+    "dialog": {
+      "newTitle": "Đặt lịch spa",
+      "editTitle": "Sửa lịch hẹn {code}",
+      "subtitle": "Mỗi thú cưng và dịch vụ là một phiếu, có nhân viên và bàn riêng.",
+      "book": "Đặt lịch",
+      "customer": "Khách hàng",
+      "noPets": "Khách này chưa có thú cưng. Thêm thú cưng trước khi đặt lịch.",
+      "openPets": "Mở màn Thú cưng",
+      "date": "Ngày hẹn",
+      "openHours": "Giờ mở cửa {open} – {close}",
+      "ticket": "Phiếu {n}",
+      "removeTicket": "Xóa phiếu",
+      "pet": "Thú cưng",
+      "pickPet": "Chọn thú cưng",
+      "service": "Dịch vụ",
+      "pickService": "Chọn dịch vụ hoặc combo",
+      "services": "Dịch vụ",
+      "combos": "Combo",
+      "time": "Giờ bắt đầu",
+      "pickTime": "Chọn giờ",
+      "staff": "Nhân viên",
+      "unassigned": "Chưa xếp nhân viên",
+      "table": "Bàn spa",
+      "noTable": "Không chọn bàn",
+      "addTicket": "Thêm phiếu",
+      "note": "Ghi chú",
+      "notePlaceholder": "Tình trạng da, hành vi, yêu cầu của khách...",
+      "cancelAppointment": "Hủy lịch hẹn",
+      "cancelTitle": "Hủy lịch hẹn {code}?",
+      "cancelDesc": "Các phiếu sẽ bị hủy và giờ của nhân viên, bàn được trả lại.",
+      "keep": "Giữ lịch"
+    },
+    "ticketStatus": {
+      "waiting": "Chờ",
+      "in_progress": "Đang làm",
+      "done": "Xong",
+      "cancelled": "Đã hủy"
+    },
+    "detail": {
+      "title": "Lịch hẹn {code}",
+      "subtitle": "Check-in khi khách đến, rồi bắt đầu và hoàn thành từng phiếu.",
+      "checkedInAt": "đến lúc {time}",
+      "checkIn": "Khách đã đến",
+      "checkInHint": "Nhập cân nặng thực tế để chốt giá. Dịch vụ tính theo cân bắt buộc phải có cân nặng.",
+      "checkInAction": "Check-in",
+      "weight": "Cân nặng của {name}",
+      "tickets": "Các phiếu",
+      "estimate": "Dự kiến",
+      "finalPrice": "Đã chốt",
+      "total": "Tổng",
+      "start": "Bắt đầu",
+      "finish": "Xong",
+      "undo": "Quay lại bước trước",
+      "noShow": "Khách không đến",
+      "noShowTitle": "Đánh dấu {code} là không đến?",
+      "noShowDesc": "Các phiếu sẽ bị hủy và giờ của nhân viên, bàn được trả lại.",
+      "open": "Chi tiết",
+      "mine": "Việc của tôi",
+      "close": "Đóng",
+      "loading": "Đang tải..."
+    },
+    "settings": {
+      "title": "Cài đặt spa",
+      "readOnly": "Bạn chỉ có quyền xem. Cần quyền Cài đặt của mục Lịch hẹn để thay đổi.",
+      "tables": "Bàn spa",
+      "tablesHint": "Mỗi bàn chỉ nhận một phiếu tại một thời điểm.",
+      "addTable": "Thêm bàn",
+      "editTable": "Sửa bàn",
+      "tableName": "Tên bàn",
+      "tableNamePlaceholder": "Ví dụ: Bàn 1",
+      "noTables": "Chưa có bàn nào.",
+      "active": "Đang dùng",
+      "hours": "Giờ mở cửa",
+      "hoursHint": "Chỉ đặt được lịch trong giờ mở cửa, bắt đầu ở bội số của 15 phút.",
+      "open": "Mở cửa",
+      "closed": "Nghỉ",
+      "staff": "Nhân viên làm dịch vụ",
+      "staffHint": "Chỉ những người được bật mới xuất hiện khi xếp lịch.",
+      "noStaff": "Cơ sở này chưa có nhân viên.",
+      "doesServices": "Làm dịch vụ"
+    },
+    "errors": {
+      "slot_staff": "Nhân viên đã có phiếu khác vào giờ này ({name}).",
+      "slot_resource": "Bàn đã có phiếu khác vào giờ này ({name}).",
+      "closed": "Cơ sở nghỉ vào ngày này.",
+      "outside_hours": "Giờ hẹn nằm ngoài giờ mở cửa.",
+      "bad_time": "Giờ bắt đầu phải là bội số của 15 phút.",
+      "in_past": "Giờ hẹn đã qua.",
+      "not_editable": "Lịch hẹn này không còn sửa hoặc hủy được.",
+      "no_customer": "Chưa chọn khách hàng.",
+      "no_pet": "Chưa chọn thú cưng.",
+      "bad_hours": "Giờ đóng cửa phải sau giờ mở cửa.",
+      "need_weight": "Dịch vụ tính theo cân cần nhập cân nặng ({name}).",
+      "no_price": "Chưa có giá cho cân nặng này ({name}). Kiểm tra bảng giá dịch vụ.",
+      "not_due": "Chưa tới giờ hẹn nên chưa đánh dấu không đến được.",
+      "bad_status": "Không chuyển được phiếu sang trạng thái này."
+    }
   }
 }
