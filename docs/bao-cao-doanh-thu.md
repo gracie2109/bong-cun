@@ -2,7 +2,7 @@
 
 Kế hoạch module báo cáo (M11 trong kế hoạch BA/kiến trúc v0.3, mục 2.3 và thứ tự Phase 1 bước 5). Module đứng sau POS (PR #43, #54), kho theo lô (PR #44) và lịch hẹn spa (PR #55, #56, #58), đều đã merge.
 
-**Tiến độ:** cả 4 bước đã code và merge (PR #60, #61, #62 và PR bước 4), xem mục 12. Các câu hỏi mở đã được chọn mặc định ở mục 11.
+**Tiến độ:** cả 4 bước đã code và merge (PR #60, #61, #62 và #63), xem mục 12. Các câu hỏi mở đã được chọn mặc định ở mục 11.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên ưu tiên đơn giản, rẻ, dễ hiểu: tính trực tiếp từ bảng gốc bằng Postgres RPC, không bảng tổng hợp, không thư viện biểu đồ mới, xuất CSV ở trình duyệt.
 
@@ -414,7 +414,7 @@ Cả 4 bước đã làm đúng thứ tự ở mục 8, mỗi bước một PR s
 | 1 | #60 | `20261014010000_reports_access`, `20261014010100_reports_sales_lines`, `20261014010200_reports_overview` | Quyền `reports`, bộ lọc cơ sở + khoảng ngày trên URL, tab Tổng quan (KPI so kỳ trước, biểu đồ cột chồng Shop/Spa, cơ cấu, bảng theo ngày), xuất CSV |
 | 2 | #61 | `20261014010300_reports_rankings` | Tab Sản phẩm & dịch vụ, tab Nhân viên (thu ngân, nhân viên spa), xuất CSV |
 | 3 | #62 | `20261014010400_reports_audit` | Tab Hoàn trả & hủy (bấm mã hóa đơn mở phiếu của POS), tab Đối chiếu ca, xuất CSV |
-| 4 | bước 4 | không | Ô "Hôm nay" trên Dashboard; bán, hủy, trả hàng làm mới số liệu báo cáo (`reportKeys` trong `invalidatePos`, đã làm cùng bước 1) |
+| 4 | #63 | không | Ô "Hôm nay" trên Dashboard; bán, hủy, trả hàng làm mới số liệu báo cáo (`reportKeys` trong `invalidatePos`, đã làm cùng bước 1) |
 
 Khác với plan, có chủ đích:
 
