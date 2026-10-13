@@ -18,6 +18,10 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     ],
   },
   {
+    title: "adminNav.reports",
+    items: [{ title: "adminNav.reportsOverview", icon: "lucide:chart-column", name: "reportsOverview" }],
+  },
+  {
     title: "adminNav.inventory",
     items: [
       { title: "adminNav.stock", icon: "lucide:boxes", name: "inventoryStock" },

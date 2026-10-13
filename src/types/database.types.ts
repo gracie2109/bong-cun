@@ -1892,6 +1892,25 @@ export type Database = {
         }[]
       }
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      can_report: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
+      report_overview: { Args: { p_branch: string | null; p_from: string; p_to: string }; Returns: Json }
+      report_revenue_series: {
+        Args: { p_branch: string | null; p_bucket?: string; p_from: string; p_to: string }
+        Returns: {
+          bucket: string
+          card: number
+          cash: number
+          discount: number
+          gross: number
+          invoice_count: number
+          net_revenue: number
+          net_sales: number
+          refunds: number
+          shop: number
+          spa: number
+          transfer: number
+        }[]
+      }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }

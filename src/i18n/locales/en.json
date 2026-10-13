@@ -26,7 +26,6 @@
     "icon": "Icon",
     "row_per_page": "Rows per page",
     "ok": "OK",
-    "delete": "Delete",
     "deleteFileTitle": "Delete file?",
     "deleteFileDesc": "Once deleted it cannot be recovered.",
     "cancel": "Cancel",
@@ -80,7 +79,8 @@
     "stockDocuments": "Stock documents",
     "spaBoard": "Spa day view",
     "spaAppointments": "Spa appointments",
-    "spaSettings": "Spa settings"
+    "spaSettings": "Spa settings",
+    "reportsOverview": "Revenue report"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -718,7 +718,9 @@
     "stockDocuments": "Stock documents",
     "suppliers": "Suppliers",
     "spaBoard": "Spa day view",
-    "spaAppointments": "Spa appointments"
+    "spaAppointments": "Spa appointments",
+    "reports": "Reports",
+    "reportsOverview": "Revenue overview"
   },
   "pos": {
     "title": "Point of sale",
@@ -1270,6 +1272,86 @@
       "no_price": "No price for this weight yet ({name}). Check the service prices.",
       "not_due": "The appointment time has not come yet, so it cannot be a no-show.",
       "bad_status": "The ticket cannot move to that status."
+    }
+  },
+  "reports": {
+    "title": "Revenue report",
+    "allBranches": "All branches",
+    "noBranch": "This account has no permission to view reports at any branch.",
+    "loading": "Loading...",
+    "empty": "No figures in this range.",
+    "total": "Total",
+    "from": "From",
+    "to": "To",
+    "vsPrevious": "vs previous period",
+    "presets": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "7 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "custom": "Custom"
+    },
+    "problems": {
+      "order": "The start date must be on or before the end date.",
+      "tooLong": "A report covers at most {max} days."
+    },
+    "nav": {
+      "overview": "Overview"
+    },
+    "kpi": {
+      "netRevenue": "Net revenue",
+      "invoiceCount": "Invoices",
+      "avgTicket": "Avg / invoice",
+      "refunds": "Refunds",
+      "grossProfit": "Gross profit of goods (est.)",
+      "cancelled": "{n} cancelled invoices",
+      "returnCount": "{n} returns",
+      "missingCost": "{n} lines without cost",
+      "estimated": "Estimated from lot cost"
+    },
+    "chart": {
+      "title": "Revenue over time",
+      "weekOf": "Week of {day}"
+    },
+    "buckets": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "segment": {
+      "shop": "Shop",
+      "spa": "Spa"
+    },
+    "mix": {
+      "segments": "Revenue mix",
+      "payments": "Payment methods",
+      "spaAppointment": "Spa from appointments",
+      "spaWalkIn": "Spa walk-in sales",
+      "discountNote": "Invoice discounts are spread over lines by amount; Shop is shown after refunds."
+    },
+    "method": {
+      "cash": "Cash",
+      "transfer": "Transfer",
+      "card": "Card"
+    },
+    "cols": {
+      "date": "Date",
+      "invoices": "Inv.",
+      "gross": "Gross",
+      "discount": "Discount",
+      "refunds": "Refunds",
+      "netRevenue": "Net",
+      "shop": "Shop",
+      "spa": "Spa",
+      "cash": "Cash",
+      "transfer": "Transfer",
+      "card": "Card"
+    },
+    "export": {
+      "button": "Export CSV",
+      "truncated": "Only the first {limit} rows were exported, narrow the date range.",
+      "failed": "Could not export the report."
     }
   }
 }
