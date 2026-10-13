@@ -147,6 +147,7 @@ Không dùng thư viện lịch: FullCalendar tính phí cho dạng xem theo c�
 - `bookings` giữ nguyên, là yêu cầu tư vấn từ form liên hệ trên web. Lễ tân đọc rồi tự đặt lịch.
 - `orders` / `order_items`: một migration chuyển mỗi `order` thành một `appointment` `source = 'legacy'` (khách tìm hoặc tạo theo SĐT, `pet_id` null, không nhân viên/bàn, trạng thái quy đổi `PENDING/PROCESSING → booked`, `CONFIRMED → done`, `CANCEL → cancelled`). Sau đó `create_order` và các màn `orders` bị gỡ; bảng `orders` để lại chỉ đọc, xóa ở một migration sau.
 - Nếu dữ liệu `orders` hiện có chỉ là dữ liệu thử, bỏ bước chuyển và gỡ thẳng (xem câu hỏi 1).
+- **Đã làm (bước 4, 2026-10-13):** bảng `orders` trên database thật có 0 dòng nên không chuyển dữ liệu. Đã gỡ màn `list-order-schedule` và `createOrder` phía web. Bảng `orders`, `order_items` và hàm `create_order` giữ nguyên trong DB (chưa có migration); màn thống kê khách hàng vẫn đọc `orders`.
 
 ## 9. Thứ tự làm (mỗi bước một lần giao)
 

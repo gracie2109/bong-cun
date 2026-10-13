@@ -79,9 +79,6 @@ export const userKeys = {
 
 export const orderKeys = {
   all: ["orders"] as const,
-  list: (page: PageParams, phoneNumber?: string, search = "") =>
-    [...orderKeys.all, "list", page, phoneNumber ?? null, search] as const,
-  detail: (id: string) => [...orderKeys.all, "detail", id] as const,
   byUsers: (userIds: string[]) => [...orderKeys.all, "by-users", [...userIds].sort()] as const,
 };
 
