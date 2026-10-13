@@ -80,7 +80,9 @@
     "spaBoard": "Spa day view",
     "spaAppointments": "Spa appointments",
     "spaSettings": "Spa settings",
-    "reportsOverview": "Revenue report"
+    "reportsOverview": "Revenue report",
+    "reportsItems": "Products & services report",
+    "reportsStaff": "Staff report"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -720,7 +722,9 @@
     "spaBoard": "Spa day view",
     "spaAppointments": "Spa appointments",
     "reports": "Reports",
-    "reportsOverview": "Revenue overview"
+    "reportsOverview": "Revenue overview",
+    "reportsItems": "Products & services",
+    "reportsStaff": "Staff revenue"
   },
   "pos": {
     "title": "Point of sale",
@@ -1297,7 +1301,9 @@
       "tooLong": "A report covers at most {max} days."
     },
     "nav": {
-      "overview": "Overview"
+      "overview": "Overview",
+      "items": "Products & services",
+      "staff": "Staff"
     },
     "kpi": {
       "netRevenue": "Net revenue",
@@ -1346,12 +1352,63 @@
       "spa": "Spa",
       "cash": "Cash",
       "transfer": "Transfer",
-      "card": "Card"
+      "card": "Card",
+      "name": "Name",
+      "sku": "SKU",
+      "type": "Type",
+      "qtySold": "Qty sold",
+      "qtyReturned": "Qty returned",
+      "itemRevenue": "Revenue",
+      "share": "Share",
+      "cost": "Cost",
+      "profit": "Gross profit",
+      "margin": "Margin",
+      "staff": "Staff",
+      "netSales": "Net sales",
+      "cancelled": "Cancelled",
+      "avgTicket": "Avg / invoice",
+      "tickets": "Tickets",
+      "pets": "Pets",
+      "serviceRevenue": "Service revenue"
     },
     "export": {
       "button": "Export CSV",
       "truncated": "Only the first {limit} rows were exported, narrow the date range.",
       "failed": "Could not export the report."
+    },
+    "kinds": {
+      "all": "All",
+      "product": "Goods",
+      "service": "Services"
+    },
+    "sorts": {
+      "revenue": "By revenue",
+      "qty": "By quantity",
+      "profit": "By gross profit"
+    },
+    "itemType": {
+      "product": "Goods",
+      "service": "Service",
+      "combo": "Combo"
+    },
+    "items": {
+      "title": "Best-selling products & services",
+      "searchPlaceholder": "Search by name, SKU or barcode",
+      "sort": "Sort",
+      "note": "Revenue has the invoice discount spread by line. Gross profit (estimated) is for goods only, from lot cost and net of returns; services have no cost yet."
+    },
+    "staff": {
+      "title": "Revenue by staff",
+      "searchPlaceholder": "Search by staff name",
+      "unassigned": "Not assigned",
+      "roles": {
+        "cashier": "Cashiers",
+        "spa": "Spa staff"
+      },
+      "note": {
+        "cashier": "The cashier is who rang the invoice; refunds count for who made the return, cancelled invoices for who rang them.",
+        "spa": "Spa staff is who was assigned to the ticket; walk-in services and unassigned tickets are on the 'Not assigned' row."
+      }
     }
   }
 }

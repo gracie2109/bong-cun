@@ -58,3 +58,52 @@ export type SeriesPoint = {
   transfer: number;
   card: number;
 };
+
+export type ItemKind = "all" | "product" | "service";
+export type ItemSort = "revenue" | "qty" | "profit";
+
+export type TopItemFilter = ReportFilter & {
+  kind: ItemKind;
+  search?: string;
+  sort: ItemSort;
+};
+
+export type TopItem = {
+  /** "product", "service" or "combo". */
+  itemType: string;
+  itemId: string;
+  name: string;
+  sku: string | null;
+  unit: string | null;
+  qtySold: number;
+  qtyReturned: number;
+  invoiceCount: number;
+  netRevenue: number;
+  refunds: number;
+  /** Null for services and combos: they have no cost. */
+  cost: number | null;
+  grossProfit: number | null;
+  /** Share of all sales in the range, in percent. */
+  share: number;
+};
+
+export type StaffRole = "cashier" | "spa";
+
+export type StaffFilter = ReportFilter & { role: StaffRole; search?: string };
+
+export type StaffRevenue = {
+  /** Null on the spa list = tickets with no staff member assigned. */
+  staffId: string | null;
+  name: string | null;
+  netSales: number;
+  /** Cashier columns. */
+  invoiceCount: number;
+  refunds: number;
+  cancelledCount: number;
+  avgTicket: number;
+  /** Spa columns. */
+  ticketCount: number;
+  petCount: number;
+  /** Percent of all spa revenue (spa list only). */
+  share: number;
+};

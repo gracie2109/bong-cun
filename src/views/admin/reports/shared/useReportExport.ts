@@ -4,17 +4,17 @@ import { toast } from "vue-sonner";
 import { downloadCsv, toCsv, type CsvColumn } from "@/lib/csv";
 import { EXPORT_LIMIT, type ReportFilter } from "@/repositories/reports";
 
-type ExportOptions<T> = {
+type ExportOptions<T, F extends ReportFilter> = {
   /** Tab name in the file name: bao-cao-<tab>-<from>-<to>.csv */
   tab: string;
-  filter: Ref<ReportFilter | null>;
+  filter: Ref<F | null>;
   /** Fetches up to EXPORT_LIMIT rows; `total` is how many exist. */
-  fetchRows: (filter: ReportFilter) => Promise<{ rows: T[]; total: number }>;
+  fetchRows: (filter: F) => Promise<{ rows: T[]; total: number }>;
   columns: () => CsvColumn<T>[];
 };
 
 /** Downloads a tab's rows as CSV; warns when more than EXPORT_LIMIT exist. */
-export const useReportExport = <T>(options: ExportOptions<T>) => {
+export const useReportExport = <T, F extends ReportFilter = ReportFilter>(options: ExportOptions<T, F>) => {
   const { t } = useI18n();
   const exporting = ref(false);
 
