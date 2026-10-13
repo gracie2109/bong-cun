@@ -23,6 +23,13 @@ export const APPOINTMENT_STATUSES: readonly AppointmentStatus[] = [
 /** The tickets of a booked appointment can still be changed; nothing else can. */
 export const isEditable = (status: AppointmentStatus): boolean => status === "booked";
 
+/** Tickets can be started and finished from the moment the pet has checked in until it is paid. */
+export const isServing = (status: AppointmentStatus): boolean =>
+  status === "checked_in" || status === "in_progress" || status === "done";
+
+/** Cancelling is possible until a ticket has started. */
+export const isCancellable = (status: AppointmentStatus): boolean => status === "booked" || status === "checked_in";
+
 /** Minutes between the start times offered when booking; the database requires the same step. */
 export const SLOT_MINUTES = 15;
 
@@ -38,6 +45,10 @@ export const SPA_ERROR_HINTS = [
   "no_customer",
   "no_pet",
   "bad_hours",
+  "need_weight",
+  "no_price",
+  "not_due",
+  "bad_status",
 ] as const;
 export type SpaErrorHint = (typeof SPA_ERROR_HINTS)[number];
 
@@ -160,6 +171,9 @@ export type AppointmentTicket = {
   startAt: string;
   endAt: string;
   estPrice: number | null;
+  /** Weight taken at check-in (or the one the price was estimated from). */
+  weightKg: number | null;
+  /** The price fixed at check-in. */
   unitPrice: number | null;
 };
 
@@ -173,6 +187,7 @@ export type Appointment = {
   customerName: string;
   customerPhone: string;
   note: string | null;
+  checkedInAt: string | null;
   tickets: AppointmentTicket[];
 };
 
@@ -195,6 +210,7 @@ const toTicket = (raw: unknown): AppointmentTicket => {
     startAt: str(row.start_at),
     endAt: str(row.end_at),
     estPrice: numOrNull(row.est_price),
+    weightKg: numOrNull(row.weight_kg),
     unitPrice: numOrNull(row.unit_price),
   };
 };
@@ -211,6 +227,7 @@ const toAppointment = (raw: unknown): Appointment => {
     customerName: str(row.customer_name),
     customerPhone: str(row.customer_phone),
     note: strOrNull(row.note),
+    checkedInAt: strOrNull(row.checked_in_at),
     tickets: Array.isArray(row.items) ? row.items.map(toTicket) : [],
   };
 };
@@ -300,6 +317,33 @@ export const saveAppointment = async (
 
 export const cancelAppointment = async (client: Client, id: string, reason?: string): Promise<void> => {
   unwrap(await client.rpc("cancel_appointment", { p_id: id, p_reason: reason }));
+};
+
+/** One appointment by id, in the same shape as the list; null when it does not exist. */
+export const getAppointment = async (client: Client, id: string): Promise<Appointment | null> => {
+  const row = unwrap(await client.rpc("get_appointment", { p_id: id }));
+  return row ? toAppointment(row) : null;
+};
+
+export type PetWeight = { petId: string; weightKg: number };
+
+/** The pet has arrived: records the weights, fixes the price of every ticket and marks the appointment checked in. */
+export const checkInAppointment = async (client: Client, id: string, weights: PetWeight[]): Promise<void> => {
+  unwrap(
+    await client.rpc("check_in_appointment", {
+      p_id: id,
+      p_weights: weights.map((item) => ({ pet_id: item.petId, weight_kg: item.weightKg })),
+    })
+  );
+};
+
+/** waiting -> in_progress -> done, plus one step back. */
+export const setTicketStatus = async (client: Client, ticketId: string, status: TicketStatus): Promise<void> => {
+  unwrap(await client.rpc("set_appointment_item_status", { p_item: ticketId, p_status: status }));
+};
+
+export const markNoShow = async (client: Client, id: string): Promise<void> => {
+  unwrap(await client.rpc("mark_no_show", { p_id: id }));
 };
 
 // ----------------------------------------------------------------- day board

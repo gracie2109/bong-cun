@@ -697,6 +697,7 @@ begin
         'customer_name', a.customer_name,
         'customer_phone', a.customer_phone,
         'note', a.note,
+        'checked_in_at', a.checked_in_at,
         'items', (
           select coalesce(jsonb_agg(jsonb_build_object(
             'id', i.id,
@@ -714,6 +715,7 @@ begin
             'start_at', i.start_at,
             'end_at', i.end_at,
             'est_price', i.est_price,
+            'weight_kg', i.weight_kg,
             'unit_price', i.unit_price
           ) order by i.line_no), '[]'::jsonb)
           from public.appointment_items i

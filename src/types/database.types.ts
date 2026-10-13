@@ -1894,6 +1894,10 @@ export type Database = {
       can_pos: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      check_in_appointment: { Args: { p_id: string; p_weights?: Json }; Returns: undefined }
+      get_appointment: { Args: { p_id: string }; Returns: Json }
+      mark_no_show: { Args: { p_id: string }; Returns: undefined }
+      set_appointment_item_status: { Args: { p_item: string; p_status: string }; Returns: undefined }
       list_appointments: {
         Args: {
           p_branch: string

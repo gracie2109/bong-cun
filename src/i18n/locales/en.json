@@ -1196,6 +1196,35 @@
       "cancelDesc": "Its tickets are cancelled and the staff and table time is released.",
       "keep": "Keep"
     },
+    "ticketStatus": {
+      "waiting": "Waiting",
+      "in_progress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "title": "Appointment {code}",
+      "subtitle": "Check in when the customer arrives, then start and finish each ticket.",
+      "checkedInAt": "arrived {time}",
+      "checkIn": "Customer has arrived",
+      "checkInHint": "Enter the real weight to fix the price. By-weight services need a weight.",
+      "checkInAction": "Check in",
+      "weight": "Weight of {name}",
+      "tickets": "Tickets",
+      "estimate": "Estimate",
+      "finalPrice": "Fixed",
+      "total": "Total",
+      "start": "Start",
+      "finish": "Done",
+      "undo": "Back one step",
+      "noShow": "No-show",
+      "noShowTitle": "Mark {code} as a no-show?",
+      "noShowDesc": "Its tickets are cancelled and the staff and table time is released.",
+      "open": "Details",
+      "mine": "My tickets",
+      "close": "Close",
+      "loading": "Loading..."
+    },
     "settings": {
       "title": "Spa settings",
       "readOnly": "You can only view this. The Schedule \"Setting\" permission is needed to change it.",
@@ -1226,7 +1255,11 @@
       "not_editable": "This appointment can no longer be edited or cancelled.",
       "no_customer": "Pick a customer.",
       "no_pet": "Pick a pet.",
-      "bad_hours": "Closing time must be after opening time."
+      "bad_hours": "Closing time must be after opening time.",
+      "need_weight": "A by-weight service needs the pet's weight ({name}).",
+      "no_price": "No price for this weight yet ({name}). Check the service prices.",
+      "not_due": "The appointment time has not come yet, so it cannot be a no-show.",
+      "bad_status": "The ticket cannot move to that status."
     }
   }
 }

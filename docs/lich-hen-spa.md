@@ -2,7 +2,7 @@
 
 Kế hoạch và tiến độ module lịch hẹn spa. Nguồn: kế hoạch BA/kiến trúc v0.3 (M3 Lịch hẹn, M9 Spa/Grooming, mục 2.3 và thứ tự Phase 1 bước 4-5). Module đứng sau POS (PR #43), kho theo lô (PR #44) và biến thể (PR #46), đều đã merge.
 
-**Tiến độ:** bước 1 (mục 9) đã làm xong: migration `supabase/migrations/20261013030000_spa_appointments.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Các bước 2-4 chưa làm.
+**Tiến độ:** bước 1 (mục 9) đã làm xong: migration `supabase/migrations/20261013030000_spa_appointments.sql`, màn Cài đặt spa, Danh sách lịch hẹn, Dialog đặt / sửa / hủy và Lịch ngày. Bước 2 (mục 9) cũng đã làm: migration `supabase/migrations/20261013040000_spa_check_in.sql`, hộp thoại Chi tiết lịch hẹn (check-in, bắt đầu / xong, không đến, hủy) và nút "Việc của tôi" trên Lịch ngày. Các bước 3-4 chưa làm.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi được giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không có tích hợp bên ngoài.
 
@@ -101,8 +101,9 @@ Theo quy ước của repo: nghiệp vụ nhiều bước nằm trong Postgres f
 | `list_branch_staff(p_branch)`, `set_staff_does_services(p_user, p_branch, p_value)` | 1 | Danh sách nhân viên của cơ sở và bật / tắt cờ làm dịch vụ |
 | `save_staff_branches` (sửa) | 1 | Trước đây xóa hết rồi chèn lại, làm mất cờ `does_services` mỗi lần gán vai trò; nay chỉ xóa cơ sở bị bỏ và cập nhật vai trò tại chỗ |
 | `check_in_appointment(p_id, p_weights jsonb)` | 2 | Ghi cân nặng từng thú, chốt `unit_price`, chuyển `checked_in` |
-| `set_appointment_item_status(p_item, p_status, p_note)` | 2 | Bắt đầu / xong / hủy một phiếu, cập nhật trạng thái lịch |
-| `mark_no_show(p_id)` | 2 | Đánh dấu khách không đến |
+| `set_appointment_item_status(p_item, p_status)` | 2 | Bắt đầu / xong một phiếu (và lùi một bước), cập nhật trạng thái lịch. Hủy phiếu lẻ chưa làm: hủy cả lịch |
+| `mark_no_show(p_id)` | 2 | Đánh dấu khách không đến (chỉ khi đã qua giờ hẹn), trả lại giờ nhân viên và bàn |
+| `get_appointment(p_id)` | 2 | Một lịch hẹn theo id, cùng dạng với danh sách |
 | `spa_free_slots(...)` (Should) | 2 | Gợi ý khung giờ trống |
 | `billable_appointment_items(p_branch, p_customer)` | 3 | Phiếu `done` chưa thanh toán của một khách, cho POS |
 | `create_invoice` / `cancel_invoice` (sửa) | 3 | Nhận dòng `{ type: 'appointment_item', id }`: đọc giá chốt và thú từ phiếu, ghi `invoice_line_id`; hủy hóa đơn gỡ liên kết |
@@ -134,8 +135,8 @@ Theo quy ước admin: theme teal, `PagedTableCard` cho bảng, `AppDialog` cho 
 | Lịch ngày | `/admin/schedule` | Lưới tự dựng bằng CSS grid: cột = nhân viên (nút chuyển sang cột = bàn), hàng = khung 15 phút trong giờ mở cửa. Thẻ phiếu tô màu theo trạng thái. Bấm ô trống mở dialog đặt lịch với giờ + nhân viên điền sẵn. Chọn ngày, nút Hôm nay. Tải lại khi focus và mỗi 30 giây |
 | Danh sách lịch hẹn | `/admin/schedule/appointments` | Bảng: mã, giờ, khách, thú, dịch vụ, nhân viên, trạng thái. Lọc theo khoảng ngày và trạng thái. Thay trang `list-order-schedule` |
 | Dialog đặt / sửa lịch | | Tìm khách (thêm khách mới nếu chưa có) → chọn thú (thêm nhanh) → mỗi thú chọn dịch vụ/combo → mỗi phiếu chọn giờ, nhân viên, bàn. Hiện tổng thời lượng, giá dự kiến, số lần no-show. Lỗi trùng giờ chỉ rõ phiếu nào |
-| Chi tiết lịch hẹn | `/admin/schedule/appointments/[id]` | Thông tin khách, các phiếu; nút Check-in (nhập cân nặng từng thú), Bắt đầu / Xong từng phiếu, ghi chú, Dời, Hủy, No-show, "Thanh toán tại POS" |
-| Việc của tôi (Should) | `/admin/schedule/my-day` | Phiếu hôm nay của nhân viên đang đăng nhập, nút Bắt đầu / Xong |
+| Chi tiết lịch hẹn | Hộp thoại, mở từ nút "Chi tiết" ở danh sách hoặc bấm một phiếu trên Lịch ngày | Thông tin khách, các phiếu, giá dự kiến / giá đã chốt; nút Check-in (nhập cân nặng từng thú), Bắt đầu / Xong / quay lại từng phiếu, Sửa, Hủy, Không đến. "Thanh toán tại POS" làm ở bước 3 |
+| Việc của tôi (Should) | Nút "Việc của tôi" trên Lịch ngày | Chỉ hiện phiếu giao cho nhân viên đang đăng nhập; bấm phiếu để Bắt đầu / Xong |
 | Cài đặt spa | `/admin/schedule/settings` | Tab Bàn spa, Giờ mở cửa, Nhân viên làm dịch vụ |
 | POS | `/admin/pos` | Khi chọn khách, hiện "Phiếu spa chờ thanh toán (n)"; bấm để thêm các phiếu vào giỏ |
 
@@ -152,7 +153,7 @@ Không dùng thư viện lịch: FullCalendar tính phí cho dạng xem theo c�
 | Bước | Nội dung | SQL | Trạng thái |
 | --- | --- | --- | --- |
 | 1 | Bảng, constraint, RLS, `save_appointment`, `cancel_appointment`, `list_appointments`, `spa_day_board`; màn Cài đặt spa, Danh sách, Dialog đặt / sửa / hủy, Lịch ngày | `supabase/migrations/20261013030000_spa_appointments.sql`, chạy sau `20261007140000_product_variants.sql` | Đã làm |
-| 2 | Check-in + cân nặng + chốt giá, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | RPC `check_in_appointment`, `set_appointment_item_status`, `mark_no_show` | Chưa làm |
+| 2 | Check-in + cân nặng + chốt giá, trạng thái phiếu, no-show; màn Chi tiết; Việc của tôi | `supabase/migrations/20261013040000_spa_check_in.sql`, chạy sau file bước 1 | Đã làm |
 | 3 | Nối POS: `billable_appointment_items`, sửa `create_invoice` / `cancel_invoice`, nút trong giỏ | Migration sửa hàm POS; làm sau khi PR #54 (sửa POS) đã merge vì cùng sửa `create_invoice` | Chưa làm |
 | 4 | Chuyển `orders` sang `appointments`, gỡ `create_order` và màn cũ | Migration chuyển dữ liệu | Chưa làm |
 
@@ -166,7 +167,15 @@ Mỗi lần giao có SQL sẽ ghi rõ tên file và thứ tự chạy; bản đ�
 - Việc đầu tiên sau khi chạy: vào **Lịch spa → Cài đặt spa**, thêm bàn spa, chỉnh giờ mở cửa và bật cờ "Làm dịch vụ" cho nhân viên spa. Chưa có nhân viên được bật thì vẫn đặt lịch được nhưng phiếu để "chưa xếp nhân viên".
 - Màn đặt lịch chỉ chọn khách đã có và thú cưng đã đăng ký; khách mới hoặc thú mới thêm ở màn Thú cưng trước.
 - Trang `/admin/schedule/list-order-schedule` (đơn đặt từ web) vẫn còn, đổi tên menu thành "Yêu cầu đặt chỗ từ web" cho tới bước 4.
-- Lịch đã check-in / đang làm chưa sửa được trên giao diện vì chưa có màn chi tiết (bước 2).
+
+### Bước 2: những gì cần biết
+
+- **Chạy `20261013040000_spa_check_in.sql` sau file bước 1.** Chạy lại được an toàn. Chưa chạy thì các nút Check-in, Bắt đầu, Xong, Không đến báo lỗi thiếu hàm.
+- Chi tiết lịch hẹn làm thành hộp thoại thay vì trang riêng (`/appointments/[id]`) và "Việc của tôi" làm thành nút lọc trên Lịch ngày thay vì trang riêng: ít route, ít quyền phải thêm, cùng chức năng. Muốn trang riêng thì làm sau.
+- Check-in: dịch vụ tính theo cân bắt buộc nhập cân nặng, cân nặng được ghi vào nhật ký cân của thú; giá mỗi phiếu chốt lúc đó và không đổi theo bảng giá nữa. Combo và dịch vụ giá chung giữ giá danh mục.
+- Phiếu đi Chờ → Đang làm → Xong, bấm nhầm thì lùi một bước. Lịch tự đổi trạng thái theo các phiếu.
+- Hủy chỉ khi chưa phiếu nào bắt đầu. Không đến chỉ khi đã qua giờ hẹn.
+- Chưa làm: dời lịch đã check-in, ghi chú riêng từng phiếu, số lần không đến của khách khi đặt lịch, gợi ý giờ trống.
 
 ## 10. Mặc định đã chọn
 

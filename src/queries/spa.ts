@@ -6,22 +6,28 @@ import { sendMessageToast } from "@/lib/utils";
 import { toPage, type PageParams } from "@/repositories/shared";
 import {
   cancelAppointment,
+  checkInAppointment,
   findAppointment,
+  getAppointment,
   getDayBoard,
   getWeekHours,
   listAppointments,
   listBranchStaff,
   listSpaResources,
+  markNoShow,
   saveAppointment,
   saveSpaResource,
   saveWeekHours,
   setStaffDoesServices,
+  setTicketStatus,
   spaErrorDetail,
   spaErrorHint,
   type AppointmentFilter,
   type AppointmentInput,
   type DayHours,
+  type PetWeight,
   type SpaResourceInput,
+  type TicketStatus,
 } from "@/repositories/spa";
 import type { RestfullMethod } from "@/types";
 import { spaKeys } from "./keys";
@@ -134,6 +140,38 @@ export const useCancelAppointment = () => {
     onError: (error) => notifySpaFailure("update", error),
   });
 };
+
+/** One appointment, kept fresh while its detail is open. */
+export const useAppointment = (id: MaybeRef<string | undefined>) =>
+  useQuery({
+    queryKey: computed(() => spaKeys.appointment(unref(id) ?? "")),
+    queryFn: () => getAppointment(supabaseClient(), unref(id) as string),
+    enabled: computed(() => !!unref(id)),
+  });
+
+const useSpaAction = <Variables>(action: (variables: Variables) => Promise<void>, method: RestfullMethod = "update") => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: action,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: spaKeys.all });
+      notifySuccess(method);
+    },
+    onError: (error) => notifySpaFailure(method, error),
+  });
+};
+
+export const useCheckInAppointment = () =>
+  useSpaAction(({ id, weights }: { id: string; weights: PetWeight[] }) =>
+    checkInAppointment(supabaseClient(), id, weights)
+  );
+
+export const useSetTicketStatus = () =>
+  useSpaAction(({ ticketId, status }: { ticketId: string; status: TicketStatus }) =>
+    setTicketStatus(supabaseClient(), ticketId, status)
+  );
+
+export const useMarkNoShow = () => useSpaAction((id: string) => markNoShow(supabaseClient(), id));
 
 // ------------------------------------------------------------- day board
 export const useDayBoard = (branchId: MaybeRef<string | undefined>, date: MaybeRef<string>) =>

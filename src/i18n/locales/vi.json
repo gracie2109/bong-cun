@@ -1196,6 +1196,35 @@
       "cancelDesc": "Các phiếu sẽ bị hủy và giờ của nhân viên, bàn được trả lại.",
       "keep": "Giữ lịch"
     },
+    "ticketStatus": {
+      "waiting": "Chờ",
+      "in_progress": "Đang làm",
+      "done": "Xong",
+      "cancelled": "Đã hủy"
+    },
+    "detail": {
+      "title": "Lịch hẹn {code}",
+      "subtitle": "Check-in khi khách đến, rồi bắt đầu và hoàn thành từng phiếu.",
+      "checkedInAt": "đến lúc {time}",
+      "checkIn": "Khách đã đến",
+      "checkInHint": "Nhập cân nặng thực tế để chốt giá. Dịch vụ tính theo cân bắt buộc phải có cân nặng.",
+      "checkInAction": "Check-in",
+      "weight": "Cân nặng của {name}",
+      "tickets": "Các phiếu",
+      "estimate": "Dự kiến",
+      "finalPrice": "Đã chốt",
+      "total": "Tổng",
+      "start": "Bắt đầu",
+      "finish": "Xong",
+      "undo": "Quay lại bước trước",
+      "noShow": "Khách không đến",
+      "noShowTitle": "Đánh dấu {code} là không đến?",
+      "noShowDesc": "Các phiếu sẽ bị hủy và giờ của nhân viên, bàn được trả lại.",
+      "open": "Chi tiết",
+      "mine": "Việc của tôi",
+      "close": "Đóng",
+      "loading": "Đang tải..."
+    },
     "settings": {
       "title": "Cài đặt spa",
       "readOnly": "Bạn chỉ có quyền xem. Cần quyền Cài đặt của mục Lịch hẹn để thay đổi.",
@@ -1226,7 +1255,11 @@
       "not_editable": "Lịch hẹn này không còn sửa hoặc hủy được.",
       "no_customer": "Chưa chọn khách hàng.",
       "no_pet": "Chưa chọn thú cưng.",
-      "bad_hours": "Giờ đóng cửa phải sau giờ mở cửa."
+      "bad_hours": "Giờ đóng cửa phải sau giờ mở cửa.",
+      "need_weight": "Dịch vụ tính theo cân cần nhập cân nặng ({name}).",
+      "no_price": "Chưa có giá cho cân nặng này ({name}). Kiểm tra bảng giá dịch vụ.",
+      "not_due": "Chưa tới giờ hẹn nên chưa đánh dấu không đến được.",
+      "bad_status": "Không chuyển được phiếu sang trạng thái này."
     }
   }
 }

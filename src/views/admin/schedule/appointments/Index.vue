@@ -54,12 +54,13 @@
           </thead>
           <tbody>
             <TableStateRows :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('spa.appointments.empty')" />
-            <AppointmentRow v-for="row in rows" :key="row.id" :appointment="row" :can-edit="canEditRow(row)" @edit="openEdit(row)" />
+            <AppointmentRow v-for="row in rows" :key="row.id" :appointment="row" :can-edit="canEditRow(row)" @edit="openEdit(row)" @open="openDetail(row)" />
           </tbody>
         </table>
       </PagedTableCard>
     </div>
 
+    <AppointmentDetailDialog v-model:open="detailOpen" :appointment="detailing" @edit="editFromDetail" />
     <AppointmentDialog v-if="branchId" v-model:open="dialogOpen" :branch-id="branchId" :appointment="editing" />
   </ContentWrap>
 </template>
@@ -81,6 +82,7 @@ import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import SpaNav from "../SpaNav.vue";
+import AppointmentDetailDialog from "./AppointmentDetailDialog.vue";
 import AppointmentDialog from "./AppointmentDialog.vue";
 import AppointmentRow from "./AppointmentRow.vue";
 import { useAppointmentFilters } from "./useAppointmentFilters";
@@ -102,6 +104,19 @@ const canEditRow = (row: Appointment) => canUpdate.value && isEditable(row.statu
 const openNew = () => {
   editing.value = null;
   dialogOpen.value = true;
+};
+
+const detailOpen = ref(false);
+const detailing = ref<Appointment | null>(null);
+
+const openDetail = (row: Appointment) => {
+  detailing.value = row;
+  detailOpen.value = true;
+};
+
+const editFromDetail = (row: Appointment) => {
+  detailOpen.value = false;
+  openEdit(row);
 };
 
 const openEdit = (row: Appointment) => {

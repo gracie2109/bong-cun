@@ -142,5 +142,6 @@ export const spaKeys = {
   staff: (branchId: string) => [...spaKeys.all, "staff", branchId] as const,
   appointments: (branchId: string, page: PageParams, filter: AppointmentFilter) =>
     [...spaKeys.all, "appointments", branchId, page, filter] as const,
+  appointment: (id: string) => [...spaKeys.all, "appointment", id] as const,
   board: (branchId: string, date: string) => [...spaKeys.all, "board", branchId, date] as const,
 };

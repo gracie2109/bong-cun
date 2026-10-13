@@ -30,6 +30,11 @@
         <Button variant="outline" class="h-9" :disabled="date === todayKey()" @click="date = todayKey()">{{ $t("spa.board.today") }}</Button>
         <p class="text-sm font-semibold">{{ $t(`spa.weekdays.${isoWeekday(date)}`) }}</p>
 
+        <Button v-if="myId" :variant="mine ? 'default' : 'outline'" class="h-9" @click="mine = !mine">
+          <UserRound class="mr-2 size-4" />
+          {{ $t("spa.detail.mine") }}
+        </Button>
+
         <div class="ml-auto flex rounded-lg border p-0.5">
           <button
             v-for="item in MODES"
@@ -76,7 +81,7 @@
                 :key="item.ticket.id"
                 type="button"
                 class="absolute overflow-hidden rounded-md border px-1.5 py-1 text-left text-[11px] leading-tight shadow-sm"
-                :class="[TICKET_TONE[item.ticket.status], isOpenable(item.ticket) ? 'cursor-pointer' : 'cursor-default']"
+                :class="[TICKET_TONE[item.ticket.status], 'cursor-pointer']"
                 :style="{
                   top: `${item.top}px`,
                   height: `${item.height}px`,
@@ -95,6 +100,7 @@
       </div>
     </div>
 
+    <AppointmentDetailDialog v-model:open="detailOpen" :appointment="detailing" @edit="editFromDetail" />
     <AppointmentDialog v-if="branchId" v-model:open="dialogOpen" :branch-id="branchId" :appointment="editing" :prefill="prefill" />
   </ContentWrap>
 </template>
@@ -102,15 +108,16 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus } from "lucide-vue-next";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, UserRound } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useDayBoard, useFindAppointment } from "@/queries/spa";
-import { isEditable, SLOT_MINUTES, type Appointment, type BoardTicket } from "@/repositories/spa";
+import { SLOT_MINUTES, type Appointment, type BoardTicket } from "@/repositories/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
+import AppointmentDetailDialog from "../appointments/AppointmentDetailDialog.vue";
 import AppointmentDialog, { type BookingPrefill } from "../appointments/AppointmentDialog.vue";
 import { addDays, isoWeekday, timeOf, timeSlots, TICKET_TONE, todayKey } from "../format";
 import SpaNav from "../SpaNav.vue";
@@ -124,7 +131,6 @@ const MODES: Mode[] = ["staff", "table"];
 const { t } = useI18n();
 const auth = useAuthStore();
 const canCreate = computed(() => auth.can("schedule", "CREATE"));
-const canUpdate = computed(() => auth.can("schedule", "UPDATE"));
 const { branches, branchId, selectBranch } = useCurrentBranch();
 
 const date = ref(todayKey());
@@ -146,9 +152,16 @@ const columns = computed<Column[]>(() => {
 
 const columnOf = (ticket: BoardTicket) => (mode.value === "staff" ? ticket.staffId : ticket.resourceId);
 
+// "My tickets" keeps only what is assigned to the signed-in staff member.
+const myId = computed(() => auth.session?.user.id);
+const mine = ref(false);
+const shownTickets = computed(() =>
+  (board.value?.tickets ?? []).filter((ticket) => !mine.value || ticket.staffId === myId.value)
+);
+
 const placed = (column: Column) =>
   placeTickets(
-    (board.value?.tickets ?? []).filter((ticket) => columnOf(ticket) === column.id),
+    shownTickets.value.filter((ticket) => columnOf(ticket) === column.id),
     board.value?.openTime ?? "00:00",
     SLOT_MINUTES
   );
@@ -168,19 +181,26 @@ const openNew = (at?: { time: string; column: Column }) => {
   dialogOpen.value = true;
 };
 
-const isOpenable = (ticket: BoardTicket) => canUpdate.value && isEditable(ticket.appointmentStatus);
+const detailOpen = ref(false);
+const detailing = ref<Appointment | null>(null);
 
 const find = useFindAppointment();
 const openTicket = async (ticket: BoardTicket) => {
-  if (!isOpenable(ticket) || !branchId.value) return;
+  if (!branchId.value) return;
   try {
     const appointment = await find.mutateAsync({ branchId: branchId.value, code: ticket.code });
     if (!appointment) return;
-    editing.value = appointment;
-    prefill.value = {};
-    dialogOpen.value = true;
+    detailing.value = appointment;
+    detailOpen.value = true;
   } catch {
     // the mutation already showed the failure toast
   }
+};
+
+const editFromDetail = (appointment: Appointment) => {
+  detailOpen.value = false;
+  editing.value = appointment;
+  prefill.value = {};
+  dialogOpen.value = true;
 };
 </script>
