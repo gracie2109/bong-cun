@@ -13,6 +13,8 @@
         <p class="text-sm text-muted-foreground">{{ $t("adminNav.welcomeHint") }}</p>
       </div>
 
+      <TodaySalesCard />
+
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <router-link
           v-for="item in shortcuts"
@@ -41,6 +43,7 @@ import { canOpenAdminRoute } from "@/lib/access";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
+import TodaySalesCard from "./TodaySalesCard.vue";
 
 const auth = useAuthStore();
 

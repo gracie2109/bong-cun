@@ -1458,6 +1458,10 @@
         "mismatch": "Lệch tiền"
       },
       "note": "Chênh lệch = tiền đếm − tiền mặt dự kiến (đỏ khi thiếu, cam khi thừa). Ca đang mở chưa có tiền đếm."
+    },
+    "today": {
+      "title": "Hôm nay",
+      "open": "Xem báo cáo"
     }
   }
 }
