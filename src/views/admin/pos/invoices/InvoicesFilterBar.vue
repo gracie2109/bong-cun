@@ -15,6 +15,7 @@
       <SelectContent>
         <SelectItem :value="FILTER_ALL">{{ $t("petCare.common.all") }}</SelectItem>
         <SelectItem value="paid">{{ $t("pos.status.paid") }}</SelectItem>
+        <SelectItem value="unpaid">{{ $t("pos.status.unpaid") }}</SelectItem>
         <SelectItem value="cancelled">{{ $t("pos.status.cancelled") }}</SelectItem>
       </SelectContent>
     </Select>

@@ -195,6 +195,9 @@ export const shopKeys = {
   orderList: (status: string | null, page: number, pageSize: number) =>
     [...shopKeys.orders(), "list", status, page, pageSize] as const,
   order: (code: string) => [...shopKeys.orders(), "detail", code] as const,
+  staffOrders: () => [...shopKeys.all, "staff-orders"] as const,
+  staffOrderList: (page: unknown, filter: unknown) => [...shopKeys.staffOrders(), "list", page, filter] as const,
+  staffOrder: (id: string) => [...shopKeys.staffOrders(), "detail", id] as const,
 };
 
 export const ghnLocationKeys = {

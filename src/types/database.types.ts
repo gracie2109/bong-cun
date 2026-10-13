@@ -321,6 +321,7 @@ export type Database = {
           cancelled_by: string | null
           cashier_name: string | null
           change_amount: number
+          channel: string
           client_ref: string | null
           code: string
           created_at: string
@@ -333,7 +334,7 @@ export type Database = {
           id: string
           note: string | null
           paid_amount: number
-          shift_id: string
+          shift_id: string | null
           status: string
           subtotal: number
           total: number
@@ -346,6 +347,7 @@ export type Database = {
           cancelled_by?: string | null
           cashier_name?: string | null
           change_amount?: number
+          channel?: string
           client_ref?: string | null
           code: string
           created_at?: string
@@ -358,7 +360,7 @@ export type Database = {
           id?: string
           note?: string | null
           paid_amount?: number
-          shift_id: string
+          shift_id?: string | null
           status?: string
           subtotal: number
           total: number
@@ -371,6 +373,7 @@ export type Database = {
           cancelled_by?: string | null
           cashier_name?: string | null
           change_amount?: number
+          channel?: string
           client_ref?: string | null
           code?: string
           created_at?: string
@@ -383,7 +386,7 @@ export type Database = {
           id?: string
           note?: string | null
           paid_amount?: number
-          shift_id?: string
+          shift_id?: string | null
           status?: string
           subtotal?: number
           total?: number
@@ -2194,6 +2197,17 @@ export type Database = {
       my_shop_orders: { Args: { p_status?: string | null; p_page?: number; p_page_size?: number }; Returns: Json }
       my_shop_order: { Args: { p_code: string }; Returns: Json }
       cancel_my_shop_order: { Args: { p_code: string; p_reason?: string | null }; Returns: Json }
+      list_shop_orders: {
+        Args: { p_branch?: string | null; p_status?: string | null; p_search?: string | null; p_page?: number; p_page_size?: number }
+        Returns: Json
+      }
+      get_shop_order: { Args: { p_id: string }; Returns: Json }
+      confirm_shop_order: { Args: { p_id: string; p_shipping_fee?: number | null }; Returns: Json }
+      pack_shop_order: { Args: { p_id: string }; Returns: Json }
+      ship_shop_order: { Args: { p_id: string; p_tracking_code: string }; Returns: Json }
+      deliver_shop_order: { Args: { p_id: string }; Returns: Json }
+      return_shop_order: { Args: { p_id: string; p_reason: string }; Returns: Json }
+      cancel_shop_order: { Args: { p_id: string; p_reason: string }; Returns: Json }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
       branch_prices: {
         Args: { p_branch: string; p_products: string[] }
