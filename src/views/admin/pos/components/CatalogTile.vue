@@ -18,6 +18,13 @@
     <span class="mt-1 flex items-end justify-between gap-2">
       <span class="truncate text-[11px] text-muted-foreground">{{ item.hint }}</span>
       <span class="whitespace-nowrap text-sm font-bold text-primary">
+        <span
+          v-if="item.generalPrice !== undefined"
+          class="mr-1 text-[10px] font-normal text-muted-foreground line-through"
+          :title="$t('pos.catalog.branchPrice', { price: money(item.generalPrice) })"
+        >
+          {{ money(item.generalPrice) }}
+        </span>
         <template v-if="item.price === null">{{ $t("pos.catalog.byWeight") }}</template>
         <template v-else-if="item.maxPrice && item.maxPrice > item.price">
           {{ $t("pos.variant.from", { price: money(item.price) }) }}

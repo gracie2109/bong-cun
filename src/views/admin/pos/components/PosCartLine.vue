@@ -6,6 +6,11 @@
         <p class="text-xs text-muted-foreground">
           {{ $t(`pos.lineType.${line.item.type}`) }}
           <template v-if="price !== null"> · {{ money(price) }}</template>
+          <template v-if="line.item.generalPrice !== undefined">
+            <s class="ml-1 text-[10px]" :title="$t('pos.catalog.branchPrice', { price: money(line.item.generalPrice) })">
+              {{ money(line.item.generalPrice) }}
+            </s>
+          </template>
           <template v-if="line.item.unit"> / {{ line.item.unit }}</template>
         </p>
       </div>

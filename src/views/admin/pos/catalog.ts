@@ -1,6 +1,7 @@
 import { Layers2, Package, Scissors } from "lucide-vue-next";
 import type { LineType } from "@/repositories/pos";
 import type { ProductVariant, SellableProduct } from "@/repositories/products";
+import type { Priced } from "./branchPricing";
 
 /** One tile; `price` is null for a by-weight service (priced once a pet is picked). */
 export type CatalogItem = {
@@ -15,6 +16,8 @@ export type CatalogItem = {
   /** Set on a tile that stands for several variants: picking it opens the variant picker. */
   groupId?: string;
   maxPrice?: number;
+  /** The general price, set when this branch sells the product at another price. */
+  generalPrice?: number;
 };
 
 export const CATALOG_TABS = [
@@ -23,7 +26,7 @@ export const CATALOG_TABS = [
   { value: "combo", label: "pos.catalog.combos", icon: Layers2 },
 ] as const;
 
-export const toProductItem = (product: SellableProduct | ProductVariant): CatalogItem => ({
+export const toProductItem = (product: Priced<SellableProduct | ProductVariant>): CatalogItem => ({
   type: "product",
   id: product.id,
   name: product.name,
@@ -32,6 +35,7 @@ export const toProductItem = (product: SellableProduct | ProductVariant): Catalo
   hint: [product.sku, product.unit].filter(Boolean).join(" · "),
   barcode: product.barcode,
   sku: product.sku,
+  generalPrice: product.generalPrice,
 });
 
 /**
@@ -39,10 +43,10 @@ export const toProductItem = (product: SellableProduct | ProductVariant): Catalo
  * `variantCountLabel` words the "n variants" hint of a group tile.
  */
 export const groupProductItems = (
-  products: readonly SellableProduct[],
+  products: readonly Priced<SellableProduct>[],
   variantCountLabel: (count: number) => string
 ): CatalogItem[] => {
-  const byGroup = new Map<string, SellableProduct[]>();
+  const byGroup = new Map<string, Priced<SellableProduct>[]>();
   for (const product of products) {
     byGroup.set(product.groupId, [...(byGroup.get(product.groupId) ?? []), product]);
   }

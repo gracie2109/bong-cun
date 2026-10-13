@@ -107,6 +107,12 @@ export const productKeys = {
   sellablePaged: (text: string) => [...productKeys.all, "sellable-paged", text] as const,
 };
 
+export const branchPriceKeys = {
+  all: ["branch-prices"] as const,
+  at: (branchId: string, productIds: string[]) => [...branchPriceKeys.all, "at", branchId, [...productIds].sort()] as const,
+  byProduct: (productIds: string[]) => [...branchPriceKeys.all, "by-product", [...productIds].sort()] as const,
+};
+
 export const productCategoryKeys = {
   all: ["product-categories"] as const,
   list: (page: PageParams, filter: CatalogFilter) => [...productCategoryKeys.all, "list", page, filter] as const,

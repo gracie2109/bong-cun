@@ -1063,6 +1063,45 @@ export type Database = {
           },
         ]
       }
+      product_branch_prices: {
+        Row: {
+          branch_id: string
+          price: number
+          product_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          branch_id: string
+          price: number
+          product_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          branch_id?: string
+          price?: number
+          product_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_branch_prices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_branch_prices_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_brands: {
         Row: {
           created_at: string
@@ -1981,6 +2020,12 @@ export type Database = {
       product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
       save_product_group: { Args: { p: Json }; Returns: string }
       set_product_group_active: { Args: { p_active: boolean; p_group: string }; Returns: undefined }
+      branch_prices: {
+        Args: { p_branch: string; p_products: string[] }
+        Returns: { price: number; product_id: string }[]
+      }
+      product_unit_price: { Args: { p_branch?: string; p_product: string; p_unit?: string }; Returns: number }
+      set_product_branch_prices: { Args: { p_prices: Json; p_product: string }; Returns: undefined }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined
