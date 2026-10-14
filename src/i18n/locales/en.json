@@ -31,6 +31,7 @@
     "cancel": "Cancel",
     "search": "Search",
     "searchView": {
+      "clearText": "Clear text",
       "clear": "Clear filters",
       "filter": "Filter",
       "refresh": "Refresh",
