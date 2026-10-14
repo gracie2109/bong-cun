@@ -1,9 +1,7 @@
 <template>
   <Popover v-model:open="open">
     <PopoverTrigger as-child>
-      <ToolbarIconButton :label="$t('common.searchView.filter')" :badge="activeCount">
-        <ListFilter class="size-4" />
-      </ToolbarIconButton>
+      <ToolbarIconButton :icon="ListFilter" :label="$t('common.searchView.filter')" :badge="activeCount" />
     </PopoverTrigger>
     <PopoverContent align="end" class="p-0" :style="{ width }" @keydown.enter="onEnter">
       <div class="flex items-center justify-between border-b px-4 py-3">
