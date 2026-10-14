@@ -61,7 +61,10 @@
             </div>
           </div>
 
-          <ProductPicker v-if="editable" @pick="addProduct" />
+          <div v-if="editable" class="flex items-start gap-2">
+            <ProductPicker class="min-w-0 flex-1" @pick="addProduct" />
+            <ReceiptFillButton v-if="type === 'receipt'" @lines="addLines" />
+          </div>
 
           <p v-if="lines.length === 0" class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
             {{ $t("inventory.documents.noLines") }}
@@ -147,6 +150,7 @@ import { dateTime, money } from "@/views/admin/pos/format";
 import { diffTone } from "./documentLines";
 import { DOC_STATUS_TONE } from "./documentStatus";
 import DocumentLinesTable from "./DocumentLinesTable.vue";
+import ReceiptFillButton from "./fill/ReceiptFillButton.vue";
 import ProductPicker from "./ProductPicker.vue";
 import { useDocumentLines } from "./useDocumentLines";
 
@@ -175,7 +179,7 @@ const cancelMutation = useCancelStockDocument();
 const open = computed(() => !!props.documentId || !!props.newType);
 const type = computed<DocType>(() => doc.value?.docType ?? props.newType ?? "receipt");
 const form = reactive({ supplierId: NONE, supplierRef: "", note: "" });
-const { lines, draftValue, load, addProduct, isValid, inputs } = useDocumentLines(type, () => props.branchId);
+const { lines, draftValue, load, addProduct, addLines, isValid, inputs } = useDocumentLines(type, () => props.branchId);
 const submitted = ref(false);
 const cancelling = ref(false);
 const cancelReason = ref("");

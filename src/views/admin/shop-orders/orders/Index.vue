@@ -8,7 +8,10 @@
 
   <ContentWrap fill>
     <div class="flex min-h-0 flex-1 flex-col gap-5">
-      <ShopOrdersNav />
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <ShopOrdersNav />
+        <ExportMenu :exporter="exporter" />
+      </div>
 
       <div class="space-y-3 rounded-xl border bg-white p-3">
         <div class="relative">
@@ -54,6 +57,7 @@
 
 <script lang="ts" setup>
 import { Search, ShoppingBag } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Input } from "@/components/ui/input";
@@ -63,6 +67,8 @@ import ShopOrdersNav from "../ShopOrdersNav.vue";
 import OrderRow from "./components/OrderRow.vue";
 import OrderSheet from "./components/OrderSheet.vue";
 import OrderTabs from "./components/OrderTabs.vue";
+import { useOrdersExport } from "./useOrdersExport";
 
-const { tab, search, page, query, rows, total, pageCount, counts, openId } = useOrdersPage();
+const { tab, search, page, query, rows, total, pageCount, counts, openId, filter } = useOrdersPage();
+const exporter = useOrdersExport(filter);
 </script>

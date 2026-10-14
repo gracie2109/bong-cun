@@ -380,6 +380,11 @@
         "editProfile": "Sửa hồ sơ",
         "born": "Sinh {date}",
         "markDeceased": "Đánh dấu đã mất"
+      },
+      "import": {
+        "title": "Nhập khách và thú cưng từ file",
+        "hint": "Mỗi dòng là một thú cưng kèm chủ; dòng không có tên thú cưng chỉ tạo hoặc cập nhật khách. Khách ghép theo số điện thoại, thú cưng theo microchip hoặc (chủ + tên). Ô trống giữ nguyên dữ liệu cũ, loài phải là loài đã có.",
+        "customers": "Khách: {created} tạo mới, {updated} cập nhật."
       }
     },
     "species": {
@@ -1210,7 +1215,13 @@
       "saveDraft": "Lưu nháp",
       "post": "Lưu và ghi sổ",
       "unit": "Đơn vị nhập",
-      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}",
+      "fill": {
+        "button": "Điền từ file",
+        "title": "Điền phiếu nhập từ file",
+        "ok": "Thêm {n} dòng vào phiếu",
+        "hint": "File có cột SKU, Số lượng (bắt buộc), Đơn vị, Giá nhập, Số lô, Hạn dùng. Dòng hợp lệ được thêm vào phiếu nháp để xem lại; dòng lỗi bị bỏ qua. Tồn kho chỉ đổi khi bấm Ghi sổ."
+      }
     },
     "suppliers": {
       "title": "Nhà cung cấp",
@@ -1224,7 +1235,11 @@
       "email": "Email",
       "taxCode": "Mã số thuế",
       "address": "Địa chỉ",
-      "empty": "Chưa có nhà cung cấp nào."
+      "empty": "Chưa có nhà cung cấp nào.",
+      "import": {
+        "title": "Nhập nhà cung cấp từ file",
+        "hint": "Nhà cung cấp ghép theo mã số thuế, không có thì theo tên. Ô trống giữ nguyên dữ liệu cũ; nhập không bao giờ xoá nhà cung cấp."
+      }
     },
     "errors": {
       "lot_short": "Lô của {name} không còn đủ hàng (đã bán hoặc đã xuất).",
@@ -1969,7 +1984,38 @@
     "rowCount": "Tổng {count} dòng",
     "empty": "Không có dữ liệu để xuất.",
     "truncated": "Chỉ xuất {limit} dòng đầu, hãy lọc hẹp hơn.",
-    "failed": "Xuất dữ liệu thất bại."
+    "failed": "Xuất dữ liệu thất bại.",
+    "import": {
+      "button": "Nhập",
+      "template": "Tải file mẫu:",
+      "dropTitle": "Kéo thả file vào đây hoặc bấm để chọn",
+      "dropHint": "Excel (.xlsx) hoặc CSV. Tối đa 2.000 dòng. Ô trống giữ nguyên dữ liệu cũ.",
+      "readFailed": "Không đọc được file. Hãy dùng file Excel (.xlsx) hoặc CSV theo mẫu.",
+      "rowCount": "{n} dòng",
+      "checking": "Đang kiểm tra {done} / {total} dòng",
+      "importing": "Đang nhập {done} / {total} dòng",
+      "done": "Đã nhập xong.",
+      "another": "Chọn file khác",
+      "cancel": "Huỷ file",
+      "importRows": "Nhập {n} dòng",
+      "onlyErrors": "Chỉ dòng lỗi",
+      "downloadErrors": "Tải file lỗi",
+      "empty": "Không có dòng nào.",
+      "stat": {
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "errors": "Dòng lỗi"
+      },
+      "col": {
+        "row": "Dòng",
+        "result": "Kết quả"
+      },
+      "action": {
+        "create": "Tạo mới",
+        "update": "Cập nhật",
+        "skip": "Bỏ qua"
+      }
+    }
   },
   "client": {
     "nav": {

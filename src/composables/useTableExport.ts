@@ -19,10 +19,14 @@ export type TableExportOptions<T> = {
   /** Permission code whose EXPORT method shows the button. */
   permission: string;
   columns: () => ExportColumn<T>[];
+  /** Columns of the printed PDF when they differ (e.g. a count sheet with blank boxes to fill in). */
+  printColumns?: () => ExportColumn<T>[];
   /** Lists that page (1-based page index): read page by page up to the limit. */
   fetchPage?: (pageIndex: number, pageSize: number) => Promise<FetchedPage<T>>;
   /** Lists that return everything in one call. */
   fetchAll?: () => Promise<FetchedPage<T>>;
+  /** Rows asked per call when the list function caps its page size lower than the default 500. */
+  pageSize?: number;
   /** Replaces the default `<name>-<yyyymmdd-hhmm>` file name (without the extension). */
   fileBase?: () => string;
   /** Filter lines printed under the PDF title. */
@@ -31,6 +35,8 @@ export type TableExportOptions<T> = {
   enabled?: () => boolean;
   /** Formats offered; all three when omitted. */
   formats?: ExportFormat[];
+  /** Writes a format itself (e.g. an Excel file with several sheets); `base` is the file name without extension. */
+  overrides?: Partial<Record<ExportFormat, (rows: T[], base: string) => Promise<void>>>;
 };
 
 /** Exports the rows of a list as Excel, CSV or PDF, honouring the screen's filters and the row limits. */
@@ -49,12 +55,14 @@ export const useTableExport = <T>(options: TableExportOptions<T>) => {
       return { rows: rows.slice(0, cap), total, truncated: total > cap };
     }
     if (!options.fetchPage) throw new Error("useTableExport needs fetchPage or fetchAll");
-    return fetchAllPages(options.fetchPage, { cap, onProgress: (done, total) => (progress.value = { done, total }) });
+    return fetchAllPages(options.fetchPage, { cap, pageSize: options.pageSize, onProgress: (done, total) => (progress.value = { done, total }) });
   };
 
   const save = async (format: ExportFormat, rows: T[], total: number) => {
     const columns = options.columns();
     const base = options.fileBase?.() ?? exportFileBase(options.name);
+    const override = options.overrides?.[format];
+    if (override) return override(rows, base);
     if (format === "csv") return downloadCsv(`${base}.csv`, writeCsv(rows, columns));
     if (format === "xlsx") return writeXlsx(rows, columns, `${base}.xlsx`, options.name);
     const who = auth.currentUser?.displayName;
@@ -62,7 +70,7 @@ export const useTableExport = <T>(options: TableExportOptions<T>) => {
     printTable({
       title: options.name,
       meta: [...(options.meta?.() ?? []), stamp],
-      columns,
+      columns: options.printColumns?.() ?? columns,
       rows,
       rowCountLabel: t("dataIo.rowCount", { count: total.toLocaleString("vi-VN") }),
     });

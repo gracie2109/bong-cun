@@ -71,9 +71,14 @@ export const useDocumentLines = (type: Ref<DocType>, branchId: () => string | un
     }
   };
 
+  /** Adds lines built elsewhere (a receipt filled from a file). */
+  const addLines = (extra: EditLine[]) => {
+    lines.value.push(...extra);
+  };
+
   const isValid = (): boolean => lines.value.length > 0 && lines.value.every((line) => validLine(type.value, line));
 
   const inputs = () => lines.value.map((line) => toInput(type.value, line));
 
-  return { lines, draftValue, load, addProduct, isValid, inputs };
+  return { lines, draftValue, load, addProduct, addLines, isValid, inputs };
 };

@@ -10,7 +10,10 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
-        <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        </div>
       </div>
 
       <StockAlertCards v-model:status="status" :alerts="alerts" :expiry-days="expiryDays" />
@@ -44,6 +47,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { Boxes } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { usePagedList } from "@/composables/usePagedList";
@@ -57,12 +61,14 @@ import StockAlertCards from "./StockAlertCards.vue";
 import StockFilterBar from "./StockFilterBar.vue";
 import StockProductSheet from "./StockProductSheet.vue";
 import StockRow from "./StockRow.vue";
+import { useStockExport } from "./useStockExport";
 import { useStockFilters } from "./useStockFilters";
 
-const { branches, branchId, selectBranch } = useCurrentBranch();
+const { branches, branch, branchId, selectBranch } = useCurrentBranch();
 const { search, status, expiryWindow, expiryDays, page, filter } = useStockFilters(branchId);
 
 const openRow = ref<StockRowData | null>(null);
+const exporter = useStockExport(filter, () => branch.value?.name);
 
 const listQuery = useStockSummary(page, filter);
 const alertsQuery = useStockAlertCounts(branchId, expiryDays);

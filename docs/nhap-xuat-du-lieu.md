@@ -2,7 +2,7 @@
 
 Kế hoạch ngày 14/10/2026. Đề xuất của chị: xuất PDF, Excel, CSV; nhập cũng PDF, Excel, CSV. Dự án là pet project cá nhân, nên ưu tiên đơn giản, thư viện miễn phí, không thêm dịch vụ ngoài. Module sản phẩm đã có nhập/xuất Excel (PR #70, [module-san-pham.md](module-san-pham.md) mục 3.5, 5.3, 6.7); kế hoạch này tổng quát hoá phần đó thành bộ dùng chung, không làm lại.
 
-**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Chưa có code.
+**Tiến độ:** kế hoạch tự duyệt; các câu hỏi mở đã chọn mặc định ở mục 10. Đã làm đủ 6 bước (mục 12).
 
 ## 1. Kết luận ngắn
 
@@ -280,3 +280,23 @@ Bước 1 trước vì báo cáo đã có xuất CSV, thay vào đó là cách n
 | Nhập ghi đè dữ liệu tốt bằng ô trống | Ô trống = giữ nguyên; không bao giờ xoá |
 | PDF trình duyệt khác nhau giữa máy | CSS in đơn giản, font web + Arial dự phòng; kiểm trên Chrome và Safari iPad |
 | Đổi lõi nhập làm hỏng nhập sản phẩm đang chạy | Bước 3 chạy lại đúng kịch bản 12 đến 14 của module sản phẩm trước khi merge |
+
+## 12. Kết quả làm (14/10/2026)
+
+| Bước | PR | Ghi chú |
+| --- | --- | --- |
+| 1 Lõi xuất + báo cáo | #82 (đã merge) | Migration `20261017010000` chỉ thêm method EXPORT/IMPORT còn thiếu vào mã quyền |
+| 2 Xuất POS và kho | #83 | Hoá đơn, ca thu ngân, tồn kho (PDF là phiếu kiểm kê có cột trống), phiếu kho, nhà cung cấp |
+| 3 Lõi nhập + sản phẩm | #83 | `readTable` (xlsx, csv `,` `;`, UTF-8 / Windows-1258), ghép cột theo tên, `useTableImport`, `components/common/data-io`; nhập sản phẩm nhận CSV, có "Tải file lỗi"; xuất sản phẩm thêm CSV và PDF bảng giá. Migration `20261017030000` (quyền `products: IMPORT`) |
+| 4 Xuất thêm 5 màn + nhập khách và thú cưng | #83 | Thú cưng, khách hàng, lịch spa, đơn online, dịch vụ. `import_pets` (migration `20261017040000`). Nút Nhập nằm ở màn Thú cưng, cần `pets: IMPORT` |
+| 5 Nhập nhà cung cấp | #83 | `import_suppliers` (migration `20261017050000`), cần `inventory: IMPORT` |
+| 6 Điền phiếu nhập từ file | #83 | `find_products_by_sku` (migration `20261017060000`). Nút "Điền từ file" trong phiếu nhập nháp; dòng hợp lệ vào phiếu, dòng lỗi bị bỏ qua và liệt kê |
+
+Khác với kế hoạch:
+
+- `fetchPage` của lịch spa và đơn online dùng trang 100 dòng vì hai RPC giới hạn 100 (`useTableExport` có tuỳ chọn `pageSize`).
+- Thú cưng đã có microchip mà file ghi cùng tên và microchip mới vẫn khớp theo (chủ, tên) nếu thú cưng đó chưa có microchip, để nhập lại không tạo trùng.
+- Điền phiếu từ file cho phép nhập một phần (`allowPartial`): khác các màn nhập khác, một dòng lỗi không chặn cả file vì không ghi gì vào DB.
+- Màn xuất thú cưng không có cột microchip và email chủ (view `pet_overview` không có hai trường đó).
+
+Kiểm tra đã làm: typecheck và `nuxt build` qua ở mọi bước; hàm đọc/ghi CSV, so khớp cột, parse sản phẩm (so với bản cũ), khách và thú cưng, phiếu nhập chạy thử bằng Node; `import_pets`, `import_suppliers`, `find_products_by_sku` chạy thử trên Postgres cục bộ với bảng mô phỏng (đủ cột, khoá, ràng buộc liên quan; chưa chạy qua RLS thật). Chưa bấm thử trên trình duyệt: mở file Excel/Numbers, in PDF thật, kéo thả file, các nút theo quyền.

@@ -11,6 +11,7 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <SpaNav />
         <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
           <Button v-if="canCreate" :disabled="!branchId" @click="openNew">
             <Plus class="mr-2 size-4" />
@@ -68,6 +69,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { ListChecks, Plus, Search } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
@@ -86,13 +88,15 @@ import AppointmentDetailDialog from "./AppointmentDetailDialog.vue";
 import AppointmentDialog from "./AppointmentDialog.vue";
 import AppointmentRow from "./AppointmentRow.vue";
 import { useAppointmentFilters } from "./useAppointmentFilters";
+import { useAppointmentsExport } from "./useAppointmentsExport";
 
 const auth = useAuthStore();
 const canCreate = computed(() => auth.can("schedule", "CREATE"));
 const canUpdate = computed(() => auth.can("schedule", "UPDATE"));
-const { branches, branchId, selectBranch } = useCurrentBranch();
+const { branches, branch, branchId, selectBranch } = useCurrentBranch();
 
 const { search, from, to, status, page, filter } = useAppointmentFilters(branchId);
+const exporter = useAppointmentsExport(branchId, filter, () => branch.value?.name);
 const listQuery = useAppointmentsList(branchId, page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 

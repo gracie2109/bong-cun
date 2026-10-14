@@ -10,10 +10,14 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
-        <Button v-if="canCreate" @click="openForm(null)">
-          <Plus class="mr-2 size-4" />
-          {{ $t("inventory.suppliers.add") }}
-        </Button>
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <ImportButton :allowed="canImport" @click="importOpen = true" />
+          <Button v-if="canCreate" @click="openForm(null)">
+            <Plus class="mr-2 size-4" />
+            {{ $t("inventory.suppliers.add") }}
+          </Button>
+        </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
@@ -47,12 +51,15 @@
     </div>
 
     <SupplierFormSheet v-model:open="formOpen" :supplier="editing" />
+    <SuppliersImportDialog v-if="canImport" v-model:open="importOpen" />
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { Plus, Search, Truck } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import ImportButton from "@/components/common/data-io/ImportButton.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
@@ -63,10 +70,13 @@ import { usePagedSearch } from "@/composables/usePagedSearch";
 import { usePermission } from "@/composables/usePermission";
 import { useSaveSupplier, useSuppliersList } from "@/queries/inventory";
 import type { Supplier, SupplierFilter } from "@/repositories/inventory";
+import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import InventoryNav from "../InventoryNav.vue";
 import SupplierFormSheet from "./SupplierFormSheet.vue";
+import SuppliersImportDialog from "./import/SuppliersImportDialog.vue";
 import SupplierRow from "./SupplierRow.vue";
+import { useSuppliersExport } from "./useSuppliersExport";
 
 const PAGE_SIZE = 20;
 
@@ -77,6 +87,9 @@ const formOpen = ref(false);
 const editing = ref<Supplier | null>(null);
 
 const filter = computed<SupplierFilter>(() => ({ search: debouncedSearch.value, includeArchived: showArchived.value }));
+const exporter = useSuppliersExport(filter);
+const canImport = computed(() => useAuthStore().can("inventory", "IMPORT"));
+const importOpen = ref(false);
 const listQuery = useSuppliersList(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 const saveMutation = useSaveSupplier();

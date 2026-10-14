@@ -18,5 +18,5 @@ export const useOrdersPage = () => {
 
   const openId = ref<string>();
 
-  return { tab, search, page, query, rows, total, pageCount, counts, openId };
+  return { tab, search, page, query, rows, total, pageCount, counts, openId, filter };
 };

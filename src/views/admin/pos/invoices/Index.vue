@@ -10,7 +10,10 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <PosNav />
-        <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        </div>
       </div>
 
       <InvoicesFilterBar v-model:search="search" v-model:period="period" v-model:status="status" />
@@ -42,6 +45,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { Receipt } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
@@ -53,11 +57,13 @@ import PosNav from "../PosNav.vue";
 import InvoiceRow from "./InvoiceRow.vue";
 import InvoiceSheet from "./InvoiceSheet.vue";
 import InvoicesFilterBar from "./InvoicesFilterBar.vue";
+import { useInvoicesExport } from "./useInvoicesExport";
 import { useInvoicesFilters } from "./useInvoicesFilters";
 
 const { branches, branch, branchId, selectBranch } = useCurrentBranch();
 const { search, period, status, page, filter } = useInvoicesFilters(branchId);
 const openId = ref<string>();
+const exporter = useInvoicesExport(filter, () => branch.value?.name);
 
 const listQuery = useInvoicesList(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);

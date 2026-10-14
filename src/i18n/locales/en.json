@@ -380,6 +380,11 @@
         "editProfile": "Edit profile",
         "born": "Born {date}",
         "markDeceased": "Mark as deceased"
+      },
+      "import": {
+        "title": "Import customers and pets from a file",
+        "hint": "Each row is a pet with its owner; a row without a pet name only creates or updates the customer. Customers match by phone number, pets by microchip or (owner + name). Empty cells keep the old data and the species must already exist.",
+        "customers": "Customers: {created} created, {updated} updated."
       }
     },
     "species": {
@@ -1210,7 +1215,13 @@
       "saveDraft": "Save draft",
       "post": "Save and post",
       "unit": "Receiving unit",
-      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}",
+      "fill": {
+        "button": "Fill from file",
+        "title": "Fill the receipt from a file",
+        "ok": "Add {n} lines to the receipt",
+        "hint": "The file has the columns SKU, Quantity (required), Unit, Cost, Lot number, Expiry. Valid rows are added to the draft receipt for review; rows with errors are skipped. Stock only changes when the receipt is posted."
+      }
     },
     "suppliers": {
       "title": "Suppliers",
@@ -1224,7 +1235,11 @@
       "email": "Email",
       "taxCode": "Tax code",
       "address": "Address",
-      "empty": "No suppliers yet."
+      "empty": "No suppliers yet.",
+      "import": {
+        "title": "Import suppliers from a file",
+        "hint": "Suppliers match by tax code, or by name when there is none. Empty cells keep the old data; an import never deletes a supplier."
+      }
     },
     "errors": {
       "lot_short": "A lot of {name} no longer holds enough (sold or written off).",
@@ -1969,7 +1984,38 @@
     "rowCount": "{count} rows in total",
     "empty": "There is nothing to export.",
     "truncated": "Only the first {limit} rows were exported, narrow the filter.",
-    "failed": "Export failed."
+    "failed": "Export failed.",
+    "import": {
+      "button": "Import",
+      "template": "Download template:",
+      "dropTitle": "Drop a file here or click to choose",
+      "dropHint": "Excel (.xlsx) or CSV. Up to 2,000 rows. Empty cells keep the old data.",
+      "readFailed": "The file could not be read. Use an Excel (.xlsx) or CSV file that follows the template.",
+      "rowCount": "{n} rows",
+      "checking": "Checking {done} / {total} rows",
+      "importing": "Importing {done} / {total} rows",
+      "done": "Import finished.",
+      "another": "Choose another file",
+      "cancel": "Discard file",
+      "importRows": "Import {n} rows",
+      "onlyErrors": "Only rows with errors",
+      "downloadErrors": "Download error file",
+      "empty": "No rows.",
+      "stat": {
+        "created": "Created",
+        "updated": "Updated",
+        "errors": "Rows with errors"
+      },
+      "col": {
+        "row": "Row",
+        "result": "Result"
+      },
+      "action": {
+        "create": "Create",
+        "update": "Update",
+        "skip": "Skip"
+      }
+    }
   },
   "client": {
     "nav": {

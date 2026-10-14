@@ -16,10 +16,14 @@
           </h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.pets.subtitle") }}</p>
         </div>
-        <Button v-if="canCreate" @click="registerOpen = true">
-          <Plus class="mr-2 size-4" />
-          {{ $t("petCare.pets.register") }}
-        </Button>
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <ImportButton :allowed="canImport" @click="importOpen = true" />
+          <Button v-if="canCreate" @click="registerOpen = true">
+            <Plus class="mr-2 size-4" />
+            {{ $t("petCare.pets.register") }}
+          </Button>
+        </div>
       </div>
 
       <PetsNav />
@@ -61,6 +65,7 @@
     </div>
 
     <RegisterPetSheet v-model:open="registerOpen" @registered="openPet" />
+    <PetsImportDialog v-if="canImport" v-model:open="importOpen" />
 
     <ConfirmDialog
       :open="!!toArchive"
@@ -75,22 +80,27 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { PawPrint, Plus } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import ImportButton from "@/components/common/data-io/ImportButton.vue";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
+import { useAuthStore } from "@/stores";
 import { usePetsList, useSetPetStatus } from "@/queries/pets";
 import type { PetListItem, PetStatus } from "@/repositories/pets";
 import { ContentWrap, Header } from "@/views/admin/components";
+import PetsImportDialog from "./import/PetsImportDialog.vue";
 import PetRow from "./components/PetRow.vue";
 import PetsFilterBar from "./components/PetsFilterBar.vue";
 import RegisterPetSheet from "./components/RegisterPetSheet.vue";
 import PetsNav from "./PetsNav.vue";
+import { usePetsExport } from "./usePetsExport";
 import { usePetsFilters } from "./usePetsFilters";
 
 const router = useRouter();
@@ -99,6 +109,9 @@ const { canCreate, canUpdate } = usePermission("pets");
 const { search, speciesFilter, bracketFilter, statusFilter, pageData, filter, species, brackets } =
   usePetsFilters();
 
+const exporter = usePetsExport(filter);
+const canImport = computed(() => useAuthStore().can("pets", "IMPORT"));
+const importOpen = ref(false);
 const registerOpen = ref(false);
 const toArchive = ref<PetListItem | null>(null);
 
