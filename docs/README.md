@@ -10,6 +10,7 @@
 | [module-san-pham.md](module-san-pham.md) | Kế hoạch phần còn lại của module sản phẩm: danh mục, thương hiệu, bộ ảnh, giá theo cơ sở, đơn vị quy đổi, nhập/xuất Excel |
 | [checkout-shop.md](checkout-shop.md) | Kế hoạch checkout shop online: giỏ hàng thống nhất, địa chỉ, phí GHN, COD và nhận tại cửa hàng, đơn online dùng chung hóa đơn/kho, trang theo dõi đơn |
 | [giao-dien-khach-hang.md](giao-dien-khach-hang.md) | Kế hoạch giao diện khách hàng: danh sách và chi tiết sản phẩm, khu tài khoản, thú cưng của tôi, bảng giá và đặt lịch spa online, lịch hẹn của tôi |
+| [nhap-xuat-du-lieu.md](nhap-xuat-du-lieu.md) | Kế hoạch nhập/xuất dữ liệu ở admin: xuất Excel/CSV/PDF cho các bảng, nhập Excel/CSV cho dữ liệu gốc, bộ dùng chung, quyền IMPORT/EXPORT |
 | [pos-luong-va-kich-ban-test.md](pos-luong-va-kich-ban-test.md) | POS bán tại quầy: luồng thực tế, kịch bản test, edge case, lỗi và khoảng trống |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
