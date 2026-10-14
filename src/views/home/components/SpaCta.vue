@@ -8,7 +8,7 @@
         <h2 class="text-3xl font-bold">{{ $t("client.home.spaCta.title") }}</h2>
         <p class="text-muted-foreground">{{ $t("client.home.spaCta.text") }}</p>
         <Button size="lg" as-child>
-          <RouterLink :to="{ name: 'contact' }">{{ $t("client.home.spaCta.button") }}</RouterLink>
+          <RouterLink :to="{ name: 'spa' }">{{ $t("client.home.spaCta.button") }}</RouterLink>
         </Button>
       </div>
       <ul class="grid gap-3 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
