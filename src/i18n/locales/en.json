@@ -108,7 +108,8 @@
     "accountAddresses": "Addresses",
     "accountOrders": "My orders",
     "accountPets": "My pets",
-    "spa": "Spa services"
+    "spa": "Spa services",
+    "spaBook": "Book a spa visit"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -1730,6 +1731,9 @@
       "no_price": "No price for this weight yet ({name}). Check the service prices.",
       "not_due": "The appointment time has not come yet, so it cannot be a no-show.",
       "bad_status": "The ticket cannot move to that status."
+    },
+    "source": {
+      "web": "Web"
     }
   },
   "reports": {
@@ -2250,6 +2254,52 @@
         "1": "Best seller",
         "2": "New",
         "4": ""
+      }
+    },
+    "booking": {
+      "title": "Book a spa visit",
+      "steps": {
+        "branch": "Branch",
+        "pets": "Pets and services",
+        "slot": "Date and time",
+        "confirm": "Confirm"
+      },
+      "petsHint": "Pick services or combos for each pet. A pet can have several.",
+      "picked": "{n} selected",
+      "noOffer": "No services for this species yet.",
+      "date": "Date",
+      "needTime": "This visit takes about {time}.",
+      "noSlots": "No times for this day (the branch is closed or the day is out of range).",
+      "dayFull": "This day is full or too soon. Please pick another day.",
+      "estimate": "Estimate",
+      "quoteOnArrival": "Quoted on arrival",
+      "confirmNote": "The estimate uses your pet's latest weight; the final price is confirmed when the shop receives your pet. The shop assigns the groomer.",
+      "note": "Note for the shop",
+      "noteHint": "e.g. afraid of the dryer",
+      "next": "Continue",
+      "confirm": "Confirm booking",
+      "quoteFailed": "Could not work out the time and price, please try again.",
+      "needProfile": "Fill in your name and phone in your profile before booking.",
+      "needPet": "Add at least one pet to book a visit.",
+      "addPet": "Add a pet",
+      "doneTitle": "Booking received",
+      "doneText": "The shop received booking {code}. You can cancel up to 2 hours before.",
+      "goAccount": "Go to my account",
+      "backToSpa": "See price list",
+      "errors": {
+        "no_customer": "Fill in your name and phone in your profile first.",
+        "empty": "Pick at least one service.",
+        "no_pet": "Pet not found.",
+        "unavailable": "That service is no longer offered.",
+        "wrong_species": "This service does not apply to your pet's species.",
+        "bad_time": "Invalid time.",
+        "too_soon": "Book at least 2 hours ahead.",
+        "too_far": "Bookings open up to 30 days ahead.",
+        "too_many": "You already have 3 upcoming bookings. Wait or cancel one first.",
+        "closed": "The branch is closed that day.",
+        "outside_hours": "This visit runs past closing time.",
+        "slot_full": "That time was just taken, please pick another.",
+        "pet_busy": "Your pet already has a visit at that time."
       }
     }
   }

@@ -32,9 +32,13 @@ export type AppointmentTicket = {
   billed: boolean;
 };
 
+/** Where an appointment came from; 'web' = booked by the customer on the website. */
+export type AppointmentSource = "counter" | "phone" | "legacy" | "web";
+
 export type Appointment = {
   id: string;
   code: string;
+  source: AppointmentSource;
   status: AppointmentStatus;
   startAt: string;
   endAt: string;
@@ -75,6 +79,7 @@ const toAppointment = (raw: unknown): Appointment => {
   return {
     id: str(row.id),
     code: str(row.code),
+    source: str(row.source) as AppointmentSource,
     status: str(row.status) as AppointmentStatus,
     startAt: str(row.start_at),
     endAt: str(row.end_at),

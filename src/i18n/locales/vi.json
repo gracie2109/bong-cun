@@ -108,7 +108,8 @@
     "accountAddresses": "Sổ địa chỉ",
     "accountOrders": "Đơn hàng của tôi",
     "accountPets": "Thú cưng của tôi",
-    "spa": "Dịch vụ spa"
+    "spa": "Dịch vụ spa",
+    "spaBook": "Đặt lịch spa"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -1730,6 +1731,9 @@
       "no_price": "Chưa có giá cho cân nặng này ({name}). Kiểm tra bảng giá dịch vụ.",
       "not_due": "Chưa tới giờ hẹn nên chưa đánh dấu không đến được.",
       "bad_status": "Không chuyển được phiếu sang trạng thái này."
+    },
+    "source": {
+      "web": "Web"
     }
   },
   "reports": {
@@ -2250,6 +2254,52 @@
         "1": "Bán chạy",
         "2": "Mới",
         "4": ""
+      }
+    },
+    "booking": {
+      "title": "Đặt lịch spa",
+      "steps": {
+        "branch": "Cơ sở",
+        "pets": "Thú cưng và dịch vụ",
+        "slot": "Ngày giờ",
+        "confirm": "Xác nhận"
+      },
+      "petsHint": "Chọn dịch vụ hoặc combo cho từng bé. Mỗi bé có thể chọn nhiều dịch vụ.",
+      "picked": "Đã chọn {n}",
+      "noOffer": "Hiện chưa có dịch vụ cho loài này.",
+      "date": "Ngày",
+      "needTime": "Cần khoảng {time} cho lượt này.",
+      "noSlots": "Không có giờ nhận lịch cho ngày này (cơ sở nghỉ hoặc ngoài thời gian đặt).",
+      "dayFull": "Ngày này đã hết chỗ hoặc quá gần giờ hiện tại. Hãy chọn ngày khác.",
+      "estimate": "Tạm tính",
+      "quoteOnArrival": "Báo giá khi nhận thú",
+      "confirmNote": "Giá tạm tính theo cân nặng gần nhất của bé; giá chính thức chốt khi cửa hàng nhận thú. Cửa hàng sẽ sắp xếp người làm cho bạn.",
+      "note": "Ghi chú cho cửa hàng",
+      "noteHint": "Ví dụ: bé hay sợ tiếng máy sấy",
+      "next": "Tiếp tục",
+      "confirm": "Xác nhận đặt lịch",
+      "quoteFailed": "Không tính được thời gian và giá, vui lòng thử lại.",
+      "needProfile": "Hãy điền họ tên và số điện thoại trong hồ sơ trước khi đặt lịch.",
+      "needPet": "Bạn cần thêm ít nhất một thú cưng để đặt lịch.",
+      "addPet": "Thêm thú cưng",
+      "doneTitle": "Đặt lịch thành công",
+      "doneText": "Cửa hàng đã nhận lịch {code}. Bạn có thể hủy trước giờ hẹn 2 tiếng.",
+      "goAccount": "Về tài khoản",
+      "backToSpa": "Xem bảng giá",
+      "errors": {
+        "no_customer": "Hãy điền họ tên và số điện thoại trong hồ sơ trước.",
+        "empty": "Hãy chọn ít nhất một dịch vụ.",
+        "no_pet": "Không tìm thấy thú cưng đã chọn.",
+        "unavailable": "Dịch vụ đã chọn hiện không còn nhận.",
+        "wrong_species": "Dịch vụ này không áp dụng cho loài của bé.",
+        "bad_time": "Giờ đã chọn không hợp lệ.",
+        "too_soon": "Cần đặt trước ít nhất 2 giờ.",
+        "too_far": "Chỉ nhận đặt trước tối đa 30 ngày.",
+        "too_many": "Bạn đã có 3 lịch chưa diễn ra. Hãy chờ hoặc hủy bớt rồi đặt tiếp.",
+        "closed": "Cơ sở nghỉ vào ngày này.",
+        "outside_hours": "Lượt này vượt quá giờ mở cửa.",
+        "slot_full": "Khung giờ này vừa hết chỗ, vui lòng chọn giờ khác.",
+        "pet_busy": "Bé đã có lịch khác trong khung giờ này."
       }
     }
   }

@@ -7,3 +7,4 @@ export * from "./board";
 export * from "./rules";
 export * from "./settings";
 export * from "./publicCatalog";
+export * from "./webBooking";
