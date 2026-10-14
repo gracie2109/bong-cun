@@ -300,3 +300,15 @@ Thread "Làm nhập xuất dữ liệu admin" đang sửa đúng các file màn 
 - Bước 3, 4 sắp tới: trang nhập sản phẩm, `Index.vue` của sản phẩm, thú cưng, khách hàng, lịch spa, đơn online, dịch vụ; thêm `components/common/data-io/ImportButton.vue`.
 
 Vì vậy bước 1 chỉ chạm file mới + 2 màn thương hiệu, danh mục (thread kia không đụng) + file cũ không ai dùng; các bước sau chờ đúng bước tương ứng của thread kia merge rồi mới làm. File i18n cả hai cùng thêm khoá: thêm khoá ở nhánh `common.searchView` riêng để merge không đè nhau.
+
+## 7. Kết quả triển khai (14/10/2026)
+
+Cả 5 bước đã làm xong (PR #86, #88, #92, #93, #95 và PR của bước 5). Những chỗ làm khác plan một chút:
+
+- `useListFilters` có thêm `resetOn` (đổi cơ sở thì về trang 1) và `initial` (lấy giá trị đầu từ URL, như sản phẩm).
+- Bộ lọc dùng chung với chỗ khác cho áp dụng ngay bằng `quick`: trạng thái tồn kho (cùng thẻ cảnh báo), chip khách mới, tab đơn online, nút loại ở báo cáo mặt hàng.
+- Ca thu ngân và (trước đây) combo không có tìm kiếm; ca thu ngân dùng `SearchView` chỉ với nút tải xuống và Làm mới, combo có thêm ô tìm kiếm vì API đã hỗ trợ sẵn.
+- Phân quyền lọc ngay trên trình duyệt nên ô trong popover sửa thẳng bộ lọc đang áp dụng (nút "Tìm kiếm" chỉ đóng popover); hàng chip lọc nhanh và số kết quả giữ nguyên bên dưới.
+- Bảng khách hàng vẫn dùng dòng rỗng riêng, chưa có nút "Xoá bộ lọc".
+- `SearchSelect` và `SearchFieldInput` chưa viết vì chưa màn nào cần.
+- Chỉ kiểm tra bằng typecheck và build; chưa bấm thử trên trình duyệt.

@@ -26,7 +26,9 @@
       :unused-count="unusedCount"
       :matched="filtered.length"
       :total="permissions.length"
+      :refreshing="permissionsQuery.isFetching.value"
       @reset="resetFilters"
+      @refresh="permissionsQuery.refetch()"
     />
 
     <PagedTableCard

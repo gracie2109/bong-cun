@@ -9,12 +9,22 @@
   <ContentWrap fill>
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <ReportsNav />
-      <ReportFilterBar>
-        <template #actions>
-          <ExportMenu :exporter="exporter" />
-        </template>
-      </ReportFilterBar>
-      <ItemsFilterBar v-model:search="search" v-model:kind="kind" v-model:sort="sort" />
+      <ReportFilterBar />
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('reports.items.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #quick><ItemsKindSwitch v-model="kind" /></template>
+        <template #filters><ItemsFilterFields v-model="draft.sort" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard
         class="min-h-0 flex-1"
@@ -42,7 +52,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="10" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('reports.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="10" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('reports.empty')" />
             <ItemRow v-for="(row, index) in rows" :key="`${row.itemType}-${row.itemId}`" :item="row" :rank="rankOf(index)" />
           </tbody>
         </table>
@@ -54,6 +64,7 @@
 
 <script lang="ts" setup>
 import { Package } from "lucide-vue-next";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { usePagedList } from "@/composables/usePagedList";
@@ -68,11 +79,12 @@ import { useReportExport } from "../shared/useReportExport";
 import ReportsNav from "../ReportsNav.vue";
 import ItemRow from "./ItemRow.vue";
 import { itemsCsvColumns } from "./itemsCsv";
-import ItemsFilterBar from "./ItemsFilterBar.vue";
+import ItemsFilterFields from "./ItemsFilterFields.vue";
+import ItemsKindSwitch from "./ItemsKindSwitch.vue";
 import { useItemsFilters } from "./useItemsFilters";
 
 const { t } = useI18n();
-const { kind, sort, search, page, filter } = useItemsFilters();
+const { kind, search, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useItemsFilters();
 
 const listQuery = useTopItems(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
