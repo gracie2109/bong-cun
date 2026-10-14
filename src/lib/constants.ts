@@ -60,16 +60,6 @@ export const LOCAL_STORAGE_KEY = {
   SETTING_KEY: "settingKey",
 };
 
-export const HEADER_ADVANCE_FUNCTION = {
-  FILTER: "filter",
-  RESET: "reset",
-  EXPORT: "export",
-  IMPORT: "import",
-  ADD_NEW: "addNew",
-  SETTING_COLUMN: "settingColumn",
-  RANGE_DATE: 'rangeDate'
-} as const;
-
 export const PROVIDER_KEYS = {
   IS_COLLAPSE: "isCollapsed",
 };

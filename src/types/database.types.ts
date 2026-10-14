@@ -2190,6 +2190,11 @@ export type Database = {
       set_default_my_address: { Args: { p_id: string }; Returns: undefined }
       delete_my_address: { Args: { p_id: string }; Returns: undefined }
       shop_cart_lines: { Args: { p_lines: Json }; Returns: Json }
+      shop_product_groups: {
+        Args: { p_search?: string; p_category?: string; p_brand?: string; p_sort?: string; p_limit?: number; p_offset?: number }
+        Returns: Json
+      }
+      shop_related_groups: { Args: { p_group: string; p_limit?: number }; Returns: Json }
       shop_public_settings: { Args: never; Returns: Json }
       shop_admin_settings: { Args: never; Returns: Json }
       save_shop_settings: { Args: { p: Json }; Returns: Json }

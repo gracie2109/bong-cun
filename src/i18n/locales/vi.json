@@ -30,6 +30,16 @@
     "deleteFileDesc": "Sau khi xóa sẽ không thể khôi phục.",
     "cancel": "Hủy",
     "search": "Tìm kiếm",
+    "searchView": {
+      "clear": "Xoá lọc",
+      "filter": "Lọc",
+      "refresh": "Làm mới",
+      "reset": "Đặt lại",
+      "apply": "Tìm kiếm",
+      "activeFilters": "Đang lọc {count}",
+      "noResults": "Không có kết quả phù hợp",
+      "clearFilters": "Xoá bộ lọc"
+    },
     "table": {
       "range": "Hiển thị {from}–{to} / {total}",
       "pagination": "Phân trang",
@@ -90,7 +100,8 @@
     "productImport": "Nhập / xuất Excel sản phẩm",
     "shopOrderSettings": "Cài đặt bán online",
     "order": "Đơn hàng",
-    "shopOrders": "Đơn online"
+    "shopOrders": "Đơn online",
+    "productDetail": "Chi tiết sản phẩm"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2003,6 +2014,109 @@
         "update": "Cập nhật",
         "skip": "Bỏ qua"
       }
+    }
+  },
+  "client": {
+    "nav": {
+      "home": "Trang chủ",
+      "products": "Sản phẩm",
+      "about": "Giới thiệu",
+      "contact": "Liên hệ"
+    },
+    "menu": {
+      "login": "Đăng nhập",
+      "account": "Tài khoản",
+      "orders": "Đơn hàng",
+      "pets": "Thú cưng",
+      "appointments": "Lịch hẹn",
+      "admin": "Trang quản trị",
+      "logout": "Đăng xuất"
+    },
+    "footer": {
+      "tagline": "Cửa hàng và spa chăm sóc thú cưng tận tâm, đồng hành cùng các bé từ bữa ăn đến những lần tắm gội.",
+      "links": "Liên kết nhanh",
+      "contact": "Thông tin liên hệ",
+      "hotline": "Hotline",
+      "hours": "Giờ mở cửa",
+      "rights": "Bản quyền thuộc về Bông Cún."
+    },
+    "home": {
+      "spaCta": {
+        "badge": "Dịch vụ spa",
+        "title": "Đặt lịch spa online",
+        "text": "Chọn thú cưng, dịch vụ và giờ còn trống ngay trên web. Cửa hàng sẽ sắp xếp người làm cho bạn.",
+        "tip1": "Đặt trong 1 phút",
+        "tip1Text": "Không cần gọi điện hay chờ trả lời.",
+        "tip2": "Chọn giờ còn trống",
+        "tip2Text": "Thấy ngay khung giờ cửa hàng còn nhận.",
+        "tip3": "Hủy dễ dàng",
+        "tip3Text": "Hủy miễn phí trước giờ hẹn 2 tiếng.",
+        "button": "Đặt lịch ngay"
+      },
+      "featured": "Sản phẩm được yêu thích",
+      "viewAll": "Xem tất cả sản phẩm"
+    },
+    "about": {
+      "eyebrow": "Về chúng tôi",
+      "title": "Bông Cún, nơi thú cưng được chăm như người nhà",
+      "intro": "Chúng tôi bán thức ăn, phụ kiện và có spa chải chuốt cho chó mèo. Mỗi sản phẩm đều được chọn kỹ, mỗi bé đến spa đều được chăm từng chút.",
+      "mission": "Sứ mệnh",
+      "missionText": "Giúp mỗi người nuôi chăm sóc thú cưng dễ dàng, đúng cách và với giá hợp lý.",
+      "v1": "Hàng chính hãng",
+      "v1Text": "Nguồn hàng rõ ràng, hạn dùng được theo dõi theo từng lô.",
+      "v2": "Spa tận tâm",
+      "v2Text": "Dịch vụ tắm, cắt tỉa theo từng loài và cân nặng, giá minh bạch.",
+      "v3": "Tư vấn thật lòng",
+      "v3Text": "Hỏi gì đáp nấy, không ép mua thứ bé không cần.",
+      "cta": "Xem sản phẩm"
+    },
+    "contact": {
+      "title": "Liên hệ với Bông Cún",
+      "subtitle": "Ghé cửa hàng hoặc gọi cho chúng tôi, chúng tôi luôn sẵn lòng hỗ trợ.",
+      "address": "Địa chỉ",
+      "phone": "Điện thoại",
+      "email": "Email",
+      "hours": "Giờ mở cửa",
+      "call": "Gọi ngay",
+      "map": "Bản đồ"
+    },
+    "catalog": {
+      "from": "Từ",
+      "outOfStock": "Hết hàng",
+      "filters": "Bộ lọc",
+      "clear": "Xóa bộ lọc",
+      "categories": "Danh mục",
+      "allCategories": "Tất cả sản phẩm",
+      "brands": "Thương hiệu",
+      "searchPlaceholder": "Tìm sản phẩm, thương hiệu, mã SKU...",
+      "sortBy": "Sắp xếp",
+      "sort": {
+        "newest": "Mới nhất",
+        "price_asc": "Giá tăng dần",
+        "price_desc": "Giá giảm dần",
+        "name": "Tên A-Z"
+      },
+      "found": "Tìm thấy {count} sản phẩm",
+      "showing": "Đang hiển thị {shown} trên tổng số {total} sản phẩm",
+      "loadMore": "Xem thêm sản phẩm",
+      "empty": "Không tìm thấy sản phẩm phù hợp",
+      "error": "Không tải được danh sách sản phẩm.",
+      "retry": "Thử lại"
+    },
+    "product": {
+      "sku": "Mã SKU",
+      "buyNow": "Mua ngay",
+      "inStock": "Còn hàng",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Chỉ còn {count}",
+      "description": "Mô tả sản phẩm",
+      "noDescription": "Chưa có mô tả cho sản phẩm này.",
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "unit": "Đơn vị",
+      "related": "Sản phẩm cùng danh mục",
+      "viewDetail": "Xem chi tiết",
+      "discontinued": "Sản phẩm đã ngừng bán"
     }
   }
 }

@@ -30,6 +30,16 @@
     "deleteFileDesc": "Once deleted it cannot be recovered.",
     "cancel": "Cancel",
     "search": "Search",
+    "searchView": {
+      "clear": "Clear filters",
+      "filter": "Filter",
+      "refresh": "Refresh",
+      "reset": "Reset",
+      "apply": "Search",
+      "activeFilters": "{count} active",
+      "noResults": "No matching results",
+      "clearFilters": "Clear filters"
+    },
     "table": {
       "range": "Showing {from}–{to} of {total}",
       "pagination": "Pagination",
@@ -90,7 +100,8 @@
     "productImport": "Product Excel import / export",
     "shopOrderSettings": "Online shop settings",
     "order": "Order",
-    "shopOrders": "Online orders"
+    "shopOrders": "Online orders",
+    "productDetail": "Product detail"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2003,6 +2014,109 @@
         "update": "Update",
         "skip": "Skip"
       }
+    }
+  },
+  "client": {
+    "nav": {
+      "home": "Home",
+      "products": "Products",
+      "about": "About us",
+      "contact": "Contact"
+    },
+    "menu": {
+      "login": "Log in",
+      "account": "Account",
+      "orders": "Orders",
+      "pets": "Pets",
+      "appointments": "Appointments",
+      "admin": "Admin",
+      "logout": "Log out"
+    },
+    "footer": {
+      "tagline": "A caring pet shop and grooming spa, with your pets from mealtime to bath time.",
+      "links": "Quick links",
+      "contact": "Contact",
+      "hotline": "Hotline",
+      "hours": "Opening hours",
+      "rights": "All rights reserved by Bông Cún."
+    },
+    "home": {
+      "spaCta": {
+        "badge": "Spa service",
+        "title": "Book a spa visit online",
+        "text": "Pick your pet, services and a free time slot on the web. The shop will assign the groomer for you.",
+        "tip1": "Book in a minute",
+        "tip1Text": "No calls, no waiting for a reply.",
+        "tip2": "Pick a free slot",
+        "tip2Text": "See the time slots the shop still accepts.",
+        "tip3": "Cancel easily",
+        "tip3Text": "Free cancellation up to 2 hours before.",
+        "button": "Book now"
+      },
+      "featured": "Popular products",
+      "viewAll": "View all products"
+    },
+    "about": {
+      "eyebrow": "About us",
+      "title": "Bông Cún, where pets are treated like family",
+      "intro": "We sell food and accessories and run a grooming spa for dogs and cats. Every product is chosen with care and every pet at the spa gets full attention.",
+      "mission": "Mission",
+      "missionText": "Make pet care easy, correct and fairly priced for every owner.",
+      "v1": "Genuine goods",
+      "v1Text": "Clear sourcing, expiry tracked per batch.",
+      "v2": "Caring spa",
+      "v2Text": "Bath and grooming by species and weight, transparent prices.",
+      "v3": "Honest advice",
+      "v3Text": "Straight answers, no pushing what your pet does not need.",
+      "cta": "Browse products"
+    },
+    "contact": {
+      "title": "Contact Bông Cún",
+      "subtitle": "Visit the store or call us, we are happy to help.",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Opening hours",
+      "call": "Call now",
+      "map": "Map"
+    },
+    "catalog": {
+      "from": "From",
+      "outOfStock": "Out of stock",
+      "filters": "Filters",
+      "clear": "Clear filters",
+      "categories": "Categories",
+      "allCategories": "All products",
+      "brands": "Brands",
+      "searchPlaceholder": "Search products, brands, SKU...",
+      "sortBy": "Sort by",
+      "sort": {
+        "newest": "Newest",
+        "price_asc": "Price: low to high",
+        "price_desc": "Price: high to low",
+        "name": "Name A-Z"
+      },
+      "found": "{count} products found",
+      "showing": "Showing {shown} of {total} products",
+      "loadMore": "Show more products",
+      "empty": "No matching products",
+      "error": "Could not load the products.",
+      "retry": "Try again"
+    },
+    "product": {
+      "sku": "SKU",
+      "buyNow": "Buy now",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "lowStock": "Only {count} left",
+      "description": "Description",
+      "noDescription": "No description yet.",
+      "brand": "Brand",
+      "category": "Category",
+      "unit": "Unit",
+      "related": "Related products",
+      "viewDetail": "View details",
+      "discontinued": "This product is no longer sold"
     }
   }
 }

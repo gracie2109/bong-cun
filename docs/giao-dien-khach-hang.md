@@ -133,14 +133,14 @@ Ghi chú cho `book_my_appointment`: `save_appointment` kiểm tra quyền lễ t
 
 | File | Bước | Nội dung |
 | --- | --- | --- |
-| `20261017010000_shop_catalog.sql` | 2 | `shop_product_groups`, `shop_related_groups` |
-| `20261017020000_my_profile.sql` | 4 | Cột `customers.birth_date`, `my_profile`, `ensure_my_customer`, `save_my_profile` |
-| `20261017030000_my_pets.sql` | 5 | `my_pets`, `save_my_pet`, `hide_my_pet` |
-| `20261017030100_link_customer_account.sql` | 5 | `link_customer_account` |
-| `20261017040000_spa_public_catalog.sql` | 6 | `spa_public_catalog` |
-| `20261017050000_spa_web_slots.sql` | 7 | `spa_web_rules`, `spa_ticket_quote`, `spa_web_slots` |
-| `20261017050100_book_my_appointment.sql` | 7 | `book_my_appointment` |
-| `20261017060000_my_appointments.sql` | 8 | `my_appointments`, `cancel_my_appointment` |
+| `20261018010000_shop_catalog.sql` | 2 | `shop_product_groups`, `shop_related_groups` |
+| `20261018020000_my_profile.sql` | 4 | Cột `customers.birth_date`, `my_profile`, `ensure_my_customer`, `save_my_profile` |
+| `20261018030000_my_pets.sql` | 5 | `my_pets`, `save_my_pet`, `hide_my_pet` |
+| `20261018030100_link_customer_account.sql` | 5 | `link_customer_account` |
+| `20261018040000_spa_public_catalog.sql` | 6 | `spa_public_catalog` |
+| `20261018050000_spa_web_slots.sql` | 7 | `spa_web_rules`, `spa_ticket_quote`, `spa_web_slots` |
+| `20261018050100_book_my_appointment.sql` | 7 | `book_my_appointment` |
+| `20261018060000_my_appointments.sql` | 8 | `my_appointments`, `cancel_my_appointment` |
 
 Mỗi file dưới khoảng 300 dòng. Sau mỗi migration cập nhật `src/types/database.types.ts` (thêm chữ ký RPC mới bằng tay nếu không chạy được `supabase gen types`).
 
@@ -227,13 +227,13 @@ Mỗi bước là một PR nhỏ, squash merge, commit tiếng Anh. Bước có 
 | Bước | Nội dung | SQL |
 | --- | --- | --- |
 | **1. Khung và dọn dẹp** | Header/menu i18n, menu tài khoản ở avatar, footer mới; trang chủ bỏ dữ liệu mẫu và `RegisterForm`, thêm CTA đặt lịch; `/about-us` và `/contact` thật; bỏ `/coupons`; `useHead` cho các trang shop | Không |
-| **2. Danh sách sản phẩm** | `/products` với lọc, tìm, sắp xếp, "Xem thêm", lọc trên URL; trang chủ dùng RPC mới | `20261017010000_shop_catalog.sql` |
+| **2. Danh sách sản phẩm** | `/products` với lọc, tìm, sắp xếp, "Xem thêm", lọc trên URL; trang chủ dùng RPC mới | `20261018010000_shop_catalog.sql` |
 | **3. Chi tiết sản phẩm** | `/products/[id]`, link từ thẻ và quick view, sản phẩm liên quan | Không (dùng RPC bước 2) |
-| **4. Khu tài khoản và hồ sơ** | `/account/*` với nav, chuyển tab địa chỉ/đơn sang route, form hồ sơ, `/profile` chuyển hướng, trang tổng quan | `20261017020000_my_profile.sql` |
-| **5. Thú cưng của tôi** | `/account/pets`, `ensure_my_customer` khi chưa có hồ sơ; admin: nút liên kết tài khoản web | `20261017030000_my_pets.sql`, `20261017030100_link_customer_account.sql` |
-| **6. Bảng giá spa** | `/spa` bảng giá theo loài/khung cân nặng | `20261017040000_spa_public_catalog.sql` |
-| **7. Đặt lịch spa online** | `/spa/book` wizard; admin: nhãn Web | `20261017050000_spa_web_slots.sql`, `20261017050100_book_my_appointment.sql` |
-| **8. Lịch hẹn của tôi** | `/account/appointments`, hủy; ô "lịch sắp tới" trên trang tổng quan | `20261017060000_my_appointments.sql` |
+| **4. Khu tài khoản và hồ sơ** | `/account/*` với nav, chuyển tab địa chỉ/đơn sang route, form hồ sơ, `/profile` chuyển hướng, trang tổng quan | `20261018020000_my_profile.sql` |
+| **5. Thú cưng của tôi** | `/account/pets`, `ensure_my_customer` khi chưa có hồ sơ; admin: nút liên kết tài khoản web | `20261018030000_my_pets.sql`, `20261018030100_link_customer_account.sql` |
+| **6. Bảng giá spa** | `/spa` bảng giá theo loài/khung cân nặng | `20261018040000_spa_public_catalog.sql` |
+| **7. Đặt lịch spa online** | `/spa/book` wizard; admin: nhãn Web | `20261018050000_spa_web_slots.sql`, `20261018050100_book_my_appointment.sql` |
+| **8. Lịch hẹn của tôi** | `/account/appointments`, hủy; ô "lịch sắp tới" trên trang tổng quan | `20261018060000_my_appointments.sql` |
 
 Bước 2-3 độc lập với 4-8, có thể làm trước. Bước 7 cần 5 và 6. Mỗi bước: `npx vue-tsc --noEmit -p .nuxt/tsconfig.app.json` (so với lỗi có sẵn) và `npm run build`; SQL thử trên Postgres local như các module trước nếu được.
 
@@ -278,3 +278,15 @@ Bước 2-3 độc lập với 4-8, có thể làm trước. Bước 7 cần 5 v
 ## 12. Kết quả
 
 Cập nhật sau mỗi bước (PR, migration đã chạy, việc còn lại).
+
+### Bước 1 (PR #87, đã merge)
+
+Header/menu dịch i18n, menu tài khoản ở avatar, footer nằm trong layout khách, trang chủ bỏ dữ liệu mẫu và form tư vấn cũ (có khối CTA "Đặt lịch spa"), `/about-us` và `/contact` có nội dung thật, bỏ `/coupons`. Không có SQL. Thông tin liên hệ lấy từ `src/config/storeInfo.ts` (chưa lấy từ `branches` vì cần RPC công khai, ngoài phạm vi bước 1). Chỉ typecheck/build.
+
+### Bước 2 (danh sách sản phẩm)
+
+Migration `20261018010000_shop_catalog.sql` (`shop_product_groups`, `shop_related_groups`; đổi từ 20261017010000 vì trùng file `data_io_permissions` vừa merge, các bước sau cũng dùng đầu số 20261018). Giá là **giá chung** như giỏ hàng đang tính (`product_unit_price(…, null)`), không phải giá riêng của cơ sở online. Hết hàng theo `shop_available_qty` như checkout. Trang `/products` có lọc danh mục (cha gồm con), thương hiệu, tìm (debounce 500ms), sắp xếp, "Xem thêm", bộ lọc trên URL, Sheet trên mobile; trang chủ dùng cùng RPC. Chưa làm khoảng giá và đánh giá sao trong thiết kế Stitch vì chưa có dữ liệu. SQL thử trên Postgres local (lọc, tìm không dấu, sắp xếp, phân trang, hết hàng, related). UI chỉ typecheck/build và SSR trả 200.
+
+### Bước 3 (chi tiết sản phẩm)
+
+Trang `/products/[id]` (breadcrumb, gallery, chọn biến thể và đơn vị, số lượng, thêm giỏ và "Mua ngay", mô tả, bảng thông tin, 8 sản phẩm cùng danh mục từ `shop_related_groups`). Nhóm không còn biến thể bán được hoặc đã ngừng hiện "Sản phẩm đã ngừng bán" thay vì 404. Tồn từng biến thể lấy qua `shop_cart_lines` (đã có, không cần SQL mới) để làm mờ biến thể hết hàng. Thẻ ở danh sách và quick view có link tới trang chi tiết. Không có SQL. Chỉ typecheck/build và SSR trả 200.
