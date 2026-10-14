@@ -101,10 +101,10 @@ File `src/components/common/search-view/SearchView.vue`.
 
 | Prop | Kiểu | Mặc định | Ý nghĩa |
 | --- | --- | --- | --- |
-| `placeholder` | `string` | `""` | Chữ gợi ý ô tìm kiếm |
+| `placeholder` | `string` | `""` | Chữ gợi ý của `SearchInput` mặc định (bỏ qua khi truyền `#search`) |
 | `activeCount` | `number` | `0` | Số bộ lọc đang khác mặc định; hiện badge trên nút Lọc, bật nút Xoá lọc |
 | `refreshing` | `boolean` | `false` | Icon Làm mới quay, nút bị khoá |
-| `showSearch` | `boolean` | `true` | Màn không có tìm kiếm (ca thu ngân) vẫn dùng được hàng nút |
+| `showSearch` | `boolean` | `true` | Ẩn ô tìm kiếm; màn không có tìm kiếm (ca thu ngân) vẫn dùng được hàng nút |
 | `showClear` | `boolean` | `true` | Ẩn/hiện nút Xoá lọc |
 | `showFilter` | `boolean` | có slot `#filters` thì `true` | Ẩn/hiện nút Lọc |
 | `showRefresh` | `boolean` | `true` | Ẩn/hiện nút Làm mới |
@@ -126,21 +126,66 @@ File `src/components/common/search-view/SearchView.vue`.
 
 | Slot | Nội dung |
 | --- | --- |
+| `#search` | Ô tìm kiếm chính. Mặc định là `SearchInput` (bind `v-model:search`); màn thay bằng bất kỳ ô nào: `SearchSelect`, `SearchFieldInput`, ô chọn ngày, `InfiniteSelect`... (xem 3.2.1) |
 | `#filters` | Các ô lọc trong popover, xếp lưới 3 cột (2 cột ở iPad dọc, 1 cột điện thoại) như ảnh. Popover tự có nút X góc trên, chân "Đặt lại" + "Tìm kiếm" |
 | `#quick` | Bộ lọc nhanh cần thấy ngay, áp dụng tức thì, nằm giữa ô tìm kiếm và hàng nút (tab trạng thái đơn online, công tắc "Hiện đã lưu trữ"). Dùng ít, chỉ khi bộ lọc là cách xem chính của màn |
 | `#actions` | Nút riêng của màn, nằm giữa nút Lọc và nút Làm mới |
+| `#buttons` | Thay cả hàng nút (hiếm): màn tự ráp lại từ các nút nhỏ ở 3.2.1 theo thứ tự riêng |
+
+#### 3.2.1 Tách thành component nhỏ
+
+`SearchView` chỉ là **vỏ bố cục** (ô tìm kiếm bên trái, hàng nút bên phải, xuống dòng trên màn hẹp). Mỗi phần bên trong là một component riêng, dùng được độc lập, kể cả ngoài `SearchView` (ví dụ đặt `RefreshButton` trên một màn lịch không có thanh tìm kiếm):
+
+| Component | Việc | v-model / props chính |
+| --- | --- | --- |
+| `SearchInput.vue` | Ô input có icon kính lúp, nút x xoá chữ, Enter phát `submit` | `v-model` (chuỗi), `placeholder` |
+| `SearchSelect.vue` | Ô select làm ô tìm kiếm chính (ví dụ chọn khách hàng, chọn sản phẩm bằng `InfiniteSelect`, hoặc danh sách cố định) | `v-model` (giá trị), `options` hoặc `loader` (dùng `useInfiniteOptions`), `placeholder`, `clearable` |
+| `SearchFieldInput.vue` | Select "tìm theo" + input dính liền (Tên / SĐT / Mã) cho màn cần tìm theo từng trường | `v-model:field`, `v-model:text`, `fields: { value, label }[]` |
+| `FilterButton.vue` | Nút Lọc + badge số bộ lọc + popover (ráp `SearchViewFilterPopover`) | `activeCount`, slot mặc định là nội dung lọc; phát `open`, `apply`, `reset` |
+| `SearchViewFilterPopover.vue` | Khung popover: lưới, nút X, "Đặt lại" / "Tìm kiếm", Enter, Esc | `width`, slot mặc định |
+| `ClearFilterButton.vue` | Nút Xoá lọc (icon tẩy), tự khoá khi không có gì để xoá | `disabled`; phát `click` |
+| `RefreshButton.vue` | Nút Làm mới, icon quay khi đang tải | `refreshing`; phát `click` |
+| `ToolbarIconButton.vue` | Nút icon vuông + tooltip + badge, là gốc của 3 nút trên và của nút màn truyền vào | `icon`, `label`, `badge`, `disabled`, `loading` |
+
+`SearchView` ráp mặc định: `#search` = `SearchInput`, hàng nút = `ClearFilterButton` → `FilterButton` → `#actions` → `RefreshButton`. Các prop `show*` chỉ là lối tắt để ẩn nút mặc định; muốn khác hẳn thì truyền slot.
+
+Ví dụ ô tìm kiếm là select (màn lịch sử mua của một khách):
+
+```vue
+<SearchView :active-count="activeCount" @clear="clearAll" @refresh="refetch()">
+  <template #search>
+    <SearchSelect v-model="customerId" :loader="searchCustomers" :placeholder="$t('...chooseCustomer')" clearable />
+  </template>
+</SearchView>
+```
+
+Ví dụ tìm theo trường:
+
+```vue
+<template #search>
+  <SearchFieldInput v-model:field="searchField" v-model:text="search" :fields="SEARCH_FIELDS" />
+</template>
+```
+
+`useListFilters` không giả định ô tìm kiếm là chuỗi: ô tìm kiếm kiểu select thì để giá trị đó trong `quick` (đổi là áp dụng ngay, Xoá lọc trả về mặc định), không cần `search`.
 
 **Cách áp dụng bộ lọc trong popover: bấm "Tìm kiếm" mới áp dụng** (như ảnh), không áp dụng từng ô. Lý do: popover có nhiều ô (khoảng ngày cần chọn 2 đầu), áp dụng từng ô sẽ gọi API mỗi lần đổi và bảng nhảy dưới popover. Ô tìm kiếm và `#quick` vẫn áp dụng ngay.
 
-**Tách file** (theo quy tắc file nhỏ):
+**Tách file** (theo quy tắc file nhỏ), tất cả trong `src/components/common/search-view/`:
 
-| File | Dòng | Nội dung |
-| --- | --- | --- |
-| `search-view/SearchView.vue` | ~90 | Vỏ: ô tìm kiếm, slot `#quick`, hàng nút |
-| `search-view/SearchViewFilterPopover.vue` | ~70 | Popover, lưới, nút X, "Đặt lại" / "Tìm kiếm", Enter |
-| `search-view/ToolbarIconButton.vue` | ~35 | Nút icon vuông + tooltip + badge, dùng cho cả nút mặc định và nút màn truyền vào |
-| `search-view/types.ts` | ~20 | Kiểu props/sự kiện |
-| `search-view/index.ts` | ~5 | Export |
+| File | Dòng |
+| --- | --- |
+| `SearchView.vue` (vỏ bố cục + ráp mặc định) | ~70 |
+| `SearchInput.vue` | ~40 |
+| `SearchSelect.vue` | ~60 |
+| `SearchFieldInput.vue` | ~50 |
+| `FilterButton.vue` | ~40 |
+| `SearchViewFilterPopover.vue` | ~60 |
+| `ClearFilterButton.vue`, `RefreshButton.vue` | ~20 mỗi file |
+| `ToolbarIconButton.vue` | ~35 |
+| `types.ts`, `index.ts` | ~30 |
+
+Bước 1 chỉ cần `SearchView`, `SearchInput`, `FilterButton`, popover, 3 nút. `SearchSelect` và `SearchFieldInput` làm khi có màn đầu tiên cần (không viết trước cho chưa ai dùng).
 
 i18n: thêm `common.searchView.clear`, `.filter`, `.refresh`, `.reset`, `.apply`, `.activeFilters` ở `vi` và `en`.
 
@@ -239,7 +284,7 @@ Mỗi bước một PR nhỏ, squash merge, commit tiếng Anh. Không cần mig
 
 | Bước | Nội dung | Phụ thuộc |
 | --- | --- | --- |
-| 1 | `search-view/*`, `useListFilters`, i18n, `TableStateRows` thêm `filtered`; xoá `SearchView` cũ, `InputSearch`, `SearchRangeTime`, `DataTable/`, `HEADER_ADVANCE_FUNCTION` (kiểm `context`/text search không còn ai dùng); chuyển **thương hiệu** và **danh mục** làm mẫu | Không đụng thread nhập/xuất |
+| 1 | `SearchView` + các nút nhỏ (3.2.1), `useListFilters`, i18n, `TableStateRows` thêm `filtered`; xoá `SearchView` cũ, `InputSearch`, `SearchRangeTime`, `DataTable/`, `HEADER_ADVANCE_FUNCTION` (kiểm `context`/text search không còn ai dùng); chuyển **thương hiệu** và **danh mục** làm mẫu | Không đụng thread nhập/xuất |
 | 2 | `ExportMenu` thêm `compact`; chuyển **hoá đơn, ca thu ngân, tồn kho, phiếu kho, nhà cung cấp**, dời `ExportMenu` vào `#actions` | Sau khi PR #83 (xuất POS + kho) đã merge |
 | 3 | Chuyển **sản phẩm** (giữ category/brand trên URL bằng `urlKeys`) | Sau bước 3 của thread nhập/xuất (nhập sản phẩm) |
 | 4 | Chuyển **thú cưng, khách hàng, lịch hẹn spa, đơn online, dịch vụ, combo dịch vụ** | Sau bước 4 của thread nhập/xuất |
