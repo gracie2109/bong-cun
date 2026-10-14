@@ -11,7 +11,7 @@ import { sumSeries } from "./seriesTotals";
 
 const TABLE_PAGE_SIZE = 20;
 
-/** Data of the overview tab: KPI figures, the revenue series, the paged table and the CSV export. */
+/** Data of the overview tab: KPI figures, the revenue series, the paged table and the export. */
 export const useOverview = () => {
   const { t } = useI18n();
   const { filter, ready, branchValue } = useReportFilters();
@@ -34,6 +34,7 @@ export const useOverview = () => {
 
   const exportDay = useReportExport<SeriesPoint>({
     tab: "tong-quan",
+    titleKey: "reports.chart.title",
     filter,
     fetchRows: async (current) => {
       const rows = await getRevenueSeries(supabaseClient(), current, "day");
@@ -55,7 +56,6 @@ export const useOverview = () => {
     page,
     pageCount,
     pageRows,
-    exporting: exportDay.exporting,
-    exportCsv: exportDay.run,
+    exporter: exportDay,
   };
 };

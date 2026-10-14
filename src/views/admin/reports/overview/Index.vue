@@ -11,7 +11,7 @@
       <ReportsNav />
       <ReportFilterBar>
         <template #actions>
-          <ExportButton :loading="exporting" :disabled="!filter" @export="exportCsv" />
+          <ExportMenu :exporter="exporter" />
         </template>
       </ReportFilterBar>
 
@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { ChartColumn } from "lucide-vue-next";
 import { ContentWrap, Header } from "@/views/admin/components";
-import ExportButton from "../shared/ExportButton.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import ReportsNav from "../ReportsNav.vue";
 import MixCard from "./MixCard.vue";
@@ -66,7 +66,6 @@ const {
   page,
   pageCount,
   pageRows,
-  exporting,
-  exportCsv,
+  exporter,
 } = useOverview();
 </script>

@@ -1944,5 +1944,19 @@
       "update": "Cập nhật",
       "skip": "Bỏ qua"
     }
+  },
+  "dataIo": {
+    "download": "Tải xuống",
+    "progress": "Đang lấy {done} / {total} dòng",
+    "format": {
+      "pdf": "PDF (in)",
+      "xlsx": "Excel (.xlsx)",
+      "csv": "CSV"
+    },
+    "exportedAt": "Xuất lúc {time} bởi {who}",
+    "rowCount": "Tổng {count} dòng",
+    "empty": "Không có dữ liệu để xuất.",
+    "truncated": "Chỉ xuất {limit} dòng đầu, hãy lọc hẹp hơn.",
+    "failed": "Xuất dữ liệu thất bại."
   }
 }
