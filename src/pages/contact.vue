@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/client/contact/ContactView.vue";
+import View from "@/views/client/contact/Index.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
 definePageMeta({
