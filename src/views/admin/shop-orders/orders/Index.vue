@@ -10,16 +10,19 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <ShopOrdersNav />
-        <ExportMenu :exporter="exporter" />
       </div>
 
-      <div class="space-y-3 rounded-xl border bg-white p-3">
-        <div class="relative">
-          <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('shop.admin.searchPlaceholder')" />
-        </div>
-        <OrderTabs v-model:tab="tab" :counts="counts" />
-      </div>
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('shop.admin.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="query.isFetching.value"
+        @clear="clearAll"
+        @refresh="query.refetch()"
+      >
+        <template #quick><OrderTabs v-model:tab="tab" :counts="counts" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard
         class="min-h-0 flex-1"
@@ -44,7 +47,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="8" :pending="query.isPending.value" :empty="rows.length === 0" :empty-text="$t('shop.admin.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="8" :pending="query.isPending.value" :empty="rows.length === 0" :empty-text="$t('shop.admin.empty')" />
             <OrderRow v-for="row in rows" :key="row.id" :order="row" @open="openId = row.id" />
           </tbody>
         </table>
@@ -56,11 +59,11 @@
 </template>
 
 <script lang="ts" setup>
-import { Search, ShoppingBag } from "lucide-vue-next";
+import { ShoppingBag } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
-import { Input } from "@/components/ui/input";
 import { useOrdersPage } from "@/composables/shop/useOrdersPage";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ShopOrdersNav from "../ShopOrdersNav.vue";
@@ -69,6 +72,6 @@ import OrderSheet from "./components/OrderSheet.vue";
 import OrderTabs from "./components/OrderTabs.vue";
 import { useOrdersExport } from "./useOrdersExport";
 
-const { tab, search, page, query, rows, total, pageCount, counts, openId, filter } = useOrdersPage();
+const { tab, search, page, query, rows, total, pageCount, counts, openId, filter, activeCount, isFiltered, clearAll } = useOrdersPage();
 const exporter = useOrdersExport(filter);
 </script>

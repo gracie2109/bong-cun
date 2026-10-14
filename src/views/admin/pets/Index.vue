@@ -17,8 +17,6 @@
           <p class="text-sm text-muted-foreground">{{ $t("petCare.pets.subtitle") }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
-          <ImportButton :allowed="canImport" @click="importOpen = true" />
           <Button v-if="canCreate" @click="registerOpen = true">
             <Plus class="mr-2 size-4" />
             {{ $t("petCare.pets.register") }}
@@ -28,14 +26,31 @@
 
       <PetsNav />
 
-      <PetsFilterBar
+      <SearchView
         v-model:search="search"
-        v-model:species-filter="speciesFilter"
-        v-model:bracket-filter="bracketFilter"
-        v-model:status-filter="statusFilter"
-        :species="species"
-        :brackets="brackets"
-      />
+        :placeholder="$t('petCare.pets.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="petsQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="petsQuery.refetch()"
+      >
+        <template #filters>
+          <PetsFilterFields
+            v-model:species-id="draft.speciesId"
+            v-model:bracket-id="draft.bracketId"
+            v-model:status="draft.status"
+            :species="species"
+            :brackets="brackets"
+          />
+        </template>
+        <template #actions>
+          <ExportMenu :exporter="exporter" compact />
+          <ImportButton :allowed="canImport" compact @click="importOpen = true" />
+        </template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="pageData.pageIndex" v-model:page-size="pageData.pageSize" :page-count="pageCount" :loading="petsQuery.isFetching.value" :count="pets.length" :total="total">
         <table class="w-full text-sm">
@@ -49,7 +64,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="5" :pending="petsQuery.isPending.value" :empty="pets.length === 0" :empty-text="$t('petCare.pets.empty')" skeleton-class="h-10 w-full" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="petsQuery.isPending.value" :empty="pets.length === 0" :empty-text="$t('petCare.pets.empty')" skeleton-class="h-10 w-full" />
             <PetRow
               v-for="pet in pets"
               :key="pet.id"
@@ -87,6 +102,7 @@ import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ImportButton from "@/components/common/data-io/ImportButton.vue";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
@@ -97,7 +113,7 @@ import type { PetListItem, PetStatus } from "@/repositories/pets";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsImportDialog from "./import/PetsImportDialog.vue";
 import PetRow from "./components/PetRow.vue";
-import PetsFilterBar from "./components/PetsFilterBar.vue";
+import PetsFilterFields from "./components/PetsFilterFields.vue";
 import RegisterPetSheet from "./components/RegisterPetSheet.vue";
 import PetsNav from "./PetsNav.vue";
 import { usePetsExport } from "./usePetsExport";
@@ -106,7 +122,7 @@ import { usePetsFilters } from "./usePetsFilters";
 const router = useRouter();
 const { canCreate, canUpdate } = usePermission("pets");
 
-const { search, speciesFilter, bracketFilter, statusFilter, pageData, filter, species, brackets } =
+const { search, pageData, filter, species, brackets, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } =
   usePetsFilters();
 
 const exporter = usePetsExport(filter);

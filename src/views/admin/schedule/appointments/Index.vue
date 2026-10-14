@@ -11,7 +11,6 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <SpaNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
           <Button v-if="canCreate" :disabled="!branchId" @click="openNew">
             <Plus class="mr-2 size-4" />
@@ -20,27 +19,20 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
-        <div class="relative min-w-60 flex-1">
-          <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('spa.appointments.searchPlaceholder')" />
-        </div>
-        <label class="flex items-center gap-2 text-xs text-muted-foreground">
-          {{ $t("spa.appointments.from") }}
-          <Input v-model="from" type="date" class="h-9 w-40 bg-white" />
-        </label>
-        <label class="flex items-center gap-2 text-xs text-muted-foreground">
-          {{ $t("spa.appointments.to") }}
-          <Input v-model="to" type="date" class="h-9 w-40 bg-white" />
-        </label>
-        <Select v-model="status">
-          <SelectTrigger class="w-44" :aria-label="$t('spa.appointments.status')"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem :value="FILTER_ALL">{{ $t("petCare.common.all") }}</SelectItem>
-            <SelectItem v-for="item in APPOINTMENT_STATUSES" :key="item" :value="item">{{ $t(`spa.status.${item}`) }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('spa.appointments.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters><AppointmentFilterFields v-model:from="draft.from" v-model:to="draft.to" v-model:status="draft.status" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total" :loading="listQuery.isFetching.value">
         <table class="w-full text-sm">
@@ -54,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('spa.appointments.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('spa.appointments.empty')" />
             <AppointmentRow v-for="row in rows" :key="row.id" :appointment="row" :can-edit="canEditRow(row)" @edit="openEdit(row)" @open="openDetail(row)" />
           </tbody>
         </table>
@@ -68,24 +60,23 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { ListChecks, Plus, Search } from "lucide-vue-next";
+import { ListChecks, Plus } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
-import { FILTER_ALL } from "@/lib/listing";
 import { useAppointmentsList } from "@/queries/spa";
-import { APPOINTMENT_STATUSES, isEditable, type Appointment } from "@/repositories/spa";
+import { isEditable, type Appointment } from "@/repositories/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import SpaNav from "../SpaNav.vue";
 import AppointmentDetailDialog from "./AppointmentDetailDialog.vue";
 import AppointmentDialog from "./AppointmentDialog.vue";
+import AppointmentFilterFields from "./AppointmentFilterFields.vue";
 import AppointmentRow from "./AppointmentRow.vue";
 import { useAppointmentFilters } from "./useAppointmentFilters";
 import { useAppointmentsExport } from "./useAppointmentsExport";
@@ -95,7 +86,7 @@ const canCreate = computed(() => auth.can("schedule", "CREATE"));
 const canUpdate = computed(() => auth.can("schedule", "UPDATE"));
 const { branches, branch, branchId, selectBranch } = useCurrentBranch();
 
-const { search, from, to, status, page, filter } = useAppointmentFilters(branchId);
+const { search, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useAppointmentFilters(branchId);
 const exporter = useAppointmentsExport(branchId, filter, () => branch.value?.name);
 const listQuery = useAppointmentsList(branchId, page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);

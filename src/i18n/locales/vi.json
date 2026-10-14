@@ -514,6 +514,7 @@
       "subtitle": "Gói nhiều dịch vụ với giá ưu đãi",
       "add": "Thêm combo",
       "edit": "Sửa combo",
+      "searchPlaceholder": "Tìm theo tên combo...",
       "showArchived": "Hiện combo đã ngừng",
       "empty": "Chưa có combo nào",
       "status": {

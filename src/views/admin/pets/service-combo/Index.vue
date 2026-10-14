@@ -24,12 +24,24 @@
 
       <PetsNav />
 
-      <div class="flex shrink-0 items-center justify-between gap-3 rounded-xl border bg-white p-3">
-        <label class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Switch v-model="showArchived" />
-          {{ $t("petCare.combos.showArchived") }}
-        </label>
-      </div>
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('petCare.combos.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="combosQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="combosQuery.refetch()"
+      >
+        <template #filters>
+          <label class="flex items-center gap-2 self-end pb-2 text-sm text-muted-foreground">
+            <Switch v-model="draft.showArchived" />
+            {{ $t("petCare.combos.showArchived") }}
+          </label>
+        </template>
+      </SearchView>
 
       <PagedTableCard
         v-model:page="pageData.pageIndex"
@@ -52,7 +64,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="6" :pending="combosQuery.isPending.value" :empty="combos.length === 0" :empty-text="$t('petCare.combos.empty')" :skeleton-rows="4" skeleton-class="h-10 w-full" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="6" :pending="combosQuery.isPending.value" :empty="combos.length === 0" :empty-text="$t('petCare.combos.empty')" :skeleton-rows="4" skeleton-class="h-10 w-full" />
             <ComboRow
               v-for="combo in combos"
               :key="combo.id"
@@ -82,16 +94,17 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Layers2, Plus } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
-import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { usePetCombosList, useSetPetComboActive } from "@/queries/petCombos";
 import type { PetCombo } from "@/repositories/petCombos";
 import { ContentWrap, Header } from "@/views/admin/components";
@@ -101,20 +114,17 @@ import ComboRow from "./ComboRow.vue";
 
 const PAGE_SIZE = 10;
 
-const pageData = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
-const showArchived = ref(false);
+const { search, debouncedSearch, page: pageData, applied, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } =
+  useListFilters({ pageSize: PAGE_SIZE, defaults: { showArchived: false } });
+const showArchived = computed(() => applied.value.showArchived);
 const formOpen = ref(false);
 const editing = ref<PetCombo | null>(null);
 const toArchive = ref<PetCombo | null>(null);
 
-const combosQuery = usePetCombosList(pageData, showArchived);
+const combosQuery = usePetCombosList(pageData, showArchived, debouncedSearch);
 const { canCreate, canUpdate } = usePermission("petServices");
 const { rows: combos, total, pageCount } = usePagedList(combosQuery, pageData);
 const setActiveMutation = useSetPetComboActive();
-
-watch(showArchived, () => {
-  pageData.pageIndex = INITIAL_PAGE_INDEX;
-});
 
 const openCreate = () => {
   editing.value = null;

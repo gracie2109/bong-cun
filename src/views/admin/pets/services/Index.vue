@@ -17,7 +17,6 @@
           <p class="text-sm text-muted-foreground">{{ $t("petCare.services.subtitle") }}</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <Button v-if="canCreate" @click="openCreate">
             <Plus class="mr-2 size-4" />
             {{ $t("petCare.services.add") }}
@@ -27,13 +26,27 @@
 
       <PetsNav />
 
-      <ServicesFilterBar
+      <SearchView
         v-model:search="search"
-        v-model:species-filter="speciesFilter"
-        v-model:type-filter="typeFilter"
-        v-model:show-archived="showArchived"
-        :species="species"
-      />
+        :placeholder="$t('petCare.services.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="servicesQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="servicesQuery.refetch()"
+      >
+        <template #filters>
+          <ServicesFilterFields
+            v-model:species-id="draft.speciesId"
+            v-model:type="draft.type"
+            v-model:show-archived="draft.showArchived"
+            :species="species"
+          />
+        </template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="pageData.pageIndex" v-model:page-size="pageData.pageSize" :page-count="pageCount" :loading="servicesQuery.isFetching.value" :count="services.length" :total="total">
         <table class="w-full text-sm">
@@ -47,7 +60,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="5" :pending="servicesQuery.isPending.value" :empty="services.length === 0" :empty-text="$t('petCare.services.empty')" skeleton-class="h-10 w-full" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="servicesQuery.isPending.value" :empty="services.length === 0" :empty-text="$t('petCare.services.empty')" skeleton-class="h-10 w-full" />
             <ServiceRow
               v-for="service in services"
               :key="service.id"
@@ -82,6 +95,7 @@ import { Plus, Scissors } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
@@ -92,11 +106,11 @@ import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import ServiceFormSheet from "./ServiceFormSheet.vue";
 import ServiceRow from "./ServiceRow.vue";
-import ServicesFilterBar from "./ServicesFilterBar.vue";
+import ServicesFilterFields from "./ServicesFilterFields.vue";
 import { useServicesExport } from "./useServicesExport";
 import { useServicesFilters } from "./useServicesFilters";
 
-const { search, speciesFilter, typeFilter, showArchived, pageData, filter, species } = useServicesFilters();
+const { search, pageData, filter, species, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useServicesFilters();
 
 const exporter = useServicesExport(filter);
 const formOpen = ref(false);

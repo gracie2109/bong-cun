@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { usePagedList } from "@/composables/usePagedList";
-import { usePagedSearch } from "@/composables/usePagedSearch";
+import { useListFilters } from "@/composables/useListFilters";
 import { SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useOrdersByUsers } from "@/queries/orders";
 import { useUsersCount, useUsersList } from "@/queries/users";
@@ -13,17 +13,19 @@ const PAGE_SIZE = 8;
 /** The customers list: search, filters and paging, with their order stats and the one selected. */
 export const useCustomersList = () => {
   const onlyNew = ref(false);
-  const sort = ref<UserSort>(USER_SORT.NEWEST);
-  const { search, debouncedSearch, page } = usePagedSearch({
+  // "New customers" is a chip next to the search box, so it applies at once; the sort is in the popover.
+  const list = useListFilters({
     pageSize: PAGE_SIZE,
     debounceMs: SEARCH_DEBOUNCE_FAST_MS,
-    resetOn: [onlyNew, sort],
+    defaults: { sort: USER_SORT.NEWEST as UserSort },
+    quick: { onlyNew: { value: onlyNew, default: false } },
   });
+  const { applied, debouncedSearch, page } = list;
 
   const filter = computed<UserListFilter>(() => ({
     role: CUSTOMER_ROLE,
     search: debouncedSearch.value,
-    sort: sort.value,
+    sort: applied.value.sort,
     createdSince: onlyNew.value ? newCustomerSince() : undefined,
   }));
 
@@ -47,10 +49,9 @@ export const useCustomersList = () => {
   const selectedOrders = computed(() => orders.value.filter((o) => o.userId === selected.value?.userId));
 
   return {
-    search,
+    ...list,
     onlyNew,
-    sort,
-    page,
+    usersQuery,
     customers,
     total,
     pageCount,
