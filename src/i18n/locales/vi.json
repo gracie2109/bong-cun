@@ -1217,7 +1217,11 @@
       "email": "Email",
       "taxCode": "Mã số thuế",
       "address": "Địa chỉ",
-      "empty": "Chưa có nhà cung cấp nào."
+      "empty": "Chưa có nhà cung cấp nào.",
+      "import": {
+        "title": "Nhập nhà cung cấp từ file",
+        "hint": "Nhà cung cấp ghép theo mã số thuế, không có thì theo tên. Ô trống giữ nguyên dữ liệu cũ; nhập không bao giờ xoá nhà cung cấp."
+      }
     },
     "errors": {
       "lot_short": "Lô của {name} không còn đủ hàng (đã bán hoặc đã xuất).",

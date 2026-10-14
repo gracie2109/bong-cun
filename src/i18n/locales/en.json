@@ -1217,7 +1217,11 @@
       "email": "Email",
       "taxCode": "Tax code",
       "address": "Address",
-      "empty": "No suppliers yet."
+      "empty": "No suppliers yet.",
+      "import": {
+        "title": "Import suppliers from a file",
+        "hint": "Suppliers match by tax code, or by name when there is none. Empty cells keep the old data; an import never deletes a supplier."
+      }
     },
     "errors": {
       "lot_short": "A lot of {name} no longer holds enough (sold or written off).",
