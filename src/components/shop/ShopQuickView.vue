@@ -1,25 +1,5 @@
 <template>
-  <div
-    class="group relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-md p-3 hover:shadow-xl"
-    :class="{ border: showBorder }"
-    @click="open = true"
-  >
-    <div class="relative h-[60%] w-full">
-      <img v-if="cover" :src="cover" alt="" class="size-full object-scale-down" />
-      <div v-else class="grid size-full place-content-center bg-muted/40">
-        <ImageIcon class="size-10 text-muted-foreground" />
-      </div>
-    </div>
-    <div class="mt-2 flex flex-1 flex-col justify-between gap-2">
-      <p class="line-clamp-2 text-xl font-semibold">{{ group.name }}</p>
-      <div>
-        <p v-if="optionHint" class="mb-1 truncate text-sm text-muted-foreground">{{ optionHint }}</p>
-        <p class="font-bold text-primary">{{ priceLabel }}</p>
-      </div>
-    </div>
-  </div>
-
-  <Dialog :open="open" @update:open="(value) => (open = value)">
+  <Dialog :open="open" @update:open="(value) => emit('update:open', value)">
     <DialogContent class="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
       <div class="grid gap-6 md:grid-cols-2">
         <ShopGroupGallery :images="galleryImages" :preferred="image" />
@@ -79,8 +59,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, toRef, watch } from "vue";
-import { Image as ImageIcon, Minus, Plus } from "lucide-vue-next";
+import { computed, toRef, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { Minus, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
@@ -88,42 +69,34 @@ import VariantOptions from "@/components/VariantOptions.vue";
 import { useAddToCart } from "@/composables/shop/useAddToCart";
 import { useVariantChoice } from "@/composables/useVariantChoice";
 import { formatPrice } from "@/lib/utils";
-import type { ProductGroup } from "@/repositories/products";
+import type { ShopGroup } from "@/types/catalog";
+import { groupCover, groupPriceLabel } from "@/utils/shop/catalog";
 
-const props = defineProps<{ group: ProductGroup; showBorder?: boolean }>();
+const props = defineProps<{ group: ShopGroup; open: boolean }>();
+const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
-const open = ref(false);
+const { t } = useI18n();
 const choice = useVariantChoice(toRef(props, "group"));
 const addToCart = useAddToCart(choice.variant);
 
+const cover = computed(() => groupCover(props.group));
 /** The gallery's pictures, or the cover alone for a group saved before galleries. */
 const galleryImages = computed(() => {
   const urls = props.group.images.map((item) => item.url);
   return urls.length > 0 ? urls : cover.value ? [cover.value] : [];
 });
-const cover = computed(() => props.group.imageUrl || props.group.variants.find((item) => item.imageUrl)?.imageUrl);
 // The picked variant's own photo when it has one.
 const image = computed(() => choice.variant.value?.imageUrl || cover.value);
+const priceLabel = computed(() => groupPriceLabel(props.group, t("client.catalog.from")));
 
-const priceLabel = computed(() => {
-  const { minPrice, maxPrice } = props.group;
-  if (minPrice === null) return "";
-  return maxPrice !== null && maxPrice > minPrice
-    ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
-    : formatPrice(minPrice);
-});
-
-const optionHint = computed(() =>
-  props.group.attributes
-    .filter((attribute) => attribute.values.length > 1)
-    .map((attribute) => `${attribute.values.length} ${attribute.name.toLowerCase()}`).join(" · ")
+watch(
+  () => props.open,
+  (value) => {
+    if (value) addToCart.reset();
+  }
 );
 
-watch(open, (value) => {
-  if (value) addToCart.reset();
-});
-
 const add = () => {
-  if (addToCart.add()) open.value = false;
+  if (addToCart.add()) emit("update:open", false);
 };
 </script>
