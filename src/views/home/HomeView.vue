@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-import { computed } from "vue";
 import Banner from "./components/Sliders.vue";
 import Services from "./components/Services.vue";
 import Categories from "./components/Categories.vue";
 import SpaCta from "./components/SpaCta.vue";
-import ShopGroupCard from "@/components/ShopGroupCard.vue";
-import { useProductGroups } from "@/queries/products";
+import CatalogCard from "@/views/client/catalog/components/CatalogCard.vue";
+import { useShopCatalog } from "@/queries/shopCatalog";
 
 // One card per product group; variants are picked in the quick view.
-const groupsQuery = useProductGroups({ pageIndex: 1, pageSize: 12 });
-const groups = computed(() =>
-  (groupsQuery.data.value?.rows ?? []).filter((group) => group.variants.length > 0)
-);
+const { groups } = useShopCatalog({ sort: "newest" }, 12);
 </script>
 <template>
   <div>
@@ -35,8 +31,8 @@ const groups = computed(() =>
           class="product_list custom-scrollbar2 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
         >
           <div v-for="group in groups" :key="group.id">
-            <div class="h-[400px] w-[300px] snap-start rounded-md bg-white">
-              <ShopGroupCard :group="group" />
+            <div class="w-[260px] snap-start">
+              <CatalogCard :group="group" />
             </div>
           </div>
         </div>

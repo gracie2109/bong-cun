@@ -2032,6 +2032,29 @@
       "hours": "Opening hours",
       "call": "Call now",
       "map": "Map"
+    },
+    "catalog": {
+      "from": "From",
+      "outOfStock": "Out of stock",
+      "filters": "Filters",
+      "clear": "Clear filters",
+      "categories": "Categories",
+      "allCategories": "All products",
+      "brands": "Brands",
+      "searchPlaceholder": "Search products, brands, SKU...",
+      "sortBy": "Sort by",
+      "sort": {
+        "newest": "Newest",
+        "price_asc": "Price: low to high",
+        "price_desc": "Price: high to low",
+        "name": "Name A-Z"
+      },
+      "found": "{count} products found",
+      "showing": "Showing {shown} of {total} products",
+      "loadMore": "Show more products",
+      "empty": "No matching products",
+      "error": "Could not load the products.",
+      "retry": "Try again"
     }
   }
 }

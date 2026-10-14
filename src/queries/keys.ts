@@ -200,6 +200,12 @@ export const shopKeys = {
   staffOrder: (id: string) => [...shopKeys.staffOrders(), "detail", id] as const,
 };
 
+export const shopCatalogKeys = {
+  all: ["shop-catalog"] as const,
+  list: (filters: unknown, pageSize: number) => [...shopCatalogKeys.all, "list", filters, pageSize] as const,
+  related: (groupId: string) => [...shopCatalogKeys.all, "related", groupId] as const,
+};
+
 export const ghnLocationKeys = {
   all: ["ghn-locations"] as const,
   provinces: () => [...ghnLocationKeys.all, "provinces"] as const,

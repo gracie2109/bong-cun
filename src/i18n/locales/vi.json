@@ -2032,6 +2032,29 @@
       "hours": "Giờ mở cửa",
       "call": "Gọi ngay",
       "map": "Bản đồ"
+    },
+    "catalog": {
+      "from": "Từ",
+      "outOfStock": "Hết hàng",
+      "filters": "Bộ lọc",
+      "clear": "Xóa bộ lọc",
+      "categories": "Danh mục",
+      "allCategories": "Tất cả sản phẩm",
+      "brands": "Thương hiệu",
+      "searchPlaceholder": "Tìm sản phẩm, thương hiệu, mã SKU...",
+      "sortBy": "Sắp xếp",
+      "sort": {
+        "newest": "Mới nhất",
+        "price_asc": "Giá tăng dần",
+        "price_desc": "Giá giảm dần",
+        "name": "Tên A-Z"
+      },
+      "found": "Tìm thấy {count} sản phẩm",
+      "showing": "Đang hiển thị {shown} trên tổng số {total} sản phẩm",
+      "loadMore": "Xem thêm sản phẩm",
+      "empty": "Không tìm thấy sản phẩm phù hợp",
+      "error": "Không tải được danh sách sản phẩm.",
+      "retry": "Thử lại"
     }
   }
 }
