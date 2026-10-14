@@ -531,6 +531,7 @@
       "subtitle": "Bundles of several services at a special price",
       "add": "Add combo",
       "edit": "Edit combo",
+      "searchPlaceholder": "Search by combo name...",
       "showArchived": "Show archived combos",
       "empty": "No combos yet",
       "status": {
