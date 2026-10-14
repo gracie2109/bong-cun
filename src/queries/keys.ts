@@ -175,6 +175,9 @@ export const supplierKeys = {
 
 export const spaKeys = {
   publicCatalog: (branchId: string | null) => ["spa", "public-catalog", branchId] as const,
+  webRules: () => ["spa", "web-rules"] as const,
+  webSlots: (branchId: string, date: string, minutes: number) => ["spa", "web-slots", branchId, date, minutes] as const,
+  webQuote: (branchId: string, items: unknown) => ["spa", "web-quote", branchId, items] as const,
   all: ["spa"] as const,
   resources: (branchId: string) => [...spaKeys.all, "resources", branchId] as const,
   hours: (branchId: string) => [...spaKeys.all, "hours", branchId] as const,
@@ -212,6 +215,7 @@ export const accountKeys = {
   all: ["account"] as const,
   profile: () => [...accountKeys.all, "profile"] as const,
   pets: () => [...accountKeys.all, "pets"] as const,
+  appointments: () => [...accountKeys.all, "appointments"] as const,
 };
 
 export const ghnLocationKeys = {

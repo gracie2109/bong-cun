@@ -13,6 +13,8 @@ export type BoardTicket = {
   id: string;
   appointmentId: string;
   code: string;
+  /** 'web' for a booking made by the customer online. */
+  source: string;
   appointmentStatus: AppointmentStatus;
   status: TicketStatus;
   name: string;
@@ -49,6 +51,7 @@ export const getDayBoard = async (client: Client, branchId: string, date: string
       id: str(item.id),
       appointmentId: str(item.appointment_id),
       code: str(item.code),
+      source: str(item.source),
       appointmentStatus: str(item.appointment_status) as AppointmentStatus,
       status: str(item.status) as TicketStatus,
       name: str(item.name),

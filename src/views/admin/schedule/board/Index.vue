@@ -91,7 +91,9 @@
                 :title="`${item.ticket.code} · ${item.ticket.customerName}`"
                 @click="openTicket(item.ticket)"
               >
-                <span class="block truncate font-semibold">{{ item.ticket.petName ?? item.ticket.customerName }} · {{ item.ticket.name }}</span>
+                <span class="block truncate font-semibold">
+                  <template v-if="item.ticket.source === 'web'">[{{ $t("spa.source.web") }}] </template>{{ item.ticket.petName ?? item.ticket.customerName }} · {{ item.ticket.name }}
+                </span>
                 <span class="block truncate opacity-80">{{ timeOf(item.ticket.startAt) }}–{{ timeOf(item.ticket.endAt) }} · {{ item.ticket.customerName }}</span>
               </button>
             </div>

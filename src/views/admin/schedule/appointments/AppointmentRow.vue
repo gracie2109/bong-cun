@@ -1,7 +1,12 @@
 <template>
   <tr class="border-t align-top">
     <td class="whitespace-nowrap px-4 py-3">
-      <p class="font-semibold">{{ appointment.code }}</p>
+      <p class="font-semibold">
+        {{ appointment.code }}
+        <span v-if="appointment.source === 'web'" class="ml-1 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700">
+          {{ $t("spa.source.web") }}
+        </span>
+      </p>
       <span class="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="APPOINTMENT_TONE[appointment.status]">
         {{ $t(`spa.status.${appointment.status}`) }}
       </span>
