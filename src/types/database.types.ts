@@ -2222,6 +2222,10 @@ export type Database = {
       export_products: { Args: { p_limit?: number; p_offset?: number }; Returns: Json }
       import_pets: { Args: { p_dry_run?: boolean; p_rows: Json }; Returns: Json }
       import_suppliers: { Args: { p_dry_run?: boolean; p_rows: Json }; Returns: Json }
+      find_products_by_sku: {
+        Args: { p_skus: string[] }
+        Returns: { sku: string; product_id: string; name: string; unit: string; track_stock: boolean; units: Json }[]
+      }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined

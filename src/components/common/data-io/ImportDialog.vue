@@ -2,7 +2,7 @@
   <AppDialog
     v-model:open="open"
     :title="title"
-    :ok-text="$t('dataIo.import.importRows', { n: importer.rows.value.length })"
+    :ok-text="okText ?? $t('dataIo.import.importRows', { n: importer.rows.value.length })"
     :ok-disabled="!importer.canImport.value"
     :busy="importer.phase.value === 'importing'"
     :hide-cancel="false"
@@ -61,7 +61,7 @@ import ImportPreviewTable from "./ImportPreviewTable.vue";
 import ImportSummary from "./ImportSummary.vue";
 import TemplateDownload from "./TemplateDownload.vue";
 
-defineProps<{ title: string; importer: TableImport<R>; columns: PreviewColumn<R>[]; canDownloadErrors?: boolean }>();
+defineProps<{ title: string; importer: TableImport<R>; columns: PreviewColumn<R>[]; canDownloadErrors?: boolean; okText?: string }>();
 const emit = defineEmits<{ template: [format: "xlsx" | "csv"] }>();
 const open = defineModel<boolean>("open", { required: true });
 </script>

@@ -25,6 +25,8 @@ export type TableImportOptions<R> = {
   fileKeys?: string[];
   /** Base name of the "rows with errors" file. */
   errorFileBase?: string;
+  /** Rows without an error may go ahead while others have errors (those are skipped and listed). */
+  allowPartial?: boolean;
 };
 
 /**
@@ -55,17 +57,23 @@ export const useTableImport = <R>(options: TableImportOptions<R>) => {
   });
   const errorCount = computed(() => preview.value.filter((item) => item.errors.length > 0).length);
   const canImport = computed(
-    () => phase.value === "checked" && errorCount.value === 0 && fileNotes.value.length === 0 && rows.value.length > 0
+    () =>
+      phase.value === "checked" &&
+      fileNotes.value.length === 0 &&
+      (options.allowPartial ? rows.value.length > errorCount.value : errorCount.value === 0 && rows.value.length > 0)
   );
   const busy = computed(() => ["reading", "checking", "importing"].includes(phase.value));
 
   const run = async (dryRun: boolean): Promise<ImportReport> => {
-    const batches = batchRows(rows.value, undefined, options.batchKey);
-    progress.value = { done: 0, total: rows.value.length };
+    // With partial imports, rows that already have a problem never go out.
+    const problems = parsed.value?.problems ?? {};
+    const sendable = options.allowPartial ? rows.value.filter((row) => !problems[options.rowNumber(row)]?.length) : rows.value;
+    const batches = batchRows(sendable, undefined, options.batchKey);
+    progress.value = { done: 0, total: sendable.length };
     let total = emptyReport();
     for (const batch of batches) {
       total = mergeReports(total, await options.send(batch, dryRun, fileName.value));
-      progress.value = { done: progress.value.done + batch.length, total: rows.value.length };
+      progress.value = { done: progress.value.done + batch.length, total: sendable.length };
     }
     return total;
   };

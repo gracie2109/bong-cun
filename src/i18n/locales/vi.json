@@ -1203,7 +1203,13 @@
       "saveDraft": "Lưu nháp",
       "post": "Lưu và ghi sổ",
       "unit": "Đơn vị nhập",
-      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}",
+      "fill": {
+        "button": "Điền từ file",
+        "title": "Điền phiếu nhập từ file",
+        "ok": "Thêm {n} dòng vào phiếu",
+        "hint": "File có cột SKU, Số lượng (bắt buộc), Đơn vị, Giá nhập, Số lô, Hạn dùng. Dòng hợp lệ được thêm vào phiếu nháp để xem lại; dòng lỗi bị bỏ qua. Tồn kho chỉ đổi khi bấm Ghi sổ."
+      }
     },
     "suppliers": {
       "title": "Nhà cung cấp",

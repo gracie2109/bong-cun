@@ -1203,7 +1203,13 @@
       "saveDraft": "Save draft",
       "post": "Save and post",
       "unit": "Receiving unit",
-      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}"
+      "baseEquivalent": "= {qty} {unit}, {cost}/{unit}",
+      "fill": {
+        "button": "Fill from file",
+        "title": "Fill the receipt from a file",
+        "ok": "Add {n} lines to the receipt",
+        "hint": "The file has the columns SKU, Quantity (required), Unit, Cost, Lot number, Expiry. Valid rows are added to the draft receipt for review; rows with errors are skipped. Stock only changes when the receipt is posted."
+      }
     },
     "suppliers": {
       "title": "Suppliers",

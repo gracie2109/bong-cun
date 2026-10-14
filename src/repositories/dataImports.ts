@@ -16,3 +16,32 @@ export const importPets = async (client: Client, rows: PetImportRow[], dryRun: b
 /** Suppliers, matched by tax code or name. */
 export const importSuppliers = async (client: Client, rows: SupplierImportRow[], dryRun: boolean): Promise<ImportReport> =>
   unwrap(await client.rpc("import_suppliers", { p_rows: rows, p_dry_run: dryRun })) as unknown as ImportReport;
+
+/** A product found by SKU for the stock receipt filled from a file. */
+export type SkuProduct = {
+  sku: string;
+  productId: string;
+  name: string;
+  /** The base unit. */
+  unit: string;
+  trackStock: boolean;
+  /** Conversion units in use; `forPurchase` tells which a receipt may be entered in. */
+  units: { id: string; name: string; factor: number; forPurchase: boolean }[];
+};
+
+type SkuUnitJson = { id: string; name: string; factor: number | string; for_purchase: boolean };
+
+export const findProductsBySku = async (client: Client, skus: string[]): Promise<SkuProduct[]> =>
+  unwrap(await client.rpc("find_products_by_sku", { p_skus: skus })).map((row) => ({
+    sku: row.sku,
+    productId: row.product_id,
+    name: row.name,
+    unit: row.unit,
+    trackStock: row.track_stock,
+    units: ((row.units ?? []) as unknown as SkuUnitJson[]).map((unit) => ({
+      id: unit.id,
+      name: unit.name,
+      factor: Number(unit.factor),
+      forPurchase: unit.for_purchase,
+    })),
+  }));
