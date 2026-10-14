@@ -48,6 +48,7 @@ begin
   );
   return v_result;
 end;
+$$;
 
 revoke execute on function public.import_products(jsonb, boolean, text) from public, anon;
 grant execute on function public.import_products(jsonb, boolean, text) to authenticated;
