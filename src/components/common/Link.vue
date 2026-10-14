@@ -3,7 +3,7 @@
     <router-link :to="{ name: link.name }" class="transition-colors hover:text-custom-primary" :class="{
       'text-primary': route.name?.toString().includes(props.link.name)
     }">
-      {{ link.text }}
+      {{ $t(link.title) }}
     </router-link>
   </li>
 </template>

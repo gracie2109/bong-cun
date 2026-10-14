@@ -6,7 +6,7 @@
     <li :class="langClass">
       <SwitchLang />
     </li>
-    <MenuLink v-for="link in navigation.clientNav" :key="link.text" :link="link" />
+    <MenuLink v-for="link in navigation.clientNav" :key="link.name" :link="link" />
   </ul>
 </template>
 

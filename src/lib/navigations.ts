@@ -104,27 +104,11 @@ export const navigation = {
       icon: "",
     },
   ],
+  /** Public header/footer links. `title` is an i18n key under `client.nav`. */
   clientNav: [
-    {
-      text: "Home",
-      name: "home",
-    },
-    {
-      text: "About Us",
-      name: "about-us",
-    },
-    {
-      text: "Contact",
-      name: "contact",
-    },
-    {
-      text: "Products",
-      name: "products",
-      type: "multi",
-    },
-    {
-      text: "Coupons",
-      name: "coupons",
-    },
+    { title: "client.nav.home", name: "home" },
+    { title: "client.nav.products", name: "products" },
+    { title: "client.nav.about", name: "about-us" },
+    { title: "client.nav.contact", name: "contact" },
   ],
 };

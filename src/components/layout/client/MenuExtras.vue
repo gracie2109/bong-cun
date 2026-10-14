@@ -7,10 +7,10 @@
     <Separator class="hidden !h-5 lg:block z-[10]" orientation="vertical" />
     <CartMenu />
     <div v-if="user" class="z-[10]">
-      <BaseAvatar />
+      <AccountMenu />
     </div>
-    <div v-else class="z-[10] cursor-pointer">
-      <p @click="open = !open">Login</p>
+    <div v-else class="z-[10]">
+      <Button size="sm" @click="open = !open">{{ $t("client.menu.login") }}</Button>
     </div>
 
     <MenuButton @toggle-menu="emit('toggleMenu')" />
@@ -37,7 +37,9 @@
 </template>
 
 <script lang="ts" setup>
-import { BaseAvatar, SwitchLang } from "@/components/common";
+import { SwitchLang } from "@/components/common";
+import { Button } from "@/components/ui/button";
+import AccountMenu from "@/views/client/layout/AccountMenu.vue";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import ForgotPassView from "@/views/auth/ForgotPassView.vue";

@@ -34,11 +34,12 @@
       </div>
     </div>
   </header>
-  <main class="relative top-[5em] h-auto  w-full">
+  <main class="relative h-auto min-h-[70vh] w-full pt-[5em]">
     <div class="relative clear-both">
       <slot />
     </div>
   </main>
+  <ClientFooter />
 </template>
 
 <script setup lang="ts">
@@ -49,6 +50,7 @@ import { useRoute } from "vue-router";
 import AppLogo from "@/components/common/AppLogo.vue";
 import MenuLinks from "@/components/layout/client/MenuLinks.vue";
 import MenuExtras from "@/components/layout/client/MenuExtras.vue";
+import ClientFooter from "@/views/client/layout/ClientFooter.vue";
 const isOpen = ref<boolean>(false);
 const isShow = ref<boolean>(true);
 const lastScrollTop = ref<number>(0);
