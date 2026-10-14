@@ -2197,6 +2197,15 @@ export type Database = {
       shop_related_groups: { Args: { p_group: string; p_limit?: number }; Returns: Json }
       my_profile: { Args: never; Returns: Json }
       save_my_profile: { Args: { p: Json }; Returns: Json }
+      my_pets: { Args: never; Returns: Json }
+      save_my_pet: { Args: { p: Json; p_id?: string | null }; Returns: string }
+      hide_my_pet: { Args: { p_id: string }; Returns: undefined }
+      can_link_accounts: { Args: never; Returns: boolean }
+      search_unlinked_accounts: {
+        Args: { p_text: string; p_limit?: number }
+        Returns: { user_id: string; full_name: string | null; phone: string | null; email: string | null }[]
+      }
+      link_customer_account: { Args: { p_customer: string; p_user: string }; Returns: undefined }
       shop_public_settings: { Args: never; Returns: Json }
       shop_admin_settings: { Args: never; Returns: Json }
       save_shop_settings: { Args: { p: Json }; Returns: Json }

@@ -11,6 +11,8 @@ export type Customer = {
   phone: string;
   email: string | null;
   note: string | null;
+  /** The web account linked to this customer, if any. */
+  userId: string | null;
 };
 
 /**
@@ -18,7 +20,7 @@ export type Customer = {
  * `customerId` is null for a web account that is not a customer yet; registering a pet for
  * them creates the customer record from `userId`.
  */
-export type CustomerMatch = Omit<Customer, "id"> & {
+export type CustomerMatch = Omit<Customer, "id" | "userId"> & {
   customerId: string | null;
   userId: string | null;
   petCount: number;
@@ -33,6 +35,7 @@ export const toCustomer = (row: Tables<"customers">): Customer => ({
   phone: row.phone,
   email: row.email,
   note: row.note,
+  userId: row.user_id,
 });
 
 export const digitsOf = (phone: string): string => phone.replace(/\D/g, "");

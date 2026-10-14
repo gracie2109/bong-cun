@@ -106,7 +106,8 @@
     "account": "Account",
     "accountProfile": "Profile",
     "accountAddresses": "Addresses",
-    "accountOrders": "My orders"
+    "accountOrders": "My orders",
+    "accountPets": "My pets"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -389,6 +390,22 @@
         "title": "Import customers and pets from a file",
         "hint": "Each row is a pet with its owner; a row without a pet name only creates or updates the customer. Customers match by phone number, pets by microchip or (owner + name). Empty cells keep the old data and the species must already exist.",
         "customers": "Customers: {created} created, {updated} updated."
+      },
+      "link": {
+        "button": "Link web account",
+        "linked": "Has web account",
+        "title": "Link a web account",
+        "desc": "Connect customer {name} to their web account so they can see their pets and book online.",
+        "searchHint": "Search by name, email or phone",
+        "none": "No unlinked account matches.",
+        "confirm": "Link",
+        "errors": {
+          "forbidden": "You are not allowed to link accounts.",
+          "customer_not_found": "Customer not found.",
+          "account_not_found": "Account not found.",
+          "customer_has_account": "This customer already has a web account.",
+          "account_has_customer": "This account is already linked to another customer."
+        }
       }
     },
     "species": {
@@ -2129,7 +2146,8 @@
         "overview": "Overview",
         "profile": "Profile",
         "addresses": "Addresses",
-        "orders": "Orders"
+        "orders": "Orders",
+        "pets": "Pets"
       },
       "profile": {
         "info": "Personal information",
@@ -2157,7 +2175,59 @@
         "hello": "Hello, {name}",
         "intro": "Manage your details, addresses and orders.",
         "recentOrders": "Recent orders",
-        "viewAll": "View all"
+        "viewAll": "View all",
+        "myPets": "My pets",
+        "petsHint": "Add pets to book spa visits",
+        "petsCount": "{n} pets"
+      }
+    },
+    "pets": {
+      "title": "My pets",
+      "intro": "Add your pets to book spa visits faster.",
+      "add": "Add pet",
+      "addTitle": "Add a pet",
+      "editTitle": "Edit pet",
+      "empty": "You have no pets yet. Press \"Add pet\" to start.",
+      "needProfile": "Fill in your name and phone in your profile before adding a pet.",
+      "goProfile": "Go to profile",
+      "loadFailed": "Could not load your pets.",
+      "name": "Pet name",
+      "species": "Species",
+      "pickSpecies": "Pick a species",
+      "breed": "Breed",
+      "sex": "Sex",
+      "sexes": {
+        "male": "Male",
+        "female": "Female",
+        "unknown": "Unknown"
+      },
+      "neutered": "Neutered",
+      "neuteredShort": "neutered",
+      "birthDate": "Date of birth",
+      "age": "Age",
+      "ageMonths": "{n} months",
+      "ageYears": "{n} years",
+      "ageYearsMonths": "{y} years {m} months",
+      "weight": "Weight",
+      "weightKg": "Weight (kg)",
+      "allergies": "Allergies",
+      "behavior": "Temperament, notes",
+      "behaviorHint": "e.g. afraid of the dryer, bites during nail trims",
+      "coOwner": "Co-owner",
+      "hide": "Hide",
+      "hideTitle": "Hide this pet?",
+      "hideDesc": "{name} will no longer be in your list. The store keeps the service history.",
+      "errors": {
+        "no_customer": "Fill in your name and phone in your profile first.",
+        "invalid_name": "Please enter the pet's name.",
+        "invalid_species": "Please pick a species.",
+        "invalid_sex": "Invalid sex.",
+        "invalid_birth_date": "Invalid date of birth.",
+        "invalid_weight": "Invalid weight.",
+        "too_many_pets": "You reached the maximum number of pets.",
+        "not_found": "Pet not found.",
+        "not_primary": "Only the primary owner can edit a pet.",
+        "has_open_appointment": "This pet has an unfinished appointment, so it cannot be hidden yet."
       }
     }
   }

@@ -3,8 +3,16 @@ import { computed, unref, type MaybeRef } from "vue";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
-import { getMyProfile, profileErrorHint, saveMyProfile } from "@/repositories/account";
-import type { ProfileInput } from "@/types/account";
+import {
+  getMyProfile,
+  hideMyPet,
+  listMyPets,
+  petErrorHint,
+  profileErrorHint,
+  saveMyPet,
+  saveMyProfile,
+} from "@/repositories/account";
+import type { PetInput, ProfileInput } from "@/types/account";
 import { accountKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 
@@ -29,5 +37,43 @@ export const useSaveMyProfile = () => {
       if (hint) sendMessageToast("fail", "update", "error", i18n.global.t(`client.account.errors.${hint}`));
       else notifyFailure("update", error);
     },
+  });
+};
+
+/** The pets the signed-in customer owns; pass `false` while signed out. */
+export const useMyPets = (enabled: MaybeRef<boolean> = true) =>
+  useQuery({
+    queryKey: accountKeys.pets(),
+    queryFn: () => listMyPets(supabaseClient()),
+    enabled: computed(() => unref(enabled)),
+  });
+
+const notifyPetFailure = (error: unknown, method: "create" | "update" | "delete") => {
+  const hint = petErrorHint(error);
+  if (hint) sendMessageToast("fail", method, "error", i18n.global.t(`client.pets.errors.${hint}`));
+  else notifyFailure(method, error);
+};
+
+export const useSaveMyPet = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ input, id }: { input: PetInput; id?: string }) => saveMyPet(supabaseClient(), input, id),
+    onSuccess: async (_id, { id }) => {
+      await queryClient.invalidateQueries({ queryKey: accountKeys.pets() });
+      notifySuccess(id ? "update" : "create");
+    },
+    onError: (error, { id }) => notifyPetFailure(error, id ? "update" : "create"),
+  });
+};
+
+export const useHideMyPet = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => hideMyPet(supabaseClient(), id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: accountKeys.pets() });
+      notifySuccess("delete");
+    },
+    onError: (error) => notifyPetFailure(error, "delete"),
   });
 };
