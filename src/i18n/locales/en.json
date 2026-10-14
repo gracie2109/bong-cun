@@ -100,7 +100,8 @@
     "productImport": "Product Excel import / export",
     "shopOrderSettings": "Online shop settings",
     "order": "Order",
-    "shopOrders": "Online orders"
+    "shopOrders": "Online orders",
+    "productDetail": "Product detail"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2055,6 +2056,21 @@
       "empty": "No matching products",
       "error": "Could not load the products.",
       "retry": "Try again"
+    },
+    "product": {
+      "sku": "SKU",
+      "buyNow": "Buy now",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "lowStock": "Only {count} left",
+      "description": "Description",
+      "noDescription": "No description yet.",
+      "brand": "Brand",
+      "category": "Category",
+      "unit": "Unit",
+      "related": "Related products",
+      "viewDetail": "View details",
+      "discontinued": "This product is no longer sold"
     }
   }
 }

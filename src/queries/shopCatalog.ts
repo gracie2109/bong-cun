@@ -1,7 +1,7 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { listRelatedGroups, listShopGroups } from "@/repositories/shop";
+import { fetchVariantAvailability, listRelatedGroups, listShopGroups } from "@/repositories/shop";
 import type { CatalogFilters } from "@/types/catalog";
 import { shopCatalogKeys } from "./keys";
 
@@ -36,4 +36,12 @@ export const useRelatedGroups = (groupId: MaybeRef<string | undefined>) =>
     queryKey: computed(() => shopCatalogKeys.related(unref(groupId) ?? "")),
     queryFn: () => listRelatedGroups(supabaseClient(), unref(groupId) ?? ""),
     enabled: computed(() => Boolean(unref(groupId))),
+  });
+
+/** Stock of each variant of a group, for dimming the ones that cannot be bought. */
+export const useVariantAvailability = (productIds: MaybeRef<string[]>) =>
+  useQuery({
+    queryKey: computed(() => shopCatalogKeys.availability(unref(productIds))),
+    queryFn: () => fetchVariantAvailability(supabaseClient(), unref(productIds)),
+    enabled: computed(() => unref(productIds).length > 0),
   });

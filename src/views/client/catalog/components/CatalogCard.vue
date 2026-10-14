@@ -20,7 +20,11 @@
       <p v-if="group.brandName" class="truncate text-xs font-semibold uppercase text-muted-foreground">
         {{ group.brandName }}
       </p>
-      <h3 class="line-clamp-2 min-h-[2.5rem] text-sm font-semibold">{{ group.name }}</h3>
+      <h3 class="line-clamp-2 min-h-[2.5rem] text-sm font-semibold">
+        <RouterLink :to="{ name: 'product-detail', params: { id: group.id } }" class="hover:text-primary" @click.stop>
+          {{ group.name }}
+        </RouterLink>
+      </h3>
       <p v-if="optionHint" class="truncate text-xs text-muted-foreground">{{ optionHint }}</p>
       <div class="mt-auto flex items-end justify-between gap-2 pt-2">
         <p class="font-bold text-primary">{{ priceLabel }}</p>

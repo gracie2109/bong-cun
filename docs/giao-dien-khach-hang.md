@@ -286,3 +286,7 @@ Header/menu dịch i18n, menu tài khoản ở avatar, footer nằm trong layout
 ### Bước 2 (danh sách sản phẩm)
 
 Migration `20261018010000_shop_catalog.sql` (`shop_product_groups`, `shop_related_groups`; đổi từ 20261017010000 vì trùng file `data_io_permissions` vừa merge, các bước sau cũng dùng đầu số 20261018). Giá là **giá chung** như giỏ hàng đang tính (`product_unit_price(…, null)`), không phải giá riêng của cơ sở online. Hết hàng theo `shop_available_qty` như checkout. Trang `/products` có lọc danh mục (cha gồm con), thương hiệu, tìm (debounce 500ms), sắp xếp, "Xem thêm", bộ lọc trên URL, Sheet trên mobile; trang chủ dùng cùng RPC. Chưa làm khoảng giá và đánh giá sao trong thiết kế Stitch vì chưa có dữ liệu. SQL thử trên Postgres local (lọc, tìm không dấu, sắp xếp, phân trang, hết hàng, related). UI chỉ typecheck/build và SSR trả 200.
+
+### Bước 3 (chi tiết sản phẩm)
+
+Trang `/products/[id]` (breadcrumb, gallery, chọn biến thể và đơn vị, số lượng, thêm giỏ và "Mua ngay", mô tả, bảng thông tin, 8 sản phẩm cùng danh mục từ `shop_related_groups`). Nhóm không còn biến thể bán được hoặc đã ngừng hiện "Sản phẩm đã ngừng bán" thay vì 404. Tồn từng biến thể lấy qua `shop_cart_lines` (đã có, không cần SQL mới) để làm mờ biến thể hết hàng. Thẻ ở danh sách và quick view có link tới trang chi tiết. Không có SQL. Chỉ typecheck/build và SSR trả 200.

@@ -204,6 +204,7 @@ export const shopCatalogKeys = {
   all: ["shop-catalog"] as const,
   list: (filters: unknown, pageSize: number) => [...shopCatalogKeys.all, "list", filters, pageSize] as const,
   related: (groupId: string) => [...shopCatalogKeys.all, "related", groupId] as const,
+  availability: (productIds: string[]) => [...shopCatalogKeys.all, "availability", [...productIds].sort()] as const,
 };
 
 export const ghnLocationKeys = {
