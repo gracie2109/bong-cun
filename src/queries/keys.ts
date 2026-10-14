@@ -216,6 +216,8 @@ export const accountKeys = {
   profile: () => [...accountKeys.all, "profile"] as const,
   pets: () => [...accountKeys.all, "pets"] as const,
   appointments: () => [...accountKeys.all, "appointments"] as const,
+  appointmentList: (scope: string, page: number, pageSize: number) =>
+    [...accountKeys.all, "appointments", scope, page, pageSize] as const,
 };
 
 export const ghnLocationKeys = {

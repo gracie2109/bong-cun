@@ -109,7 +109,8 @@
     "accountOrders": "Đơn hàng của tôi",
     "accountPets": "Thú cưng của tôi",
     "spa": "Dịch vụ spa",
-    "spaBook": "Đặt lịch spa"
+    "spaBook": "Đặt lịch spa",
+    "accountAppointments": "Lịch hẹn của tôi"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2154,7 +2155,8 @@
         "profile": "Thông tin cá nhân",
         "addresses": "Sổ địa chỉ",
         "orders": "Đơn hàng",
-        "pets": "Thú cưng"
+        "pets": "Thú cưng",
+        "appointments": "Lịch hẹn"
       },
       "profile": {
         "info": "Thông tin cá nhân",
@@ -2185,7 +2187,9 @@
         "viewAll": "Xem tất cả",
         "myPets": "Thú cưng của tôi",
         "petsHint": "Thêm thú cưng để đặt lịch spa",
-        "petsCount": "{n} thú cưng"
+        "petsCount": "{n} thú cưng",
+        "nextAppointment": "Lịch hẹn sắp tới",
+        "noAppointment": "Chưa có lịch. Đặt lịch spa ngay"
       }
     },
     "pets": {
@@ -2300,6 +2304,37 @@
         "outside_hours": "Lượt này vượt quá giờ mở cửa.",
         "slot_full": "Khung giờ này vừa hết chỗ, vui lòng chọn giờ khác.",
         "pet_busy": "Bé đã có lịch khác trong khung giờ này."
+      },
+      "viewAppointments": "Xem lịch hẹn"
+    },
+    "appointments": {
+      "scope": {
+        "upcoming": "Sắp tới",
+        "past": "Đã qua"
+      },
+      "empty": {
+        "upcoming": "Bạn chưa có lịch sắp tới.",
+        "past": "Chưa có lịch nào đã qua."
+      },
+      "loadFailed": "Không tải được danh sách lịch hẹn.",
+      "status": {
+        "booked": "Đã đặt",
+        "checked_in": "Đã đến",
+        "in_progress": "Đang làm",
+        "done": "Hoàn thành",
+        "paid": "Đã thanh toán",
+        "cancelled": "Đã hủy",
+        "no_show": "Không đến"
+      },
+      "cancel": "Hủy lịch",
+      "cancelTitle": "Hủy lịch hẹn này?",
+      "cancelDesc": "Lịch {code} sẽ bị hủy và giờ này được trả lại cho khách khác.",
+      "callToCancel": "Còn dưới 2 giờ nữa, hãy gọi cửa hàng để hủy:",
+      "errors": {
+        "no_customer": "Bạn chưa có hồ sơ khách hàng.",
+        "not_found": "Không tìm thấy lịch hẹn.",
+        "not_cancellable": "Lịch này không còn hủy được.",
+        "too_late": "Còn dưới 2 giờ nữa nên không tự hủy được, vui lòng gọi cửa hàng."
       }
     }
   }
