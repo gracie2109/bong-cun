@@ -2203,6 +2203,8 @@ export type Database = {
       spa_web_quote: { Args: { p_branch: string; p_items: Json }; Returns: Json }
       book_my_appointment: { Args: { p: Json }; Returns: Json }
       my_pets: { Args: never; Returns: Json }
+      my_appointments: { Args: { p_scope?: string; p_page?: number; p_page_size?: number }; Returns: Json }
+      cancel_my_appointment: { Args: { p_id: string; p_reason?: string | null }; Returns: undefined }
       save_my_pet: { Args: { p: Json; p_id?: string | null }; Returns: string }
       hide_my_pet: { Args: { p_id: string }; Returns: undefined }
       can_link_accounts: { Args: never; Returns: boolean }

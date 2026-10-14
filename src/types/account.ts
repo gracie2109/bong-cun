@@ -53,3 +53,33 @@ export type PetInput = {
 
 /** A web account without a customer record, as staff see it when linking. */
 export type UnlinkedAccount = { userId: string; fullName: string; phone: string; email: string };
+
+export const APPOINTMENT_SCOPES = ["upcoming", "past"] as const;
+export type AppointmentScope = (typeof APPOINTMENT_SCOPES)[number];
+
+export type MyAppointmentItem = {
+  name: string;
+  petName: string;
+  startAt: string;
+  /** waiting | in_progress | done | cancelled */
+  status: string;
+  estPrice: number | null;
+};
+
+/** One of the customer's spa appointments. The staff who do the work are never part of it. */
+export type MyAppointment = {
+  id: string;
+  code: string;
+  /** booked | checked_in | in_progress | done | paid | cancelled | no_show */
+  status: string;
+  startAt: string;
+  endAt: string;
+  note: string;
+  branchName: string;
+  branchPhone: string;
+  /** Booked and more than the cancel window ahead: decided by the server. */
+  canCancel: boolean;
+  estTotal: number;
+  hasUnpriced: boolean;
+  items: MyAppointmentItem[];
+};

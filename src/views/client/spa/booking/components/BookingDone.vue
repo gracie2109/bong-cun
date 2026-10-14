@@ -8,7 +8,7 @@
     <p class="rounded-lg bg-muted/50 py-2 font-mono text-lg font-semibold">{{ code }}</p>
     <div class="flex flex-wrap justify-center gap-2">
       <Button as-child>
-        <RouterLink :to="{ name: 'account' }">{{ $t("client.booking.goAccount") }}</RouterLink>
+        <RouterLink :to="{ name: 'account-appointments' }">{{ $t("client.booking.viewAppointments") }}</RouterLink>
       </Button>
       <Button as-child variant="outline">
         <RouterLink :to="{ name: 'spa' }">{{ $t("client.booking.backToSpa") }}</RouterLink>

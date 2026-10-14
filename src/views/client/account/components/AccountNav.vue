@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import { LayoutDashboard, MapPin, Package, PawPrint, User } from "lucide-vue-next";
+import { CalendarClock, LayoutDashboard, MapPin, Package, PawPrint, User } from "lucide-vue-next";
 import { ACCOUNT_NAV } from "@/lib/navigations";
 
-const NAV_ICONS: Record<string, unknown> = { LayoutDashboard, MapPin, Package, PawPrint, User };
+const NAV_ICONS: Record<string, unknown> = { CalendarClock, LayoutDashboard, MapPin, Package, PawPrint, User };
 </script>

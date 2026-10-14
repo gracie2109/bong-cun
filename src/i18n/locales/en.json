@@ -109,7 +109,8 @@
     "accountOrders": "My orders",
     "accountPets": "My pets",
     "spa": "Spa services",
-    "spaBook": "Book a spa visit"
+    "spaBook": "Book a spa visit",
+    "accountAppointments": "My appointments"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2154,7 +2155,8 @@
         "profile": "Profile",
         "addresses": "Addresses",
         "orders": "Orders",
-        "pets": "Pets"
+        "pets": "Pets",
+        "appointments": "Appointments"
       },
       "profile": {
         "info": "Personal information",
@@ -2185,7 +2187,9 @@
         "viewAll": "View all",
         "myPets": "My pets",
         "petsHint": "Add pets to book spa visits",
-        "petsCount": "{n} pets"
+        "petsCount": "{n} pets",
+        "nextAppointment": "Next appointment",
+        "noAppointment": "None yet. Book a spa visit"
       }
     },
     "pets": {
@@ -2300,6 +2304,37 @@
         "outside_hours": "This visit runs past closing time.",
         "slot_full": "That time was just taken, please pick another.",
         "pet_busy": "Your pet already has a visit at that time."
+      },
+      "viewAppointments": "View my appointments"
+    },
+    "appointments": {
+      "scope": {
+        "upcoming": "Upcoming",
+        "past": "Past"
+      },
+      "empty": {
+        "upcoming": "You have no upcoming visits.",
+        "past": "No past visits yet."
+      },
+      "loadFailed": "Could not load your appointments.",
+      "status": {
+        "booked": "Booked",
+        "checked_in": "Arrived",
+        "in_progress": "In progress",
+        "done": "Done",
+        "paid": "Paid",
+        "cancelled": "Cancelled",
+        "no_show": "No show"
+      },
+      "cancel": "Cancel",
+      "cancelTitle": "Cancel this appointment?",
+      "cancelDesc": "Booking {code} will be cancelled and the time given back to other customers.",
+      "callToCancel": "Less than 2 hours to go, please call the shop to cancel:",
+      "errors": {
+        "no_customer": "You have no customer profile yet.",
+        "not_found": "Appointment not found.",
+        "not_cancellable": "This appointment can no longer be cancelled.",
+        "too_late": "Less than 2 hours to go, so it cannot be cancelled online. Please call the shop."
       }
     }
   }
