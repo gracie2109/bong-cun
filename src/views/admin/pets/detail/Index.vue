@@ -34,7 +34,7 @@
 
         <div class="grid gap-5 xl:grid-cols-[24rem_minmax(0,1fr)]">
           <div class="space-y-5">
-            <PetOwnersCard :owners="pet.owners" />
+            <PetOwnersCard :owners="pet.owners" :can-update="canUpdate" />
             <PetWeightCard
               :pet-id="petId"
               :species-id="pet.speciesId"

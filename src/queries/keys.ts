@@ -210,6 +210,7 @@ export const shopCatalogKeys = {
 export const accountKeys = {
   all: ["account"] as const,
   profile: () => [...accountKeys.all, "profile"] as const,
+  pets: () => [...accountKeys.all, "pets"] as const,
 };
 
 export const ghnLocationKeys = {

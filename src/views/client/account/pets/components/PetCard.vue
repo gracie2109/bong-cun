@@ -1,0 +1,68 @@
+<template>
+  <article class="flex flex-col gap-3 rounded-xl border bg-white p-4">
+    <div class="flex items-start justify-between gap-2">
+      <div class="min-w-0">
+        <h3 class="truncate font-semibold">{{ pet.name }}</h3>
+        <p class="truncate text-sm text-muted-foreground">
+          {{ [pet.speciesName, pet.breed].filter(Boolean).join(" · ") }}
+        </p>
+      </div>
+      <span v-if="!pet.canEdit" class="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+        {{ $t("client.pets.coOwner") }}
+      </span>
+    </div>
+
+    <dl class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
+      <dt class="text-muted-foreground">{{ $t("client.pets.sex") }}</dt>
+      <dd>{{ $t(`client.pets.sexes.${pet.sex}`) }}{{ pet.neutered ? ` · ${$t("client.pets.neuteredShort")}` : "" }}</dd>
+      <dt class="text-muted-foreground">{{ $t("client.pets.age") }}</dt>
+      <dd>{{ ageLabel }}</dd>
+      <dt class="text-muted-foreground">{{ $t("client.pets.weight") }}</dt>
+      <dd>{{ pet.weightKg === null ? "—" : $t("petCare.common.kg", { n: pet.weightKg }) }}</dd>
+    </dl>
+
+    <p v-if="pet.allergies" class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+      {{ $t("client.pets.allergies") }}: {{ pet.allergies }}
+    </p>
+
+    <div class="mt-auto flex flex-wrap gap-2">
+      <Button v-if="pet.canEdit" size="sm" variant="outline" @click="emit('edit')">
+        <Pencil class="mr-1 size-3.5" />
+        {{ $t("petCare.common.edit") }}
+      </Button>
+      <Button
+        size="sm"
+        variant="ghost"
+        class="text-muted-foreground"
+        :disabled="pet.hasOpenAppointment"
+        :title="pet.hasOpenAppointment ? $t('client.pets.errors.has_open_appointment') : undefined"
+        @click="emit('hide')"
+      >
+        <EyeOff class="mr-1 size-3.5" />
+        {{ $t("client.pets.hide") }}
+      </Button>
+    </div>
+  </article>
+</template>
+
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { EyeOff, Pencil } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
+import type { MyPet } from "@/types/account";
+import { petAge } from "@/utils/account/pet";
+
+const props = defineProps<{ pet: MyPet }>();
+const emit = defineEmits<{ edit: []; hide: [] }>();
+
+const { t } = useI18n();
+const ageLabel = computed(() => {
+  const age = petAge(props.pet.birthDate);
+  if (!age) return "—";
+  if (age.years === 0) return t("client.pets.ageMonths", { n: age.months });
+  return age.months === 0
+    ? t("client.pets.ageYears", { n: age.years })
+    : t("client.pets.ageYearsMonths", { y: age.years, m: age.months });
+});
+</script>

@@ -106,7 +106,8 @@
     "account": "Tài khoản",
     "accountProfile": "Thông tin cá nhân",
     "accountAddresses": "Sổ địa chỉ",
-    "accountOrders": "Đơn hàng của tôi"
+    "accountOrders": "Đơn hàng của tôi",
+    "accountPets": "Thú cưng của tôi"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -389,6 +390,22 @@
         "title": "Nhập khách và thú cưng từ file",
         "hint": "Mỗi dòng là một thú cưng kèm chủ; dòng không có tên thú cưng chỉ tạo hoặc cập nhật khách. Khách ghép theo số điện thoại, thú cưng theo microchip hoặc (chủ + tên). Ô trống giữ nguyên dữ liệu cũ, loài phải là loài đã có.",
         "customers": "Khách: {created} tạo mới, {updated} cập nhật."
+      },
+      "link": {
+        "button": "Liên kết tài khoản web",
+        "linked": "Đã có tài khoản web",
+        "title": "Liên kết tài khoản web",
+        "desc": "Nối hồ sơ khách {name} với tài khoản web của họ để họ thấy thú cưng và đặt lịch online.",
+        "searchHint": "Tìm theo tên, email hoặc số điện thoại",
+        "none": "Không có tài khoản nào chưa gắn hồ sơ khớp tìm kiếm.",
+        "confirm": "Liên kết",
+        "errors": {
+          "forbidden": "Bạn không có quyền liên kết tài khoản.",
+          "customer_not_found": "Không tìm thấy hồ sơ khách.",
+          "account_not_found": "Không tìm thấy tài khoản.",
+          "customer_has_account": "Hồ sơ khách này đã có tài khoản web.",
+          "account_has_customer": "Tài khoản này đã gắn với một hồ sơ khách khác."
+        }
       }
     },
     "species": {
@@ -2129,7 +2146,8 @@
         "overview": "Tổng quan",
         "profile": "Thông tin cá nhân",
         "addresses": "Sổ địa chỉ",
-        "orders": "Đơn hàng"
+        "orders": "Đơn hàng",
+        "pets": "Thú cưng"
       },
       "profile": {
         "info": "Thông tin cá nhân",
@@ -2157,7 +2175,59 @@
         "hello": "Xin chào, {name}",
         "intro": "Quản lý thông tin, địa chỉ và đơn hàng của bạn.",
         "recentOrders": "Đơn hàng gần đây",
-        "viewAll": "Xem tất cả"
+        "viewAll": "Xem tất cả",
+        "myPets": "Thú cưng của tôi",
+        "petsHint": "Thêm thú cưng để đặt lịch spa",
+        "petsCount": "{n} thú cưng"
+      }
+    },
+    "pets": {
+      "title": "Thú cưng của tôi",
+      "intro": "Thêm thú cưng để đặt lịch spa nhanh hơn.",
+      "add": "Thêm thú cưng",
+      "addTitle": "Thêm thú cưng",
+      "editTitle": "Sửa thú cưng",
+      "empty": "Bạn chưa có thú cưng nào. Nhấn \"Thêm thú cưng\" để bắt đầu.",
+      "needProfile": "Hãy điền họ tên và số điện thoại trong hồ sơ trước khi thêm thú cưng.",
+      "goProfile": "Đến hồ sơ",
+      "loadFailed": "Không tải được danh sách thú cưng.",
+      "name": "Tên thú cưng",
+      "species": "Loài",
+      "pickSpecies": "Chọn loài",
+      "breed": "Giống",
+      "sex": "Giới tính",
+      "sexes": {
+        "male": "Đực",
+        "female": "Cái",
+        "unknown": "Chưa rõ"
+      },
+      "neutered": "Đã triệt sản",
+      "neuteredShort": "đã triệt sản",
+      "birthDate": "Ngày sinh",
+      "age": "Tuổi",
+      "ageMonths": "{n} tháng",
+      "ageYears": "{n} tuổi",
+      "ageYearsMonths": "{y} tuổi {m} tháng",
+      "weight": "Cân nặng",
+      "weightKg": "Cân nặng (kg)",
+      "allergies": "Dị ứng",
+      "behavior": "Tính cách, lưu ý",
+      "behaviorHint": "Ví dụ: sợ tiếng máy sấy, hay cắn khi cắt móng",
+      "coOwner": "Đồng sở hữu",
+      "hide": "Ẩn",
+      "hideTitle": "Ẩn thú cưng này?",
+      "hideDesc": "{name} sẽ không còn trong danh sách của bạn. Lịch sử dịch vụ vẫn được cửa hàng lưu lại.",
+      "errors": {
+        "no_customer": "Hãy điền họ tên và số điện thoại trong hồ sơ trước.",
+        "invalid_name": "Vui lòng nhập tên thú cưng.",
+        "invalid_species": "Vui lòng chọn loài.",
+        "invalid_sex": "Giới tính không hợp lệ.",
+        "invalid_birth_date": "Ngày sinh không hợp lệ.",
+        "invalid_weight": "Cân nặng không hợp lệ.",
+        "too_many_pets": "Bạn đã đạt số thú cưng tối đa.",
+        "not_found": "Không tìm thấy thú cưng này.",
+        "not_primary": "Chỉ chủ chính mới sửa được thú cưng.",
+        "has_open_appointment": "Thú cưng đang có lịch hẹn chưa xong nên chưa ẩn được."
       }
     }
   }

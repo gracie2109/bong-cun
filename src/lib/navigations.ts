@@ -92,6 +92,7 @@ export const navigation = {
 export const ACCOUNT_NAV: AccountNavItem[] = [
   { label: "client.account.nav.overview", name: "account", icon: "LayoutDashboard" },
   { label: "client.account.nav.profile", name: "account-profile", icon: "User" },
+  { label: "client.account.nav.pets", name: "account-pets", icon: "PawPrint" },
   { label: "client.account.nav.addresses", name: "account-addresses", icon: "MapPin" },
   { label: "client.account.nav.orders", name: "account-orders", icon: "Package" },
 ];
