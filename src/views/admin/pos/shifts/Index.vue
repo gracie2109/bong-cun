@@ -11,10 +11,13 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <PosNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
         </div>
       </div>
+
+      <SearchView :show-search="false" :show-clear="false" :refreshing="listQuery.isFetching.value" @refresh="listQuery.refetch()">
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -47,6 +50,7 @@
 import { ref, reactive, watch } from "vue";
 import { Wallet } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";

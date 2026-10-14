@@ -11,8 +11,6 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
-          <ImportButton :allowed="canImport" @click="importOpen = true" />
           <Button v-if="canCreate" @click="openForm(null)">
             <Plus class="mr-2 size-4" />
             {{ $t("inventory.suppliers.add") }}
@@ -20,16 +18,28 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
-        <div class="relative min-w-60 flex-1">
-          <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('inventory.suppliers.searchPlaceholder')" />
-        </div>
-        <label class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Switch v-model:checked="showArchived" />
-          {{ $t("inventory.suppliers.showArchived") }}
-        </label>
-      </div>
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('inventory.suppliers.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters>
+          <label class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Switch v-model:checked="draft.showArchived" />
+            {{ $t("inventory.suppliers.showArchived") }}
+          </label>
+        </template>
+        <template #actions>
+          <ExportMenu :exporter="exporter" compact />
+          <ImportButton :allowed="canImport" compact @click="importOpen = true" />
+        </template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -43,7 +53,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.suppliers.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.suppliers.empty')" />
             <SupplierRow v-for="row in rows" :key="row.id" :supplier="row" :can-update="canUpdate" @edit="openForm" @set-active="setActive" />
           </tbody>
         </table>
@@ -57,16 +67,16 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { Plus, Search, Truck } from "lucide-vue-next";
+import { Plus, Truck } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ImportButton from "@/components/common/data-io/ImportButton.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { usePagedList } from "@/composables/usePagedList";
-import { usePagedSearch } from "@/composables/usePagedSearch";
+import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
 import { useSaveSupplier, useSuppliersList } from "@/queries/inventory";
 import type { Supplier, SupplierFilter } from "@/repositories/inventory";
@@ -81,12 +91,12 @@ import { useSuppliersExport } from "./useSuppliersExport";
 const PAGE_SIZE = 20;
 
 const { canCreate, canUpdate } = usePermission("inventory");
-const showArchived = ref(false);
-const { search, debouncedSearch, page } = usePagedSearch({ pageSize: PAGE_SIZE, resetOn: [showArchived] });
+const { search, debouncedSearch, page, applied, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } =
+  useListFilters({ pageSize: PAGE_SIZE, defaults: { showArchived: false } });
 const formOpen = ref(false);
 const editing = ref<Supplier | null>(null);
 
-const filter = computed<SupplierFilter>(() => ({ search: debouncedSearch.value, includeArchived: showArchived.value }));
+const filter = computed<SupplierFilter>(() => ({ search: debouncedSearch.value, includeArchived: applied.value.showArchived }));
 const exporter = useSuppliersExport(filter);
 const canImport = computed(() => useAuthStore().can("inventory", "IMPORT"));
 const importOpen = ref(false);

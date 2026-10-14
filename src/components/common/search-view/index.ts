@@ -5,3 +5,4 @@ export { default as ClearFilterButton } from "./ClearFilterButton.vue";
 export { default as RefreshButton } from "./RefreshButton.vue";
 export { default as ToolbarIconButton } from "./ToolbarIconButton.vue";
 export type { SearchViewEmits, SearchViewProps } from "./types";
+export { default as FilterField } from "./FilterField.vue";

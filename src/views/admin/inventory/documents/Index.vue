@@ -11,7 +11,6 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
           <DropdownMenu v-if="canCreate">
             <DropdownMenuTrigger as-child>
@@ -29,7 +28,20 @@
         </div>
       </div>
 
-      <DocumentsFilterBar v-model:search="search" v-model:doc-type="docType" v-model:status="status" />
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('inventory.documents.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters><DocumentsFilterFields v-model:doc-type="draft.docType" v-model:status="draft.status" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -45,7 +57,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="7" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.documents.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="7" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.documents.empty')" />
             <DocumentRow v-for="row in rows" :key="row.id" :row="row" @open="openExisting(row.id)" />
           </tbody>
         </table>
@@ -66,6 +78,7 @@
 import { ref } from "vue";
 import { ClipboardList, Plus } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
@@ -85,13 +98,13 @@ import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import InventoryNav from "../InventoryNav.vue";
 import DocumentRow from "./DocumentRow.vue";
 import DocumentSheet from "./DocumentSheet.vue";
-import DocumentsFilterBar from "./DocumentsFilterBar.vue";
+import DocumentsFilterFields from "./DocumentsFilterFields.vue";
 import { useDocumentsExport } from "./useDocumentsExport";
 import { useDocumentsFilters } from "./useDocumentsFilters";
 
 const { branches, branchId, selectBranch } = useCurrentBranch();
 const { canCreate } = usePermission("inventory");
-const { search, docType, status, page, filter } = useDocumentsFilters(branchId);
+const { search, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useDocumentsFilters(branchId);
 
 const openId = ref<string>();
 const exporter = useDocumentsExport(filter);
