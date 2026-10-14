@@ -18,6 +18,8 @@ export type ImportColumn = {
   kind?: ImportKind;
   /** flag columns: the value of an empty cell (false when omitted). */
   defaultFlag?: boolean;
+  /** number, flag and date columns: an empty cell gives null (keep the old value) instead of a default. */
+  emptyAsNull?: boolean;
 };
 
 export type CellValue = string | number | boolean | null;
@@ -44,6 +46,7 @@ export const mapHeaders = (header: readonly Cell[], columns: readonly ImportColu
 };
 
 const readCell = (column: ImportColumn, cell: Cell, row: string, problems: Record<string, string[]>): CellValue => {
+  if (column.emptyAsNull && column.kind && column.kind !== "text" && text(cell) === "") return null;
   switch (column.kind) {
     case "number": {
       const value = toNumber(cell);

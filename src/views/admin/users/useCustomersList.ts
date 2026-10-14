@@ -61,5 +61,6 @@ export const useCustomersList = () => {
     selectedId,
     selected,
     selectedOrders,
+    filter,
   };
 };

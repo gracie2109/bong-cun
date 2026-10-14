@@ -368,6 +368,11 @@
         "editProfile": "Edit profile",
         "born": "Born {date}",
         "markDeceased": "Mark as deceased"
+      },
+      "import": {
+        "title": "Import customers and pets from a file",
+        "hint": "Each row is a pet with its owner; a row without a pet name only creates or updates the customer. Customers match by phone number, pets by microchip or (owner + name). Empty cells keep the old data and the species must already exist.",
+        "customers": "Customers: {created} created, {updated} updated."
       }
     },
     "species": {

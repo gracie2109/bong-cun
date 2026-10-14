@@ -2220,6 +2220,7 @@ export type Database = {
       find_by_barcode: { Args: { p_branch?: string; p_code: string }; Returns: Json }
       import_products: { Args: { p_dry_run?: boolean; p_file_name?: string; p_rows: Json }; Returns: Json }
       export_products: { Args: { p_limit?: number; p_offset?: number }; Returns: Json }
+      import_pets: { Args: { p_dry_run?: boolean; p_rows: Json }; Returns: Json }
       set_min_stock: {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined

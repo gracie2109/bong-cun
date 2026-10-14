@@ -25,6 +25,8 @@ export type TableExportOptions<T> = {
   fetchPage?: (pageIndex: number, pageSize: number) => Promise<FetchedPage<T>>;
   /** Lists that return everything in one call. */
   fetchAll?: () => Promise<FetchedPage<T>>;
+  /** Rows asked per call when the list function caps its page size lower than the default 500. */
+  pageSize?: number;
   /** Replaces the default `<name>-<yyyymmdd-hhmm>` file name (without the extension). */
   fileBase?: () => string;
   /** Filter lines printed under the PDF title. */
@@ -53,7 +55,7 @@ export const useTableExport = <T>(options: TableExportOptions<T>) => {
       return { rows: rows.slice(0, cap), total, truncated: total > cap };
     }
     if (!options.fetchPage) throw new Error("useTableExport needs fetchPage or fetchAll");
-    return fetchAllPages(options.fetchPage, { cap, onProgress: (done, total) => (progress.value = { done, total }) });
+    return fetchAllPages(options.fetchPage, { cap, pageSize: options.pageSize, onProgress: (done, total) => (progress.value = { done, total }) });
   };
 
   const save = async (format: ExportFormat, rows: T[], total: number) => {

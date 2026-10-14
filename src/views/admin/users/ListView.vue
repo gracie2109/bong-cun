@@ -13,10 +13,13 @@
           <h2 class="text-2xl font-bold">{{ $t("pageMeta.customers") }}</h2>
           <p class="text-sm text-muted-foreground">{{ $t("pageFields.customers.subtitle") }}</p>
         </div>
-        <Button v-if="canCreate" @click="createOpen = true">
-          <UserPlus class="size-4 mr-2" />
-          {{ $t("pageFields.customers.addNew") }}
-        </Button>
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <Button v-if="canCreate" @click="createOpen = true">
+            <UserPlus class="size-4 mr-2" />
+            {{ $t("pageFields.customers.addNew") }}
+          </Button>
+        </div>
       </div>
 
       <CustomerKpis :total="totalCustomers" :new-count="newCustomers" />
@@ -57,11 +60,13 @@ import { Button } from "@/components/ui/button";
 import { usePermission } from "@/composables/usePermission";
 import { ContentWrap, Header } from "@/views/admin/components";
 import CustomerCreateSheet from "./CustomerCreateSheet.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import CustomerDetail from "./components/CustomerDetail.vue";
 import CustomerKpis from "./components/CustomerKpis.vue";
 import CustomerTable from "./components/CustomerTable.vue";
 import CustomersFilterBar from "./CustomersFilterBar.vue";
 import { statsOf } from "./customer-stats";
+import { useCustomersExport } from "./useCustomersExport";
 import { useCustomersList } from "./useCustomersList";
 
 const { canCreate } = usePermission("users");
@@ -82,5 +87,7 @@ const {
   selectedId,
   selected,
   selectedOrders,
+  filter,
 } = useCustomersList();
+const exporter = useCustomersExport(filter);
 </script>

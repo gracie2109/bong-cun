@@ -16,10 +16,13 @@
           </h2>
           <p class="text-sm text-muted-foreground">{{ $t("petCare.services.subtitle") }}</p>
         </div>
-        <Button v-if="canCreate" @click="openCreate">
-          <Plus class="mr-2 size-4" />
-          {{ $t("petCare.services.add") }}
-        </Button>
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <Button v-if="canCreate" @click="openCreate">
+            <Plus class="mr-2 size-4" />
+            {{ $t("petCare.services.add") }}
+          </Button>
+        </div>
       </div>
 
       <PetsNav />
@@ -76,6 +79,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { Plus, Scissors } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
@@ -89,10 +93,12 @@ import PetsNav from "../PetsNav.vue";
 import ServiceFormSheet from "./ServiceFormSheet.vue";
 import ServiceRow from "./ServiceRow.vue";
 import ServicesFilterBar from "./ServicesFilterBar.vue";
+import { useServicesExport } from "./useServicesExport";
 import { useServicesFilters } from "./useServicesFilters";
 
 const { search, speciesFilter, typeFilter, showArchived, pageData, filter, species } = useServicesFilters();
 
+const exporter = useServicesExport(filter);
 const formOpen = ref(false);
 const editing = ref<PetService | null>(null);
 const toArchive = ref<PetService | null>(null);
