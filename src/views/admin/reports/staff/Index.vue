@@ -11,7 +11,7 @@
       <ReportsNav />
       <ReportFilterBar>
         <template #actions>
-          <ExportButton :loading="exporting" :disabled="!filter" @export="exportCsv" />
+          <ExportMenu :exporter="exporter" />
         </template>
       </ReportFilterBar>
       <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
@@ -76,7 +76,7 @@ import { supabaseClient } from "@/lib/supabase";
 import { useStaffRevenue } from "@/queries/reports";
 import { EXPORT_LIMIT, listStaffRevenue } from "@/repositories/reports";
 import { ContentWrap, Header } from "@/views/admin/components";
-import ExportButton from "../shared/ExportButton.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import { useReportExport } from "../shared/useReportExport";
 import ReportsNav from "../ReportsNav.vue";
@@ -92,8 +92,9 @@ const { role, search, page, filter } = useStaffFilters();
 const listQuery = useStaffRevenue(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 
-const { exporting, run: exportCsv } = useReportExport({
+const exporter = useReportExport({
   tab: "nhan-vien",
+  titleKey: "reports.staff.title",
   filter,
   fetchRows: (current) => listStaffRevenue(supabaseClient(), { pageIndex: 1, pageSize: EXPORT_LIMIT }, current),
   columns: () => staffCsvColumns(role.value, t),

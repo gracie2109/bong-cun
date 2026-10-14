@@ -30,6 +30,16 @@
     "deleteFileDesc": "Once deleted it cannot be recovered.",
     "cancel": "Cancel",
     "search": "Search",
+    "searchView": {
+      "clear": "Clear filters",
+      "filter": "Filter",
+      "refresh": "Refresh",
+      "reset": "Reset",
+      "apply": "Search",
+      "activeFilters": "{count} active",
+      "noResults": "No matching results",
+      "clearFilters": "Clear filters"
+    },
     "table": {
       "range": "Showing {from}–{to} of {total}",
       "pagination": "Pagination",
@@ -1944,6 +1954,20 @@
       "update": "Update",
       "skip": "Skipped"
     }
+  },
+  "dataIo": {
+    "download": "Download",
+    "progress": "Fetching {done} / {total} rows",
+    "format": {
+      "pdf": "PDF (print)",
+      "xlsx": "Excel (.xlsx)",
+      "csv": "CSV"
+    },
+    "exportedAt": "Exported {time} by {who}",
+    "rowCount": "{count} rows in total",
+    "empty": "There is nothing to export.",
+    "truncated": "Only the first {limit} rows were exported, narrow the filter.",
+    "failed": "Export failed."
   },
   "client": {
     "nav": {

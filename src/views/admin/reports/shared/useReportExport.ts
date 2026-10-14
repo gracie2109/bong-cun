@@ -1,38 +1,38 @@
-import { ref, type Ref } from "vue";
+import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { toast } from "vue-sonner";
-import { downloadCsv, toCsv, type CsvColumn } from "@/lib/csv";
-import { EXPORT_LIMIT, type ReportFilter } from "@/repositories/reports";
+import { useTableExport } from "@/composables/useTableExport";
+import type { ExportColumn } from "@/lib/data-io/columns";
+import { formatDate } from "@/lib/data-io/formatCell";
+import type { ReportFilter } from "@/repositories/reports";
 
 type ExportOptions<T, F extends ReportFilter> = {
-  /** Tab name in the file name: bao-cao-<tab>-<from>-<to>.csv */
+  /** Tab name in the file name: bao-cao-<tab>-<from>-<to>.<ext> */
   tab: string;
+  /** i18n key of the tab title, printed at the top of the PDF. */
+  titleKey: string;
   filter: Ref<F | null>;
   /** Fetches up to EXPORT_LIMIT rows; `total` is how many exist. */
   fetchRows: (filter: F) => Promise<{ rows: T[]; total: number }>;
-  columns: () => CsvColumn<T>[];
+  columns: () => ExportColumn<T>[];
 };
 
-/** Downloads a tab's rows as CSV; warns when more than EXPORT_LIMIT exist. */
+/** Exports a report tab as Excel, CSV or PDF; warns when more than EXPORT_LIMIT rows exist. */
 export const useReportExport = <T, F extends ReportFilter = ReportFilter>(options: ExportOptions<T, F>) => {
   const { t } = useI18n();
-  const exporting = ref(false);
-
-  const run = async () => {
-    const filter = options.filter.value;
-    if (!filter || exporting.value) return;
-    exporting.value = true;
-    try {
-      const { rows, total } = await options.fetchRows(filter);
-      downloadCsv(`bao-cao-${options.tab}-${filter.from}-${filter.to}.csv`, toCsv(rows, options.columns()));
-      if (total > EXPORT_LIMIT) toast.warning(t("reports.export.truncated", { limit: EXPORT_LIMIT.toLocaleString("vi-VN") }));
-    } catch (error) {
-      console.error("Failed to export report", error);
-      toast.error(t("reports.export.failed"));
-    } finally {
-      exporting.value = false;
-    }
-  };
-
-  return { exporting, run };
+  return useTableExport<T>({
+    name: t(options.titleKey),
+    permission: "reports",
+    columns: options.columns,
+    enabled: () => !!options.filter.value,
+    fetchAll: () => {
+      const filter = options.filter.value;
+      if (!filter) return Promise.resolve({ rows: [], total: 0 });
+      return options.fetchRows(filter);
+    },
+    fileBase: () => `bao-cao-${options.tab}-${options.filter.value?.from}-${options.filter.value?.to}`,
+    meta: () => {
+      const filter = options.filter.value;
+      return filter ? [`${formatDate(filter.from)} - ${formatDate(filter.to)}`] : [];
+    },
+  });
 };

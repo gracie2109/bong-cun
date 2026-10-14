@@ -16,16 +16,24 @@
         </Button>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
-        <div class="relative min-w-60 flex-1">
-          <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input v-model="search" class="pl-9" :placeholder="$t('productCatalog.categories.searchPlaceholder')" />
-        </div>
-        <label class="flex items-center gap-2 text-sm text-muted-foreground">
-          <Switch v-model:checked="showInactive" />
-          {{ $t("productCatalog.showInactive") }}
-        </label>
-      </div>
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('productCatalog.categories.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters>
+          <label class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Switch v-model:checked="draft.showInactive" />
+            {{ $t("productCatalog.showInactive") }}
+          </label>
+        </template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -39,7 +47,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('productCatalog.categories.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('productCatalog.categories.empty')" />
             <CategoryRow
               v-for="row in rows"
               :key="row.id"
@@ -74,15 +82,15 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { FolderTree, Plus, Search } from "lucide-vue-next";
+import { FolderTree, Plus } from "lucide-vue-next";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { usePagedList } from "@/composables/usePagedList";
-import { usePagedSearch } from "@/composables/usePagedSearch";
+import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
 import {
   useDeleteProductCategory,
@@ -99,13 +107,13 @@ import CategoryRow from "./CategoryRow.vue";
 const PAGE_SIZE = 20;
 
 const { canCreate, canUpdate, canDelete } = usePermission("products");
-const showInactive = ref(false);
-const { search, debouncedSearch, page } = usePagedSearch({ pageSize: PAGE_SIZE, resetOn: [showInactive] });
+const { search, debouncedSearch, page, applied, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } =
+  useListFilters({ pageSize: PAGE_SIZE, defaults: { showInactive: false } });
 const formOpen = ref(false);
 const editing = ref<ProductCategory | null>(null);
 const deleting = ref<ProductCategory | null>(null);
 
-const filter = computed<CatalogFilter>(() => ({ search: debouncedSearch.value, includeInactive: showInactive.value }));
+const filter = computed<CatalogFilter>(() => ({ search: debouncedSearch.value, includeInactive: applied.value.showInactive }));
 const listQuery = useProductCategories(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 const saveMutation = useSaveProductCategory();
