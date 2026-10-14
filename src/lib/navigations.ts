@@ -1,4 +1,5 @@
 import type { LinkProp } from "@/types";
+import type { AccountNavItem } from "@/types/account";
 
 export type AdminNavSection = { title: string; items: LinkProp[] };
 
@@ -77,33 +78,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
   },
 ];
 
-export const PROFILE_KEYS = {
-  GENERAL: "general",
-  ADDRESS: 'address',
-  ORDERS: 'orders'
-
-}
 export const navigation = {
-  profileNav: [
-    {
-      path: "general",
-      key: PROFILE_KEYS.GENERAL,
-      label: "general",
-      icon: "",
-    },
-    {
-      path: "address",
-      key:  PROFILE_KEYS.ADDRESS,
-      icon: "",
-      label: "address",
-    },
-    {
-      path: "orders",
-      key: PROFILE_KEYS.ORDERS,
-      label: "orders",
-      icon: "",
-    },
-  ],
   /** Public header/footer links. `title` is an i18n key under `client.nav`. */
   clientNav: [
     { title: "client.nav.home", name: "home" },
@@ -112,3 +87,11 @@ export const navigation = {
     { title: "client.nav.contact", name: "contact" },
   ],
 };
+
+/** Side menu of the account area. Later steps add pets and appointments. `label` is an i18n key under `client.account.nav`. */
+export const ACCOUNT_NAV: AccountNavItem[] = [
+  { label: "client.account.nav.overview", name: "account", icon: "LayoutDashboard" },
+  { label: "client.account.nav.profile", name: "account-profile", icon: "User" },
+  { label: "client.account.nav.addresses", name: "account-addresses", icon: "MapPin" },
+  { label: "client.account.nav.orders", name: "account-orders", icon: "Package" },
+];

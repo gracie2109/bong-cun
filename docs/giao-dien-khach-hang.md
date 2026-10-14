@@ -290,3 +290,7 @@ Migration `20261018010000_shop_catalog.sql` (`shop_product_groups`, `shop_relate
 ### Bước 3 (chi tiết sản phẩm)
 
 Trang `/products/[id]` (breadcrumb, gallery, chọn biến thể và đơn vị, số lượng, thêm giỏ và "Mua ngay", mô tả, bảng thông tin, 8 sản phẩm cùng danh mục từ `shop_related_groups`). Nhóm không còn biến thể bán được hoặc đã ngừng hiện "Sản phẩm đã ngừng bán" thay vì 404. Tồn từng biến thể lấy qua `shop_cart_lines` (đã có, không cần SQL mới) để làm mờ biến thể hết hàng. Thẻ ở danh sách và quick view có link tới trang chi tiết. Không có SQL. Chỉ typecheck/build và SSR trả 200.
+
+### Bước 4 (khu vực tài khoản và hồ sơ)
+
+Migration `20261018020000_my_profile.sql` (thêm `customers.birth_date`, `my_profile()`, `save_my_profile()`). Lưu hồ sơ cập nhật cả `users` và `customers`; lần lưu đầu tạo khách hàng nếu số điện thoại chưa có, và **không** tự gắn vào hồ sơ khách đã tồn tại cùng số (báo `phone_in_use`, nhân viên liên kết ở bước 5). `ensure_my_customer` để sang bước 5. Số điện thoại bắt buộc trong form. Route mới `/account` (tổng quan), `/account/profile`, `/account/addresses`, `/account/orders`; `/profile` chuyển hướng 301 sang `/account/profile`. Trạng thái liên kết Google đọc từ `session.user.identities`. Tổng quan hiện đơn gần đây; số thú cưng và lịch hẹn sắp tới thêm ở bước 5 và 8. SQL thử trên Postgres local; UI chỉ typecheck/build, trang cần đăng nhập nên SSR trả 302.

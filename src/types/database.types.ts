@@ -2195,6 +2195,8 @@ export type Database = {
         Returns: Json
       }
       shop_related_groups: { Args: { p_group: string; p_limit?: number }; Returns: Json }
+      my_profile: { Args: never; Returns: Json }
+      save_my_profile: { Args: { p: Json }; Returns: Json }
       shop_public_settings: { Args: never; Returns: Json }
       shop_admin_settings: { Args: never; Returns: Json }
       save_shop_settings: { Args: { p: Json }; Returns: Json }

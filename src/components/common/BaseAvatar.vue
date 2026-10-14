@@ -55,7 +55,7 @@ function handleLogout() {
 }
 
 function goToProfile () {
-  router.push({name: 'profile'})
+  router.push({name: 'account'})
 }
 // No photo: leave src empty so the fallback icon shows instead of a remote placeholder.
 const avatar = computed(() => currentUser.value?.photoURL || "")

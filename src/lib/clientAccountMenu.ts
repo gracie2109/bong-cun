@@ -1,6 +1,5 @@
-/** Entries of the account dropdown in the public header. `label` is an i18n key under `client.menu`. */
-export type AccountMenuItem = { label: string; name: string; icon: string };
+import type { AccountNavItem } from "@/types/account";
+import { ACCOUNT_NAV } from "./navigations";
 
-export const ACCOUNT_MENU_ITEMS: AccountMenuItem[] = [
-  { label: "client.menu.account", name: "profile", icon: "User" },
-];
+/** Entries of the account dropdown in the public header: the account area's own menu. */
+export const ACCOUNT_MENU_ITEMS: AccountNavItem[] = ACCOUNT_NAV;
