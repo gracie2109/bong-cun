@@ -100,7 +100,8 @@
     "productImport": "Nhập / xuất Excel sản phẩm",
     "shopOrderSettings": "Cài đặt bán online",
     "order": "Đơn hàng",
-    "shopOrders": "Đơn online"
+    "shopOrders": "Đơn online",
+    "productDetail": "Chi tiết sản phẩm"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2055,6 +2056,21 @@
       "empty": "Không tìm thấy sản phẩm phù hợp",
       "error": "Không tải được danh sách sản phẩm.",
       "retry": "Thử lại"
+    },
+    "product": {
+      "sku": "Mã SKU",
+      "buyNow": "Mua ngay",
+      "inStock": "Còn hàng",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Chỉ còn {count}",
+      "description": "Mô tả sản phẩm",
+      "noDescription": "Chưa có mô tả cho sản phẩm này.",
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "unit": "Đơn vị",
+      "related": "Sản phẩm cùng danh mục",
+      "viewDetail": "Xem chi tiết",
+      "discontinued": "Sản phẩm đã ngừng bán"
     }
   }
 }

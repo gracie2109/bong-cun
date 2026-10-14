@@ -10,6 +10,14 @@
             <DialogDescription v-if="group.desc">{{ group.desc }}</DialogDescription>
           </DialogHeader>
 
+          <RouterLink
+            :to="{ name: 'product-detail', params: { id: group.id } }"
+            class="text-sm font-semibold text-primary underline"
+            @click="emit('update:open', false)"
+          >
+            {{ $t("client.product.viewDetail") }}
+          </RouterLink>
+
           <p class="text-2xl font-bold text-primary">
             {{ choice.variant.value && addToCart.price.value !== null ? formatPrice(addToCart.price.value) : priceLabel }}
           </p>
@@ -70,7 +78,7 @@ import { useAddToCart } from "@/composables/shop/useAddToCart";
 import { useVariantChoice } from "@/composables/useVariantChoice";
 import { formatPrice } from "@/lib/utils";
 import type { ShopGroup } from "@/types/catalog";
-import { groupCover, groupPriceLabel } from "@/utils/shop/catalog";
+import { groupCover, groupGallery, groupPriceLabel } from "@/utils/shop/catalog";
 
 const props = defineProps<{ group: ShopGroup; open: boolean }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
@@ -80,11 +88,7 @@ const choice = useVariantChoice(toRef(props, "group"));
 const addToCart = useAddToCart(choice.variant);
 
 const cover = computed(() => groupCover(props.group));
-/** The gallery's pictures, or the cover alone for a group saved before galleries. */
-const galleryImages = computed(() => {
-  const urls = props.group.images.map((item) => item.url);
-  return urls.length > 0 ? urls : cover.value ? [cover.value] : [];
-});
+const galleryImages = computed(() => groupGallery(props.group));
 // The picked variant's own photo when it has one.
 const image = computed(() => choice.variant.value?.imageUrl || cover.value);
 const priceLabel = computed(() => groupPriceLabel(props.group, t("client.catalog.from")));

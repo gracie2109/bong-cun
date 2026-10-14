@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import type { CatalogFilters, ShopGroup } from "@/types/catalog";
 import { toGroup, type GroupJson } from "../products/mappers";
+import { fetchCartLines } from "./cart";
 import { pageRange, type Page, type PageParams } from "../shared";
 
 type Client = SupabaseClient<Database>;
@@ -36,4 +37,20 @@ export const listRelatedGroups = async (client: Client, groupId: string, limit =
   const { data, error } = await client.rpc("shop_related_groups", { p_group: groupId, p_limit: limit });
   if (error) throw error;
   return (data as unknown as ShopGroupJson[]).map(toShopGroup);
+};
+
+/** How many of each variant (in its base unit) can be bought now, up to 99; asks the cart's stock check. */
+export const fetchVariantAvailability = async (
+  client: Client,
+  productIds: readonly string[]
+): Promise<Record<string, number>> => {
+  const CART_LINES_LIMIT = 30;
+  const chunks: string[][] = [];
+  for (let i = 0; i < productIds.length; i += CART_LINES_LIMIT) chunks.push(productIds.slice(i, i + CART_LINES_LIMIT));
+  const views = (
+    await Promise.all(
+      chunks.map((chunk) => fetchCartLines(client, chunk.map((productId) => ({ productId, unitId: null, qty: 1 }))))
+    )
+  ).flat();
+  return Object.fromEntries(views.map((view) => [view.productId, view.isSellable ? view.available : 0]));
 };

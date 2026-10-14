@@ -1,4 +1,5 @@
-import { CATALOG_SORTS, type CatalogFilters, type CatalogSort, type CategoryNode, type ShopGroup } from "@/types/catalog";
+import { CATALOG_SORTS, type CatalogFilters, type CatalogSort, type CategoryNode } from "@/types/catalog";
+import type { ProductGroup } from "@/repositories/products";
 import type { ProductCategory } from "@/repositories/productCategories";
 import { formatPrice } from "@/lib/utils";
 
@@ -57,11 +58,18 @@ export const categoryName = (tree: readonly CategoryNode[], id: string | null): 
   return null;
 };
 
-export const groupCover = (group: ShopGroup): string | undefined =>
+export const groupCover = (group: ProductGroup): string | undefined =>
   group.imageUrl || group.images[0]?.url || group.variants.find((item) => item.imageUrl)?.imageUrl || undefined;
 
+/** The gallery's pictures, or the cover alone for a group saved before galleries. */
+export const groupGallery = (group: ProductGroup): string[] => {
+  const urls = group.images.map((item) => item.url);
+  const cover = groupCover(group);
+  return urls.length > 0 ? urls : cover ? [cover] : [];
+};
+
 /** "120.000đ" for one price, "Từ 120.000đ" when the variants differ in price. */
-export const groupPriceLabel = (group: ShopGroup, fromLabel: string): string => {
+export const groupPriceLabel = (group: ProductGroup, fromLabel: string): string => {
   const { minPrice, maxPrice } = group;
   if (minPrice === null) return "";
   const price = formatPrice(minPrice) ?? "";
@@ -69,7 +77,7 @@ export const groupPriceLabel = (group: ShopGroup, fromLabel: string): string => 
 };
 
 /** "3 vị · 2 khối lượng": how many values each attribute with a choice has. */
-export const groupOptionHint = (group: ShopGroup): string =>
+export const groupOptionHint = (group: ProductGroup): string =>
   group.attributes
     .filter((attribute) => attribute.values.length > 1)
     .map((attribute) => `${attribute.values.length} ${attribute.name.toLowerCase()}`)
