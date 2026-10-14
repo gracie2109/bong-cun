@@ -14,7 +14,6 @@ export {default as InputNumberCs} from "./CustomInputField.vue";
 export {default as DialogConfirm} from "./ConfirmDialog.vue";
 export {default as ActionRow} from "./ActionRow.vue";
 export {default as CustomPagination} from "./CustomPagination.vue";
-export {default as DataTable} from "./DataTable/index.vue";
 export {default as SettingColumnVisible} from "./SettingColumnVisible.vue";
 export {default as UploadFields} from "./UploadFields.vue";
 export {default as LoadingSpin} from "./LoadingSpin.vue";
