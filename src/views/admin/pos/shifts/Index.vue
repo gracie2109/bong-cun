@@ -10,7 +10,10 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <PosNav />
-        <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
+          <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
+        </div>
       </div>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
@@ -43,6 +46,7 @@
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import { Wallet } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
@@ -57,14 +61,16 @@ import BranchPicker from "../components/BranchPicker.vue";
 import CloseShiftDialog from "../components/CloseShiftDialog.vue";
 import PosNav from "../PosNav.vue";
 import ShiftRow from "./ShiftRow.vue";
+import { useShiftsExport } from "./useShiftsExport";
 
 const PAGE_SIZE = 20;
 
 const auth = useAuthStore();
 const { canCreate, canUpdate } = usePermission("pos");
-const { branches, branchId, selectBranch } = useCurrentBranch();
+const { branches, branch, branchId, selectBranch } = useCurrentBranch();
 const page = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize: PAGE_SIZE });
 const closing = ref<CashShift | null>(null);
+const exporter = useShiftsExport(branchId, () => branch.value?.name);
 
 const listQuery = useShiftsList(branchId, page);
 const { rows, total, pageCount } = usePagedList(listQuery, page);

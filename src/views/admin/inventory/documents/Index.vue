@@ -11,6 +11,7 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
         <div class="flex flex-wrap items-center gap-2">
+          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
           <DropdownMenu v-if="canCreate">
             <DropdownMenuTrigger as-child>
@@ -64,6 +65,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { ClipboardList, Plus } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
@@ -84,6 +86,7 @@ import InventoryNav from "../InventoryNav.vue";
 import DocumentRow from "./DocumentRow.vue";
 import DocumentSheet from "./DocumentSheet.vue";
 import DocumentsFilterBar from "./DocumentsFilterBar.vue";
+import { useDocumentsExport } from "./useDocumentsExport";
 import { useDocumentsFilters } from "./useDocumentsFilters";
 
 const { branches, branchId, selectBranch } = useCurrentBranch();
@@ -91,6 +94,7 @@ const { canCreate } = usePermission("inventory");
 const { search, docType, status, page, filter } = useDocumentsFilters(branchId);
 
 const openId = ref<string>();
+const exporter = useDocumentsExport(filter);
 const newType = ref<DocType>();
 
 const listQuery = useStockDocuments(page, filter);

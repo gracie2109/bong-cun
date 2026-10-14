@@ -19,6 +19,8 @@ export type TableExportOptions<T> = {
   /** Permission code whose EXPORT method shows the button. */
   permission: string;
   columns: () => ExportColumn<T>[];
+  /** Columns of the printed PDF when they differ (e.g. a count sheet with blank boxes to fill in). */
+  printColumns?: () => ExportColumn<T>[];
   /** Lists that page (1-based page index): read page by page up to the limit. */
   fetchPage?: (pageIndex: number, pageSize: number) => Promise<FetchedPage<T>>;
   /** Lists that return everything in one call. */
@@ -62,7 +64,7 @@ export const useTableExport = <T>(options: TableExportOptions<T>) => {
     printTable({
       title: options.name,
       meta: [...(options.meta?.() ?? []), stamp],
-      columns,
+      columns: options.printColumns?.() ?? columns,
       rows,
       rowCountLabel: t("dataIo.rowCount", { count: total.toLocaleString("vi-VN") }),
     });
