@@ -207,6 +207,11 @@ export const shopCatalogKeys = {
   availability: (productIds: string[]) => [...shopCatalogKeys.all, "availability", [...productIds].sort()] as const,
 };
 
+export const accountKeys = {
+  all: ["account"] as const,
+  profile: () => [...accountKeys.all, "profile"] as const,
+};
+
 export const ghnLocationKeys = {
   all: ["ghn-locations"] as const,
   provinces: () => [...ghnLocationKeys.all, "provinces"] as const,

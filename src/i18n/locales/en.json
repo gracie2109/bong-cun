@@ -102,7 +102,11 @@
     "shopOrderSettings": "Online shop settings",
     "order": "Order",
     "shopOrders": "Online orders",
-    "productDetail": "Product detail"
+    "productDetail": "Product detail",
+    "account": "Account",
+    "accountProfile": "Profile",
+    "accountAddresses": "Addresses",
+    "accountOrders": "My orders"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2118,6 +2122,43 @@
       "related": "Related products",
       "viewDetail": "View details",
       "discontinued": "This product is no longer sold"
+    },
+    "account": {
+      "title": "My account",
+      "nav": {
+        "overview": "Overview",
+        "profile": "Profile",
+        "addresses": "Addresses",
+        "orders": "Orders"
+      },
+      "profile": {
+        "info": "Personal information",
+        "fullName": "Full name",
+        "phone": "Phone number",
+        "email": "Email",
+        "emailHint": "Your email is used to sign in and cannot be changed.",
+        "birthDate": "Date of birth",
+        "save": "Save changes",
+        "loadFailed": "Could not load your account."
+      },
+      "errors": {
+        "invalid_name": "Please enter your full name.",
+        "invalid_phone": "Invalid phone number.",
+        "invalid_birth_date": "Invalid date of birth.",
+        "phone_in_use": "The store already has a profile with this number. Ask staff to link it when you visit, or call the hotline."
+      },
+      "google": {
+        "title": "Sign in with Google",
+        "linked": "Linked",
+        "notLinked": "Not linked",
+        "link": "Link Google"
+      },
+      "overview": {
+        "hello": "Hello, {name}",
+        "intro": "Manage your details, addresses and orders.",
+        "recentOrders": "Recent orders",
+        "viewAll": "View all"
+      }
     }
   }
 }

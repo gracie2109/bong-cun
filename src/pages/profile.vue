@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import View from "@/views/client/profile/Index.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
+// Old link: the profile now lives under /account.
 definePageMeta({
   name: "profile",
   titleKey: "profile",
   layout: PAGE_LAYOUT.CLIENT,
+  middleware: () => navigateTo({ name: "account-profile" }, { redirectCode: 301 }),
 });
 </script>
 
 <template>
-  <View />
+  <div />
 </template>

@@ -102,7 +102,11 @@
     "shopOrderSettings": "Cài đặt bán online",
     "order": "Đơn hàng",
     "shopOrders": "Đơn online",
-    "productDetail": "Chi tiết sản phẩm"
+    "productDetail": "Chi tiết sản phẩm",
+    "account": "Tài khoản",
+    "accountProfile": "Thông tin cá nhân",
+    "accountAddresses": "Sổ địa chỉ",
+    "accountOrders": "Đơn hàng của tôi"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2118,6 +2122,43 @@
       "related": "Sản phẩm cùng danh mục",
       "viewDetail": "Xem chi tiết",
       "discontinued": "Sản phẩm đã ngừng bán"
+    },
+    "account": {
+      "title": "Tài khoản của tôi",
+      "nav": {
+        "overview": "Tổng quan",
+        "profile": "Thông tin cá nhân",
+        "addresses": "Sổ địa chỉ",
+        "orders": "Đơn hàng"
+      },
+      "profile": {
+        "info": "Thông tin cá nhân",
+        "fullName": "Họ và tên",
+        "phone": "Số điện thoại",
+        "email": "Email",
+        "emailHint": "Email dùng để đăng nhập, không thể thay đổi.",
+        "birthDate": "Ngày sinh",
+        "save": "Lưu thay đổi",
+        "loadFailed": "Không tải được thông tin tài khoản."
+      },
+      "errors": {
+        "invalid_name": "Vui lòng nhập họ và tên.",
+        "invalid_phone": "Số điện thoại không hợp lệ.",
+        "invalid_birth_date": "Ngày sinh không hợp lệ.",
+        "phone_in_use": "Cửa hàng đã có hồ sơ với số này. Nhờ nhân viên liên kết khi bạn đến, hoặc gọi hotline."
+      },
+      "google": {
+        "title": "Đăng nhập bằng Google",
+        "linked": "Đã liên kết",
+        "notLinked": "Chưa liên kết",
+        "link": "Liên kết Google"
+      },
+      "overview": {
+        "hello": "Xin chào, {name}",
+        "intro": "Quản lý thông tin, địa chỉ và đơn hàng của bạn.",
+        "recentOrders": "Đơn hàng gần đây",
+        "viewAll": "Xem tất cả"
+      }
     }
   }
 }
