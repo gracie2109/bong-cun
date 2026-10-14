@@ -1944,5 +1944,19 @@
       "update": "Update",
       "skip": "Skipped"
     }
+  },
+  "dataIo": {
+    "download": "Download",
+    "progress": "Fetching {done} / {total} rows",
+    "format": {
+      "pdf": "PDF (print)",
+      "xlsx": "Excel (.xlsx)",
+      "csv": "CSV"
+    },
+    "exportedAt": "Exported {time} by {who}",
+    "rowCount": "{count} rows in total",
+    "empty": "There is nothing to export.",
+    "truncated": "Only the first {limit} rows were exported, narrow the filter.",
+    "failed": "Export failed."
   }
 }

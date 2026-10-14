@@ -11,7 +11,7 @@
       <ReportsNav />
       <ReportFilterBar>
         <template #actions>
-          <ExportButton :loading="exporting" :disabled="!filter" @export="exportCsv" />
+          <ExportMenu :exporter="exporter" />
         </template>
       </ReportFilterBar>
       <ItemsFilterBar v-model:search="search" v-model:kind="kind" v-model:sort="sort" />
@@ -62,7 +62,7 @@ import { useI18n } from "vue-i18n";
 import { useTopItems } from "@/queries/reports";
 import { EXPORT_LIMIT, listTopItems } from "@/repositories/reports";
 import { ContentWrap, Header } from "@/views/admin/components";
-import ExportButton from "../shared/ExportButton.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import { useReportExport } from "../shared/useReportExport";
 import ReportsNav from "../ReportsNav.vue";
@@ -78,8 +78,9 @@ const listQuery = useTopItems(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 const rankOf = (index: number) => (page.pageIndex - 1) * page.pageSize + index + 1;
 
-const { exporting, run: exportCsv } = useReportExport({
+const exporter = useReportExport({
   tab: "san-pham-dich-vu",
+  titleKey: "reports.items.title",
   filter,
   fetchRows: (current) => listTopItems(supabaseClient(), { pageIndex: 1, pageSize: EXPORT_LIMIT }, current),
   columns: () => itemsCsvColumns(t),

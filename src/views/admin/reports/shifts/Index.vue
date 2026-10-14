@@ -11,7 +11,7 @@
       <ReportsNav />
       <ReportFilterBar>
         <template #actions>
-          <ExportButton :loading="exporting" :disabled="!filter" @export="exportCsv" />
+          <ExportMenu :exporter="exporter" />
         </template>
       </ReportFilterBar>
       <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
@@ -79,7 +79,7 @@ import { supabaseClient } from "@/lib/supabase";
 import { useShiftRecon } from "@/queries/reports";
 import { EXPORT_LIMIT, listShiftRecon, type ShiftStatusFilter } from "@/repositories/reports";
 import { ContentWrap, Header } from "@/views/admin/components";
-import ExportButton from "../shared/ExportButton.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import { useReportExport } from "../shared/useReportExport";
 import ReportsNav from "../ReportsNav.vue";
@@ -95,8 +95,9 @@ const { status, search, page, filter } = useShiftReconFilters();
 const listQuery = useShiftRecon(page, filter);
 const { rows, total, pageCount } = usePagedList(listQuery, page);
 
-const { exporting, run: exportCsv } = useReportExport({
+const exporter = useReportExport({
   tab: "doi-chieu-ca",
+  titleKey: "reports.shifts.title",
   filter,
   fetchRows: (current) => listShiftRecon(supabaseClient(), { pageIndex: 1, pageSize: EXPORT_LIMIT }, current),
   columns: () => shiftsCsvColumns(t),

@@ -11,7 +11,7 @@
       <ReportsNav />
       <ReportFilterBar>
         <template #actions>
-          <ExportButton :loading="exporting" :disabled="!filter" @export="exportCsv" />
+          <ExportMenu :exporter="exporter" />
         </template>
       </ReportFilterBar>
       <div class="flex flex-wrap items-center gap-3 rounded-xl border bg-white p-3">
@@ -89,7 +89,7 @@ import { EXPORT_LIMIT, listAdjustments, type AdjustmentKind } from "@/repositori
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import InvoiceSheet from "@/views/admin/pos/invoices/InvoiceSheet.vue";
-import ExportButton from "../shared/ExportButton.vue";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import { useReportExport } from "../shared/useReportExport";
 import ReportsNav from "../ReportsNav.vue";
@@ -111,8 +111,9 @@ const canOpenInvoice = computed(() => auth.can("pos", "VIEW"));
 const open = ref<{ invoiceId: string; branchId: string }>();
 const openBranch = computed(() => branches.value.find((branch) => branch.id === open.value?.branchId) ?? null);
 
-const { exporting, run: exportCsv } = useReportExport({
+const exporter = useReportExport({
   tab: "hoan-tra-huy",
+  titleKey: "reports.adjustments.title",
   filter,
   fetchRows: (current) => listAdjustments(supabaseClient(), { pageIndex: 1, pageSize: EXPORT_LIMIT }, current),
   columns: () => adjustmentsCsvColumns(t),

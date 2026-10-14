@@ -1,16 +1,10 @@
 // Prints an 80 mm retail receipt through a hidden iframe, so the admin page itself is untouched.
+import { escapeHtml, printHtml } from "@/lib/print";
 import type { Branch } from "@/repositories/branches";
 import type { InvoiceDetail } from "@/repositories/pos";
 import { dateTime, money } from "./format";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
-
-const escapeHtml = (text: string | number | null | undefined): string =>
-  String(text ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 
 const row = (label: string, value: string, strong = false): string =>
   `<tr class="${strong ? "strong" : ""}"><td>${escapeHtml(label)}</td><td class="r">${escapeHtml(value)}</td></tr>`;
@@ -65,25 +59,5 @@ export const receiptHtml = (invoice: InvoiceDetail, branch: Branch | null, t: Tr
 </body></html>`;
 };
 
-export const printReceipt = (invoice: InvoiceDetail, branch: Branch | null, t: Translate) => {
-  const frame = document.createElement("iframe");
-  frame.setAttribute("aria-hidden", "true");
-  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;";
-  document.body.appendChild(frame);
-  const doc = frame.contentDocument;
-  if (!doc || !frame.contentWindow) {
-    frame.remove();
-    return;
-  }
-  doc.open();
-  doc.write(receiptHtml(invoice, branch, t));
-  doc.close();
-  const view = frame.contentWindow;
-  view.onafterprint = () => frame.remove();
-  setTimeout(() => {
-    view.focus();
-    view.print();
-    // Browsers that never fire afterprint still drop the frame eventually.
-    setTimeout(() => frame.remove(), 60_000);
-  }, 100);
-};
+export const printReceipt = (invoice: InvoiceDetail, branch: Branch | null, t: Translate) =>
+  printHtml(receiptHtml(invoice, branch, t));
