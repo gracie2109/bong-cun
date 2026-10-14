@@ -1957,6 +1957,37 @@
     "rowCount": "{count} rows in total",
     "empty": "There is nothing to export.",
     "truncated": "Only the first {limit} rows were exported, narrow the filter.",
-    "failed": "Export failed."
+    "failed": "Export failed.",
+    "import": {
+      "button": "Import",
+      "template": "Download template:",
+      "dropTitle": "Drop a file here or click to choose",
+      "dropHint": "Excel (.xlsx) or CSV. Up to 2,000 rows. Empty cells keep the old data.",
+      "readFailed": "The file could not be read. Use an Excel (.xlsx) or CSV file that follows the template.",
+      "rowCount": "{n} rows",
+      "checking": "Checking {done} / {total} rows",
+      "importing": "Importing {done} / {total} rows",
+      "done": "Import finished.",
+      "another": "Choose another file",
+      "cancel": "Discard file",
+      "importRows": "Import {n} rows",
+      "onlyErrors": "Only rows with errors",
+      "downloadErrors": "Download error file",
+      "empty": "No rows.",
+      "stat": {
+        "created": "Created",
+        "updated": "Updated",
+        "errors": "Rows with errors"
+      },
+      "col": {
+        "row": "Row",
+        "result": "Result"
+      },
+      "action": {
+        "create": "Create",
+        "update": "Update",
+        "skip": "Skip"
+      }
+    }
   }
 }

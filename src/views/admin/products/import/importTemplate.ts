@@ -5,9 +5,6 @@ export const PRODUCT_SHEET = "San pham";
 export const UNIT_SHEET = "Don vi";
 
 export const MAX_ATTRIBUTES = 3;
-export const MAX_FILE_ROWS = 2000;
-/** Rows sent to the database in one call. */
-export const BATCH_SIZE = 200;
 export const IMAGE_SEPARATOR = "|";
 
 /** Header texts of the product sheet, in column order. The attribute pairs repeat. */
@@ -53,4 +50,7 @@ export const templateSheets = () => [
 ];
 
 export const TEMPLATE_FILE_NAME = "mau-nhap-san-pham.xlsx";
-export const EXPORT_FILE_NAME = "san-pham.xlsx";
+
+/** The product sheet as a plain grid (headers plus examples), for the CSV template. */
+export const PRODUCT_TEMPLATE_GRID: (string | number)[][] = [[...PRODUCT_HEADERS], ...(SAMPLE_PRODUCT_ROWS as (string | number)[][])];
+export const TEMPLATE_BASE_NAME = "mau-nhap-san-pham";

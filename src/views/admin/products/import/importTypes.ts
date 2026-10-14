@@ -1,3 +1,5 @@
+import type { ImportRowResult } from "@/lib/data-io/types";
+
 /** A conversion unit row as the import function reads it. */
 export type ImportUnit = {
   name: string;
@@ -26,14 +28,8 @@ export type ImportRow = {
   units: ImportUnit[];
 };
 
-/** What the import function says about one row. */
-export type ImportRowResult = {
-  row: string;
-  action: "create" | "update" | "skip";
-  errors: string[];
-};
-
-export type ImportReport = {
+/** What `import_products` answers for one batch (the shared screens read it as an `ImportReport`). */
+export type ProductImportReport = {
   ok: boolean;
   created_groups: number;
   updated_groups: number;
@@ -42,11 +38,4 @@ export type ImportReport = {
   new_categories: string[];
   new_brands: string[];
   rows: ImportRowResult[];
-};
-
-/** The rows read from a file, with the problems found before anything is sent. */
-export type ParsedFile = {
-  rows: ImportRow[];
-  /** Row number -> notes. */
-  problems: Record<string, string[]>;
 };

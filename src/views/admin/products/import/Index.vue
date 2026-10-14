@@ -10,52 +10,47 @@
     <div class="flex min-h-0 flex-1 flex-col gap-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <ProductsNav />
-        <div class="flex flex-wrap gap-2">
-          <Button variant="outline" @click="downloadTemplate">
-            <Download class="mr-2 size-4" />
-            {{ $t("productImport.template") }}
-          </Button>
-          <Button variant="outline" :disabled="exporting" @click="exportAll">
-            <Loader2 v-if="exporting" class="mr-2 size-4 animate-spin" />
-            <FileDown v-else class="mr-2 size-4" />
-            {{ $t("productImport.exportAll") }}
-          </Button>
-        </div>
+        <ExportMenu :exporter="exporter" />
       </div>
 
       <p v-if="!canImportFiles" class="rounded-xl border bg-white p-4 text-sm text-muted-foreground">
         {{ $t("productImport.noPermission") }}
       </p>
       <template v-else>
-        <ImportDropzone v-if="phase === 'idle'" @file="loadFile" />
-        <p v-if="readError" class="text-sm text-destructive">{{ $t("productImport.readFailed") }}</p>
+        <TemplateDownload @download="downloadProductTemplate" />
+        <ImportDropzone v-if="importer.phase.value === 'idle'" @file="importer.loadFile" />
+        <p v-if="importer.readError.value" class="text-sm text-destructive">{{ $t("dataIo.import.readFailed") }}</p>
 
-        <template v-if="phase !== 'idle'">
+        <template v-if="importer.phase.value !== 'idle'">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm">
-              <span class="font-semibold">{{ fileName }}</span>
-              <span class="ml-2 text-muted-foreground">{{ $t("productImport.rowCount", { n: rows.length }) }}</span>
+              <span class="font-semibold">{{ importer.fileName.value }}</span>
+              <span class="ml-2 text-muted-foreground">{{ $t("dataIo.import.rowCount", { n: importer.rows.value.length }) }}</span>
             </p>
             <div class="flex items-center gap-2">
-              <span v-if="busy" class="flex items-center gap-2 text-sm text-muted-foreground">
+              <span v-if="importer.busy.value" class="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 class="size-4 animate-spin" />
-                {{ $t(phase === "importing" ? "productImport.importing" : "productImport.checking", progress) }}
+                {{ $t(importer.phase.value === "importing" ? "dataIo.import.importing" : "dataIo.import.checking", importer.progress.value) }}
               </span>
-              <Button variant="outline" :disabled="busy" @click="reset">{{ $t(phase === "done" ? "productImport.another" : "productImport.cancel") }}</Button>
-              <Button v-if="phase !== 'done'" :disabled="!canImport" @click="confirmImport">
-                {{ $t("productImport.import") }}
+              <Button variant="outline" :disabled="importer.busy.value" @click="importer.reset()">
+                {{ $t(importer.phase.value === "done" ? "dataIo.import.another" : "dataIo.import.cancel") }}
+              </Button>
+              <Button v-if="importer.phase.value !== 'done'" :disabled="!importer.canImport.value" @click="importer.confirmImport()">
+                {{ $t("dataIo.import.importRows", { n: importer.rows.value.length }) }}
               </Button>
             </div>
           </div>
 
-          <p v-if="phase === 'done'" class="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-primary">
-            {{ $t("productImport.done") }}
+          <p v-if="importer.phase.value === 'done'" class="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-primary">
+            {{ $t("dataIo.import.done") }}
           </p>
-          <ul v-if="fileNotes.length" class="space-y-1 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-            <li v-for="note in fileNotes" :key="note">{{ note }}</li>
+          <ul v-if="importer.fileNotes.value.length" class="space-y-1 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+            <li v-for="note in importer.fileNotes.value" :key="note">{{ note }}</li>
           </ul>
-          <ImportSummary v-if="report" :report="report" :error-count="errorCount" />
-          <ImportPreviewTable :rows="preview" />
+          <ImportSummary v-if="importer.report.value" :report="importer.report.value" :error-count="importer.errorCount.value">
+            <ProductImportExtras :report="importer.report.value" />
+          </ImportSummary>
+          <ImportPreviewTable :rows="importer.preview.value" :columns="PREVIEW_COLUMNS" can-download-errors @download-errors="importer.downloadErrors()" />
         </template>
       </template>
     </div>
@@ -64,24 +59,28 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Download, FileDown, FileSpreadsheet, Loader2 } from "lucide-vue-next";
+import { FileSpreadsheet, Loader2 } from "lucide-vue-next";
+import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import ImportDropzone from "@/components/common/data-io/ImportDropzone.vue";
+import ImportPreviewTable from "@/components/common/data-io/ImportPreviewTable.vue";
+import ImportSummary from "@/components/common/data-io/ImportSummary.vue";
+import TemplateDownload from "@/components/common/data-io/TemplateDownload.vue";
 import { Button } from "@/components/ui/button";
 import { usePermission } from "@/composables/usePermission";
+import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ProductsNav from "../ProductsNav.vue";
-import ImportDropzone from "./ImportDropzone.vue";
-import ImportPreviewTable from "./ImportPreviewTable.vue";
-import ImportSummary from "./ImportSummary.vue";
-import { downloadExport, downloadTemplate, useExportAll } from "./exportProducts";
+import { downloadProductTemplate } from "./downloadProductTemplate";
+import { useProductsExport } from "./exportProducts";
+import ProductImportExtras from "./ProductImportExtras.vue";
+import { PREVIEW_COLUMNS } from "./previewColumns";
 import { useProductImport } from "./useProductImport";
 
+const auth = useAuthStore();
 const { canCreate, canUpdate } = usePermission("products");
-// The database needs both grants for an import; the export only needs to see products.
-const canImportFiles = computed(() => canCreate.value && canUpdate.value);
+// Same rule as import_products: the IMPORT method, or CREATE and UPDATE together (older roles).
+const canImportFiles = computed(() => auth.can("products", "IMPORT") || (canCreate.value && canUpdate.value));
 
-const { phase, fileName, report, progress, readError, rows, fileNotes, preview, errorCount, canImport, loadFile, confirmImport, reset } =
-  useProductImport();
-const busy = computed(() => phase.value === "reading" || phase.value === "checking" || phase.value === "importing");
-
-const { exporting, exportAll } = useExportAll(downloadExport);
+const importer = useProductImport();
+const exporter = useProductsExport();
 </script>

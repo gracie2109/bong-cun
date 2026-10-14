@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import type { ExportRow } from "@/views/admin/products/import/exportSheets";
-import type { ImportReport, ImportRow } from "@/views/admin/products/import/importTypes";
+import type { ImportRow, ProductImportReport } from "@/views/admin/products/import/importTypes";
 import { unwrap } from "./shared";
 
 type Client = SupabaseClient<Database>;
@@ -13,11 +13,11 @@ export const importProducts = async (
   rows: ImportRow[],
   dryRun: boolean,
   fileName?: string
-): Promise<ImportReport> => {
+): Promise<ProductImportReport> => {
   const result = unwrap(
     await client.rpc("import_products", { p_rows: rows, p_dry_run: dryRun, p_file_name: fileName })
   );
-  return result as unknown as ImportReport;
+  return result as unknown as ProductImportReport;
 };
 
 export type ExportPage = { total: number; rows: ExportRow[] };

@@ -1957,6 +1957,37 @@
     "rowCount": "Tổng {count} dòng",
     "empty": "Không có dữ liệu để xuất.",
     "truncated": "Chỉ xuất {limit} dòng đầu, hãy lọc hẹp hơn.",
-    "failed": "Xuất dữ liệu thất bại."
+    "failed": "Xuất dữ liệu thất bại.",
+    "import": {
+      "button": "Nhập",
+      "template": "Tải file mẫu:",
+      "dropTitle": "Kéo thả file vào đây hoặc bấm để chọn",
+      "dropHint": "Excel (.xlsx) hoặc CSV. Tối đa 2.000 dòng. Ô trống giữ nguyên dữ liệu cũ.",
+      "readFailed": "Không đọc được file. Hãy dùng file Excel (.xlsx) hoặc CSV theo mẫu.",
+      "rowCount": "{n} dòng",
+      "checking": "Đang kiểm tra {done} / {total} dòng",
+      "importing": "Đang nhập {done} / {total} dòng",
+      "done": "Đã nhập xong.",
+      "another": "Chọn file khác",
+      "cancel": "Huỷ file",
+      "importRows": "Nhập {n} dòng",
+      "onlyErrors": "Chỉ dòng lỗi",
+      "downloadErrors": "Tải file lỗi",
+      "empty": "Không có dòng nào.",
+      "stat": {
+        "created": "Tạo mới",
+        "updated": "Cập nhật",
+        "errors": "Dòng lỗi"
+      },
+      "col": {
+        "row": "Dòng",
+        "result": "Kết quả"
+      },
+      "action": {
+        "create": "Tạo mới",
+        "update": "Cập nhật",
+        "skip": "Bỏ qua"
+      }
+    }
   }
 }

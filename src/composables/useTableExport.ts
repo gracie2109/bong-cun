@@ -33,6 +33,8 @@ export type TableExportOptions<T> = {
   enabled?: () => boolean;
   /** Formats offered; all three when omitted. */
   formats?: ExportFormat[];
+  /** Writes a format itself (e.g. an Excel file with several sheets); `base` is the file name without extension. */
+  overrides?: Partial<Record<ExportFormat, (rows: T[], base: string) => Promise<void>>>;
 };
 
 /** Exports the rows of a list as Excel, CSV or PDF, honouring the screen's filters and the row limits. */
@@ -57,6 +59,8 @@ export const useTableExport = <T>(options: TableExportOptions<T>) => {
   const save = async (format: ExportFormat, rows: T[], total: number) => {
     const columns = options.columns();
     const base = options.fileBase?.() ?? exportFileBase(options.name);
+    const override = options.overrides?.[format];
+    if (override) return override(rows, base);
     if (format === "csv") return downloadCsv(`${base}.csv`, writeCsv(rows, columns));
     if (format === "xlsx") return writeXlsx(rows, columns, `${base}.xlsx`, options.name);
     const who = auth.currentUser?.displayName;
