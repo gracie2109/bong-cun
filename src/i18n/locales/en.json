@@ -30,6 +30,16 @@
     "deleteFileDesc": "Once deleted it cannot be recovered.",
     "cancel": "Cancel",
     "search": "Search",
+    "searchView": {
+      "clear": "Clear filters",
+      "filter": "Filter",
+      "refresh": "Refresh",
+      "reset": "Reset",
+      "apply": "Search",
+      "activeFilters": "{count} active",
+      "noResults": "No matching results",
+      "clearFilters": "Clear filters"
+    },
     "table": {
       "range": "Showing {from}–{to} of {total}",
       "pagination": "Pagination",
