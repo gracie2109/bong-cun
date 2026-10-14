@@ -11,12 +11,24 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <PosNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
         </div>
       </div>
 
-      <InvoicesFilterBar v-model:search="search" v-model:period="period" v-model:status="status" />
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('pos.invoices.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters><InvoicesFilterFields v-model:period="draft.period" v-model:status="draft.status" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -31,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="6" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('pos.invoices.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="6" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('pos.invoices.empty')" />
             <InvoiceRow v-for="row in rows" :key="row.id" :invoice="row" @open="openId = row.id" />
           </tbody>
         </table>
@@ -46,6 +58,7 @@
 import { ref } from "vue";
 import { Receipt } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
@@ -56,12 +69,12 @@ import BranchPicker from "../components/BranchPicker.vue";
 import PosNav from "../PosNav.vue";
 import InvoiceRow from "./InvoiceRow.vue";
 import InvoiceSheet from "./InvoiceSheet.vue";
-import InvoicesFilterBar from "./InvoicesFilterBar.vue";
+import InvoicesFilterFields from "./InvoicesFilterFields.vue";
 import { useInvoicesExport } from "./useInvoicesExport";
 import { useInvoicesFilters } from "./useInvoicesFilters";
 
 const { branches, branch, branchId, selectBranch } = useCurrentBranch();
-const { search, period, status, page, filter } = useInvoicesFilters(branchId);
+const { search, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useInvoicesFilters(branchId);
 const openId = ref<string>();
 const exporter = useInvoicesExport(filter, () => branch.value?.name);
 

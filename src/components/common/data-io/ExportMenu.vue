@@ -1,7 +1,14 @@
 <template>
   <DropdownMenu v-if="exporter.canExport.value">
     <DropdownMenuTrigger as-child>
-      <Button variant="outline" size="sm" :disabled="exporter.disabled.value" :aria-label="$t('dataIo.download')">
+      <ToolbarIconButton
+        v-if="compact"
+        :icon="exporter.exporting.value ? Loader2 : Download"
+        :loading="exporter.exporting.value"
+        :label="progressLabel ?? $t('dataIo.download')"
+        :disabled="exporter.disabled.value"
+      />
+      <Button v-else variant="outline" size="sm" :disabled="exporter.disabled.value" :aria-label="$t('dataIo.download')">
         <Loader2 v-if="exporter.exporting.value" class="mr-2 size-4 animate-spin" />
         <Download v-else class="mr-2 size-4" />
         <span v-if="exporter.progress.value">
@@ -20,13 +27,27 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import ToolbarIconButton from "@/components/common/search-view/ToolbarIconButton.vue";
 import { Download, FileSpreadsheet, FileText, Loader2, Printer } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import type { ExportFormat } from "@/lib/data-io/columns";
 import type { TableExporter } from "@/composables/useTableExport";
 
-defineProps<{ exporter: TableExporter }>();
+const props = defineProps<{
+  exporter: TableExporter;
+  /** Only the download icon (for a SearchView toolbar); the label becomes its tooltip. */
+  compact?: boolean;
+}>();
+
+const { t } = useI18n();
+const progressLabel = computed(() => {
+  const progress = props.exporter.progress.value;
+  if (!progress) return undefined;
+  return t("dataIo.progress", { done: progress.done.toLocaleString("vi-VN"), total: progress.total.toLocaleString("vi-VN") });
+});
 
 const ICONS: Record<ExportFormat, typeof Printer> = { pdf: Printer, xlsx: FileSpreadsheet, csv: FileText };
 </script>

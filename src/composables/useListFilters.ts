@@ -1,4 +1,4 @@
-import { computed, reactive, ref, watch, type Ref } from "vue";
+import { computed, reactive, ref, watch, type Ref, type WatchSource } from "vue";
 import { watchDebounced } from "@vueuse/core";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
@@ -13,6 +13,8 @@ type Options<F extends Record<string, unknown>> = {
   defaults: F;
   debounceMs?: number;
   quick?: Record<string, QuickFilter>;
+  /** Other state of the list (the branch) whose change goes back to the first page. */
+  resetOn?: WatchSource[];
 };
 
 /**
@@ -24,6 +26,7 @@ export const useListFilters = <F extends Record<string, unknown>>({
   defaults,
   debounceMs = SEARCH_DEBOUNCE_MS,
   quick = {},
+  resetOn = [],
 }: Options<F>) => {
   const applied = ref({ ...defaults }) as Ref<F>;
   const draft = reactive({ ...defaults }) as F;
@@ -34,7 +37,7 @@ export const useListFilters = <F extends Record<string, unknown>>({
   const debouncedSearch = ref("");
   const page = reactive({ pageIndex: INITIAL_PAGE_INDEX, pageSize });
   watchDebounced(search, (value) => (debouncedSearch.value = value), { debounce: debounceMs });
-  watch([debouncedSearch, applied, ...quickValues], () => {
+  watch([debouncedSearch, applied, ...quickValues, ...resetOn], () => {
     page.pageIndex = INITIAL_PAGE_INDEX;
   });
 

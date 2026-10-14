@@ -1,5 +1,5 @@
-import { computed, ref, type Ref } from "vue";
-import { usePagedSearch } from "@/composables/usePagedSearch";
+import { computed, type Ref } from "vue";
+import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
 import type { InvoiceFilter, InvoiceStatus } from "@/repositories/pos";
 
@@ -22,24 +22,24 @@ const periodStart = (value: Period): string | undefined => {
 
 /** Search, period/status filters and paging of the invoices of one branch. */
 export const useInvoicesFilters = (branchId: Ref<string | undefined>) => {
-  const period = ref<Period>("today");
-  const status = ref<string>(FILTER_ALL);
-  const { search, debouncedSearch, page } = usePagedSearch({
+  const list = useListFilters({
     pageSize: PAGE_SIZE,
-    resetOn: [period, status, branchId],
+    defaults: { period: "today" as Period, status: FILTER_ALL as string },
+    resetOn: [branchId],
   });
+  const { applied, debouncedSearch } = list;
 
   /** Null until a branch is known, which keeps the list query off. */
   const filter = computed<InvoiceFilter | null>(() =>
     branchId.value
       ? {
           branchId: branchId.value,
-          from: periodStart(period.value),
-          status: status.value === FILTER_ALL ? undefined : (status.value as InvoiceStatus),
+          from: periodStart(applied.value.period),
+          status: applied.value.status === FILTER_ALL ? undefined : (applied.value.status as InvoiceStatus),
           search: debouncedSearch.value,
         }
       : null
   );
 
-  return { search, period, status, page, filter };
+  return { ...list, filter };
 };

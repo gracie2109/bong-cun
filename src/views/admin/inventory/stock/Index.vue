@@ -11,14 +11,27 @@
       <div class="flex flex-wrap items-center justify-between gap-3">
         <InventoryNav />
         <div class="flex flex-wrap items-center gap-2">
-          <ExportMenu :exporter="exporter" />
           <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
         </div>
       </div>
 
       <StockAlertCards v-model:status="status" :alerts="alerts" :expiry-days="expiryDays" />
 
-      <StockFilterBar v-model:search="search" v-model:status="status" v-model:expiry-window="expiryWindow" />
+      <SearchView
+        v-model:search="search"
+        :placeholder="$t('products.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #quick><StockStatusSelect v-model="status" /></template>
+        <template #filters><StockFilterFields v-model="draft.expiryWindow" /></template>
+        <template #actions><ExportMenu :exporter="exporter" compact /></template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -33,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="6" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.stock.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="6" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('inventory.stock.empty')" />
             <StockRow v-for="row in rows" :key="row.productId" :row="row" :expiry-days="expiryDays" @open="openRow = row" />
           </tbody>
         </table>
@@ -48,6 +61,7 @@
 import { computed, ref, watch } from "vue";
 import { Boxes } from "lucide-vue-next";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { usePagedList } from "@/composables/usePagedList";
@@ -58,14 +72,15 @@ import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import InventoryNav from "../InventoryNav.vue";
 import StockAlertCards from "./StockAlertCards.vue";
-import StockFilterBar from "./StockFilterBar.vue";
+import StockFilterFields from "./StockFilterFields.vue";
 import StockProductSheet from "./StockProductSheet.vue";
+import StockStatusSelect from "./StockStatusSelect.vue";
 import StockRow from "./StockRow.vue";
 import { useStockExport } from "./useStockExport";
 import { useStockFilters } from "./useStockFilters";
 
 const { branches, branch, branchId, selectBranch } = useCurrentBranch();
-const { search, status, expiryWindow, expiryDays, page, filter } = useStockFilters(branchId);
+const { search, status, expiryDays, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useStockFilters(branchId);
 
 const openRow = ref<StockRowData | null>(null);
 const exporter = useStockExport(filter, () => branch.value?.name);
