@@ -1,6 +1,6 @@
-import { computed, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { usePagedSearch } from "@/composables/usePagedSearch";
+import { useListFilters } from "@/composables/useListFilters";
 import type { ProductFilter } from "@/repositories/products";
 
 const PAGE_SIZE = 20;
@@ -12,24 +12,26 @@ export const useProductsFilters = () => {
   const route = useRoute();
   const router = useRouter();
 
-  const categoryId = ref(queryText(route.query.category));
-  const brandId = ref(queryText(route.query.brand));
-  const showArchived = ref(false);
-  const { search, debouncedSearch, page } = usePagedSearch({
+  const list = useListFilters({
     pageSize: PAGE_SIZE,
-    resetOn: [categoryId, brandId, showArchived],
+    defaults: { categoryId: "", brandId: "", showArchived: false },
+    initial: { categoryId: queryText(route.query.category), brandId: queryText(route.query.brand) },
   });
+  const { applied, debouncedSearch } = list;
 
-  watch([categoryId, brandId], ([category, brand]) => {
-    void router.replace({ query: { ...route.query, category: category || undefined, brand: brand || undefined } });
-  });
+  watch(
+    () => [applied.value.categoryId, applied.value.brandId],
+    ([category, brand]) => {
+      void router.replace({ query: { ...route.query, category: category || undefined, brand: brand || undefined } });
+    }
+  );
 
   const filter = computed<ProductFilter>(() => ({
     search: debouncedSearch.value,
-    includeArchived: showArchived.value,
-    categoryId: categoryId.value || undefined,
-    brandId: brandId.value || undefined,
+    includeArchived: applied.value.showArchived,
+    categoryId: applied.value.categoryId || undefined,
+    brandId: applied.value.brandId || undefined,
   }));
 
-  return { search, categoryId, brandId, showArchived, page, filter };
+  return { ...list, filter };
 };

@@ -11,6 +11,8 @@ type Options<F extends Record<string, unknown>> = {
   pageSize: number;
   /** What each popover filter holds when not filtering; Clear returns to exactly these. */
   defaults: F;
+  /** Values to start with instead of the defaults (read from the URL); Clear still returns to `defaults`. */
+  initial?: Partial<F>;
   debounceMs?: number;
   quick?: Record<string, QuickFilter>;
   /** Other state of the list (the branch) whose change goes back to the first page. */
@@ -24,12 +26,13 @@ type Options<F extends Record<string, unknown>> = {
 export const useListFilters = <F extends Record<string, unknown>>({
   pageSize,
   defaults,
+  initial = {},
   debounceMs = SEARCH_DEBOUNCE_MS,
   quick = {},
   resetOn = [],
 }: Options<F>) => {
-  const applied = ref({ ...defaults }) as Ref<F>;
-  const draft = reactive({ ...defaults }) as F;
+  const applied = ref({ ...defaults, ...initial }) as Ref<F>;
+  const draft = reactive({ ...defaults, ...initial }) as F;
   const quickValues = Object.values(quick).map((item) => item.value);
 
   // Like usePagedSearch, but `debouncedSearch` can also be committed at once (Enter, Clear).
