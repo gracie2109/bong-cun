@@ -16,12 +16,25 @@
         </Button>
       </div>
 
-      <ProductsFilterBar
+      <SearchView
         v-model:search="search"
-        v-model:category-id="categoryId"
-        v-model:brand-id="brandId"
-        v-model:show-archived="showArchived"
-      />
+        :placeholder="$t('products.searchPlaceholder')"
+        :active-count="activeCount"
+        :refreshing="listQuery.isFetching.value"
+        @open-filters="syncDraft"
+        @apply="apply"
+        @reset-filters="resetDraft"
+        @clear="clearAll"
+        @refresh="listQuery.refetch()"
+      >
+        <template #filters>
+          <ProductsFilterFields
+            v-model:category-id="draft.categoryId"
+            v-model:brand-id="draft.brandId"
+            v-model:show-archived="draft.showArchived"
+          />
+        </template>
+      </SearchView>
 
       <PagedTableCard class="min-h-0 flex-1" v-model:page="page.pageIndex" v-model:page-size="page.pageSize" :page-count="pageCount" :count="rows.length" :total="total">
         <table class="w-full text-sm">
@@ -37,7 +50,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :colspan="7" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('products.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="7" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('products.empty')" />
             <ProductRow v-for="row in rows" :key="row.id" :group="row" :can-update="canUpdate" @edit="openForm" @set-active="setActive" />
           </tbody>
         </table>
@@ -51,6 +64,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { Package, Plus } from "lucide-vue-next";
+import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
@@ -61,12 +75,12 @@ import type { ProductGroup } from "@/repositories/products";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ProductGroupSheet from "./ProductGroupSheet.vue";
 import ProductRow from "./ProductRow.vue";
-import ProductsFilterBar from "./ProductsFilterBar.vue";
+import ProductsFilterFields from "./ProductsFilterFields.vue";
 import ProductsNav from "./ProductsNav.vue";
 import { useProductsFilters } from "./useProductsFilters";
 
 const { canCreate, canUpdate } = usePermission("products");
-const { search, categoryId, brandId, showArchived, page, filter } = useProductsFilters();
+const { search, page, filter, draft, activeCount, isFiltered, apply, resetDraft, clearAll, syncDraft } = useProductsFilters();
 const formOpen = ref(false);
 const editingId = ref<string | null>(null);
 
