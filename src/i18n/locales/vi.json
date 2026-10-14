@@ -107,7 +107,8 @@
     "accountProfile": "Thông tin cá nhân",
     "accountAddresses": "Sổ địa chỉ",
     "accountOrders": "Đơn hàng của tôi",
-    "accountPets": "Thú cưng của tôi"
+    "accountPets": "Thú cưng của tôi",
+    "spa": "Dịch vụ spa"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2043,6 +2044,7 @@
     "nav": {
       "home": "Trang chủ",
       "products": "Sản phẩm",
+      "spa": "Dịch vụ spa",
       "about": "Giới thiệu",
       "contact": "Liên hệ"
     },
@@ -2229,6 +2231,25 @@
         "not_found": "Không tìm thấy thú cưng này.",
         "not_primary": "Chỉ chủ chính mới sửa được thú cưng.",
         "has_open_appointment": "Thú cưng đang có lịch hẹn chưa xong nên chưa ẩn được."
+      }
+    },
+    "spa": {
+      "title": "Dịch vụ spa cho thú cưng",
+      "intro": "Bảng giá tham khảo theo loài và cân nặng. Giá thực tế được chốt khi cửa hàng nhận thú.",
+      "book": "Đặt lịch",
+      "signInToBook": "Đăng nhập để đặt lịch",
+      "loadFailed": "Không tải được bảng giá.",
+      "empty": "Cửa hàng chưa đăng dịch vụ spa nào.",
+      "combos": "Combo",
+      "services": "Dịch vụ lẻ",
+      "priceNote": "Giá đã gồm công cụ và sản phẩm tắm chải cơ bản. Thú khó tính hoặc lông rối có thể phụ thu, nhân viên sẽ báo trước khi làm.",
+      "contactPrice": "Liên hệ để báo giá",
+      "hours": "{n} giờ",
+      "minutes": "{n} phút",
+      "marks": {
+        "1": "Bán chạy",
+        "2": "Mới",
+        "4": ""
       }
     }
   }

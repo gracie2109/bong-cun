@@ -174,6 +174,7 @@ export const supplierKeys = {
 };
 
 export const spaKeys = {
+  publicCatalog: (branchId: string | null) => ["spa", "public-catalog", branchId] as const,
   all: ["spa"] as const,
   resources: (branchId: string) => [...spaKeys.all, "resources", branchId] as const,
   hours: (branchId: string) => [...spaKeys.all, "hours", branchId] as const,

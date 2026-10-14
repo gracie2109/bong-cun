@@ -2197,6 +2197,7 @@ export type Database = {
       shop_related_groups: { Args: { p_group: string; p_limit?: number }; Returns: Json }
       my_profile: { Args: never; Returns: Json }
       save_my_profile: { Args: { p: Json }; Returns: Json }
+      spa_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }
       my_pets: { Args: never; Returns: Json }
       save_my_pet: { Args: { p: Json; p_id?: string | null }; Returns: string }
       hide_my_pet: { Args: { p_id: string }; Returns: undefined }

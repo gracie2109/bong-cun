@@ -107,7 +107,8 @@
     "accountProfile": "Profile",
     "accountAddresses": "Addresses",
     "accountOrders": "My orders",
-    "accountPets": "My pets"
+    "accountPets": "My pets",
+    "spa": "Spa services"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2043,6 +2044,7 @@
     "nav": {
       "home": "Home",
       "products": "Products",
+      "spa": "Spa",
       "about": "About us",
       "contact": "Contact"
     },
@@ -2229,6 +2231,25 @@
         "not_found": "Pet not found.",
         "not_primary": "Only the primary owner can edit a pet.",
         "has_open_appointment": "This pet has an unfinished appointment, so it cannot be hidden yet."
+      }
+    },
+    "spa": {
+      "title": "Pet spa services",
+      "intro": "Reference prices by species and weight. The final price is confirmed when the shop receives your pet.",
+      "book": "Book now",
+      "signInToBook": "Sign in to book",
+      "loadFailed": "Could not load the price list.",
+      "empty": "The shop has not published any spa service yet.",
+      "combos": "Combos",
+      "services": "Single services",
+      "priceNote": "Prices include basic grooming tools and products. Tangled coats or difficult pets may cost extra; staff tell you before starting.",
+      "contactPrice": "Contact us for a quote",
+      "hours": "{n} h",
+      "minutes": "{n} min",
+      "marks": {
+        "1": "Best seller",
+        "2": "New",
+        "4": ""
       }
     }
   }

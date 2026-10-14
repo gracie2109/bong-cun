@@ -83,6 +83,7 @@ export const navigation = {
   clientNav: [
     { title: "client.nav.home", name: "home" },
     { title: "client.nav.products", name: "products" },
+    { title: "client.nav.spa", name: "spa" },
     { title: "client.nav.about", name: "about-us" },
     { title: "client.nav.contact", name: "contact" },
   ],

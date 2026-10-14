@@ -6,3 +6,4 @@ export * from "./billing";
 export * from "./board";
 export * from "./rules";
 export * from "./settings";
+export * from "./publicCatalog";
