@@ -1942,6 +1942,150 @@ export type Database = {
         }
         Relationships: []
       }
+      boarding_stays: {
+        Row: {
+          branch_id: string
+          cancel_reason: string | null
+          cancelled_at: string | null
+          checked_in_at: string | null
+          checked_out_at: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          customer_name: string
+          customer_phone: string
+          emergency_phone: string | null
+          id: string
+          note: string | null
+          planned_in_at: string
+          planned_out_at: string
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          checked_in_at?: string | null
+          checked_out_at?: string | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          customer_name: string
+          customer_phone: string
+          emergency_phone?: string | null
+          id?: string
+          note?: string | null
+          planned_in_at: string
+          planned_out_at: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          checked_in_at?: string | null
+          checked_out_at?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          customer_name?: string
+          customer_phone?: string
+          emergency_phone?: string | null
+          id?: string
+          note?: string | null
+          planned_in_at?: string
+          planned_out_at?: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      boarding_stay_pets: {
+        Row: {
+          belongings: string | null
+          belongings_returned: boolean
+          branch_id: string
+          charged_nights: number
+          created_at: string
+          est_night_price: number
+          feeding: string | null
+          id: string
+          is_extra_pet: boolean
+          kennel_id: string
+          kennel_type_id: string
+          line_no: number
+          medication: string | null
+          night_price: number | null
+          nights: string
+          pet_id: string
+          pet_name: string
+          stay_id: string
+          status: string
+          updated_at: string
+          vaccine_checked: boolean
+          vaccine_note: string | null
+          weight_kg: number | null
+        }
+        Insert: {
+          belongings?: string | null
+          belongings_returned?: boolean
+          branch_id: string
+          charged_nights: number
+          created_at?: string
+          est_night_price: number
+          feeding?: string | null
+          id?: string
+          is_extra_pet?: boolean
+          kennel_id: string
+          kennel_type_id: string
+          line_no: number
+          medication?: string | null
+          night_price?: number | null
+          nights: string
+          pet_id: string
+          pet_name: string
+          stay_id: string
+          status?: string
+          updated_at?: string
+          vaccine_checked?: boolean
+          vaccine_note?: string | null
+          weight_kg?: number | null
+        }
+        Update: {
+          belongings?: string | null
+          belongings_returned?: boolean
+          branch_id?: string
+          charged_nights?: number
+          created_at?: string
+          est_night_price?: number
+          feeding?: string | null
+          id?: string
+          is_extra_pet?: boolean
+          kennel_id?: string
+          kennel_type_id?: string
+          line_no?: number
+          medication?: string | null
+          night_price?: number | null
+          nights?: string
+          pet_id?: string
+          pet_name?: string
+          stay_id?: string
+          status?: string
+          updated_at?: string
+          vaccine_checked?: boolean
+          vaccine_note?: string | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       kennel_type_prices: {
         Row: {
           branch_id: string | null
@@ -2556,6 +2700,28 @@ export type Database = {
         }[]
       }
       can_boarding: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
+      boarding_availability: {
+        Args: { p_branch: string; p_from: string; p_to: string }
+        Returns: Json
+      }
+      boarding_board: { Args: { p_branch: string; p_date?: string }; Returns: Json }
+      boarding_quote: { Args: { p: Json; p_branch: string; p_stay?: string }; Returns: Json }
+      cancel_boarding_stay: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      get_boarding_stay: { Args: { p_id: string }; Returns: Json }
+      list_boarding_stays: {
+        Args: {
+          p_branch: string
+          p_from?: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      mark_boarding_no_show: { Args: { p_id: string }; Returns: undefined }
+      save_boarding_stay: { Args: { p: Json; p_id?: string }; Returns: Json }
       boarding_settings_get: { Args: { p_branch: string }; Returns: Json }
       list_kennel_types: {
         Args: {

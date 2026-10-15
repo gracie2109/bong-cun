@@ -23,6 +23,10 @@ const route = useRoute();
 const auth = useAuthStore();
 
 // Everything is read with "boarding: VIEW"; kennels, prices and rules are changed with "SETTING".
-const tabs = [{ name: "boardingSettings", icon: "lucide:settings-2", label: "boarding.nav.settings", method: "VIEW" }];
+const tabs = [
+  { name: "boardingBoard", icon: "lucide:home", label: "boarding.nav.board", method: "VIEW" },
+  { name: "boardingStays", icon: "lucide:list-checks", label: "boarding.nav.stays", method: "VIEW" },
+  { name: "boardingSettings", icon: "lucide:settings-2", label: "boarding.nav.settings", method: "VIEW" },
+];
 const visibleTabs = computed(() => tabs.filter((tab) => auth.can("boarding", tab.method)));
 </script>

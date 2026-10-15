@@ -111,7 +111,9 @@
     "spa": "Dịch vụ spa",
     "spaBook": "Đặt lịch spa",
     "accountAppointments": "Lịch hẹn của tôi",
-    "boardingSettings": "Cài đặt lưu trú"
+    "boardingSettings": "Cài đặt lưu trú",
+    "boardingBoard": "Sơ đồ chuồng",
+    "boardingStays": "Lượt lưu trú"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -785,7 +787,9 @@
     "shopOrderSettings": "Cài đặt bán online",
     "shopOrders": "Đơn online",
     "boarding": "Lưu trú",
-    "boardingSettings": "Cài đặt lưu trú"
+    "boardingSettings": "Cài đặt lưu trú",
+    "boardingBoard": "Sơ đồ chuồng",
+    "boardingStays": "Lượt lưu trú"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1758,7 +1762,9 @@
       "sortOrder": "Thứ tự hiển thị"
     },
     "nav": {
-      "settings": "Cài đặt lưu trú"
+      "settings": "Cài đặt lưu trú",
+      "board": "Sơ đồ chuồng",
+      "stays": "Danh sách lượt"
     },
     "settings": {
       "title": "Cài đặt lưu trú",
@@ -1838,7 +1844,121 @@
       "no_price": "Cần nhập giá mỗi đêm.",
       "bad_input": "Thông tin chưa hợp lệ.",
       "bad_rules": "Giờ trả phải trước giờ tính nửa đêm, số đêm tối đa từ 1 đến 365.",
-      "not_found": "Không tìm thấy dữ liệu, thử tải lại trang."
+      "not_found": "Không tìm thấy dữ liệu, thử tải lại trang.",
+      "no_kennel": "Không còn chuồng trống phù hợp trong các ngày này.",
+      "kennel_taken": "Chuồng này đã có thú khác trong các ngày này.",
+      "kennel_in_use": "Chuồng đang có lượt chưa kết thúc, không đổi được loại chuồng.",
+      "kennel_occupied": "Đang có thú trong chuồng, chưa chuyển sang bảo trì được.",
+      "pet_busy": "{name} đã có lượt lưu trú khác trong các ngày này.",
+      "species_not_allowed": "Loại chuồng này không nhận loài của {name}.",
+      "too_many_pets": "Quá số thú ở chung tối đa của chuồng.",
+      "bad_dates": "Ngày đi phải sau ngày đến.",
+      "bad_share": "Chọn thú ở chung chưa hợp lệ.",
+      "too_long": "Vượt số đêm tối đa cho một lượt.",
+      "too_early": "Giờ đến sớm hơn giờ nhận thú.",
+      "in_past": "Ngày đến đã qua.",
+      "not_editable": "Lượt này không còn sửa hoặc hủy được.",
+      "not_due": "Chỉ đánh dấu không đến sau ngày đến dự kiến.",
+      "no_customer": "Hãy chọn khách hàng.",
+      "no_pet": "Hãy chọn thú cưng cho từng dòng.",
+      "need_pet": "Cần ít nhất một thú cưng."
+    },
+    "board": {
+      "title": "Sơ đồ chuồng",
+      "prev": "Ngày trước",
+      "next": "Ngày sau",
+      "today": "Hôm nay",
+      "refresh": "Làm mới",
+      "empty": "Chưa có chuồng nào. Thêm loại chuồng và chuồng trong",
+      "hasNotes": "Thú có ghi chú hành vi hoặc dị ứng",
+      "arrives": "{pet} đến lúc {time}",
+      "conflict": "Thú cũ chưa trả mà đã có lịch đến, cần chuyển chuồng.",
+      "stats": {
+        "arriving": "Sắp đến",
+        "departing": "Sắp trả",
+        "occupied": "Đang ở",
+        "overdue": "Quá giờ trả",
+        "free": "Chuồng trống"
+      },
+      "state": {
+        "free": "Trống",
+        "arriving": "Sắp đến",
+        "occupied": "Đang ở",
+        "departing": "Trả hôm nay",
+        "overdue": "Quá giờ",
+        "cleaning": "Dọn",
+        "maintenance": "Bảo trì"
+      }
+    },
+    "stays": {
+      "title": "Lượt lưu trú",
+      "new": "Đặt chỗ lưu trú",
+      "searchPlaceholder": "Tìm mã lượt, tên khách, số điện thoại, tên thú",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "status": "Trạng thái",
+      "code": "Mã lượt",
+      "time": "Vào / ra dự kiến",
+      "customer": "Khách hàng",
+      "pets": "Thú cưng / chuồng",
+      "total": "Tạm tính",
+      "noShow": "Không đến",
+      "empty": "Chưa có lượt lưu trú nào."
+    },
+    "status": {
+      "booked": "Đã đặt",
+      "checked_in": "Đang ở",
+      "checked_out": "Đã trả",
+      "paid": "Đã thanh toán",
+      "cancelled": "Đã hủy",
+      "no_show": "Không đến"
+    },
+    "dialog": {
+      "newTitle": "Đặt chỗ lưu trú",
+      "editTitle": "Sửa lượt {code}",
+      "subtitle": "Chọn khách, ngày ở và loại chuồng. Giá và chuồng được tính ngay.",
+      "book": "Đặt chỗ",
+      "customer": "Khách hàng",
+      "noPets": "Khách này chưa có thú cưng nào.",
+      "openPets": "Thêm thú cưng",
+      "arrival": "Ngày đến",
+      "arrivalTime": "Giờ đến",
+      "departure": "Ngày đi",
+      "departureTime": "Giờ đi",
+      "acceptedFrom": "Nhận thú từ {time}.",
+      "freeUntil": "Trả trước {time} không tính thêm. Dự kiến {nights} đêm.",
+      "petN": "Thú cưng {n}",
+      "removePet": "Bỏ thú này",
+      "addPet": "Thêm thú cưng",
+      "pet": "Thú cưng",
+      "pickPet": "Chọn thú cưng",
+      "kennelType": "Loại chuồng",
+      "pickType": "Chọn loại chuồng",
+      "kennel": "Chuồng",
+      "autoKennel": "Tự chọn chuồng trống",
+      "shareWith": "Ở chung với",
+      "ownKennel": "Chuồng riêng",
+      "freeOf": "Còn {free}/{total} chuồng trống",
+      "noKennels": "Không có chuồng nào",
+      "feeding": "Cách cho ăn",
+      "feedingHint": "Loại thức ăn, giờ ăn, lượng ăn",
+      "medication": "Thuốc",
+      "belongings": "Đồ gửi kèm",
+      "belongingsHint": "Ví dụ: đệm, đồ chơi, dây dắt",
+      "quoteHint": "Chọn khách, ngày và loại chuồng để xem giá.",
+      "quoting": "Đang tính giá...",
+      "nightsAt": "{nights} đêm × {price}",
+      "sharedPrice": "giá thú ở chung",
+      "overweight": "Thú nặng hơn mức tối đa của loại chuồng này.",
+      "behaviorNotes": "Thú có ghi chú hành vi hoặc dị ứng, xem hồ sơ trước khi nhận.",
+      "estimate": "Tạm tính",
+      "emergencyPhone": "SĐT liên hệ khẩn",
+      "note": "Ghi chú",
+      "notePlaceholder": "Ghi chú thêm cho lượt này",
+      "cancelStay": "Hủy lượt",
+      "cancelTitle": "Hủy lượt {code}?",
+      "cancelDesc": "Chuồng được trả lại ngay. Lượt đã hủy không đặt lại được.",
+      "keep": "Giữ lại"
     }
   },
   "reports": {

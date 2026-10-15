@@ -66,7 +66,7 @@ import { useKennels, useSetKennelStatus } from "@/queries/boarding";
 import type { Kennel, KennelFilter } from "@/types/boarding";
 import KennelDialog from "./KennelDialog.vue";
 import KennelRow from "./KennelRow.vue";
-import { useKennelTypeOptions } from "./useKennelTypeOptions";
+import { useKennelTypeOptions } from "../useKennelTypeOptions";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean; canUpdate: boolean }>();
 const branchId = computed(() => props.branchId);
