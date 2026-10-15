@@ -2,6 +2,19 @@
 
 Thời điểm: 2026-10-15, sau khi các module chính đã xong (shop online, spa, POS, kho theo lô, khách sạn thú cưng, y tế). Đây là đánh giá tổng thể, chưa phải kế hoạch refactor. Không đổi code trong PR này.
 
+## Cập nhật sau khi sửa (2026-10-15, PR #126 đến #130)
+
+Các mục 4.1, 4.2, 4.8 và 5 đã được xử lý theo [ke-hoach-sua-kien-truc.md](ke-hoach-sua-kien-truc.md):
+
+- 4 lỗi typecheck đã sửa, gỡ `uuid`, `@types/uuid`, `@vuepic/vue-datepicker` (PR #127).
+- CI chạy ở mọi PR: typecheck, build, toàn bộ migration trên DB rỗng, 28 test pgTAP, kiểm `supabase/schema.sql` (PR #128).
+- `supabase/schema.sql` là bản chụp để tra hàm hiện hành (PR #128).
+- Backup mã hóa hằng tuần, lần chạy đầu thành công (PR #129, [sao-luu-du-lieu.md](sao-luu-du-lieu.md)).
+- Không còn file nào trong `src/` trên 300 dòng (PR #130).
+- Mục 4.3: rà lại cho thấy các chỗ gác bằng `is_staff()` là chủ ý (xem bên dưới); test quyền đã có cho POS.
+
+Còn để sau: 4.4 (kiểu `jsonb`), 4.5 (`radix-vue` sang `reka-ui`), 4.6 (`pg_cron`), 4.7 (bảng tổng hợp báo cáo), test cho lưu trú và y tế.
+
 ## 1. Trả lời ngắn
 
 - **Kiến trúc hiện tại (Nuxt 4 + Supabase, nghiệp vụ nằm trong RPC Postgres, RLS là lớp chặn thật) đủ cho giai đoạn pet project, và còn đủ cho 1 đến vài chi nhánh nhỏ khi có khách thật.** Không cần đổi nền tảng.
@@ -53,7 +66,7 @@ Thời điểm: 2026-10-15, sau khi các module chính đã xong (shop online, s
 
 - 215 hàm `security definer` bỏ qua RLS, nên mỗi hàm tự kiểm quyền. Quét tĩnh: 65 hàm không gọi trực tiếp `can_*`, `has_permission`, `is_admin` hay `auth.uid()`.
 - Phần lớn là hàm nội bộ đã `revoke ... from authenticated` (ví dụ `take_stock_fefo`, `next_doc_code`, `stock_rows`, `import_pets_row`) hoặc hàm công khai cố ý (`shop_public_settings`, `spa_public_catalog`). Một số hàm được cấp cho `authenticated` nhưng kiểm quyền qua hàm phụ: `save_boarding_stay` qua `boarding_apply_stay`, `report_overview` qua `report_branch_ids`, `confirm_shop_order` qua `shop_order_for_update`. Tôi không tìm thấy lỗ hổng cụ thể, nhưng **không có cách nào xác nhận ngoài đọc tay từng hàm**.
-- Hai hệ quyền chồng nhau: `is_admin()` đọc role trong JWT và bỏ qua chi nhánh; `has_permission` đọc theo chi nhánh. `is_staff()` (`20261007100000_permission_policies.sql`) trả true cho `admin`, `superAdmin`, `cashier` hoặc bất kỳ ai có role ở một chi nhánh, rồi được dùng làm điều kiện duy nhất ở vài hàm (ví dụ `20261021010100_medical_settings_rpcs.sql`, `20261021070100_pet_health_flags.sql`): người có role bất kỳ ở bất kỳ chi nhánh nào đều qua được, không xét quyền module. Đổi role hay chi nhánh chỉ có hiệu lực khi JWT được làm mới (`branch_ids` nằm trong token).
+- Hai hệ quyền chồng nhau: `is_admin()` đọc role trong JWT và bỏ qua chi nhánh; `has_permission` đọc theo chi nhánh. `is_staff()` (`20261007100000_permission_policies.sql`) trả true cho `admin`, `superAdmin`, `cashier` hoặc bất kỳ ai có role ở một chi nhánh. Rà lại 16 chỗ dùng: tất cả là đọc danh mục dùng chung (loại chuồng, giá chuồng, chẩn đoán, loại vaccine), cờ sức khỏe ở quầy (`pet_health_flags`, chỉ trả cờ, không trả bệnh án) và tìm khách ở quầy (`search_customers`). Đây là chủ ý "mọi nhân viên đều đọc", không phải lỗ hổng. Đổi role hay chi nhánh chỉ có hiệu lực khi JWT được làm mới (`branch_ids` nằm trong token).
 
 **Hướng sửa:** (1) test SQL theo role: "thu ngân không có quyền X gọi hàm Y thì bị 42501", vài chục ca cho các hàm ghi tiền và kho; (2) quy ước mỗi hàm `security definer` được cấp cho `authenticated` phải có dòng kiểm quyền ngay đầu thân hàm, kể cả khi hàm phụ đã kiểm; (3) chạy Supabase Security Advisor định kỳ (không chạy được trong phiên này vì kết nối Supabase bị chặn).
 
