@@ -14,6 +14,8 @@ import { listMyPermissions } from "@/repositories/permissions";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";
 import type { IUser, ILoginPayload, IRegisterPayload } from "@/types/user.type";
+import { createRecoveryFlow } from "./auth-parts/recovery";
+import { createVerificationFlow } from "./auth-parts/verification";
 
 export const useAuthStore = defineStore("auth", () => {
   const supabase = supabaseClient();
@@ -132,6 +134,12 @@ export const useAuthStore = defineStore("auth", () => {
     return initPromise;
   }
 
+  const flowContext = { supabase, loading, isSuccess, applySession };
+  const { startVerification, verifyEmailCode, resendVerificationCode, cancelVerification } =
+    createVerificationFlow(flowContext, pendingVerificationEmail);
+  const { sendResetPassMail, resendRecoveryCode, resetPasswordWithCode, cancelRecovery } =
+    createRecoveryFlow(flowContext, pendingRecoveryEmail);
+
   // ------------------------------------------------------------------ actions
   async function signUp(payload: IRegisterPayload | IUser) {
     loading.value = true;
@@ -204,60 +212,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  /** Sends a fresh code to an unverified account and switches the UI to the code form. */
-  async function startVerification(email: string) {
-    pendingVerificationEmail.value = email;
-    const { error } = await supabase.auth.resend({ type: "signup", email });
-    if (error) {
-      toast.error(authErrorMessage(error));
-    } else {
-      toast.info("Please verify your email. We sent you a code.");
-    }
-  }
-
-  async function verifyEmailCode(code: string) {
-    const email = pendingVerificationEmail.value;
-    if (!email) return;
-    loading.value = true;
-    isSuccess.value = false;
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token: code.trim(),
-        type: "signup",
-      });
-      if (error) throw error;
-
-      await applySession(data.session);
-      pendingVerificationEmail.value = null;
-      isSuccess.value = true;
-      toast.success("Email verified.");
-    } catch (error) {
-      toast.error(authErrorMessage(error));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function resendVerificationCode() {
-    const email = pendingVerificationEmail.value;
-    if (!email) return;
-    loading.value = true;
-    try {
-      const { error } = await supabase.auth.resend({ type: "signup", email });
-      if (error) throw error;
-      toast.success("A new code has been sent.");
-    } catch (error) {
-      toast.error(authErrorMessage(error));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  function cancelVerification() {
-    pendingVerificationEmail.value = null;
-  }
-
   async function loginGoogle() {
     loading.value = true;
     // OAuth is a full-page redirect, not a popup. The session is picked up by
@@ -292,75 +246,6 @@ export const useAuthStore = defineStore("auth", () => {
     } finally {
       loading.value = false;
     }
-  }
-
-  /** Emails a password-reset code (the email template carries the code, not a link). */
-  async function sendResetPassMail(email: string) {
-    loading.value = true;
-    isSuccess.value = false;
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      if (error) throw error;
-      pendingRecoveryEmail.value = email;
-      isSuccess.value = true;
-      toast.success("We emailed you a code.");
-    } catch (error) {
-      toast.error(authErrorMessage(error));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function resendRecoveryCode() {
-    const email = pendingRecoveryEmail.value;
-    if (!email) return;
-    loading.value = true;
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      if (error) throw error;
-      toast.success("A new code has been sent.");
-    } catch (error) {
-      toast.error(authErrorMessage(error));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  /** Checks the emailed code, then sets the new password and signs the user in. */
-  async function resetPasswordWithCode({ code, password }: { code: string; password: string }) {
-    const email = pendingRecoveryEmail.value;
-    if (!email) return;
-    loading.value = true;
-    isSuccess.value = false;
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token: code.trim(),
-        type: "recovery",
-      });
-      if (error) throw error;
-
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      if (updateError) {
-        // The code is single-use and was just spent: do not leave a half-recovered session.
-        await supabase.auth.signOut({ scope: "local" });
-        pendingRecoveryEmail.value = null;
-        throw updateError;
-      }
-
-      await applySession(data.session);
-      pendingRecoveryEmail.value = null;
-      isSuccess.value = true;
-      toast.success("Password updated.");
-    } catch (error) {
-      toast.error(authErrorMessage(error));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  function cancelRecovery() {
-    pendingRecoveryEmail.value = null;
   }
 
   async function signoutHdl() {
