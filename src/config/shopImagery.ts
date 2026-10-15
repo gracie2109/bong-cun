@@ -9,7 +9,6 @@ const unsplash = (id: string): string => `https://images.unsplash.com/${id}`;
 
 export const SHOP_PHOTOS = {
   hero: { src: unsplash("photo-1450778869180-41d0601e046e"), alt: "client.home.photos.hero" },
-  heroSide: { src: unsplash("photo-1514888286974-6c03e2ca1dba"), alt: "client.home.photos.cat" },
   shop: { src: unsplash("photo-1583337130417-3346a1be7dee"), alt: "client.home.photos.shop" },
   spa: { src: unsplash("photo-1516734212186-a967f81ad0d7"), alt: "client.home.photos.spa" },
   visit: { src: unsplash("photo-1548199973-03cce0bbc87b"), alt: "client.home.photos.visit" },

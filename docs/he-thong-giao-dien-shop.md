@@ -23,7 +23,7 @@ Tài liệu đi kèm đợt làm mới toàn bộ giao diện khách hàng (sau 
 
 Tailwind có thêm `bg-brand`, `bg-brand-soft`, `bg-sage`, `bg-sage-soft`, `shadow-card`, `shadow-lift`, `ease-out-quart`, `ease-pop`.
 
-Lớp tiện ích: `shop-container` (bề rộng trang), `shop-eyebrow`, `shop-display` (tiêu đề lớn), `shop-reveal` (hiện dần, `--i` là thứ tự), `shop-skeleton` (shimmer), `shop-scroll-row` (hàng cuộn ngang trên mobile). Có khối `prefers-reduced-motion` tắt hết chuyển động.
+Lớp tiện ích: `shop-container` và `shop-scroll-row` (khai báo bằng plugin trong `tailwind.config.js`), `shop-eyebrow`, `shop-display` (tiêu đề lớn), `shop-reveal` (hiện dần, `--i` là thứ tự), `shop-skeleton` (shimmer), `shop-scroll-row` (hàng cuộn ngang trên mobile). Có khối `prefers-reduced-motion` tắt hết chuyển động.
 
 Font: Be Vietnam Pro (thêm độ đậm 800) cho toàn shop, thay Quicksand.
 
@@ -46,6 +46,16 @@ Font: Be Vietnam Pro (thêm độ đậm 800) cho toàn shop, thay Quicksand.
 Không làm `Rating`: database chưa có đánh giá sản phẩm, không hiển thị số sao giả. Khi có bảng đánh giá thì thêm component này và gắn vào `ProductCard`, `ProductBuyBox`.
 
 `FilterBar` của trang danh sách là bộ `CatalogToolbar` + `CatalogChips` + `CatalogFilters` / `CatalogFilterSheet` trong `src/views/client/catalog/components/`.
+
+## 3b. Trang chủ làm lại lần hai (sau ảnh chụp thực tế)
+
+Nguyên nhân trang bị co cụm: `shop-container` và `shop-scroll-row` được bọc trong `:where()` (độ ưu tiên 0), nên reset của trình duyệt ghi đè `max-width`, `margin auto`, `padding` trên các thẻ `<ul>`, `<p>`. Nay khai báo bằng plugin Tailwind (`shopLayout`), trang rộng tối đa 1440px, lề 16 / 24 / 40px theo màn hình.
+
+- Hero: chữ 5/12 cột, một ảnh lớn 7/12 cột, giờ mở cửa và địa chỉ đặt trên ảnh. Bỏ ảnh nhỏ lẻ và thẻ nổi.
+- Dải cam kết: một hàng 4 mục có viền trên và dưới, không dùng nền trắng cắt ngang trang.
+- Danh mục: số cột theo số danh mục thật, ô "Xem tất cả sản phẩm" kéo dài lấp hết hàng nên một danh mục cũng không để trống.
+- Sản phẩm mới: lấy 16 sản phẩm mới nhất, ưu tiên cái có ảnh và giá (`showcaseOrder`), hiện 8 (6 trên tablet 3 cột). Giá bằng 0 coi như chưa có giá. Thiếu ảnh hiển thị ô "Ảnh đang cập nhật".
+- Spa: ảnh bên trái, bảng giá thật (giá thấp nhất mỗi dịch vụ), 3 bước đặt lịch. Bỏ khối hai lối vào Cửa hàng/Spa vì trùng với hero và menu.
 
 ## 4. Màn đã làm mới
 

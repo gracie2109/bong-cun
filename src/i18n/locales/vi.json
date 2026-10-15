@@ -2137,7 +2137,9 @@
       "categories": {
         "eyebrow": "Danh mục",
         "title": "Mua theo nhu cầu của bé",
-        "count": "{n} sản phẩm"
+        "count": "{n} sản phẩm",
+        "all": "Xem tất cả sản phẩm",
+        "allText": "Thức ăn, pate, cát vệ sinh, phụ kiện và đồ chăm sóc cho chó mèo."
       },
       "newArrivals": {
         "eyebrow": "Mới về",
@@ -2148,7 +2150,8 @@
         "title": "Để bé thơm tho, gọn gàng mà bạn không phải chờ",
         "text": "Chọn thú cưng, dịch vụ và khung giờ còn trống ngay trên web. Cửa hàng sắp xếp người làm cho bạn.",
         "book": "Đặt lịch ngay",
-        "prices": "Xem bảng giá"
+        "prices": "Xem bảng giá",
+        "priceFor": "Giá tham khảo cho {species}"
       },
       "visit": {
         "eyebrow": "Ghé cửa hàng",
@@ -2216,7 +2219,8 @@
       "errorHint": "Kết nối có thể đang chậm. Bạn thử lại sau ít giây nhé.",
       "emptyHint": "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa ngắn hơn.",
       "emptyShop": "Cửa hàng đang cập nhật sản phẩm, bạn quay lại sau nhé.",
-      "seeSpa": "Xem dịch vụ spa"
+      "seeSpa": "Xem dịch vụ spa",
+      "noPhoto": "Ảnh đang cập nhật"
     },
     "product": {
       "sku": "Mã SKU",

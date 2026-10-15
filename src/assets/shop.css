@@ -1,5 +1,5 @@
-/* Plain CSS (no @layer): this file is loaded on its own, after the Tailwind utilities. Helper classes
-   that set layout are wrapped in :where() so a utility on the same element (sm:grid) still wins. */
+/* Plain CSS (no @layer): this file is loaded on its own, after the Tailwind utilities. Layout classes
+   (shop-container, shop-scroll-row) live in tailwind.config.js so utilities can override them. */
 /* Public shop look (pet shop + spa). The client layout puts `shop-theme` on <html>, so sheets and
    dialogs teleported to <body> get the same tokens. Admin keeps its own `admin-theme`. */
 html.shop-theme {
@@ -66,11 +66,6 @@ html.shop-theme :focus-visible {
   outline-offset: 2px;
 }
 
-/* Page width of the shop: 16px gutters on phones, 1240px wide content on desktop. */
-:where(.shop-container) {
-  @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
-}
-
 .shop-eyebrow {
   @apply text-xs font-semibold uppercase tracking-[0.08em] text-primary;
 }
@@ -89,15 +84,6 @@ html.shop-theme :focus-visible {
   background: linear-gradient(90deg, hsl(var(--muted)) 0%, hsl(36 40% 97%) 50%, hsl(var(--muted)) 100%);
   background-size: 200% 100%;
   animation: shop-shimmer 1.4s linear infinite;
-}
-
-:where(.shop-scroll-row) {
-  @apply flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2;
-  scrollbar-width: none;
-}
-
-.shop-scroll-row::-webkit-scrollbar {
-  display: none;
 }
 
 @keyframes shop-fade-up {

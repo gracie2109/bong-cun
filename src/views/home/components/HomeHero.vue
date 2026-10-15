@@ -1,51 +1,49 @@
 <template>
-  <section class="relative overflow-hidden">
-    <div class="shop-container grid items-center gap-10 py-10 md:py-14 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-20">
-      <div class="max-w-xl">
-        <p
-          class="shop-reveal inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-foreground shadow-card"
-          :style="{ '--i': 0 }"
-        >
+  <section class="shop-container pb-12 pt-6 md:pt-8 lg:pb-16">
+    <div class="grid gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-12">
+      <div class="flex flex-col justify-center lg:col-span-5 lg:py-10">
+        <p class="shop-reveal inline-flex w-fit items-center gap-2 text-sm font-semibold text-sage" :style="{ '--i': 0 }">
           <span class="size-2 rounded-full bg-sage" aria-hidden="true" />{{ $t("client.home.hero.badge") }}
         </p>
-        <h1 class="shop-display shop-reveal mt-5 text-[40px] leading-[1.05] sm:text-5xl lg:text-[56px]" :style="{ '--i': 1 }">
+        <h1 class="shop-display shop-reveal mt-4 text-[40px] leading-[1.04] sm:text-[52px] xl:text-[64px]" :style="{ '--i': 1 }">
           {{ $t("client.home.hero.titleStart") }}
-          <span class="relative inline-block text-primary">
-            {{ $t("client.home.hero.titleAccent") }}
-            <svg class="absolute -bottom-2 left-0 h-3 w-full text-brand/60" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M2 9c40-6 90-8 196-3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-            </svg>
-          </span>
+          <span class="text-primary">{{ $t("client.home.hero.titleAccent") }}</span>
         </h1>
-        <p class="shop-reveal mt-6 text-lg leading-relaxed text-muted-foreground" :style="{ '--i': 2 }">{{ $t("client.home.hero.text") }}</p>
+        <p class="shop-reveal mt-5 max-w-[34rem] text-lg leading-relaxed text-muted-foreground" :style="{ '--i': 2 }">
+          {{ $t("client.home.hero.text") }}
+        </p>
         <div class="shop-reveal mt-8 flex flex-col gap-3 sm:flex-row" :style="{ '--i': 3 }">
-          <Button as-child class="h-[52px] rounded-full px-7 text-base">
-            <RouterLink :to="{ name: 'products' }"><ShoppingBasket class="mr-2 size-5" />{{ $t("client.home.hero.shop") }}</RouterLink>
+          <Button as-child class="h-[52px] rounded-full px-7 text-base font-semibold">
+            <RouterLink :to="{ name: 'products' }">{{ $t("client.home.hero.shop") }}<ArrowRight class="ml-2 size-5" /></RouterLink>
           </Button>
-          <Button
-            as-child
-            variant="outline"
-            class="h-[52px] rounded-full border-foreground/20 bg-white px-7 text-base hover:border-foreground hover:bg-white"
-          >
+          <Button as-child variant="outline" class="h-[52px] rounded-full border-foreground/20 bg-transparent px-7 text-base font-semibold hover:bg-white">
             <RouterLink :to="{ name: 'spa' }"><Scissors class="mr-2 size-5" />{{ $t("client.home.hero.spa") }}</RouterLink>
           </Button>
         </div>
-        <ul class="shop-reveal mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/80" :style="{ '--i': 4 }">
-          <li v-for="key in POINTS" :key="key" class="flex items-center gap-2">
-            <Check class="size-4 text-sage" :stroke-width="3" />{{ $t(`client.home.hero.${key}`) }}
-          </li>
-        </ul>
       </div>
 
-      <HeroPhotos class="shop-reveal" :style="{ '--i': 2 }" />
+      <div class="shop-reveal relative lg:col-span-7" :style="{ '--i': 2 }">
+        <ShopImage
+          :src="SHOP_PHOTOS.hero.src"
+          :alt="$t(SHOP_PHOTOS.hero.alt)"
+          :width="1100"
+          sizes="(min-width: 1024px) 58vw, 100vw"
+          eager
+          class="aspect-[4/3] rounded-[28px] lg:aspect-auto lg:h-full lg:min-h-[540px] xl:min-h-[600px]"
+        />
+        <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl bg-white/95 px-4 py-3 text-sm shadow-card backdrop-blur sm:right-auto">
+          <span class="inline-flex items-center gap-2 font-semibold"><Clock class="size-4 text-sage" />{{ STORE_INFO.hours }}</span>
+          <span class="inline-flex items-center gap-2 text-muted-foreground"><MapPin class="size-4 text-sage" />{{ STORE_INFO.address }}</span>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { Check, Scissors, ShoppingBasket } from "lucide-vue-next";
+import { ArrowRight, Clock, MapPin, Scissors } from "lucide-vue-next";
+import ShopImage from "@/components/shop/ShopImage.vue";
 import { Button } from "@/components/ui/button";
-import HeroPhotos from "./HeroPhotos.vue";
-
-const POINTS = ["point1", "point2", "point3"] as const;
+import { SHOP_PHOTOS } from "@/config/shopImagery";
+import { STORE_INFO } from "@/config/storeInfo";
 </script>

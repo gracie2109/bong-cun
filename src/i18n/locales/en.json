@@ -2137,7 +2137,9 @@
       "categories": {
         "eyebrow": "Categories",
         "title": "Shop by what your pet needs",
-        "count": "{n} products"
+        "count": "{n} products",
+        "all": "Browse all products",
+        "allText": "Food, pâté, litter, accessories and care products for dogs and cats."
       },
       "newArrivals": {
         "eyebrow": "New in",
@@ -2148,7 +2150,8 @@
         "title": "A clean, tidy pet without the waiting",
         "text": "Pick your pet, services and a free time slot on the web. The shop assigns the groomer for you.",
         "book": "Book now",
-        "prices": "See prices"
+        "prices": "See prices",
+        "priceFor": "Starting prices for {species}"
       },
       "visit": {
         "eyebrow": "Visit us",
@@ -2216,7 +2219,8 @@
       "errorHint": "The connection may be slow. Please try again in a few seconds.",
       "emptyHint": "Try removing a filter or searching with a shorter word.",
       "emptyShop": "The shop is adding products. Please come back soon.",
-      "seeSpa": "See spa services"
+      "seeSpa": "See spa services",
+      "noPhoto": "Photo coming soon"
     },
     "product": {
       "sku": "SKU",
