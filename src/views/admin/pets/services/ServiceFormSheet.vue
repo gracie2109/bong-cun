@@ -19,6 +19,17 @@
         </div>
 
         <div class="space-y-2">
+          <Label>{{ $t("petCare.services.form.category") }}</Label>
+          <Select v-model="category">
+            <SelectTrigger :aria-label="$t('petCare.services.form.category')"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="option in SERVICE_CATEGORY_OPTIONS" :key="option.value" :value="option.value">{{ $t(option.label) }}</SelectItem>
+            </SelectContent>
+          </Select>
+          <p class="text-xs text-muted-foreground">{{ $t("petCare.services.form.categoryHint") }}</p>
+        </div>
+
+        <div class="space-y-2">
           <Label>{{ $t("petCare.services.form.species") }}</Label>
           <ChipPicker v-model="speciesIds" :options="speciesOptions" />
           <p v-if="submitted && speciesIds.length === 0" class="text-sm text-red-600">
@@ -120,7 +131,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreatePetService, useUpdatePetService } from "@/queries/petServices";
 import { useSpeciesOptions } from "@/queries/species";
 import type { PetService } from "@/repositories/petServices";
-import { MAX_DURATION_MINUTES, SERVICE_PRICING, SERVICE_UNITS } from "./serviceForm";
+import { MAX_DURATION_MINUTES, SERVICE_CATEGORY_OPTIONS, SERVICE_PRICING, SERVICE_UNITS } from "./serviceForm";
 import { useServiceForm } from "./useServiceForm";
 
 const props = defineProps<{ open: boolean; service: PetService | null }>();
@@ -135,6 +146,7 @@ const {
   desc,
   speciesIds,
   type,
+  category,
   price,
   duration,
   unit,

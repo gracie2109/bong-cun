@@ -61,6 +61,12 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     ],
   },
   {
+    title: "adminNav.medical",
+    items: [
+      { title: "adminNav.medicalSettings", icon: "lucide:settings-2", name: "medicalSettings" },
+    ],
+  },
+  {
     title: "adminNav.customersPets",
     items: [
       { title: "adminNav.customers", icon: "lucide:users", name: "users" },

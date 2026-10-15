@@ -118,7 +118,8 @@
     "accountBoarding": "My boarding stays",
     "accountBoardingDetail": "Boarding stay",
     "boarding": "Pet hotel",
-    "boardingTimeline": "Kennel calendar"
+    "boardingTimeline": "Kennel calendar",
+    "medicalSettings": "Medical settings"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -451,8 +452,8 @@
       "noSelection": "Pick a species on the left"
     },
     "services": {
-      "title": "Spa services",
-      "subtitle": "Services, duration and how they are priced",
+      "title": "Services",
+      "subtitle": "Spa, medical and other services: duration and pricing",
       "add": "Add service",
       "edit": "Edit service",
       "searchPlaceholder": "Search services",
@@ -468,7 +469,8 @@
         "price": "Price",
         "duration": "Duration",
         "web": "Show on web",
-        "actions": "Actions"
+        "actions": "Actions",
+        "category": "Group"
       },
       "minutes": "{n} min",
       "empty": "No services yet",
@@ -492,7 +494,15 @@
         "removeSpeciesWarning": "Removing a species deletes the prices set for it when you save.",
         "errSpecies": "Pick at least one species",
         "errPrice": "Enter a price of 0 or more",
-        "errDuration": "Duration must be 0 to 1439 minutes"
+        "errDuration": "Duration must be 0 to 1439 minutes",
+        "category": "Service group",
+        "categoryHint": "The spa booking list and the public spa price list only show the Spa group. The POS sees every group."
+      },
+      "filterCategory": "Group",
+      "category": {
+        "spa": "Spa",
+        "medical": "Medical",
+        "other": "Other"
       }
     },
     "prices": {
@@ -757,7 +767,7 @@
     "pets": "Pet profiles",
     "servicesPrices": "Services & prices",
     "species": "Species",
-    "services": "Spa services",
+    "services": "Services",
     "prices": "Price list",
     "combos": "Combo packages",
     "system": "System",
@@ -795,7 +805,9 @@
     "boardingSettings": "Boarding settings",
     "boardingBoard": "Kennel board",
     "boardingStays": "Boarding stays",
-    "boardingStayDetail": "Stay details"
+    "boardingStayDetail": "Stay details",
+    "medical": "Clinic",
+    "medicalSettings": "Medical settings"
   },
   "pos": {
     "title": "Point of sale",
@@ -2829,6 +2841,96 @@
       "priceNote": "Prices are a guide; the shop settles the amount at pick-up. Call the shop to book.",
       "emptyHint": "Call the shop for advice.",
       "emptyPublic": "The hotel price list is not ready yet"
+    }
+  },
+  "medical": {
+    "nav": {
+      "settings": "Medical settings"
+    },
+    "common": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "sortOrder": "Sort order",
+      "allSpecies": "All species",
+      "speciesHint": "Pick none to apply to every species."
+    },
+    "errors": {
+      "duplicate_name": "An entry with this name already exists.",
+      "bad_input": "Missing or invalid information.",
+      "bad_protocol": "The protocol is not valid: a series of several shots needs the days between them.",
+      "bad_rules": "The rules are not valid: reminder days 0 to 90, contagious warning days 1 to 365, and the exam service must be in the Medical group.",
+      "not_found": "This entry was not found."
+    },
+    "settings": {
+      "title": "Medical settings",
+      "readOnly": "View only. You need Medical: Settings to add or edit diagnoses, vaccines and rules.",
+      "tabDiagnoses": "Diagnoses",
+      "tabVaccines": "Vaccines & dewormers",
+      "tabRules": "Rules"
+    },
+    "diagnoses": {
+      "add": "Add diagnosis",
+      "edit": "Edit diagnosis",
+      "name": "Diagnosis name",
+      "namePlaceholder": "For example: Parvo, dermatitis, ticks",
+      "species": "Species",
+      "contagious": "Contagious disease",
+      "contagiousHint": "Pets with this diagnosis get a red label in the queue, and a warning when booking spa or boarding within the set period.",
+      "contagiousTag": "Contagious",
+      "searchPlaceholder": "Search diagnoses",
+      "empty": "No diagnoses yet. Vets can still type free text during an exam."
+    },
+    "vaccines": {
+      "add": "Add vaccine type",
+      "edit": "Edit vaccine type",
+      "name": "Name",
+      "namePlaceholder": "For example: Canine 7-in-1, Rabies, Deworming",
+      "kind": "Kind",
+      "kinds": {
+        "vaccine": "Vaccine",
+        "deworm": "Deworming",
+        "other": "Other prevention"
+      },
+      "species": "Species",
+      "product": "Stock item",
+      "productHint": "With an item, the shot is billed and taken from the lots. Leave empty to only record it.",
+      "clearProduct": "Clear",
+      "recordOnly": "Record only",
+      "stock": "{qty} {unit} in stock",
+      "protocol": "Protocol",
+      "protocolHint": "A basic series of shots a few days apart, then a periodic booster. The vet can still change the due date when giving the shot.",
+      "seriesDoses": "Basic shots",
+      "seriesGap": "Days between shots",
+      "booster": "Booster after (days)",
+      "minAge": "Minimum age (weeks)",
+      "noReminder": "No booster reminder",
+      "noLimit": "No limit",
+      "seriesSingle": "1 shot",
+      "seriesShort": "{doses} shots, {days} days apart",
+      "boosterShort": "Booster after {days} days",
+      "searchPlaceholder": "Search vaccines",
+      "empty": "No vaccine types yet.",
+      "errors": {
+        "doses": "Basic shots must be 1 to 10.",
+        "gap": "A series of several shots needs the days between them.",
+        "booster": "Booster days must be above 0 (or empty).",
+        "age": "Minimum age cannot be negative (or empty)."
+      }
+    },
+    "rules": {
+      "title": "Medical rules of this branch",
+      "hint": "Each branch has its own rules.",
+      "unavailable": "The rules could not be read.",
+      "examService": "Default exam service",
+      "examServiceHint": "Added to the visit when a vet takes the case.",
+      "noExam": "Do not add one",
+      "noMedicalService": "No Medical service yet. Create one on the Services screen with the Medical group (for example General exam).",
+      "remindAheadDays": "Remind shots ahead (days)",
+      "remindAheadDaysHint": "The reminder list shows shots due within this many days.",
+      "contagiousDays": "Contagious warning period (days)",
+      "contagiousDaysHint": "A pet with a contagious diagnosis in this period triggers a warning at spa and boarding.",
+      "requireVaccine": "Warn when the shot book is missing at boarding check-in",
+      "requireVaccineHint": "Only a warning; check-in is never blocked."
     }
   }
 }

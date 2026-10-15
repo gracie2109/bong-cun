@@ -14,6 +14,7 @@ import {
   type PetServiceInput,
 } from "@/repositories/petServices";
 import { toPage, type PageParams } from "@/repositories/shared";
+import type { ServiceCategory } from "@/types/medical";
 import { petServiceKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";
@@ -28,8 +29,12 @@ export const usePetServicesList = (
     placeholderData: keepPreviousData,
   });
 
-export const useAllPetServices = () =>
-  useQuery({ queryKey: petServiceKeys.options(), queryFn: () => listAllPetServices(supabaseClient()) });
+/** Every active service, or only the ones of one group (the spa lists pass "spa"). */
+export const useAllPetServices = (category?: ServiceCategory) =>
+  useQuery({
+    queryKey: petServiceKeys.options(category),
+    queryFn: () => listAllPetServices(supabaseClient(), { category }),
+  });
 
 export const usePetService = (id: MaybeRef<string | undefined>) =>
   useQuery({

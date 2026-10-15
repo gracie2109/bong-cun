@@ -1,6 +1,7 @@
 // Pet services. The species a service is offered for come from a join table and are rebuilt on read.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
+import type { ServiceCategory } from "@/types/medical";
 import { toSpecies, type Species, type SpeciesRow } from "./species";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
 
@@ -13,6 +14,8 @@ export type PetService = {
   name: string;
   desc: string | null;
   type: string | null;
+  /** The group of the service: spa, medical or other. */
+  category: ServiceCategory;
   unit: string | null;
   generalPrice: number | null;
   /** Single-element array: the admin form binds it to a Slider. Minutes. */
@@ -29,6 +32,7 @@ export type PetServiceInput = {
   name: string;
   desc?: string | null;
   type?: string | null;
+  category?: ServiceCategory;
   unit?: string | null;
   generalPrice?: number | string | null;
   duration?: number[] | null;
@@ -48,6 +52,7 @@ export const toPetService = (row: WithSpecies): PetService => {
     name: row.name,
     desc: row.description,
     type: row.type,
+    category: row.category as ServiceCategory,
     unit: row.unit,
     generalPrice: row.general_price,
     duration: [row.duration_minutes ?? 0],
@@ -64,6 +69,7 @@ const toRpcPayload = (input: PetServiceInput) => ({
   name: input.name,
   description: input.desc ?? null,
   type: input.type ?? null,
+  category: input.category ?? "spa",
   unit: input.unit ?? null,
   general_price: input.generalPrice ?? null,
   duration_minutes: input.duration?.[0] ?? null,
@@ -76,6 +82,7 @@ export type PetServiceFilter = {
   search?: string;
   speciesId?: string;
   type?: "all" | "by_weight";
+  category?: ServiceCategory;
   /** Archived services are hidden unless this is true. */
   includeArchived?: boolean;
 };
@@ -96,6 +103,7 @@ export const listPetServices = async (
 
   if (!filter.includeArchived) query = query.eq("is_active", true);
   if (filter.type) query = query.eq("type", filter.type);
+  if (filter.category) query = query.eq("category", filter.category);
   if (filter.speciesId) query = query.eq("service_species.species_id", filter.speciesId);
   const term = filterSafe(filter.search ?? "");
   if (term) query = query.ilike("name", `%${term}%`);
@@ -107,13 +115,14 @@ export const listPetServices = async (
 
 export const listAllPetServices = async (
   client: Client,
-  options: { includeArchived?: boolean } = {}
+  options: { includeArchived?: boolean; category?: ServiceCategory } = {}
 ): Promise<PetService[]> => {
   let query = client
     .from("pet_services")
     .select(SELECT_WITH_SPECIES)
     .order("created_at", { ascending: false });
   if (!options.includeArchived) query = query.eq("is_active", true);
+  if (options.category) query = query.eq("category", options.category);
   const rows = unwrap(await query);
   return (rows as WithSpecies[]).map(toPetService);
 };

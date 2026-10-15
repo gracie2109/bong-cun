@@ -136,7 +136,7 @@ const petsQuery = useCustomerPets(customerId);
 const pets = computed(() => petsQuery.data.value ?? []);
 const needsPets = computed(() => !!buyer.value && !props.appointment && (!buyer.value.customerId || (!petsQuery.isFetching.value && pets.value.length === 0)));
 
-const servicesQuery = useAllPetServices();
+const servicesQuery = useAllPetServices("spa");
 const services = computed(() => (servicesQuery.data.value ?? []).filter((service) => service.isShow));
 const combosQuery = useSellableCombos();
 const combos = computed(() => combosQuery.data.value ?? []);

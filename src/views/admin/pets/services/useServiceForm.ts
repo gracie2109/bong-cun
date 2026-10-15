@@ -1,6 +1,8 @@
 import { computed, ref, watch } from "vue";
 import type { PetService, PetServiceInput } from "@/repositories/petServices";
+import type { ServiceCategory } from "@/types/medical";
 import {
+  DEFAULT_CATEGORY,
   DEFAULT_DURATION_MINUTES,
   DEFAULT_UNIT,
   MAX_DURATION_MINUTES,
@@ -13,6 +15,7 @@ export const useServiceForm = (isOpen: () => boolean, service: () => PetService 
   const desc = ref("");
   const speciesIds = ref<string[]>([]);
   const type = ref<ServicePricing>("by_weight");
+  const category = ref<ServiceCategory>(DEFAULT_CATEGORY);
   const price = ref("");
   const duration = ref(String(DEFAULT_DURATION_MINUTES));
   const unit = ref(DEFAULT_UNIT);
@@ -29,6 +32,7 @@ export const useServiceForm = (isOpen: () => boolean, service: () => PetService 
       desc.value = current?.desc ?? "";
       speciesIds.value = current?.speciesIds ?? [];
       type.value = current?.type === "all" ? "all" : "by_weight";
+      category.value = current?.category ?? DEFAULT_CATEGORY;
       price.value = current?.generalPrice != null ? String(current.generalPrice) : "";
       duration.value = String(current?.duration[0] ?? DEFAULT_DURATION_MINUTES);
       unit.value = current?.unit ?? DEFAULT_UNIT;
@@ -62,6 +66,7 @@ export const useServiceForm = (isOpen: () => boolean, service: () => PetService 
       name: name.value.trim(),
       desc: desc.value.trim() || null,
       type: type.value,
+      category: category.value,
       unit: unit.value,
       generalPrice: type.value === "all" ? Number(price.value) : null,
       duration: [Number(duration.value)],
@@ -76,6 +81,7 @@ export const useServiceForm = (isOpen: () => boolean, service: () => PetService 
     desc,
     speciesIds,
     type,
+    category,
     price,
     duration,
     unit,
