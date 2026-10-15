@@ -104,3 +104,41 @@ begin
   return v_user;
 end;
 $$;
+
+-- Staff with a role at a branch and no cash shift (vet, inventory...).
+create or replace function tests.create_staff(p_email text, p_branch uuid, p_role text)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_user uuid := tests.create_user(p_email, 'cashier');
+begin
+  insert into public.staff_branches (user_id, branch_id, role) values (v_user, p_branch, p_role);
+  return v_user;
+end;
+$$;
+
+-- A customer owning one pet. Returns the customer id; the pet id is read back with tests.pet_of.
+create or replace function tests.create_patient(p_phone text, p_pet_name text)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_species  uuid;
+  v_customer uuid;
+  v_pet      uuid;
+begin
+  insert into public.species (name) values ('Species ' || p_phone) returning id into v_species;
+  insert into public.customers (full_name, phone) values ('Owner ' || p_phone, p_phone) returning id into v_customer;
+  insert into public.pets (species_id, name) values (v_species, p_pet_name) returning id into v_pet;
+  insert into public.pet_owners (pet_id, customer_id) values (v_pet, v_customer);
+  return v_customer;
+end;
+$$;
+
+create or replace function tests.pet_of(p_customer uuid)
+returns uuid
+language sql
+as $$
+  select pet_id from public.pet_owners where customer_id = p_customer and to_date is null limit 1;
+$$;
