@@ -21,7 +21,7 @@
         <button
           type="button"
           class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm hover:bg-muted disabled:opacity-50"
-          :disabled="!product.trackStock"
+          :disabled="!allowUntracked && !product.trackStock"
           @mousedown.prevent="pick(product)"
         >
           <span class="min-w-0">
@@ -30,7 +30,7 @@
               {{ [product.sku, product.barcode, product.unit].filter(Boolean).join(" · ") }}
             </span>
           </span>
-          <span v-if="!product.trackStock" class="shrink-0 text-[11px] text-muted-foreground">
+          <span v-if="!allowUntracked && !product.trackStock" class="shrink-0 text-[11px] text-muted-foreground">
             {{ $t("inventory.documents.untracked") }}
           </span>
         </button>
@@ -54,6 +54,7 @@ import { searchSellableProducts, type SellableProduct } from "@/repositories/pro
 
 const BLUR_CLOSE_MS = 150;
 
+const props = defineProps<{ allowUntracked?: boolean }>();
 const emit = defineEmits<{ pick: [product: SellableProduct] }>();
 
 const search = ref("");
@@ -63,7 +64,7 @@ const { items, loadMore, hasMore, loading, loadingMore } = useSellableProductsPa
 const results = computed(() => (debounced.value.trim() ? items.value : []));
 
 const pick = (product: SellableProduct) => {
-  if (!product.trackStock) return;
+  if (!props.allowUntracked && !product.trackStock) return;
   emit("pick", product);
   search.value = "";
 };

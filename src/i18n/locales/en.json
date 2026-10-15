@@ -2882,7 +2882,15 @@
       "not_waiting": "The visit is no longer waiting.",
       "pet_busy": "The pet already has an open visit ({name}).",
       "pet_deceased": "{name} has passed away and cannot be checked in.",
-      "taken": "This case was already taken by {name}."
+      "taken": "This case was already taken by {name}.",
+      "has_items": "The visit has services or medicine. Remove those lines before cancelling.",
+      "paid": "The visit is already paid.",
+      "no_service": "This service cannot be used (it must be in the Medical group and active).",
+      "not_available": "This product cannot be used.",
+      "species_not_allowed": "This service is not for {name}'s species.",
+      "no_weight": "The visit needs a weight to price {name}.",
+      "no_price": "No price for {name}.",
+      "bad_unit": "The unit does not belong to this product."
     },
     "settings": {
       "title": "Medical settings",
@@ -3045,7 +3053,8 @@
       "diagnosis": "Diagnosis / reason",
       "outcome": "Outcome",
       "empty": "No visits yet.",
-      "open": "Open"
+      "open": "Open",
+      "total": "Estimate"
     },
     "soap": {
       "subjective": "S – Owner's history",
@@ -3095,7 +3104,8 @@
       "tabRecord": "Record",
       "recheckOf": "Re-check of {code}",
       "recheckBooked": "Re-check booked: {code}.",
-      "payAtPos": "Pay at POS"
+      "payAtPos": "Pay at POS",
+      "tabItems": "Services & medicine"
     },
     "side": {
       "openPet": "Pet profile",
@@ -3106,6 +3116,63 @@
       "neutered": "Neutered",
       "intact": "Intact",
       "next": "Next"
+    },
+    "items": {
+      "kind": {
+        "service": "Service",
+        "product": "Medicine / supplies",
+        "external": "Bought elsewhere"
+      },
+      "hint": "Services and medicine are charged at the POS after signing. They can be added or removed until they go on an invoice.",
+      "prescription": "Prescription",
+      "addService": "Add service",
+      "addDrug": "Add medicine",
+      "addLine": "Add",
+      "empty": "No services or medicine yet.",
+      "name": "Item",
+      "qty": "Quantity",
+      "price": "Price",
+      "amount": "Amount",
+      "addedBy": "Added by",
+      "total": "Estimate",
+      "remove": "Remove line",
+      "takeHome": "Take home",
+      "billed": "Billed",
+      "lowStock": "Stock at this branch is not enough. The line is still saved; stock is taken at payment.",
+      "serviceHint": "Only services in the Medical group. The price follows the pet's species and the visit's weight.",
+      "service": "Service",
+      "servicePlaceholder": "Choose a service",
+      "noServices": "No Medical services yet. Create them on the Services screen.",
+      "drugHint": "Stock medicine is taken from stock at payment; medicine bought elsewhere is only printed.",
+      "source": {
+        "stock": "From stock",
+        "external": "Bought elsewhere"
+      },
+      "allergyChecked": "Allergy checked",
+      "product": "Product",
+      "change": "Change",
+      "externalName": "Medicine name",
+      "externalHint": "Not charged; it always goes on the take-home prescription.",
+      "takeHomeHint": "Take home (printed on the prescription)",
+      "dose": "Dose",
+      "doseHint": "1/2 tablet",
+      "frequency": "Frequency",
+      "frequencyHint": "Twice a day",
+      "days": "Days",
+      "route": "Route",
+      "routeHint": "Oral, eye drops...",
+      "instructions": "Extra notes",
+      "daysUnit": "days"
+    },
+    "rx": {
+      "title": "Prescription",
+      "desc": "Take-home and external medicine of this visit.",
+      "print": "Print",
+      "pet": "Pet",
+      "owner": "Owner",
+      "phone": "Phone",
+      "external": "bought elsewhere",
+      "vet": "Veterinarian"
     }
   }
 }

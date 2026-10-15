@@ -31,5 +31,6 @@ export const visitsExportColumns = (): ExportColumn<MedicalVisit>[] => [
   { header: "Lý do khám", value: (row) => row.reason, width: 28 },
   { header: "Chẩn đoán", value: (row) => row.diagnosesText, width: 28 },
   { header: "Kết luận", value: (row) => (row.outcome ? OUTCOME_TEXT[row.outcome] : null) },
+  { header: "Tạm tính", value: (row) => row.estTotal, kind: "money" },
   { header: "Trạng thái", value: (row) => STATUS_TEXT[row.status] ?? row.status },
 ];

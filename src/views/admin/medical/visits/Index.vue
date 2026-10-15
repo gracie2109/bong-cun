@@ -41,11 +41,12 @@
               <th class="px-4 py-3 font-semibold">{{ $t("medical.visits.vet") }}</th>
               <th class="px-4 py-3 font-semibold">{{ $t("medical.visits.diagnosis") }}</th>
               <th class="px-4 py-3 font-semibold">{{ $t("medical.visits.outcome") }}</th>
+              <th class="px-4 py-3 text-right font-semibold">{{ $t("medical.visits.total") }}</th>
               <th class="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="8" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('medical.visits.empty')" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="9" :pending="listQuery.isPending.value" :empty="rows.length === 0" :empty-text="$t('medical.visits.empty')" />
             <VisitRow v-for="row in rows" :key="row.id" :visit="row" />
           </tbody>
         </table>

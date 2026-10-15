@@ -20,6 +20,7 @@
       <p class="line-clamp-2">{{ visit.diagnosesText ?? visit.reason ?? "-" }}</p>
     </td>
     <td class="whitespace-nowrap px-4 py-3">{{ visit.outcome ? $t(`medical.outcome.${visit.outcome}`) : "-" }}</td>
+    <td class="whitespace-nowrap px-4 py-3 text-right">{{ money(visit.estTotal) }}</td>
     <td class="whitespace-nowrap px-4 py-3 text-right">
       <Button size="sm" variant="outline" as-child>
         <router-link :to="{ name: 'medicalVisitDetail', params: { visitId: visit.id } }">{{ $t("medical.visits.open") }}</router-link>
@@ -31,7 +32,7 @@
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
 import type { MedicalVisit } from "@/types/medicalVisit";
-import { dateTime, VISIT_TONE } from "../format";
+import { dateTime, money, VISIT_TONE } from "../format";
 
 defineProps<{ visit: MedicalVisit }>();
 </script>

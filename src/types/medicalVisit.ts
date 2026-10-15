@@ -41,6 +41,8 @@ export type MedicalVisit = {
   /** Only in the pet history. */
   branchName: string | null;
   ownerInstructions: string | null;
+  /** What the visit will cost: its service and product lines. */
+  estTotal: number;
 };
 
 export type MedicalQueue = {
@@ -89,6 +91,7 @@ export type MedicalVisitDetail = MedicalVisit & {
   pet: VisitPet | null;
   diagnoses: VisitDiagnosis[];
   addenda: VisitAddendum[];
+  items: VisitItem[];
 };
 
 export type Vet = { id: string; name: string };
@@ -135,3 +138,78 @@ export type RecordInput = {
 };
 
 export type SignResult = { id: string; status: VisitStatus; recheckVisitId: string | null };
+
+export type ItemKind = "service" | "product" | "external";
+
+/** A charged or prescribed line of a visit. */
+export type VisitItem = {
+  id: string;
+  kind: ItemKind;
+  serviceId: string | null;
+  productId: string | null;
+  name: string;
+  qty: number;
+  unitName: string | null;
+  unitPrice: number;
+  amount: number;
+  takeHome: boolean;
+  dose: string | null;
+  frequency: string | null;
+  days: number | null;
+  route: string | null;
+  instructions: string | null;
+  autoAdded: boolean;
+  invoiceLineId: string | null;
+  createdByName: string | null;
+  createdAt: string;
+};
+
+/** The medicine text of a line; also what Change sends. */
+export type ItemDirections = {
+  takeHome: boolean;
+  dose: string;
+  frequency: string;
+  days: number | null;
+  route: string;
+  instructions: string;
+};
+
+export type ItemInput = ItemDirections & {
+  kind: ItemKind;
+  serviceId?: string;
+  productId?: string;
+  /** Name of a medicine bought elsewhere. */
+  name?: string;
+  qty: number;
+};
+
+export type ItemResult = { id: string; warnings: string[] };
+
+export type PrescriptionLine = {
+  name: string;
+  qty: number;
+  unitName: string | null;
+  dose: string | null;
+  frequency: string | null;
+  days: number | null;
+  route: string | null;
+  instructions: string | null;
+  external: boolean;
+};
+
+export type Prescription = {
+  code: string;
+  date: string;
+  branchName: string;
+  petName: string;
+  speciesName: string | null;
+  weightKg: number | null;
+  customerName: string;
+  customerPhone: string;
+  vetName: string | null;
+  signed: boolean;
+  ownerInstructions: string | null;
+  recheckOn: string | null;
+  diagnoses: string[];
+  items: PrescriptionLine[];
+};
