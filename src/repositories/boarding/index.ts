@@ -7,5 +7,6 @@ export * from "./checkInOut";
 export * from "./errors";
 export * from "./kennelTypes";
 export * from "./kennels";
+export * from "./publicCatalog";
 export * from "./rules";
 export * from "./stays";

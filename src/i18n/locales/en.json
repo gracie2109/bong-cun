@@ -114,7 +114,10 @@
     "boardingSettings": "Boarding settings",
     "boardingBoard": "Kennel board",
     "boardingStays": "Boarding stays",
-    "boardingStayDetail": "Stay details"
+    "boardingStayDetail": "Stay details",
+    "accountBoarding": "My boarding stays",
+    "accountBoardingDetail": "Boarding stay",
+    "boarding": "Pet hotel"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2367,7 +2370,8 @@
       "products": "Products",
       "spa": "Spa",
       "about": "About us",
-      "contact": "Contact"
+      "contact": "Contact",
+      "boarding": "Pet hotel"
     },
     "menu": {
       "login": "Log in",
@@ -2565,7 +2569,8 @@
         "addresses": "Addresses",
         "orders": "Orders",
         "pets": "Pets",
-        "appointments": "Appointments"
+        "appointments": "Appointments",
+        "boarding": "Boarding"
       },
       "profile": {
         "info": "Personal information",
@@ -2598,7 +2603,9 @@
         "petsHint": "See and update the pets the shop registered for you",
         "petsCount": "{n} pets",
         "nextAppointment": "Next appointment",
-        "noAppointment": "None yet. Book a spa visit"
+        "noAppointment": "None yet. Book a spa visit",
+        "currentStay": "Staying with us",
+        "noStay": "No pet in the hotel right now"
       }
     },
     "pets": {
@@ -2746,6 +2753,57 @@
       "openHours": "Open {hours} every day",
       "language": "Language",
       "skipToContent": "Skip to main content"
+    },
+    "boarding": {
+      "scope": {
+        "upcoming": "Upcoming",
+        "current": "Staying",
+        "past": "Finished"
+      },
+      "empty": {
+        "upcoming": "You have no upcoming stays.",
+        "current": "No pet is staying with us right now.",
+        "past": "No finished stays yet."
+      },
+      "loadFailed": "Could not load your boarding stays.",
+      "status": {
+        "booked": "Booked",
+        "checked_in": "Staying",
+        "checked_out": "Picked up",
+        "paid": "Paid",
+        "cancelled": "Cancelled",
+        "no_show": "No show"
+      },
+      "until": "Until {day}",
+      "nights": "{n} nights",
+      "estimate": "Estimate",
+      "total": "Total",
+      "view": "View details",
+      "back": "My boarding stays",
+      "callToBook": "Want to book? Call the shop:",
+      "pets": "Pets",
+      "feeding": "Feeding",
+      "medication": "Medication",
+      "careLog": "Care log",
+      "noLogs": "No entries to show yet.",
+      "estimateNote": "The estimate uses the nightly price and extras so far; the shop settles the amount when you pick your pet up.",
+      "eyebrow": "Pet hotel",
+      "pageTitle": "A safe stay for your pet while you are away",
+      "intro": "Clean kennels, meals on time, walks and a care log updated every day.",
+      "priceTitle": "Price per night",
+      "night": "night",
+      "speciesLabel": "Accepts",
+      "maxWeight": "Up to {kg} kg",
+      "sharing": "Up to {n} pets in one kennel",
+      "extraPet": "second pet onwards {price} / night",
+      "rulesTitle": "Hours",
+      "ruleCheckIn": "Drop-off from {time}.",
+      "ruleCheckOut": "Pick up before {time} to avoid extra charges.",
+      "ruleLate": "Picking up after {half} adds half a night, after {full} one more night.",
+      "ruleVaccine": "Please bring the vaccination book when you drop your pet off.",
+      "priceNote": "Prices are a guide; the shop settles the amount at pick-up. Call the shop to book.",
+      "emptyHint": "Call the shop for advice.",
+      "emptyPublic": "The hotel price list is not ready yet"
     }
   }
 }

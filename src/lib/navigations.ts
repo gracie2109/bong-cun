@@ -92,6 +92,7 @@ export const navigation = {
     { title: "client.nav.home", name: "home" },
     { title: "client.nav.products", name: "products" },
     { title: "client.nav.spa", name: "spa" },
+    { title: "client.nav.boarding", name: "boarding" },
     { title: "client.nav.about", name: "about-us" },
     { title: "client.nav.contact", name: "contact" },
   ],
@@ -103,6 +104,7 @@ export const ACCOUNT_NAV: AccountNavItem[] = [
   { label: "client.account.nav.profile", name: "account-profile", icon: "User" },
   { label: "client.account.nav.pets", name: "account-pets", icon: "PawPrint" },
   { label: "client.account.nav.appointments", name: "account-appointments", icon: "CalendarClock" },
+  { label: "client.account.nav.boarding", name: "account-boarding", icon: "BedDouble" },
   { label: "client.account.nav.addresses", name: "account-addresses", icon: "MapPin" },
   { label: "client.account.nav.orders", name: "account-orders", icon: "Package" },
 ];

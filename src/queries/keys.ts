@@ -237,6 +237,13 @@ export const accountKeys = {
   appointments: () => [...accountKeys.all, "appointments"] as const,
   appointmentList: (scope: string, page: number, pageSize: number) =>
     [...accountKeys.all, "appointments", scope, page, pageSize] as const,
+  boarding: () => [...accountKeys.all, "boarding"] as const,
+  boardingList: (scope: string, page: number, pageSize: number) => [...accountKeys.all, "boarding", scope, page, pageSize] as const,
+  boardingStay: (id: string) => [...accountKeys.all, "boarding", "stay", id] as const,
+};
+
+export const boardingWebKeys = {
+  catalog: () => ["boarding-web", "catalog"] as const,
 };
 
 export const ghnLocationKeys = {

@@ -66,3 +66,61 @@ export type MyAppointment = {
   hasUnpriced: boolean;
   items: MyAppointmentItem[];
 };
+
+export const BOARDING_SCOPES = ["upcoming", "current", "past"] as const;
+export type BoardingScope = (typeof BOARDING_SCOPES)[number];
+
+export type MyBoardingPet = {
+  petName: string;
+  /** active | cancelled */
+  status: string;
+  kennelTypeName: string;
+  /** First night and day of leaving, yyyy-MM-dd. */
+  nightsFrom: string;
+  nightsTo: string;
+  chargedNights: number;
+  feeding: string;
+  medication: string;
+};
+
+/** One of the customer's pet hotel stays. The staff and the kennel code are never part of it. */
+export type MyBoardingStay = {
+  id: string;
+  code: string;
+  /** booked | checked_in | checked_out | paid | cancelled | no_show */
+  status: string;
+  plannedInAt: string;
+  plannedOutAt: string;
+  checkedInAt: string | null;
+  checkedOutAt: string | null;
+  branchName: string;
+  branchPhone: string;
+  /** The estimate, or the final amount once the stay is checked out. */
+  estTotal: number;
+  isFinal: boolean;
+  pets: MyBoardingPet[];
+};
+
+export type MyBoardingLog = {
+  id: string;
+  petName: string;
+  /** meal | walk | potty | medication | note */
+  kind: string;
+  /** all | some | none, for meals */
+  mealEaten: string | null;
+  content: string;
+  loggedAt: string;
+};
+
+export type MyBoardingCharge = {
+  id: string;
+  petName: string;
+  /** night | late | extra */
+  kind: string;
+  name: string;
+  qty: number;
+  unitPrice: number;
+  amount: number;
+};
+
+export type MyBoardingDetail = MyBoardingStay & { careLogs: MyBoardingLog[]; charges: MyBoardingCharge[] };
