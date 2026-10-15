@@ -6,6 +6,7 @@
 | [bien-the-san-pham.md](bien-the-san-pham.md) | Kế hoạch biến thể sản phẩm (nhóm sản phẩm, thuộc tính, SKU) |
 | [thanh-toan-van-chuyen.md](thanh-toan-van-chuyen.md) | Nghiên cứu kiến trúc thanh toán (SePay) và vận chuyển (GHN) |
 | [lich-hen-spa.md](lich-hen-spa.md) | Kế hoạch module lịch hẹn spa: bàn spa, chặn trùng giờ, check-in chốt giá, nối POS |
+| [khach-san-thu-cung.md](khach-san-thu-cung.md) | Kế hoạch module khách sạn thú cưng (lưu trú): loại chuồng và giá theo đêm, tự xếp chuồng, check-in/out, nhật ký chăm sóc, nối POS, khách xem |
 | [bao-cao-doanh-thu.md](bao-cao-doanh-thu.md) | Kế hoạch module báo cáo doanh thu: định nghĩa số liệu, RPC, màn hình, quyền, chia file |
 | [module-san-pham.md](module-san-pham.md) | Kế hoạch phần còn lại của module sản phẩm: danh mục, thương hiệu, bộ ảnh, giá theo cơ sở, đơn vị quy đổi, nhập/xuất Excel |
 | [checkout-shop.md](checkout-shop.md) | Kế hoạch checkout shop online: giỏ hàng thống nhất, địa chỉ, phí GHN, COD và nhận tại cửa hàng, đơn online dùng chung hóa đơn/kho, trang theo dõi đơn |
