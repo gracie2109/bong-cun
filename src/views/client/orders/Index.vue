@@ -1,35 +1,42 @@
 <template>
-  <div class="container min-h-[60vh] py-8 md:px-12 lg:px-20">
-    <p v-if="loading" class="py-16 text-center text-muted-foreground">{{ $t("petCare.common.loading") }}</p>
-    <div v-else-if="notFound" class="py-16 text-center">
-      <p class="mb-3 text-muted-foreground">{{ $t("shop.order.notFound") }}</p>
-      <Button as-child variant="outline"><router-link :to="{ name: 'home' }">{{ $t("shop.order.backHome") }}</router-link></Button>
+  <div class="shop-container min-h-[60vh] pb-12 pt-6 md:pt-10">
+    <div v-if="loading" class="grid gap-8 lg:grid-cols-[1fr_380px]" aria-hidden="true">
+      <div class="shop-skeleton h-72 rounded-3xl" />
+      <div class="shop-skeleton h-64 rounded-3xl" />
     </div>
-    <div v-else-if="failed || !order" class="py-16 text-center">
-      <p class="mb-3 text-muted-foreground">{{ $t("shop.order.loadFailed") }}</p>
-      <Button variant="outline" @click="retry()">{{ $t("shop.cart.retry") }}</Button>
-    </div>
+    <EmptyState v-else-if="notFound" :title="$t('shop.order.notFound')">
+      <Button as-child class="h-11 rounded-full px-6"><RouterLink :to="{ name: 'home' }">{{ $t("shop.order.backHome") }}</RouterLink></Button>
+    </EmptyState>
+    <EmptyState v-else-if="failed || !order" tone="error" :title="$t('shop.order.loadFailed')" :text="$t('client.catalog.errorHint')">
+      <Button class="h-11 rounded-full px-6" @click="retry()">{{ $t("shop.cart.retry") }}</Button>
+    </EmptyState>
 
     <template v-else>
-      <div v-if="placed" class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
-        <p class="font-semibold">{{ $t("shop.order.placedTitle") }}</p>
-        <p class="text-sm">{{ $t(`shop.order.placedHint.${order.deliveryMethod}`) }}</p>
+      <div v-if="placed" class="mb-8 flex flex-col gap-4 rounded-3xl bg-sage-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6" role="status">
+        <div class="flex gap-4">
+          <span class="grid size-12 shrink-0 place-content-center rounded-full bg-sage text-white"><PartyPopper class="size-6" /></span>
+          <div>
+            <p class="text-lg font-bold">{{ $t("shop.order.placedTitle") }}</p>
+            <p class="text-sm text-muted-foreground">{{ $t(`shop.order.placedHint.${order.deliveryMethod}`) }}</p>
+          </div>
+        </div>
+        <CheckoutSteps :current="2" />
       </div>
 
-      <div class="mb-6 flex flex-wrap items-center gap-3">
-        <h1 class="text-2xl font-bold">{{ $t("shop.order.title", { code: order.code }) }}</h1>
+      <div class="mb-8 flex flex-wrap items-center gap-3">
+        <h1 class="shop-display text-2xl md:text-3xl">{{ $t("shop.order.title", { code: order.code }) }}</h1>
         <OrderStatusBadge :status="order.status" />
         <span class="text-sm text-muted-foreground">{{ formatDateTime(order.placedAt) }}</span>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-[1fr_24rem]">
+      <div class="grid items-start gap-8 lg:grid-cols-[1fr_380px]">
         <div class="space-y-6">
           <OrderProgress :order="order" :steps="steps" />
           <OrderLines :lines="order.lines" />
         </div>
         <div class="space-y-4">
           <OrderInfo :order="order" :fee-went-up="feeWentUp" />
-          <Button v-if="cancellable" variant="outline" class="w-full text-red-600" @click="openCancel()">
+          <Button v-if="cancellable" variant="outline" class="h-11 w-full rounded-full text-destructive hover:text-destructive" @click="openCancel()">
             {{ $t("shop.order.cancel") }}
           </Button>
         </div>
@@ -43,6 +50,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { PartyPopper } from "lucide-vue-next";
+import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
+import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
 import { useOrderPage } from "@/composables/shop/useOrderPage";
 import { formatDateTime } from "@/utils/shop/order";

@@ -1,17 +1,18 @@
 <template>
-  <ul class="space-y-1">
-    <li v-for="brand in brands" :key="brand.id">
-      <label class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted">
-        <input
-          type="checkbox"
-          class="size-4 accent-primary"
-          :checked="selected === brand.id"
-          @change="emit('select', selected === brand.id ? null : brand.id)"
-        />
-        <span class="truncate">{{ brand.name }}</span>
-      </label>
-    </li>
-  </ul>
+  <div class="flex flex-wrap gap-2" role="radiogroup" :aria-label="$t('client.catalog.brands')">
+    <button
+      v-for="brand in brands"
+      :key="brand.id"
+      type="button"
+      role="radio"
+      class="h-9 rounded-full border px-3.5 text-[13px] font-medium transition-[background-color,border-color,color] duration-200"
+      :class="selected === brand.id ? 'border-foreground bg-foreground text-white' : 'bg-white hover:border-foreground/40'"
+      :aria-checked="selected === brand.id"
+      @click="emit('select', selected === brand.id ? null : brand.id)"
+    >
+      {{ brand.name }}
+    </button>
+  </div>
 </template>
 
 <script lang="ts" setup>

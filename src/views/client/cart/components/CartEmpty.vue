@@ -1,15 +1,17 @@
 <template>
-  <div class="mx-auto flex max-w-sm flex-col items-center gap-4 py-16 text-center">
-    <img :src="emptyBox" alt="" class="w-40" />
-    <p class="text-lg font-semibold">{{ $t("shop.cart.empty") }}</p>
-    <p class="text-sm text-muted-foreground">{{ $t("shop.cart.emptyHint") }}</p>
-    <Button as-child>
-      <router-link :to="{ name: 'home' }">{{ $t("shop.cart.continue") }}</router-link>
+  <EmptyState :title="$t('shop.cart.empty')" :text="$t('shop.cart.emptyHint')">
+    <template #icon><ShoppingBag class="size-10" /></template>
+    <Button as-child class="h-11 rounded-full px-6">
+      <RouterLink :to="{ name: 'products' }">{{ $t("shop.cart.continue") }}</RouterLink>
     </Button>
-  </div>
+    <Button as-child variant="outline" class="h-11 rounded-full px-6">
+      <RouterLink :to="{ name: 'spa' }">{{ $t("client.catalog.seeSpa") }}</RouterLink>
+    </Button>
+  </EmptyState>
 </template>
 
 <script lang="ts" setup>
+import { ShoppingBag } from "lucide-vue-next";
+import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import emptyBox from "@/assets/empty-box.png";
 </script>

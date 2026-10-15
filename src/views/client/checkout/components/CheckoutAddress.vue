@@ -1,19 +1,26 @@
 <template>
-  <section class="space-y-3 rounded-xl border bg-white p-5">
-    <div class="flex items-center justify-between gap-2">
-      <h2 class="text-lg font-semibold">{{ $t("shop.checkout.address") }}</h2>
-      <Button v-if="address.selected.value" variant="ghost" size="sm" @click="address.pickerOpen.value = true">
+  <CheckoutSection :step="2" :title="$t('shop.checkout.address')">
+    <template #action>
+      <Button
+        v-if="address.selected.value"
+        variant="ghost"
+        size="sm"
+        class="rounded-full font-semibold text-primary hover:text-primary"
+        @click="address.pickerOpen.value = true"
+      >
         {{ $t("shop.checkout.changeAddress") }}
       </Button>
-    </div>
+    </template>
 
-    <p v-if="address.loading.value" class="text-sm text-muted-foreground">{{ $t("petCare.common.loading") }}</p>
+    <div v-if="address.loading.value" class="shop-skeleton h-24 rounded-2xl" aria-hidden="true" />
     <AddressCard v-else-if="address.selected.value" :address="address.selected.value" hide-actions />
-    <div v-else class="space-y-2">
-      <p class="text-sm text-muted-foreground">{{ $t("shop.checkout.noAddress") }}</p>
-      <Button variant="outline" @click="address.addNew()">{{ $t("shop.address.add") }}</Button>
+    <div v-else class="flex flex-col items-start gap-3 rounded-2xl border border-dashed p-4 sm:flex-row sm:items-center sm:justify-between">
+      <p class="flex items-center gap-2 text-sm text-muted-foreground"><MapPin class="size-4 shrink-0" />{{ $t("shop.checkout.noAddress") }}</p>
+      <Button class="h-10 rounded-full px-5" @click="address.addNew()"><Plus class="mr-1.5 size-4" />{{ $t("shop.address.add") }}</Button>
     </div>
-    <p v-if="showError && !address.selected.value" class="text-xs text-red-600">{{ $t("shop.checkout.errors.address_not_found") }}</p>
+    <p v-if="showError && !address.selected.value" class="mt-2 text-sm font-medium text-destructive" role="alert">
+      {{ $t("shop.checkout.errors.address_not_found") }}
+    </p>
 
     <AddressPickerDialog
       v-model:open="address.pickerOpen.value"
@@ -31,15 +38,17 @@
       :lock-default="address.addresses.value.length === 0"
       @submit="address.form.submit()"
     />
-  </section>
+  </CheckoutSection>
 </template>
 
 <script lang="ts" setup>
+import { MapPin, Plus } from "lucide-vue-next";
 import AddressCard from "@/components/shop/AddressCard.vue";
 import AddressFormDialog from "@/components/shop/AddressFormDialog.vue";
 import { Button } from "@/components/ui/button";
 import type { useCheckoutAddress } from "@/composables/shop/useCheckoutAddress";
 import AddressPickerDialog from "./AddressPickerDialog.vue";
+import CheckoutSection from "./CheckoutSection.vue";
 
 defineProps<{ address: ReturnType<typeof useCheckoutAddress>; showError: boolean }>();
 </script>

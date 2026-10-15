@@ -64,6 +64,14 @@ const config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          soft: "hsl(var(--brand-soft))",
+        },
+        sage: {
+          DEFAULT: "hsl(var(--sage))",
+          soft: "hsl(var(--sage-soft))",
+        },
         "custom-bg": "#0f0e17",
         "custom-primary": "#ff8906",
         "custom-white": "#eeeee4"
@@ -73,6 +81,14 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "var(--shadow-card)",
+        lift: "var(--shadow-lift)",
+      },
+      transitionTimingFunction: {
+        "out-quart": "cubic-bezier(0.25, 1, 0.5, 1)",
+        pop: "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
       keyframes: {
         "accordion-down": {

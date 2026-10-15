@@ -169,7 +169,7 @@ Mỗi file dưới khoảng 300 dòng. Sau mỗi migration cập nhật `src/typ
 
 Header: menu dịch qua i18n (Trang chủ, Sản phẩm, Dịch vụ spa, Giới thiệu, Liên hệ); nút "Đăng nhập" dịch; khi đã đăng nhập, avatar mở menu: Tài khoản, Đơn hàng, Thú cưng, Lịch hẹn, Đăng xuất (thêm "Trang quản trị" nếu là nhân viên). Footer có link các trang trên.
 
-Mọi trang shop đặt `useHead` tiêu đề riêng; trạng thái đang tải dùng skeleton, rỗng có hình `empty-box.png`, lỗi có nút thử lại.
+Mọi trang shop đặt `useHead` tiêu đề riêng; trạng thái đang tải dùng skeleton, rỗng dùng component `EmptyState`, lỗi có nút thử lại.
 
 ### 6.2 Admin (chạm nhẹ)
 

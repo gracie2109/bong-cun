@@ -1,25 +1,25 @@
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
     <div v-if="isEmpty" class="grid flex-1 place-content-center gap-3 p-6 text-center">
-      <img :src="emptyBox" alt="" class="mx-auto w-32" />
-      <p class="text-muted-foreground">{{ $t("shop.cart.empty") }}</p>
+      <span class="mx-auto grid size-20 place-content-center rounded-full bg-brand-soft text-brand"><ShoppingBag class="size-9" /></span>
+      <p class="font-semibold">{{ $t("shop.cart.empty") }}</p>
     </div>
-    <p v-else-if="loading" class="p-6 text-center text-sm text-muted-foreground">{{ $t("petCare.common.loading") }}</p>
+    <div v-else-if="loading" class="space-y-3 p-5" aria-hidden="true"><div v-for="n in 3" :key="n" class="shop-skeleton h-14 rounded-xl" /></div>
 
     <template v-else>
       <ul class="min-h-0 flex-1 space-y-3 overflow-y-auto p-5">
         <li v-for="line in firstLines" :key="lineKey(line)" class="flex gap-3" :class="{ 'opacity-60': !line.isSellable }">
-          <div class="size-14 shrink-0 overflow-hidden rounded-md bg-muted/40">
-            <img v-if="line.imageUrl" :src="line.imageUrl" alt="" class="size-full object-cover" loading="lazy" />
+          <div class="size-14 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-border/70">
+            <img v-if="line.imageUrl" :src="line.imageUrl" alt="" class="size-full object-contain p-1" loading="lazy" />
           </div>
           <div class="min-w-0 flex-1">
-            <p class="line-clamp-1 text-sm font-medium">{{ line.name }}</p>
+            <p class="line-clamp-1 text-sm font-semibold">{{ line.name }}</p>
             <p class="text-xs text-muted-foreground">
               {{ [line.variant, line.unitId ? line.unitName : null].filter(Boolean).join(" · ") }}
             </p>
             <p class="text-xs">
               <span v-if="line.isSellable">{{ line.qty }} × {{ formatPrice(line.unitPrice ?? 0) }}</span>
-              <span v-else class="text-red-600">{{ $t("shop.cart.unavailable") }}</span>
+              <span v-else class="text-destructive">{{ $t("shop.cart.unavailable") }}</span>
             </p>
           </div>
         </li>
@@ -31,9 +31,9 @@
       <div class="space-y-3 border-t p-5">
         <div class="flex items-baseline justify-between">
           <span class="text-sm text-muted-foreground">{{ $t("shop.cart.subtotal") }}</span>
-          <span class="text-xl font-bold text-primary">{{ formatPrice(subtotal) }}</span>
+          <span class="text-xl font-extrabold tracking-tight tabular-nums">{{ formatPrice(subtotal) }}</span>
         </div>
-        <Button class="h-11 w-full" @click="openCart">{{ $t("shop.cart.viewCart") }}</Button>
+        <Button class="h-12 w-full rounded-full text-base font-semibold" @click="openCart">{{ $t("shop.cart.viewCart") }}</Button>
       </div>
     </template>
   </div>
@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
-import emptyBox from "@/assets/empty-box.png";
+import { ShoppingBag } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useCartView } from "@/composables/shop/useCartView";
 import { formatPrice } from "@/lib/utils";

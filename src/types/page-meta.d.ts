@@ -8,6 +8,8 @@ declare module "#app" {
     staffOnly?: boolean;
     /** Keep the page out of search results (e.g. placeholder pages that duplicate the home page). */
     noindex?: boolean;
+    /** Stay mounted when only the query changes (filters kept in the URL), instead of re-mounting. */
+    keepOnQuery?: boolean;
   }
 }
 

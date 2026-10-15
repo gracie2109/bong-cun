@@ -1358,7 +1358,8 @@
       "retry": "Thử lại",
       "more": "và {n} sản phẩm khác",
       "full": "Giỏ hàng tối đa 30 sản phẩm khác nhau.",
-      "cappedQty": "Mỗi sản phẩm tối đa 99, số lượng đã được đặt về 99."
+      "cappedQty": "Mỗi sản phẩm tối đa 99, số lượng đã được đặt về 99.",
+      "safeNote": "Bạn chỉ trả tiền khi nhận được hàng"
     },
     "checkout": {
       "title": "Thanh toán",
@@ -1582,6 +1583,16 @@
         "collectHint": "Tiền được ghi vào ca thu ngân đang mở của bạn.",
         "collectOk": "Thu tiền"
       }
+    },
+    "steps": {
+      "label": "Các bước đặt hàng",
+      "cart": "Giỏ hàng",
+      "checkout": "Thanh toán",
+      "done": "Hoàn tất"
+    },
+    "freeShip": {
+      "left": "Mua thêm {amount} để được miễn phí giao hàng",
+      "reached": "Đơn của bạn được miễn phí giao hàng"
     }
   },
   "spa": {
@@ -2068,23 +2079,83 @@
       "contact": "Thông tin liên hệ",
       "hotline": "Hotline",
       "hours": "Giờ mở cửa",
-      "rights": "Bản quyền thuộc về Bông Cún."
+      "rights": "Bản quyền thuộc về Bông Cún.",
+      "shop": "Mua sắm & dịch vụ",
+      "bookSpa": "Đặt lịch spa online",
+      "ctaTitle": "Bé cần tắm, cắt tỉa hay chăm sóc?",
+      "ctaText": "Đặt lịch online trong một phút hoặc gọi cho cửa hàng."
     },
     "home": {
-      "spaCta": {
-        "badge": "Dịch vụ spa",
-        "title": "Đặt lịch spa online",
-        "text": "Chọn thú cưng, dịch vụ và giờ còn trống ngay trên web. Cửa hàng sẽ sắp xếp người làm cho bạn.",
-        "tip1": "Đặt trong 1 phút",
-        "tip1Text": "Không cần gọi điện hay chờ trả lời.",
-        "tip2": "Chọn giờ còn trống",
-        "tip2Text": "Thấy ngay khung giờ cửa hàng còn nhận.",
-        "tip3": "Hủy dễ dàng",
-        "tip3Text": "Hủy miễn phí trước giờ hẹn 2 tiếng.",
-        "button": "Đặt lịch ngay"
+      "viewAll": "Xem tất cả",
+      "hero": {
+        "badge": "Pet shop & Spa tại Hà Đông",
+        "titleStart": "Chăm bé cưng trọn vẹn,",
+        "titleAccent": "từ bữa ăn đến giờ tắm",
+        "text": "Thức ăn, pate, cát và phụ kiện chính hãng cho chó mèo, cùng dịch vụ tắm và cắt tỉa đặt lịch online.",
+        "shop": "Mua sắm ngay",
+        "spa": "Đặt lịch spa",
+        "point1": "Hàng chính hãng, rõ hạn dùng",
+        "point2": "Giao tận nơi hoặc nhận tại cửa hàng",
+        "point3": "Chọn giờ spa còn trống",
+        "cardTitle": "Đặt lịch spa online",
+        "cardText": "Chọn dịch vụ và giờ trống"
       },
-      "featured": "Sản phẩm được yêu thích",
-      "viewAll": "Xem tất cả sản phẩm"
+      "photos": {
+        "hero": "Chú chó và chú mèo nằm cạnh nhau",
+        "cat": "Chú mèo nhìn thẳng",
+        "shop": "Chú chó đang chờ bữa ăn",
+        "spa": "Chú chó sau khi tắm và chải lông",
+        "visit": "Hai chú chó chạy trên bãi cỏ"
+      },
+      "highlights": {
+        "label": "Cam kết của cửa hàng",
+        "genuine": "Hàng chính hãng",
+        "genuineText": "Theo dõi lô và hạn dùng từng sản phẩm",
+        "delivery": "Giao hàng hoặc nhận tại shop",
+        "deliveryText": "Chọn cách nhận phù hợp khi thanh toán",
+        "booking": "Đặt lịch spa online",
+        "bookingText": "Thấy ngay giờ còn trống, hủy dễ dàng",
+        "support": "Tư vấn tận tâm",
+        "supportText": "Mở cửa {hours} mỗi ngày"
+      },
+      "paths": {
+        "eyebrow": "Bạn đang cần gì?",
+        "title": "Mua sắm cho bé hay đặt lịch chăm sóc",
+        "shop": {
+          "tag": "Cửa hàng",
+          "title": "Thức ăn & phụ kiện",
+          "text": "Hạt, pate, bánh thưởng, cát vệ sinh và đồ dùng cho chó mèo.",
+          "cta": "Xem sản phẩm"
+        },
+        "care": {
+          "tag": "Spa & chăm sóc",
+          "title": "Tắm, cắt tỉa, vệ sinh",
+          "text": "Bảng giá theo cân nặng, combo tiết kiệm, đặt lịch online.",
+          "cta": "Xem dịch vụ"
+        }
+      },
+      "categories": {
+        "eyebrow": "Danh mục",
+        "title": "Mua theo nhu cầu của bé",
+        "count": "{n} sản phẩm"
+      },
+      "newArrivals": {
+        "eyebrow": "Mới về",
+        "title": "Sản phẩm mới tại cửa hàng"
+      },
+      "spa": {
+        "eyebrow": "Spa & chăm sóc",
+        "title": "Để bé thơm tho, gọn gàng mà bạn không phải chờ",
+        "text": "Chọn thú cưng, dịch vụ và khung giờ còn trống ngay trên web. Cửa hàng sắp xếp người làm cho bạn.",
+        "book": "Đặt lịch ngay",
+        "prices": "Xem bảng giá"
+      },
+      "visit": {
+        "eyebrow": "Ghé cửa hàng",
+        "title": "Đưa bé đến chơi, nhân viên luôn sẵn lòng tư vấn",
+        "address": "Địa chỉ",
+        "directions": "Chỉ đường"
+      }
     },
     "about": {
       "eyebrow": "Về chúng tôi",
@@ -2126,12 +2197,26 @@
         "price_desc": "Giá giảm dần",
         "name": "Tên A-Z"
       },
-      "found": "Tìm thấy {count} sản phẩm",
+      "found": "{count} sản phẩm",
       "showing": "Đang hiển thị {shown} trên tổng số {total} sản phẩm",
       "loadMore": "Xem thêm sản phẩm",
       "empty": "Không tìm thấy sản phẩm phù hợp",
       "error": "Không tải được danh sách sản phẩm.",
-      "retry": "Thử lại"
+      "retry": "Thử lại",
+      "contactPrice": "Liên hệ để biết giá",
+      "quickAdd": "Chọn mua nhanh {name}",
+      "add": "Thêm",
+      "breadcrumb": "Đường dẫn",
+      "resultsFor": "{count} kết quả cho “{q}”",
+      "allShort": "Tất cả",
+      "searchLabel": "Tìm trong danh sách sản phẩm",
+      "clearSearch": "Xóa từ khóa",
+      "removeFilter": "Bỏ lọc {label}",
+      "showResults": "Xem {count} sản phẩm",
+      "errorHint": "Kết nối có thể đang chậm. Bạn thử lại sau ít giây nhé.",
+      "emptyHint": "Thử bỏ bớt bộ lọc hoặc tìm bằng từ khóa ngắn hơn.",
+      "emptyShop": "Cửa hàng đang cập nhật sản phẩm, bạn quay lại sau nhé.",
+      "seeSpa": "Xem dịch vụ spa"
     },
     "product": {
       "sku": "Mã SKU",
@@ -2146,7 +2231,22 @@
       "unit": "Đơn vị",
       "related": "Sản phẩm cùng danh mục",
       "viewDetail": "Xem chi tiết",
-      "discontinued": "Sản phẩm đã ngừng bán"
+      "discontinued": "Sản phẩm đã ngừng bán",
+      "prevImage": "Ảnh trước",
+      "nextImage": "Ảnh sau",
+      "imageN": "Xem ảnh {n}",
+      "discontinuedHint": "Sản phẩm này không còn bán online. Bạn xem các sản phẩm khác nhé.",
+      "browse": "Xem sản phẩm khác",
+      "specs": "Thông tin sản phẩm",
+      "delivery": {
+        "ship": "Giao tận nơi",
+        "shipText": "Phí giao hàng hiển thị ở bước thanh toán.",
+        "freeFrom": "Miễn phí giao hàng cho đơn từ {amount}.",
+        "pickup": "Nhận tại cửa hàng",
+        "pickupText": "Đặt online, đến lấy và thanh toán tại {address}.",
+        "inStoreOnly": "Chỉ bán tại cửa hàng",
+        "inStoreOnlyText": "Sản phẩm này không giao đi, bạn nhận tại cửa hàng."
+      }
     },
     "account": {
       "title": "Tài khoản của tôi",
@@ -2258,7 +2358,22 @@
         "1": "Bán chạy",
         "2": "Mới",
         "4": ""
-      }
+      },
+      "howTo": {
+        "pick": "Chọn bé và dịch vụ",
+        "pickText": "Dịch vụ lẻ hoặc combo, giá theo cân nặng.",
+        "slot": "Chọn giờ còn trống",
+        "slotText": "Xác nhận ngay, hủy miễn phí trước 2 tiếng.",
+        "visit": "Đưa bé đến cửa hàng",
+        "visitText": "Thanh toán sau khi làm xong dịch vụ."
+      },
+      "eyebrow": "Spa & chăm sóc",
+      "branch": "Chọn chi nhánh",
+      "species": "Chọn loài thú cưng",
+      "priceTitle": "Bảng giá dịch vụ",
+      "howTitle": "Đặt lịch online chỉ với 3 bước",
+      "price": "Giá",
+      "emptyHint": "Bạn gọi cho cửa hàng để được tư vấn và đặt lịch nhé."
     },
     "booking": {
       "title": "Đặt lịch spa",
@@ -2336,6 +2451,20 @@
         "not_cancellable": "Lịch này không còn hủy được.",
         "too_late": "Còn dưới 2 giờ nữa nên không tự hủy được, vui lòng gọi cửa hàng."
       }
+    },
+    "brand": {
+      "tagline": "Pet shop & Spa"
+    },
+    "header": {
+      "searchLabel": "Tìm sản phẩm",
+      "searchPlaceholder": "Tìm thức ăn, phụ kiện, thương hiệu...",
+      "cartWithCount": "Giỏ hàng, {n} sản phẩm",
+      "bookSpa": "Đặt lịch spa",
+      "openMenu": "Mở menu",
+      "menu": "Menu chính",
+      "openHours": "Mở cửa {hours} mỗi ngày",
+      "language": "Ngôn ngữ",
+      "skipToContent": "Bỏ qua, tới nội dung chính"
     }
   }
 }

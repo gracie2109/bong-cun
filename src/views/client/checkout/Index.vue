@@ -1,21 +1,33 @@
 <template>
-  <div class="container min-h-[60vh] py-8 md:px-12 lg:px-20">
-    <h1 class="mb-6 text-2xl font-bold">{{ $t("shop.checkout.title") }}</h1>
+  <div class="shop-container min-h-[60vh] pb-12 pt-6 md:pt-10">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h1 class="shop-display text-3xl md:text-4xl">{{ $t("shop.checkout.title") }}</h1>
+      <CheckoutSteps :current="1" />
+    </div>
 
-    <p v-if="loading || settingsLoading" class="py-16 text-center text-muted-foreground">{{ $t("petCare.common.loading") }}</p>
-    <div v-else-if="isEmpty" class="py-16 text-center">
-      <p class="mb-3 text-muted-foreground">{{ $t("shop.checkout.empty") }}</p>
-      <Button as-child variant="outline">
-        <router-link :to="{ name: 'cart' }">{{ $t("shop.checkout.backToCart") }}</router-link>
+    <div v-if="loading || settingsLoading" class="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]" aria-hidden="true">
+      <div class="space-y-6">
+        <div class="shop-skeleton h-40 rounded-3xl" />
+        <div class="shop-skeleton h-48 rounded-3xl" />
+      </div>
+      <div class="shop-skeleton h-80 rounded-3xl" />
+    </div>
+    <EmptyState v-else-if="isEmpty" :title="$t('shop.checkout.empty')">
+      <template #icon><ShoppingBag class="size-10" /></template>
+      <Button as-child class="h-11 rounded-full px-6">
+        <RouterLink :to="{ name: 'products' }">{{ $t("shop.cart.continue") }}</RouterLink>
       </Button>
-    </div>
-    <div v-else-if="failed" class="py-16 text-center">
-      <p class="mb-3 text-muted-foreground">{{ $t("shop.cart.loadFailed") }}</p>
-      <Button variant="outline" @click="refresh()">{{ $t("shop.cart.retry") }}</Button>
-    </div>
-    <p v-else-if="!method" class="py-16 text-center text-muted-foreground">{{ $t("shop.checkout.noMethod") }}</p>
+    </EmptyState>
+    <EmptyState v-else-if="failed" tone="error" :title="$t('shop.cart.loadFailed')" :text="$t('client.catalog.errorHint')">
+      <Button class="h-11 rounded-full px-6" @click="refresh()">{{ $t("shop.cart.retry") }}</Button>
+    </EmptyState>
+    <EmptyState v-else-if="!method" :title="$t('shop.checkout.noMethod')">
+      <Button as-child variant="outline" class="h-11 rounded-full px-6">
+        <RouterLink :to="{ name: 'cart' }">{{ $t("shop.checkout.backToCart") }}</RouterLink>
+      </Button>
+    </EmptyState>
 
-    <div v-else class="grid gap-6 lg:grid-cols-[1fr_24rem]">
+    <div v-else class="mt-8 grid items-start gap-8 lg:grid-cols-[1fr_380px]">
       <div class="space-y-6">
         <CheckoutMethodPicker :methods="methods" :method="method" @update="setMethod" />
         <CheckoutAddress
@@ -51,6 +63,9 @@
 </template>
 
 <script lang="ts" setup>
+import { ShoppingBag } from "lucide-vue-next";
+import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
+import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
 import { useCheckout } from "@/composables/shop/useCheckout";
 import { computed } from "vue";
