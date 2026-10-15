@@ -18,6 +18,7 @@
 | [ui-san-pham-danh-gia.md](ui-san-pham-danh-gia.md) | Đánh giá UI trang danh sách sản phẩm của shop (vì sao trông cũ) và hướng làm mới: token, chữ, bố cục, kế hoạch chuyển động, file sẽ đổi |
 | [pos-luong-va-kich-ban-test.md](pos-luong-va-kich-ban-test.md) | POS bán tại quầy: luồng thực tế, kịch bản test, edge case, lỗi và khoảng trống |
 | [danh-gia-kien-truc.md](danh-gia-kien-truc.md) | Đánh giá kiến trúc Nuxt + Supabase sau khi xong các module chính: điểm mạnh, nợ kỹ thuật theo ưu tiên (CI, test SQL, quyền trong hàm security definer, kiểu jsonb), file lớn, đa chi nhánh, lộ trình |
+| [ke-hoach-sua-kien-truc.md](ke-hoach-sua-kien-truc.md) | Kế hoạch sửa nợ kỹ thuật theo bài đánh giá kiến trúc: sửa typecheck, CI trên PR, bản chụp schema, test SQL pgTAP, backup hằng tuần, tách file lớn |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
 Tài liệu phân tích mới được thêm thẳng vào thư mục này.
