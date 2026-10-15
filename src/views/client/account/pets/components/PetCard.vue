@@ -7,9 +7,6 @@
           {{ [pet.speciesName, pet.breed].filter(Boolean).join(" · ") }}
         </p>
       </div>
-      <span v-if="!pet.canEdit" class="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-        {{ $t("client.pets.coOwner") }}
-      </span>
     </div>
 
     <dl class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
@@ -24,37 +21,16 @@
     <p v-if="pet.allergies" class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
       {{ $t("client.pets.allergies") }}: {{ pet.allergies }}
     </p>
-
-    <div class="mt-auto flex flex-wrap gap-2">
-      <Button v-if="pet.canEdit" size="sm" variant="outline" @click="emit('edit')">
-        <Pencil class="mr-1 size-3.5" />
-        {{ $t("petCare.common.edit") }}
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        class="text-muted-foreground"
-        :disabled="pet.hasOpenAppointment"
-        :title="pet.hasOpenAppointment ? $t('client.pets.errors.has_open_appointment') : undefined"
-        @click="emit('hide')"
-      >
-        <EyeOff class="mr-1 size-3.5" />
-        {{ $t("client.pets.hide") }}
-      </Button>
-    </div>
   </article>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { EyeOff, Pencil } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
 import type { MyPet } from "@/types/account";
 import { petAge } from "@/utils/account/pet";
 
 const props = defineProps<{ pet: MyPet }>();
-const emit = defineEmits<{ edit: []; hide: [] }>();
 
 const { t } = useI18n();
 const ageLabel = computed(() => {

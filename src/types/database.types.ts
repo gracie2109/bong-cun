@@ -2205,8 +2205,6 @@ export type Database = {
       my_pets: { Args: never; Returns: Json }
       my_appointments: { Args: { p_scope?: string; p_page?: number; p_page_size?: number }; Returns: Json }
       cancel_my_appointment: { Args: { p_id: string; p_reason?: string | null }; Returns: undefined }
-      save_my_pet: { Args: { p: Json; p_id?: string | null }; Returns: string }
-      hide_my_pet: { Args: { p_id: string }; Returns: undefined }
       can_link_accounts: { Args: never; Returns: boolean }
       search_unlinked_accounts: {
         Args: { p_text: string; p_limit?: number }

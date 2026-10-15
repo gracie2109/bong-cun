@@ -20,44 +20,15 @@
       {{ $t("client.pets.empty") }}
     </div>
     <div v-else class="grid gap-3 sm:grid-cols-2">
-      <PetCard
-        v-for="pet in page.pets.value"
-        :key="pet.id"
-        :pet="pet"
-        @edit="page.openEdit(pet)"
-        @hide="page.toHide.value = pet"
-      />
+      <PetCard v-for="pet in page.pets.value" :key="pet.id" :pet="pet" />
     </div>
-
-    <PetFormDialog
-      v-model:open="page.open.value"
-      :form="page.form"
-      :errors="page.errors.value"
-      :submitted="page.submitted.value"
-      :saving="page.saving.value"
-      :species="page.species.value"
-      @submit="page.submit"
-    />
-
-    <DialogConfirm
-      :open="page.toHide.value !== null"
-      danger
-      :title="$t('client.pets.hideTitle')"
-      :desc="$t('client.pets.hideDesc', { name: page.toHide.value?.name ?? '' })"
-      :ok-btn="$t('client.pets.hide')"
-      @handle-ok="page.confirmHide"
-      @open-change="page.toHide.value = null"
-      @cancel="page.toHide.value = null"
-    />
   </section>
 </template>
 
 <script lang="ts" setup>
-import { DialogConfirm } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { useMyPets } from "@/composables/account/useMyPets";
 import PetCard from "./components/PetCard.vue";
-import PetFormDialog from "./components/PetFormDialog.vue";
 
 const page = useMyPets();
 </script>

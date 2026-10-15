@@ -5,14 +5,11 @@ import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
 import {
   getMyProfile,
-  hideMyPet,
   listMyPets,
-  petErrorHint,
   profileErrorHint,
-  saveMyPet,
   saveMyProfile,
 } from "@/repositories/account";
-import type { PetInput, ProfileInput } from "@/types/account";
+import type { ProfileInput } from "@/types/account";
 import { accountKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 
@@ -48,32 +45,3 @@ export const useMyPets = (enabled: MaybeRef<boolean> = true) =>
     enabled: computed(() => unref(enabled)),
   });
 
-const notifyPetFailure = (error: unknown, method: "create" | "update" | "delete") => {
-  const hint = petErrorHint(error);
-  if (hint) sendMessageToast("fail", method, "error", i18n.global.t(`client.pets.errors.${hint}`));
-  else notifyFailure(method, error);
-};
-
-export const useSaveMyPet = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ input, id }: { input: PetInput; id: string }) => saveMyPet(supabaseClient(), input, id),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: accountKeys.pets() });
-      notifySuccess("update");
-    },
-    onError: (error) => notifyPetFailure(error, "update"),
-  });
-};
-
-export const useHideMyPet = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => hideMyPet(supabaseClient(), id),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: accountKeys.pets() });
-      notifySuccess("delete");
-    },
-    onError: (error) => notifyPetFailure(error, "delete"),
-  });
-};
