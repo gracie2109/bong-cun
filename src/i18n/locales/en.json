@@ -111,7 +111,9 @@
     "spa": "Spa services",
     "spaBook": "Book a spa visit",
     "accountAppointments": "My appointments",
-    "boardingSettings": "Boarding settings"
+    "boardingSettings": "Boarding settings",
+    "boardingBoard": "Kennel board",
+    "boardingStays": "Boarding stays"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -785,7 +787,9 @@
     "shopOrderSettings": "Online shop settings",
     "shopOrders": "Online orders",
     "boarding": "Boarding",
-    "boardingSettings": "Boarding settings"
+    "boardingSettings": "Boarding settings",
+    "boardingBoard": "Kennel board",
+    "boardingStays": "Boarding stays"
   },
   "pos": {
     "title": "Point of sale",
@@ -1758,7 +1762,9 @@
       "sortOrder": "Display order"
     },
     "nav": {
-      "settings": "Boarding settings"
+      "settings": "Boarding settings",
+      "board": "Kennel board",
+      "stays": "Stays"
     },
     "settings": {
       "title": "Boarding settings",
@@ -1838,7 +1844,121 @@
       "no_price": "A price per night is required.",
       "bad_input": "Some information is not valid.",
       "bad_rules": "Check-out time must be before the half-night limit; max nights is 1 to 365.",
-      "not_found": "Not found, try reloading the page."
+      "not_found": "Not found, try reloading the page.",
+      "no_kennel": "No suitable kennel is free on these dates.",
+      "kennel_taken": "That kennel already has another pet on these dates.",
+      "kennel_in_use": "The kennel has unfinished stays, so its type cannot change.",
+      "kennel_occupied": "A pet is in the kennel, so it cannot go into maintenance yet.",
+      "pet_busy": "{name} already has another stay on these dates.",
+      "species_not_allowed": "This kennel type does not take {name}'s species.",
+      "too_many_pets": "Too many pets for one kennel.",
+      "bad_dates": "The departure must be after the arrival.",
+      "bad_share": "That sharing choice is not valid.",
+      "too_long": "Longer than the maximum nights for one stay.",
+      "too_early": "Arrival is earlier than the time pets are accepted.",
+      "in_past": "The arrival date has passed.",
+      "not_editable": "This stay can no longer be edited or cancelled.",
+      "not_due": "A no-show can only be marked after the planned arrival day.",
+      "no_customer": "Pick a customer.",
+      "no_pet": "Pick a pet for every line.",
+      "need_pet": "At least one pet is needed."
+    },
+    "board": {
+      "title": "Kennel board",
+      "prev": "Previous day",
+      "next": "Next day",
+      "today": "Today",
+      "refresh": "Refresh",
+      "empty": "No kennels yet. Add kennel types and kennels in",
+      "hasNotes": "Pet has behaviour or allergy notes",
+      "arrives": "{pet} arrives at {time}",
+      "conflict": "The current pet has not left yet but a booking arrives. Move one of them.",
+      "stats": {
+        "arriving": "Arriving",
+        "departing": "Departing",
+        "occupied": "Staying",
+        "overdue": "Overdue",
+        "free": "Free kennels"
+      },
+      "state": {
+        "free": "Free",
+        "arriving": "Arriving",
+        "occupied": "Occupied",
+        "departing": "Leaves today",
+        "overdue": "Overdue",
+        "cleaning": "Cleaning",
+        "maintenance": "Maintenance"
+      }
+    },
+    "stays": {
+      "title": "Boarding stays",
+      "new": "Book a stay",
+      "searchPlaceholder": "Search code, customer, phone, pet",
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "code": "Code",
+      "time": "In / out (planned)",
+      "customer": "Customer",
+      "pets": "Pets / kennel",
+      "total": "Estimate",
+      "noShow": "No-show",
+      "empty": "No boarding stays yet."
+    },
+    "status": {
+      "booked": "Booked",
+      "checked_in": "Staying",
+      "checked_out": "Checked out",
+      "paid": "Paid",
+      "cancelled": "Cancelled",
+      "no_show": "No-show"
+    },
+    "dialog": {
+      "newTitle": "Book a stay",
+      "editTitle": "Edit stay {code}",
+      "subtitle": "Pick the customer, the dates and the kennel type. Price and kennel are worked out at once.",
+      "book": "Book",
+      "customer": "Customer",
+      "noPets": "This customer has no pets yet.",
+      "openPets": "Add a pet",
+      "arrival": "Arrival date",
+      "arrivalTime": "Arrival time",
+      "departure": "Departure date",
+      "departureTime": "Departure time",
+      "acceptedFrom": "Pets are accepted from {time}.",
+      "freeUntil": "Leaving before {time} costs nothing extra. About {nights} nights.",
+      "petN": "Pet {n}",
+      "removePet": "Remove this pet",
+      "addPet": "Add a pet",
+      "pet": "Pet",
+      "pickPet": "Pick a pet",
+      "kennelType": "Kennel type",
+      "pickType": "Pick a kennel type",
+      "kennel": "Kennel",
+      "autoKennel": "Pick a free kennel for me",
+      "shareWith": "Shares with",
+      "ownKennel": "Own kennel",
+      "freeOf": "{free}/{total} kennels free",
+      "noKennels": "No kennels",
+      "feeding": "Feeding",
+      "feedingHint": "Food, times, amount",
+      "medication": "Medication",
+      "belongings": "Belongings",
+      "belongingsHint": "For example bed, toys, leash",
+      "quoteHint": "Pick a customer, dates and kennel type to see the price.",
+      "quoting": "Working out the price...",
+      "nightsAt": "{nights} nights × {price}",
+      "sharedPrice": "shared-kennel price",
+      "overweight": "The pet is heavier than this kennel type allows.",
+      "behaviorNotes": "The pet has behaviour or allergy notes. Check the profile before accepting.",
+      "estimate": "Estimate",
+      "emergencyPhone": "Emergency phone",
+      "note": "Note",
+      "notePlaceholder": "Anything else about this stay",
+      "cancelStay": "Cancel stay",
+      "cancelTitle": "Cancel stay {code}?",
+      "cancelDesc": "The kennel is released at once. A cancelled stay cannot be restored.",
+      "keep": "Keep it"
     }
   },
   "reports": {
