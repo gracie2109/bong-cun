@@ -7,6 +7,7 @@
       <MixRow :label="$t('reports.mix.spaAppointment')" :value="data.segments.spaAppointment" :total="segmentTotal" sub />
       <MixRow :label="$t('reports.mix.spaWalkIn')" :value="data.segments.spaWalkIn" :total="segmentTotal" sub />
       <MixRow :label="$t('reports.segment.boarding')" :value="data.segments.boarding" :total="segmentTotal" color="#6366F1" />
+      <MixRow :label="$t('reports.segment.medical')" :value="data.segments.medical" :total="segmentTotal" color="#E11D48" />
       <p class="mt-1 text-[11px] text-muted-foreground">{{ $t("reports.mix.discountNote") }}</p>
     </div>
     <div>
@@ -28,7 +29,7 @@ const props = defineProps<{ data: ReportOverview }>();
 
 // Refunds are all goods, so the Shop share is shown after them.
 const shopNet = computed(() => props.data.segments.shop - props.data.refunds);
-const segmentTotal = computed(() => shopNet.value + props.data.segments.spa + props.data.segments.boarding);
+const segmentTotal = computed(() => shopNet.value + props.data.segments.spa + props.data.segments.boarding + props.data.segments.medical);
 const paymentTotal = computed(
   () => props.data.payments.cash + props.data.payments.transfer + props.data.payments.card + props.data.payments.cod
 );

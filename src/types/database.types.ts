@@ -2797,6 +2797,7 @@ export type Database = {
         Args: { p_branch: string | null; p_bucket?: string; p_from: string; p_to: string }
         Returns: {
           boarding: number
+          medical: number
           bucket: string
           card: number
           cash: number

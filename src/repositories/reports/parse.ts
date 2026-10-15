@@ -38,6 +38,7 @@ export const toOverview = (json: Json | null): ReportOverview => {
       spaAppointment: num(segments.spa_appointment),
       spaWalkIn: num(segments.spa_walk_in),
       boarding: num(segments.boarding),
+      medical: num(segments.medical),
     },
     payments: {
       cash: num(payments.cash),
@@ -64,6 +65,7 @@ type SeriesRow = {
   shop: number;
   spa: number;
   boarding: number;
+  medical: number;
   cash: number;
   transfer: number;
   card: number;
@@ -80,6 +82,7 @@ export const toSeriesPoint = (row: SeriesRow): SeriesPoint => ({
   shop: num(row.shop),
   spa: num(row.spa),
   boarding: num(row.boarding),
+  medical: num(row.medical),
   cash: num(row.cash),
   transfer: num(row.transfer),
   card: num(row.card),

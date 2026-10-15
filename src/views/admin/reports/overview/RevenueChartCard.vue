@@ -48,6 +48,7 @@ const BUCKETS: Bucket[] = ["day", "week", "month"];
 const SHOP_COLOR = "#0F766E";
 const SPA_COLOR = "#F59E0B";
 const BOARDING_COLOR = "#6366F1";
+const MEDICAL_COLOR = "#E11D48";
 
 const { t } = useI18n();
 
@@ -55,6 +56,7 @@ const chartSeries = computed<ChartSeries[]>(() => [
   { key: "shop", label: t("reports.segment.shop"), color: SHOP_COLOR },
   { key: "spa", label: t("reports.segment.spa"), color: SPA_COLOR },
   { key: "boarding", label: t("reports.segment.boarding"), color: BOARDING_COLOR },
+  { key: "medical", label: t("reports.segment.medical"), color: MEDICAL_COLOR },
 ]);
 
 const tooltipTitle = (point: SeriesPoint): string =>
@@ -69,7 +71,7 @@ const chartPoints = computed<ChartPoint[]>(() =>
     key: point.bucket,
     label: bucketLabel(bucket.value, point.bucket),
     title: tooltipTitle(point),
-    values: [point.shop, point.spa, point.boarding],
+    values: [point.shop, point.spa, point.boarding, point.medical],
   }))
 );
 </script>
