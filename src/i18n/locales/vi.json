@@ -991,7 +991,8 @@
       "return_products_only": "Chỉ trả được sản phẩm, không trả dịch vụ hay combo.",
       "reason_required": "Cần nhập lý do.",
       "unit_not_available": "Đơn vị bán này không dùng được nữa, hãy chọn lại.",
-      "charge_not_billable": "Khoản phí này chưa check-out, đã thanh toán hoặc không thuộc khách này."
+      "charge_not_billable": "Khoản phí này chưa check-out, đã thanh toán hoặc không thuộc khách này.",
+      "medical_item_not_billable": "Khoản khám này chưa ký, đã thanh toán hoặc không thuộc khách này."
     },
     "returns": {
       "title": "Phiếu trả hàng",
@@ -1025,6 +1026,13 @@
       "add": "Thêm",
       "added": "Đã thêm",
       "fromStay": "Phí lưu trú của đơn {code}, số lượng {qty}, giá đã chốt lúc check-out"
+    },
+    "medicalVisits": {
+      "title": "Khám bệnh chờ thanh toán ({count})",
+      "lines": "{count} khoản",
+      "add": "Thêm",
+      "added": "Đã thêm",
+      "fromVisit": "Khoản của phiếu khám {code}, số lượng {qty}, giá đã chốt khi bác sĩ ký"
     }
   },
   "products": {
@@ -3113,7 +3121,8 @@
       "recheckBooked": "Đã hẹn tái khám {code}.",
       "payAtPos": "Thanh toán tại POS",
       "tabItems": "Chỉ định & thuốc",
-      "tabVaccines": "Tiêm phòng"
+      "tabVaccines": "Tiêm phòng",
+      "tabMoney": "Tiền"
     },
     "side": {
       "openPet": "Hồ sơ thú",
@@ -3239,6 +3248,16 @@
       "markDesc": "Chỉ ghi nhận cuộc gọi; ngày đến hạn giữ nguyên.",
       "note": "Ghi chú",
       "noteHint": "Ví dụ: hẹn thứ bảy"
+    },
+    "money": {
+      "total": "Tổng tiền",
+      "paid": "Đã thanh toán",
+      "unpaid": "Còn phải thu",
+      "statePaid": "Đã thu",
+      "stateUnpaid": "Chờ thu",
+      "notSigned": "Phiếu khám cần được bác sĩ ký trước khi thu tiền ở quầy POS.",
+      "goPos": "Mở POS để thu tiền",
+      "empty": "Chưa có khoản nào để thu."
     }
   }
 }

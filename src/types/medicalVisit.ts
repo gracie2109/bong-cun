@@ -213,3 +213,23 @@ export type Prescription = {
   diagnoses: string[];
   items: PrescriptionLine[];
 };
+
+// ------------------------------------------------------------------ billing
+/** A signed visit with lines that wait for payment in the POS (billable_medical_items). */
+export type BillableVisit = {
+  visitId: string;
+  code: string;
+  petName: string;
+  total: number;
+  items: BillableVisitItem[];
+};
+
+export type BillableVisitItem = {
+  id: string;
+  kind: "service" | "product";
+  name: string;
+  qty: number;
+  unitName: string | null;
+  unitPrice: number;
+  amount: number;
+};

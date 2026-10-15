@@ -5,6 +5,7 @@ import { useCustomerPets, useFetchServicePrice } from "@/queries/pos";
 import { DISCOUNT_LIMIT } from "@/repositories/pos";
 import type { BillableTicket } from "@/repositories/spa";
 import type { BillableBoardingStay } from "@/types/boarding";
+import type { BillableVisit } from "@/types/medicalVisit";
 import type { ProductUnit } from "@/repositories/products";
 import type { CatalogItem } from "./catalog";
 import type { Buyer } from "./components/CustomerPanel.vue";
@@ -12,8 +13,8 @@ import { parseAmount } from "./format";
 import { itemInUnit } from "./unitPricing";
 
 /**
- * `appointmentItemId` marks a finished spa ticket and `boardingChargeId` a charge of a checked-out stay:
- * both come with a fixed price and quantity, one per sale.
+ * `appointmentItemId` marks a finished spa ticket, `boardingChargeId` a charge of a checked-out stay and
+ * `medicalItemId` a line of a signed visit: all come with a fixed price and quantity, one per sale.
  */
 export type CartLine = {
   key: string;
@@ -22,9 +23,10 @@ export type CartLine = {
   petId: string | null;
   appointmentItemId?: string;
   boardingChargeId?: string;
+  medicalItemId?: string;
 };
 
-const isFixedLine = (line: CartLine) => !!line.appointmentItemId || !!line.boardingChargeId;
+const isFixedLine = (line: CartLine) => !!line.appointmentItemId || !!line.boardingChargeId || !!line.medicalItemId;
 
 /** The sale being rung up: buyer, lines with their prices, discount and what blocks checkout. */
 export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<boolean>) => {
@@ -89,6 +91,27 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
         qty: charge.qty,
         petId: null,
         boardingChargeId: charge.id,
+      });
+    }
+  };
+
+  /** Puts every unpaid line of a signed visit in the cart. */
+  const addMedicalVisit = (visit: BillableVisit) => {
+    for (const item of visit.items) {
+      if (lines.value.some((line) => line.medicalItemId === item.id)) continue;
+      lines.value.push({
+        key: String(nextKey++),
+        item: {
+          type: item.kind,
+          id: item.id,
+          name: `${item.name} · ${visit.petName}`,
+          price: item.unitPrice,
+          unit: item.unitName,
+          hint: visit.code,
+        },
+        qty: item.qty,
+        petId: null,
+        medicalItemId: item.id,
       });
     }
   };
@@ -217,6 +240,7 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     addItem,
     addTicket,
     addBoardingStay,
+    addMedicalVisit,
     removeLine,
     changeQty,
     changeUnit,

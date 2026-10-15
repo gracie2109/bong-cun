@@ -314,8 +314,8 @@ export type SaleCustomer =
   | null;
 
 export type SaleLineInput = {
-  /** "appointment_item": a finished spa ticket, `id` is the ticket id. "boarding_charge": a charge of a checked-out stay. */
-  type: LineType | "appointment_item" | "boarding_charge";
+  /** "appointment_item": a finished spa ticket, `id` is the ticket id. "boarding_charge": a charge of a checked-out stay. "medical_item": a line of a signed visit. */
+  type: LineType | "appointment_item" | "boarding_charge" | "medical_item";
   id: string;
   qty: number;
   /** A product's conversion unit; qty then counts that unit. Missing: the base unit. */
@@ -500,6 +500,7 @@ export const POS_ERROR_HINTS = [
   "no_open_shift",
   "ticket_not_billable",
   "charge_not_billable",
+  "medical_item_not_billable",
   "discount_limit",
   "underpaid",
   "overpaid",

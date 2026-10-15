@@ -31,6 +31,7 @@
                 <TabsTrigger value="record">{{ $t("medical.detail.tabRecord") }}</TabsTrigger>
                 <TabsTrigger value="vaccines">{{ $t("medical.detail.tabVaccines") }}</TabsTrigger>
                 <TabsTrigger value="items">{{ $t("medical.detail.tabItems") }} ({{ visit.items.length }})</TabsTrigger>
+                <TabsTrigger value="money">{{ $t("medical.detail.tabMoney") }}</TabsTrigger>
               </TabsList>
               <TabsContent value="record" class="pt-4">
                 <RecordTab :visit="visit" :can-edit="canEditRecord" :can-add-addendum="canUpdate" />
@@ -40,6 +41,9 @@
               </TabsContent>
               <TabsContent value="items" class="pt-4">
                 <ItemsTab :visit="visit" :can-update="canUpdate" />
+              </TabsContent>
+              <TabsContent value="money" class="pt-4">
+                <MoneyTab :visit="visit" />
               </TabsContent>
             </Tabs>
           </div>
@@ -60,6 +64,7 @@ import { ContentWrap, Header } from "@/views/admin/components";
 import MedicalNav from "../MedicalNav.vue";
 import CancelVisitDialog from "./CancelVisitDialog.vue";
 import ItemsTab from "./items/ItemsTab.vue";
+import MoneyTab from "./money/MoneyTab.vue";
 import RecordTab from "./record/RecordTab.vue";
 import PetSidePanel from "./side/PetSidePanel.vue";
 import VaccinesTab from "./vaccines/VaccinesTab.vue";
