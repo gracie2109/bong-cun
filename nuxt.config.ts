@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     "~/assets/index.css",
     "~/assets/shop.css",
     "vue-multiselect/dist/vue-multiselect.min.css",
-    "@vuepic/vue-datepicker/dist/main.css",
   ],
 
   postcss: {

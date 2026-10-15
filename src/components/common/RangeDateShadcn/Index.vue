@@ -31,8 +31,8 @@ import { type DateRange, RangeCalendarRoot, useDateFormatter } from 'radix-vue'
 import {
     createMonth,
     toDate,
-} from 'radix-vue/dist/date'
-import type { Grid } from 'radix-vue/dist/date/types'
+} from 'radix-vue/date'
+import type { Grid } from 'radix-vue/date'
 import { type Ref, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 

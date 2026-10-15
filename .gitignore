@@ -40,3 +40,7 @@ coverage
 .data
 .nitro
 .cache
+
+# Supabase CLI local state
+supabase/.branches
+supabase/.temp
