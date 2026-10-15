@@ -27,6 +27,7 @@
       <section v-if="canCheckIn" class="space-y-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
         <p class="text-sm font-semibold">{{ $t("spa.detail.checkIn") }}</p>
         <p class="text-xs text-muted-foreground">{{ $t("spa.detail.checkInHint") }}</p>
+        <PetHealthFlagsBanner :pets="pets" />
         <div class="grid gap-2 sm:grid-cols-2">
           <label v-for="pet in pets" :key="pet.id" class="flex items-center justify-between gap-3 text-sm">
             <span class="font-medium">{{ pet.name }}</span>
@@ -102,6 +103,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Appointment } from "@/repositories/spa";
 import { money } from "@/views/admin/pos/format";
+import PetHealthFlagsBanner from "@/views/admin/medical/flags/PetHealthFlagsBanner.vue";
 import { APPOINTMENT_TONE, dateTime, timeOf } from "../format";
 import TicketRow from "./TicketRow.vue";
 import { useAppointmentDetail } from "./useAppointmentDetail";

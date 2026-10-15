@@ -233,3 +233,7 @@ export type BillableVisitItem = {
   unitPrice: number;
   amount: number;
 };
+
+// -------------------------------------------------------------------- flags
+/** What the counters may know about a pet's health: flags only, never the record. */
+export type PetHealthFlags = { contagious: boolean; vaccineOverdue: boolean; allergies: string | null };

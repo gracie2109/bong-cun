@@ -12,6 +12,7 @@
     @update:open="emit('update:open', $event)"
   >
     <form id="boarding-check-in-form" class="space-y-4" @submit.prevent="submit">
+      <PetHealthFlagsBanner :pets="flagPets" />
       <section v-for="draft in drafts" :key="draft.stayPetId" class="space-y-3 rounded-lg border p-3">
         <p class="text-sm font-semibold">{{ draft.petName }}</p>
         <div class="grid gap-3 sm:grid-cols-2">
@@ -57,6 +58,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
+import PetHealthFlagsBanner from "@/views/admin/medical/flags/PetHealthFlagsBanner.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -86,6 +88,7 @@ watch(
   { immediate: true }
 );
 
+const flagPets = computed(() => props.stay.pets.filter((pet) => pet.status === "active").map((pet) => ({ id: pet.petId, name: pet.petName })));
 const complete = computed(() => isCheckInComplete(drafts.value));
 
 const submit = async () => {

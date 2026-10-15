@@ -20,7 +20,7 @@
           </TabsList>
           <div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
             <TabsContent value="general" class="mt-0">
-              <GeneralTab :form="form" :submitted="submitted" />
+              <GeneralTab :form="form" :submitted="submitted" :group-id="groupId" />
             </TabsContent>
             <TabsContent value="images" class="mt-0">
               <ImagesTab

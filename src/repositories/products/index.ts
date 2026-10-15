@@ -3,3 +3,4 @@ export * from "./types";
 export * from "./mappers";
 export * from "./groups";
 export * from "./sellable";
+export * from "./clinicOnly";
