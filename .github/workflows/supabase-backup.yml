@@ -1,0 +1,47 @@
+name: Supabase backup
+
+# Weekly backup of the hosted database. The Free plan keeps no downloadable backups.
+# Read-only: it dumps roles, schema and data (auth users included) and never writes to the database.
+# The repository is public and anyone signed in to GitHub can download its artifacts, so the
+# dump is encrypted with the database password (whoever can decrypt it can already reach the
+# database). Restore steps: docs/sao-luu-du-lieu.md.
+on:
+  schedule:
+    - cron: "0 20 * * 6" # Sunday 03:00 Vietnam time
+  workflow_dispatch:
+
+concurrency: supabase-backup
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
+      - name: Dump roles, schema and data
+        run: |
+          mkdir -p backup
+          supabase db dump --linked -f backup/roles.sql --role-only
+          supabase db dump --linked -f backup/schema.sql
+          supabase db dump --linked -f backup/data.sql --use-copy --data-only
+          ls -la backup
+      - name: Encrypt
+        run: |
+          name="bongcun-$(date -u +%Y%m%d)"
+          tar czf "$name.tar.gz" -C backup roles.sql schema.sql data.sql
+          printf '%s' "$SUPABASE_DB_PASSWORD" | gpg --batch --yes --pinentry-mode loopback \
+            --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$name.tar.gz.gpg" "$name.tar.gz"
+          rm -rf backup "$name.tar.gz"
+          echo "BACKUP_NAME=$name" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BACKUP_NAME }}
+          path: ${{ env.BACKUP_NAME }}.tar.gz.gpg
+          retention-days: 90
+          if-no-files-found: error
