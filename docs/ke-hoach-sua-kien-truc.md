@@ -4,6 +4,18 @@ Ngày: 2026-10-15. Nguồn: [danh-gia-kien-truc.md](danh-gia-kien-truc.md) (PR #
 
 Mục tiêu: có lưới an toàn trước production (CI, test SQL, backup) mà không đổi tính năng. Mỗi bước là một PR nhỏ, squash merge.
 
+## Kết quả (2026-10-15)
+
+| Bước | PR | Trạng thái |
+| --- | --- | --- |
+| 1. Sửa typecheck, gỡ gói không dùng | #127 | xong, typecheck 0 lỗi, build chạy |
+| 2-4. CI, bản chụp schema, test pgTAP | #128 | xong, 28 test, CI xanh |
+| 5. Backup hằng tuần | #129 | xong, lần chạy tay đầu tiên thành công (artifact `bongcun-20261015`, 139 KB) |
+| 6. Tách 6 file trên 300 dòng | #130 | xong, file lớn nhất còn 294 dòng, CI xanh |
+| 7. Cập nhật tài liệu | PR này | xong |
+
+Không có migration mới, không chạy SQL nào lên DB thật. Chưa thử khôi phục backup vào một project thật.
+
 ## Đã kiểm trước khi lên plan
 
 - Dựng Supabase cục bộ bằng `supabase db start` (CLI 2.121.0, Postgres 17 theo `supabase/config.toml`): **cả 121 migration chạy sạch trên DB rỗng**, kèm `supabase/seed.sql`. Vậy CI dựng DB từ đầu là khả thi, không cần sửa migration cũ.
