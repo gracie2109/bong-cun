@@ -2,7 +2,7 @@
 
 Kế hoạch module lưu trú: khách gửi thú ở lại cửa hàng qua đêm, nhân viên chăm sóc và ghi nhật ký, khách đón về và trả tiền tại quầy. Nguồn: kế hoạch BA/kiến trúc v0.3 (M8 Nội trú & Lưu trú, mục E, quy tắc 16 và 20, MoSCoW 2.3: lưu trú là **Should**). Module đứng sau POS (PR #43), RBAC theo (nhân viên, cơ sở) (PR #42), lịch hẹn spa (`docs/lich-hen-spa.md`), báo cáo doanh thu (`docs/bao-cao-doanh-thu.md`) và giao diện khách hàng (`docs/giao-dien-khach-hang.md`), đều đã merge.
 
-**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) đã làm xong. Các bước còn lại chưa có code. Thứ tự làm ở mục 10.
+**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) và bước 3 (nhận thú, gia hạn, nhật ký chăm sóc, phát sinh, trả chuồng, trang chi tiết lượt `/admin/boarding/detail/[stayId]`) đã làm xong. Các bước còn lại chưa có code. Thứ tự làm ở mục 10.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không tích hợp bên ngoài, không đặt cọc.
 

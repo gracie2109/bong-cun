@@ -113,7 +113,8 @@
     "accountAppointments": "Lịch hẹn của tôi",
     "boardingSettings": "Cài đặt lưu trú",
     "boardingBoard": "Sơ đồ chuồng",
-    "boardingStays": "Lượt lưu trú"
+    "boardingStays": "Lượt lưu trú",
+    "boardingStayDetail": "Chi tiết lượt lưu trú"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -789,7 +790,8 @@
     "boarding": "Lưu trú",
     "boardingSettings": "Cài đặt lưu trú",
     "boardingBoard": "Sơ đồ chuồng",
-    "boardingStays": "Lượt lưu trú"
+    "boardingStays": "Lượt lưu trú",
+    "boardingStayDetail": "Chi tiết lượt lưu trú"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1861,7 +1863,11 @@
       "not_due": "Chỉ đánh dấu không đến sau ngày đến dự kiến.",
       "no_customer": "Hãy chọn khách hàng.",
       "no_pet": "Hãy chọn thú cưng cho từng dòng.",
-      "need_pet": "Cần ít nhất một thú cưng."
+      "need_pet": "Cần ít nhất một thú cưng.",
+      "need_weight": "Hãy nhập cân nặng của {name}.",
+      "kennel_not_ready": "Chuồng {name} chưa sẵn sàng (đang vệ sinh hoặc bảo trì). Bấm Đã dọn ở Sơ đồ chuồng trước.",
+      "too_old": "Nhật ký đã quá 24 giờ, không xóa được.",
+      "no_service": "Dịch vụ này không còn dùng."
     },
     "board": {
       "title": "Sơ đồ chuồng",
@@ -1959,6 +1965,80 @@
       "cancelTitle": "Hủy lượt {code}?",
       "cancelDesc": "Chuồng được trả lại ngay. Lượt đã hủy không đặt lại được.",
       "keep": "Giữ lại"
+    },
+    "detail": {
+      "title": "Chi tiết lượt lưu trú",
+      "notFound": "Không tìm thấy lượt này.",
+      "open": "Mở",
+      "in": "Vào",
+      "out": "Ra",
+      "checkIn": "Nhận thú (check-in)",
+      "extend": "Gia hạn",
+      "checkOut": "Trả thú (check-out)",
+      "payAtPos": "Thanh toán tại POS",
+      "hasNotes": "có ghi chú hành vi / dị ứng",
+      "nights": "Các đêm",
+      "nightUnit": "đêm",
+      "price": "Giá mỗi đêm",
+      "estimated": "tạm tính",
+      "weight": "Cân nặng",
+      "vaccine": "Sổ tiêm",
+      "vaccineSeen": "Đã xem sổ tiêm còn hạn",
+      "vaccineNotSeen": "Chưa xem sổ tiêm",
+      "returned": "đã trả khách",
+      "tabCare": "Nhật ký",
+      "tabExtras": "Phát sinh",
+      "tabMoney": "Tiền",
+      "total": "Tổng cộng",
+      "estimateNote": "Đây là tạm tính. Số đêm và phụ thu trả muộn được chốt khi trả thú."
+    },
+    "checkIn": {
+      "title": "Nhận thú: {code}",
+      "subtitle": "Cân thú, xem sổ tiêm và ghi đồ mang theo. Giá mỗi đêm được chốt lúc này.",
+      "weight": "Cân nặng (kg)",
+      "vaccineNote": "Ghi chú sổ tiêm",
+      "vaccineSeen": "Đã xem sổ tiêm còn hạn",
+      "vaccineWarn": "Chưa xem sổ tiêm. Vẫn nhận được, nhưng nên nhắc khách."
+    },
+    "extend": {
+      "title": "Gia hạn: {code}",
+      "subtitle": "Đổi ngày giờ đi dự kiến của lượt đang ở.",
+      "hint": "Chuồng giữ nguyên. Nếu chuồng đã có lượt khác đặt vào các đêm thêm thì không gia hạn được."
+    },
+    "checkOut": {
+      "title": "Trả thú: {code}",
+      "subtitle": "Các khoản dưới đây sẽ được ghi để thu ở POS.",
+      "belongings": "Đồ mang theo, tích những món đã trả khách",
+      "remind": "Còn đồ chưa trả khách."
+    },
+    "care": {
+      "kind": "Loại",
+      "kinds": {
+        "meal": "Bữa ăn",
+        "walk": "Đi dạo",
+        "potty": "Vệ sinh",
+        "medication": "Cho thuốc",
+        "note": "Ghi chú"
+      },
+      "eaten": "Ăn được",
+      "meal": {
+        "all": "Ăn hết",
+        "some": "Ăn một phần",
+        "none": "Không ăn"
+      },
+      "content": "Nội dung",
+      "contentHint": "Ví dụ: đi dạo 15 phút, khá vui",
+      "visible": "Hiện cho khách xem",
+      "hidden": "Ẩn với khách",
+      "add": "Ghi nhật ký",
+      "empty": "Chưa có nhật ký nào."
+    },
+    "extras": {
+      "service": "Dịch vụ",
+      "pick": "Chọn dịch vụ",
+      "qty": "Số lượng",
+      "add": "Thêm",
+      "empty": "Chưa có khoản phát sinh nào."
     }
   },
   "reports": {

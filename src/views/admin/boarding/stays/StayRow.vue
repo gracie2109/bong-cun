@@ -25,6 +25,9 @@
     <td class="whitespace-nowrap px-4 py-3 text-right font-medium">{{ money(stay.estTotal) }}</td>
     <td class="whitespace-nowrap px-4 py-3 text-right">
       <div class="flex justify-end gap-2">
+        <Button size="sm" variant="outline" as-child>
+          <router-link :to="{ name: 'boardingStayDetail', params: { stayId: stay.id } }">{{ $t("boarding.detail.open") }}</router-link>
+        </Button>
         <Button v-if="canNoShow" size="sm" variant="ghost" @click="emit('no-show')">{{ $t("boarding.stays.noShow") }}</Button>
         <Button v-if="canEdit" size="sm" variant="outline" @click="emit('edit')">{{ $t("petCare.common.edit") }}</Button>
       </div>

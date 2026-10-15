@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <StayDialog v-if="branchId" v-model:open="dialogOpen" :branch-id="branchId" :stay="editing" :prefill="prefill" />
+    <StayDialog v-if="branchId" v-model:open="dialogOpen" :branch-id="branchId" :stay="null" :prefill="prefill" />
   </ContentWrap>
 </template>
 
@@ -80,6 +80,6 @@ import KennelCard from "./KennelCard.vue";
 import { useBoardingBoardView } from "./useBoardingBoard";
 
 const { branches, branchId, selectBranch } = useCurrentBranch();
-const { date, board, boardQuery, groups, canCreate, canUpdate, dialogOpen, editing, prefill, openNew, openKennel, markClean } =
+const { date, board, boardQuery, groups, canCreate, canUpdate, dialogOpen, prefill, openNew, openKennel, markClean } =
   useBoardingBoardView(branchId);
 </script>

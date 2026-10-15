@@ -113,7 +113,8 @@
     "accountAppointments": "My appointments",
     "boardingSettings": "Boarding settings",
     "boardingBoard": "Kennel board",
-    "boardingStays": "Boarding stays"
+    "boardingStays": "Boarding stays",
+    "boardingStayDetail": "Stay details"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -789,7 +790,8 @@
     "boarding": "Boarding",
     "boardingSettings": "Boarding settings",
     "boardingBoard": "Kennel board",
-    "boardingStays": "Boarding stays"
+    "boardingStays": "Boarding stays",
+    "boardingStayDetail": "Stay details"
   },
   "pos": {
     "title": "Point of sale",
@@ -1861,7 +1863,11 @@
       "not_due": "A no-show can only be marked after the planned arrival day.",
       "no_customer": "Pick a customer.",
       "no_pet": "Pick a pet for every line.",
-      "need_pet": "At least one pet is needed."
+      "need_pet": "At least one pet is needed.",
+      "need_weight": "Enter the weight of {name}.",
+      "kennel_not_ready": "Kennel {name} is not ready (cleaning or maintenance). Press Cleaned on the Kennel board first.",
+      "too_old": "The entry is older than 24 hours and cannot be deleted.",
+      "no_service": "This service is no longer available."
     },
     "board": {
       "title": "Kennel board",
@@ -1959,6 +1965,80 @@
       "cancelTitle": "Cancel stay {code}?",
       "cancelDesc": "The kennel is released at once. A cancelled stay cannot be restored.",
       "keep": "Keep it"
+    },
+    "detail": {
+      "title": "Stay details",
+      "notFound": "Stay not found.",
+      "open": "Open",
+      "in": "In",
+      "out": "Out",
+      "checkIn": "Check in",
+      "extend": "Extend",
+      "checkOut": "Check out",
+      "payAtPos": "Pay at POS",
+      "hasNotes": "has behaviour / allergy notes",
+      "nights": "Nights",
+      "nightUnit": "nights",
+      "price": "Price per night",
+      "estimated": "estimate",
+      "weight": "Weight",
+      "vaccine": "Vaccination",
+      "vaccineSeen": "Valid record seen",
+      "vaccineNotSeen": "Record not seen",
+      "returned": "handed back",
+      "tabCare": "Care log",
+      "tabExtras": "Extras",
+      "tabMoney": "Money",
+      "total": "Total",
+      "estimateNote": "This is an estimate. Nights and late fees are settled at check-out."
+    },
+    "checkIn": {
+      "title": "Check in: {code}",
+      "subtitle": "Weigh the pets, check the vaccination record and note belongings. The nightly price is fixed now.",
+      "weight": "Weight (kg)",
+      "vaccineNote": "Vaccination note",
+      "vaccineSeen": "Valid vaccination record seen",
+      "vaccineWarn": "Record not seen. You can still check in, but remind the customer."
+    },
+    "extend": {
+      "title": "Extend: {code}",
+      "subtitle": "Change the planned departure of a stay that is in.",
+      "hint": "Kennels stay the same. If a later booking holds one of the added nights the change is refused."
+    },
+    "checkOut": {
+      "title": "Check out: {code}",
+      "subtitle": "These amounts will be recorded to collect at the POS.",
+      "belongings": "Belongings: tick what was handed back",
+      "remind": "Some belongings have not been handed back."
+    },
+    "care": {
+      "kind": "Type",
+      "kinds": {
+        "meal": "Meal",
+        "walk": "Walk",
+        "potty": "Potty",
+        "medication": "Medicine",
+        "note": "Note"
+      },
+      "eaten": "Ate",
+      "meal": {
+        "all": "All",
+        "some": "Some",
+        "none": "Nothing"
+      },
+      "content": "Details",
+      "contentHint": "For example: 15 minute walk, happy",
+      "visible": "Show to the customer",
+      "hidden": "Hidden from the customer",
+      "add": "Add entry",
+      "empty": "No entries yet."
+    },
+    "extras": {
+      "service": "Service",
+      "pick": "Pick a service",
+      "qty": "Quantity",
+      "add": "Add",
+      "empty": "No extras yet."
     }
   },
   "reports": {

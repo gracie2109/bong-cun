@@ -1,5 +1,6 @@
-import { computed, ref, watch, type Ref } from "vue";
-import { useBoardingBoard as useBoardQuery, useBoardingStay, useSetKennelStatus } from "@/queries/boarding";
+import { computed, ref, type Ref } from "vue";
+import { useRouter } from "vue-router";
+import { useBoardingBoard as useBoardQuery, useSetKennelStatus } from "@/queries/boarding";
 import { useAuthStore } from "@/stores";
 import type { BoardKennel } from "@/types/boarding";
 import { todayKey } from "../format";
@@ -8,6 +9,7 @@ import type { StayPrefill } from "../stay-dialog/stayDraft";
 /** Day board of one branch: the date, the kennels grouped by type, and what a click on a kennel opens. */
 export const useBoardingBoardView = (branchId: Ref<string | undefined>) => {
   const auth = useAuthStore();
+  const router = useRouter();
   const canCreate = computed(() => auth.can("boarding", "CREATE"));
   const canUpdate = computed(() => auth.can("boarding", "UPDATE"));
 
@@ -25,37 +27,20 @@ export const useBoardingBoardView = (branchId: Ref<string | undefined>) => {
     return [...byType.values()];
   });
 
-  // The booking dialog: new (with the kennel and date prefilled) or editing a booked stay.
+  // The booking dialog, opened on a free kennel with the day and kennel filled in.
   const dialogOpen = ref(false);
-  const editingId = ref<string>();
   const prefill = ref<StayPrefill>();
-  const stayQuery = useBoardingStay(editingId);
-  const editing = computed(() => (editingId.value ? (stayQuery.data.value ?? null) : null));
-  // Wait for the stay before opening the editor so the draft starts from it.
-  const pendingEdit = ref(false);
-  watch([() => stayQuery.data.value, pendingEdit], ([stay, pending]) => {
-    if (pending && stay) {
-      pendingEdit.value = false;
-      dialogOpen.value = true;
-    }
-  });
 
   const openNew = (kennel?: BoardKennel) => {
-    editingId.value = undefined;
     prefill.value = { date: date.value, kennelId: kennel?.id, kennelTypeId: kennel?.kennelTypeId };
     dialogOpen.value = true;
   };
 
-  /** Free kennels start a booking, a booked arrival opens it for editing; stays in the kennel open in step 3. */
+  /** A kennel with a pet or a booked arrival opens that stay; a free, ready kennel starts a booking. */
   const openKennel = (kennel: BoardKennel) => {
-    const arriving = kennel.arriving[0];
-    if (arriving && canUpdate.value && arriving.stayStatus === "booked") {
-      editingId.value = arriving.stayId;
-      pendingEdit.value = true;
-      if (stayQuery.data.value?.id === arriving.stayId) {
-        pendingEdit.value = false;
-        dialogOpen.value = true;
-      }
+    const stay = kennel.pets[0] ?? kennel.arriving[0];
+    if (stay) {
+      router.push({ name: "boardingStayDetail", params: { stayId: stay.stayId } });
       return;
     }
     if (kennel.state === "free" && kennel.status === "ready" && canCreate.value) openNew(kennel);
@@ -64,5 +49,5 @@ export const useBoardingBoardView = (branchId: Ref<string | undefined>) => {
   const setStatus = useSetKennelStatus();
   const markClean = (kennel: BoardKennel) => setStatus.mutate({ id: kennel.id, status: "ready" });
 
-  return { date, board, boardQuery, groups, canCreate, canUpdate, dialogOpen, editing, prefill, openNew, openKennel, markClean };
+  return { date, board, boardQuery, groups, canCreate, canUpdate, dialogOpen, prefill, openNew, openKennel, markClean };
 };

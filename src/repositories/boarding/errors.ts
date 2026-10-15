@@ -23,6 +23,10 @@ export const BOARDING_ERROR_HINTS = [
   "no_customer",
   "no_pet",
   "need_pet",
+  "need_weight",
+  "kennel_not_ready",
+  "too_old",
+  "no_service",
 ] as const;
 export type BoardingErrorHint = (typeof BOARDING_ERROR_HINTS)[number];
 
