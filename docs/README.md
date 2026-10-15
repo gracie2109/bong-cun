@@ -7,6 +7,7 @@
 | [thanh-toan-van-chuyen.md](thanh-toan-van-chuyen.md) | Nghiên cứu kiến trúc thanh toán (SePay) và vận chuyển (GHN) |
 | [lich-hen-spa.md](lich-hen-spa.md) | Kế hoạch module lịch hẹn spa: bàn spa, chặn trùng giờ, check-in chốt giá, nối POS |
 | [khach-san-thu-cung.md](khach-san-thu-cung.md) | Kế hoạch module khách sạn thú cưng (lưu trú): loại chuồng và giá theo đêm, tự xếp chuồng, check-in/out, nhật ký chăm sóc, nối POS, khách xem |
+| [ho-so-benh-an.md](ho-so-benh-an.md) | Kế hoạch module Y tế: tiếp nhận và hàng chờ khám, bệnh án SOAP ký khóa, chỉ định và đơn thuốc trừ kho theo lô, sổ tiêm và nhắc lịch, nối POS, báo cáo, khách xem sổ sức khỏe, nội trú dùng chung chuồng |
 | [bao-cao-doanh-thu.md](bao-cao-doanh-thu.md) | Kế hoạch module báo cáo doanh thu: định nghĩa số liệu, RPC, màn hình, quyền, chia file |
 | [module-san-pham.md](module-san-pham.md) | Kế hoạch phần còn lại của module sản phẩm: danh mục, thương hiệu, bộ ảnh, giá theo cơ sở, đơn vị quy đổi, nhập/xuất Excel |
 | [checkout-shop.md](checkout-shop.md) | Kế hoạch checkout shop online: giỏ hàng thống nhất, địa chỉ, phí GHN, COD và nhận tại cửa hàng, đơn online dùng chung hóa đơn/kho, trang theo dõi đơn |
