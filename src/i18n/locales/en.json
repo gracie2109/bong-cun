@@ -123,7 +123,8 @@
     "medicalQueue": "Exam queue",
     "medicalVisits": "Visits",
     "medicalVisitDetail": "Exam page",
-    "medicalReminders": "Reminders"
+    "medicalReminders": "Reminders",
+    "accountPetHealth": "Health book"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -2682,7 +2683,9 @@
       "ageYears": "{n} years",
       "ageYearsMonths": "{y} years {m} months",
       "weight": "Weight",
-      "allergies": "Allergies"
+      "allergies": "Allergies",
+      "nextVaccine": "Next vaccine: {name} – {date}",
+      "healthBook": "Health book"
     },
     "spa": {
       "title": "Pet spa services",
@@ -2859,6 +2862,34 @@
       "priceNote": "Prices are a guide; the shop settles the amount at pick-up. Call the shop to book.",
       "emptyHint": "Call the shop for advice.",
       "emptyPublic": "The hotel price list is not ready yet"
+    },
+    "health": {
+      "back": "My pets",
+      "title": "{name}'s health book",
+      "intro": "The vaccination book and visit history are kept by the shop. To change anything, contact the shop.",
+      "loadFailed": "Could not load the health book.",
+      "tabVaccines": "Vaccines",
+      "tabVisits": "Visit history",
+      "noVaccines": "No shots recorded yet.",
+      "noVisits": "No visits yet.",
+      "lastGiven": "Last shot: {date}",
+      "state": {
+        "ok": "Next shot: {date}",
+        "due_soon": "Due soon: {date}",
+        "overdue": "Overdue since {date}",
+        "none": "No reminder"
+      },
+      "dose": "Dose {n}",
+      "doseOne": "Shot",
+      "external": "Given elsewhere",
+      "atShop": "At the shop",
+      "reason": "Reason",
+      "diagnosis": "Diagnosis",
+      "instructions": "Instructions",
+      "takeHome": "Medicine to take home",
+      "days": "{n} days",
+      "recheck": "Re-check on {date}",
+      "book": "Want to book a visit? Call the shop"
     }
   },
   "medical": {

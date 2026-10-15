@@ -32,7 +32,33 @@ export type MyPet = {
   allergies: string;
   behaviorNotes: string;
   weightKg: number | null;
+  /** The vaccine due next, from the e-book of shots. */
+  nextVaccine: { name: string; dueOn: string } | null;
 };
+
+/** The health book a customer reads for one of their pets (my_pet_health). No SOAP, no vitals, no prices. */
+export type HealthDose = { doseNo: number | null; givenOn: string; isExternal: boolean; externalPlace: string };
+export type HealthVaccine = {
+  vaccineTypeId: string;
+  name: string;
+  kind: string;
+  lastGivenOn: string;
+  nextDueOn: string | null;
+  state: "ok" | "due_soon" | "overdue";
+  doses: HealthDose[];
+};
+export type HealthTakeHome = { name: string; dose: string; frequency: string; days: number | null; route: string; instructions: string };
+export type HealthVisit = {
+  id: string;
+  date: string;
+  reason: string;
+  diagnoses: string[];
+  ownerInstructions: string;
+  recheckOn: string | null;
+  branchName: string;
+  takeHome: HealthTakeHome[];
+};
+export type PetHealth = { petId: string; petName: string; phone: string; vaccines: HealthVaccine[]; visits: HealthVisit[] };
 
 /** A web account without a customer record, as staff see it when linking. */
 export type UnlinkedAccount = { userId: string; fullName: string; phone: string; email: string };

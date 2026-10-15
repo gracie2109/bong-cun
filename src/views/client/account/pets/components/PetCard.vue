@@ -18,17 +18,27 @@
       <dd>{{ pet.weightKg === null ? "—" : $t("petCare.common.kg", { n: pet.weightKg }) }}</dd>
     </dl>
 
+    <p v-if="pet.nextVaccine" class="text-xs text-muted-foreground">
+      {{ $t("client.pets.nextVaccine", { name: pet.nextVaccine.name, date: formatDay(pet.nextVaccine.dueOn) }) }}
+    </p>
+
     <p v-if="pet.allergies" class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
       {{ $t("client.pets.allergies") }}: {{ pet.allergies }}
     </p>
+    <Button as-child variant="outline" size="sm" class="self-start">
+      <RouterLink :to="{ name: 'account-pet-health', params: { id: pet.id } }"><HeartPulse class="mr-1.5 size-4" />{{ $t("client.pets.healthBook") }}</RouterLink>
+    </Button>
   </article>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { HeartPulse } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
 import type { MyPet } from "@/types/account";
 import { petAge } from "@/utils/account/pet";
+import { formatDay } from "../health/format";
 
 const props = defineProps<{ pet: MyPet }>();
 

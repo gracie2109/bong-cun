@@ -256,6 +256,7 @@ export const accountKeys = {
   all: ["account"] as const,
   profile: () => [...accountKeys.all, "profile"] as const,
   pets: () => [...accountKeys.all, "pets"] as const,
+  petHealth: (petId: string) => [...accountKeys.all, "pets", "health", petId] as const,
   appointments: () => [...accountKeys.all, "appointments"] as const,
   appointmentList: (scope: string, page: number, pageSize: number) =>
     [...accountKeys.all, "appointments", scope, page, pageSize] as const,

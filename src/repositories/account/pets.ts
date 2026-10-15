@@ -18,6 +18,7 @@ type PetJson = {
   allergies: string | null;
   behavior_notes: string | null;
   weight_kg: number | null;
+  next_vaccine?: { name: string; due_on: string } | null;
 };
 
 const toSex = (value: string): PetSex => PET_SEXES.find((sex) => sex === value) ?? "unknown";
@@ -34,6 +35,7 @@ const toPet = (row: PetJson): MyPet => ({
   allergies: row.allergies ?? "",
   behaviorNotes: row.behavior_notes ?? "",
   weightKg: row.weight_kg === null ? null : Number(row.weight_kg),
+  nextVaccine: row.next_vaccine ? { name: row.next_vaccine.name, dueOn: row.next_vaccine.due_on } : null,
 });
 
 export const listMyPets = async (client: Client): Promise<MyPet[]> =>

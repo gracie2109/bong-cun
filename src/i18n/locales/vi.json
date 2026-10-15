@@ -123,7 +123,8 @@
     "medicalQueue": "Hàng chờ khám",
     "medicalVisits": "Lượt khám",
     "medicalVisitDetail": "Trang khám",
-    "medicalReminders": "Nhắc lịch"
+    "medicalReminders": "Nhắc lịch",
+    "accountPetHealth": "Sổ sức khỏe"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2682,7 +2683,9 @@
       "ageYears": "{n} tuổi",
       "ageYearsMonths": "{y} tuổi {m} tháng",
       "weight": "Cân nặng",
-      "allergies": "Dị ứng"
+      "allergies": "Dị ứng",
+      "nextVaccine": "Mũi tiêm tiếp theo: {name} – {date}",
+      "healthBook": "Sổ sức khỏe"
     },
     "spa": {
       "title": "Dịch vụ spa cho thú cưng",
@@ -2859,6 +2862,34 @@
       "priceNote": "Giá tham khảo; cửa hàng chốt số tiền khi bạn đón bé. Gọi cửa hàng để đặt chỗ.",
       "emptyHint": "Gọi cửa hàng để được tư vấn.",
       "emptyPublic": "Chưa có bảng giá khách sạn"
+    },
+    "health": {
+      "back": "Thú cưng của tôi",
+      "title": "Sổ sức khỏe của {name}",
+      "intro": "Sổ tiêm và lịch sử khám do cửa hàng ghi lại. Cần sửa thông tin, hãy liên hệ cửa hàng.",
+      "loadFailed": "Không tải được sổ sức khỏe.",
+      "tabVaccines": "Sổ tiêm",
+      "tabVisits": "Lịch sử khám",
+      "noVaccines": "Chưa có mũi tiêm nào được ghi.",
+      "noVisits": "Chưa có lượt khám nào.",
+      "lastGiven": "Mũi gần nhất: {date}",
+      "state": {
+        "ok": "Mũi tiếp theo: {date}",
+        "due_soon": "Sắp đến hạn: {date}",
+        "overdue": "Quá hạn từ {date}",
+        "none": "Không cần nhắc"
+      },
+      "dose": "Mũi {n}",
+      "doseOne": "Mũi tiêm",
+      "external": "Tiêm nơi khác",
+      "atShop": "Tại cửa hàng",
+      "reason": "Lý do khám",
+      "diagnosis": "Chẩn đoán",
+      "instructions": "Lời dặn",
+      "takeHome": "Thuốc mang về",
+      "days": "{n} ngày",
+      "recheck": "Hẹn tái khám: {date}",
+      "book": "Muốn đặt lịch khám? Gọi cửa hàng"
     }
   },
   "medical": {
