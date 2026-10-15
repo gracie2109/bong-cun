@@ -42,3 +42,9 @@ This project is indexed by GitNexus as **bongCunManager** (2437 symbols, 5392 re
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+## Database workflow
+
+- `supabase/migrations/` is forward-only: never edit a file that has run. To change a function, start from its current definition in `supabase/schema.sql` (generated, read-only, never run it), not from an older migration.
+- Before opening a PR that adds a migration: `npm run db:start` (applies every migration to an empty local database), `npm run db:test` (pgTAP tests in `supabase/tests/`), then `npm run db:schema` and commit the updated `supabase/schema.sql`. CI (`.github/workflows/ci.yml`) runs the same steps plus typecheck and build, and fails if `schema.sql` is stale.
+- Tests sign in with `tests.login(user)` + `set local role authenticated` (helpers in `supabase/tests/_helpers/setup.psql`).

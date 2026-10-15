@@ -10,7 +10,11 @@
     "generate": "nuxt generate",
     "type-check": "nuxt typecheck",
     "postinstall": "nuxt prepare",
-    "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs"
+    "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs",
+    "db:start": "npx -y supabase@2.121.0 db start",
+    "db:test": "npx -y supabase@2.121.0 test db",
+    "db:schema": "npx -y supabase@2.121.0 db dump --local --schema public -f supabase/schema.sql",
+    "db:stop": "npx -y supabase@2.121.0 stop"
   },
   "dependencies": {
     "@internationalized/date": "^3.5.6",

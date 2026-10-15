@@ -17,6 +17,9 @@ npm run dev          # dev server on http://localhost:3004
 npm run build        # production build (.output/)
 npm run preview      # serve the production build
 npm run type-check   # nuxt typecheck (vue-tsc)
+npm run db:start     # local database with every migration applied (needs Docker)
+npm run db:test      # SQL tests in supabase/tests
+npm run db:schema    # regenerate supabase/schema.sql after adding a migration
 ```
 
 ## Layout
