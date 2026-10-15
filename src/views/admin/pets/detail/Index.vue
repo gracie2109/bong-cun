@@ -43,7 +43,7 @@
             />
           </div>
 
-          <PetActivityTabs />
+          <PetActivityTabs :pet-id="petId" />
         </div>
 
 

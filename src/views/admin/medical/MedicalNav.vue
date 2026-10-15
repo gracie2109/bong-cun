@@ -24,6 +24,8 @@ const auth = useAuthStore();
 
 // Everything is read with "medical: VIEW"; the catalogs and rules are changed with "SETTING".
 const tabs = [
+  { name: "medicalQueue", icon: "lucide:stethoscope", label: "medical.nav.queue", method: "VIEW" },
+  { name: "medicalVisits", icon: "lucide:list-checks", label: "medical.nav.visits", method: "VIEW" },
   { name: "medicalSettings", icon: "lucide:settings-2", label: "medical.nav.settings", method: "VIEW" },
 ];
 const visibleTabs = computed(() => tabs.filter((tab) => auth.can("medical", tab.method)));

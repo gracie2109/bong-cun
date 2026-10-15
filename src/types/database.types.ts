@@ -2829,6 +2829,23 @@ export type Database = {
         Returns: Json
       }
       medical_settings_get: { Args: { p_branch: string }; Returns: Json }
+      check_in_medical_visit: { Args: { p: Json }; Returns: Json }
+      schedule_medical_visit: { Args: { p: Json; p_id?: string }; Returns: string }
+      start_medical_visit: { Args: { p_id: string }; Returns: undefined }
+      assign_medical_vet: { Args: { p_id: string; p_vet: string }; Returns: undefined }
+      save_medical_record: { Args: { p: Json; p_id: string }; Returns: string }
+      sign_medical_visit: { Args: { p_id: string }; Returns: Json }
+      add_medical_addendum: { Args: { p_content: string; p_id: string }; Returns: string }
+      cancel_medical_visit: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      mark_medical_no_show: { Args: { p_id: string }; Returns: undefined }
+      medical_queue: { Args: { p_branch: string; p_date?: string }; Returns: Json }
+      list_medical_visits: {
+        Args: { p_branch: string; p_from?: string; p_page?: number; p_page_size?: number; p_search?: string; p_status?: string; p_to?: string; p_vet?: string }
+        Returns: Json
+      }
+      get_medical_visit: { Args: { p_id: string }; Returns: Json }
+      pet_medical_history: { Args: { p_page?: number; p_page_size?: number; p_pet: string }; Returns: Json }
+      medical_vets: { Args: { p_branch: string }; Returns: Json }
       save_diagnosis_term: { Args: { p: Json; p_id?: string }; Returns: string }
       save_medical_settings: { Args: { p: Json; p_branch: string }; Returns: undefined }
       save_vaccine_type: { Args: { p: Json; p_id?: string }; Returns: string }
