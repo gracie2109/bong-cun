@@ -64,13 +64,13 @@ Nguồn: [checkout-shop.md](checkout-shop.md), [lich-hen-spa.md](lich-hen-spa.md
 ### 3.4 Thú cưng của tôi
 
 - Khách thấy các thú cưng có `pet_owners.customer_id = hồ sơ của mình` và `to_date is null`, kể cả thú do lễ tân tạo.
-- Khách thêm thú: tên, loài (bắt buộc), giống, giới tính, triệt sản, ngày sinh, dị ứng, ghi chú tính cách, cân nặng hiện tại (ghi vào `pet_weight_logs`). Khách thành chủ chính (`role = 'primary'`).
-- Khách sửa được các trường trên cho thú **mình là chủ chính**; đồng sở hữu chỉ xem. Không sửa `microchip`, `status` (nhân viên làm).
+- **Chỉ nhân viên thêm thú** (quyết định của grace, 2026-10-15): khách không tự thêm thú trên web. Cửa hàng đăng ký thú khi khách ghé hoặc đặt lịch; danh sách trống thì hiện ghi chú đó. `save_my_pet` không có `p_id` trả lỗi `added_by_shop` (migration `20261019010000_my_pets_staff_only_create.sql`).
+- Khách sửa được tên, loài, giống, giới tính, triệt sản, ngày sinh, dị ứng, ghi chú tính cách, cân nặng hiện tại (ghi vào `pet_weight_logs`) cho thú **mình là chủ chính**; đồng sở hữu chỉ xem. Không sửa `microchip`, `status` (nhân viên làm).
 - "Xóa" phía khách = ẩn khỏi danh sách của mình (đóng liên kết `pet_owners.to_date = hôm nay`), không xóa dữ liệu vì lịch sử dịch vụ đi theo thú. Thú đang có lịch hẹn chưa xong thì không ẩn được.
 
 ### 3.5 Đặt lịch spa online
 
-- Chỉ khách **đã đăng nhập**, có hồ sơ khách và ít nhất một thú cưng. Khách vãng lai thấy bảng giá và nút "Đăng nhập để đặt lịch".
+- Chỉ khách **đã đăng nhập**, có hồ sơ khách và ít nhất một thú cưng (chưa có thú thì nhắc liên hệ cửa hàng để đăng ký, không thêm thú ngay trong luồng đặt lịch). Khách vãng lai thấy bảng giá và nút "Đăng nhập để đặt lịch".
 - Luồng 4 bước: **chọn cơ sở** (tự chọn khi chỉ có một) → **chọn thú và dịch vụ/combo** cho từng thú → **chọn ngày và giờ** → **xác nhận** (ghi chú, xem tạm tính).
 - Dịch vụ/combo lọc theo loài của thú (`service_species`, `combo_species`) như `save_appointment`. Giá tạm tính lấy từ cân nặng gần nhất của thú; dịch vụ theo cân nặng mà thú chưa có cân nặng thì hiện "Báo giá khi nhận thú".
 - Nhiều thú hoặc nhiều dịch vụ trong một lịch: các phiếu xếp **liền nhau** từ giờ bắt đầu khách chọn (phiếu sau bắt đầu khi phiếu trước xong). Đủ cho shop nhỏ, tránh bài toán xếp song song.
@@ -117,7 +117,7 @@ Không có bảng mới. Một cột mới:
 | `ensure_my_customer(p_full_name, p_phone)` | authenticated | Mục 3.3. Lỗi `hint = 'phone_in_use'` |
 | `save_my_profile(p jsonb)` | authenticated | Sửa tên, SĐT, ngày sinh trên `users` và hồ sơ khách. Lỗi `phone_in_use` |
 | `my_pets()` | authenticated | Danh sách thú của tôi: id, tên, loài, giống, giới tính, triệt sản, ngày sinh, cân nặng gần nhất, vai trò của tôi |
-| `save_my_pet(p jsonb, p_id uuid default null)` | authenticated | Thêm/sửa theo 3.4; tạo `pet_owners` primary khi thêm; ghi `pet_weight_logs` khi cân nặng đổi |
+| `save_my_pet(p jsonb, p_id uuid default null)` | authenticated | Chỉ sửa theo 3.4 (thêm bị chặn, hint `added_by_shop`); ghi `pet_weight_logs` khi cân nặng đổi |
 | `hide_my_pet(p_id uuid)` | authenticated | Đóng liên kết; lỗi `hint = 'has_open_appointment'` |
 | `link_customer_account(p_customer uuid, p_user uuid)` | nhân viên | Nối tài khoản web chưa có hồ sơ vào hồ sơ khách chưa có tài khoản |
 | `spa_web_rules()` | nội bộ | Hằng số: `min_lead` 2 giờ, `max_days` 30, `max_open` 3, `cancel_before` 2 giờ |

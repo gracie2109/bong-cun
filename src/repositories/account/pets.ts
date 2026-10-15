@@ -1,4 +1,4 @@
-// "My pets": the pets the signed-in customer owns, added and edited through RPCs (docs 3.4).
+// "My pets": the pets the signed-in customer owns, edited through RPCs (docs 3.4). Only staff add pets.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import { PET_SEXES, type MyPet, type PetInput, type PetSex } from "@/types/account";
@@ -43,8 +43,8 @@ const toPet = (row: PetJson): MyPet => ({
 export const listMyPets = async (client: Client): Promise<MyPet[]> =>
   (unwrap(await client.rpc("my_pets")) as PetJson[]).map(toPet);
 
-/** Adds a pet (no id) or edits one; returns the pet id. */
-export const saveMyPet = async (client: Client, input: PetInput, id?: string): Promise<string> =>
+/** Edits a pet I am primary owner of; returns the pet id. */
+export const saveMyPet = async (client: Client, input: PetInput, id: string): Promise<string> =>
   unwrap(
     await client.rpc("save_my_pet", {
       p: {
@@ -58,7 +58,7 @@ export const saveMyPet = async (client: Client, input: PetInput, id?: string): P
         behavior_notes: input.behaviorNotes.trim(),
         weight_kg: input.weightKg.trim(),
       },
-      p_id: id ?? null,
+      p_id: id,
     })
   );
 
@@ -69,6 +69,7 @@ export const hideMyPet = async (client: Client, id: string): Promise<void> => {
 /** Error hints raised by save_my_pet and hide_my_pet, for readable messages. */
 export const PET_ERROR_HINTS = [
   "no_customer",
+  "added_by_shop",
   "invalid_name",
   "invalid_species",
   "invalid_sex",
