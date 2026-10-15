@@ -27,12 +27,12 @@ import {
     ChevronLeft,
     ChevronRight,
 } from 'lucide-vue-next'
-import { type DateRange, RangeCalendarRoot, useDateFormatter } from 'radix-vue'
+import { type DateRange, RangeCalendarRoot, useDateFormatter } from 'reka-ui'
 import {
     createMonth,
     toDate,
-} from 'radix-vue/date'
-import type { Grid } from 'radix-vue/date'
+} from 'reka-ui/date'
+import type { Grid } from 'reka-ui/date'
 import { type Ref, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 

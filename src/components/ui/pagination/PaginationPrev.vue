@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue'
-import { PaginationPrev, type PaginationPrevProps } from 'radix-vue'
+import { PaginationPrev, type PaginationPrevProps } from 'reka-ui'
 import { ChevronLeftIcon } from '@radix-icons/vue'
 import {
   Button,

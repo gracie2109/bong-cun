@@ -158,7 +158,7 @@ const updateAddress = (vl: string) => {
 };
 const currySelected = (
   modelName: keyof IAddress,
-  selectedId: string | number,
+  selectedId: unknown,
   selectedIdType: "string" | "number",
   listMapName: Map<string | number, any>,
   codeField: any,

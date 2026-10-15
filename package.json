@@ -35,7 +35,6 @@
     "lucide-vue-next": "^0.427.0",
     "nuxt": "^4.5.2",
     "pinia": "^4.0.3",
-    "radix-vue": "^1.9.3",
     "read-excel-file": "^9.3.12",
     "reka-ui": "^2.2.0",
     "tailwind-merge": "^2.4.0",

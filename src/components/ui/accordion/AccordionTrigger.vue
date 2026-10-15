@@ -4,7 +4,7 @@ import {
   AccordionHeader,
   AccordionTrigger,
   type AccordionTriggerProps,
-} from 'radix-vue'
+} from 'reka-ui'
 import { ChevronDownIcon } from '@radix-icons/vue'
 import { cn } from '@/lib/utils'
 

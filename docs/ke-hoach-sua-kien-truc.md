@@ -12,7 +12,9 @@ Mục tiêu: có lưới an toàn trước production (CI, test SQL, backup) mà
 | 2-4. CI, bản chụp schema, test pgTAP | #128 | xong, 28 test, CI xanh |
 | 5. Backup hằng tuần | #129 | xong, lần chạy tay đầu tiên thành công (artifact `bongcun-20261015`, 139 KB) |
 | 6. Tách 6 file trên 300 dòng | #130 | xong, file lớn nhất còn 294 dòng, CI xanh |
-| 7. Cập nhật tài liệu | PR này | xong |
+| 7. Cập nhật tài liệu | #131 | xong |
+| Thêm: test SQL lưu trú và y tế | #132 | xong, 52 test, CI xanh |
+| Thêm: `radix-vue` sang `reka-ui` | PR này | xong, typecheck 0 lỗi, build chạy, chưa bấm thử trên trình duyệt |
 
 Không có migration mới, không chạy SQL nào lên DB thật. Chưa thử khôi phục backup vào một project thật.
 

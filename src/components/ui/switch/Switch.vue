@@ -2,29 +2,38 @@
 import { type HTMLAttributes, computed } from 'vue'
 import {
   SwitchRoot,
-  type SwitchRootEmits,
   type SwitchRootProps,
   SwitchThumb,
-  useForwardPropsEmits,
-} from 'radix-vue'
+  useForwardProps,
+} from 'reka-ui'
 import { cn } from '@/lib/utils'
 
-const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>()
-
-const emits = defineEmits<SwitchRootEmits>()
+// reka-ui models the state as `modelValue`; the app keeps radix-vue's `checked` / `update:checked`.
+const props = withDefaults(
+  defineProps<Omit<SwitchRootProps, 'modelValue' | 'defaultValue'> & {
+    class?: HTMLAttributes['class']
+    checked?: boolean
+    defaultChecked?: boolean
+  }>(),
+  { checked: undefined, defaultChecked: undefined },
+)
+const emit = defineEmits<{ 'update:checked': [value: boolean] }>()
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
+  const { class: _, checked: __, defaultChecked: ___, ...delegated } = props
 
   return delegated
 })
 
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
+const forwarded = useForwardProps(delegatedProps)
 </script>
 
 <template>
   <SwitchRoot
     v-bind="forwarded"
+    :model-value="props.checked"
+    :default-value="props.defaultChecked"
+    @update:model-value="(value) => emit('update:checked', value)"
     :class="cn(
       'peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input',
       props.class,

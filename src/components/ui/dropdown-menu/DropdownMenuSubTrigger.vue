@@ -4,7 +4,7 @@ import {
   DropdownMenuSubTrigger,
   type DropdownMenuSubTriggerProps,
   useForwardProps,
-} from 'radix-vue'
+} from 'reka-ui'
 import { ChevronRightIcon } from '@radix-icons/vue'
 import { cn } from '@/lib/utils'
 
