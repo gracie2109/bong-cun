@@ -1,4 +1,4 @@
-import { CATALOG_SORTS, type CatalogFilters, type CatalogSort, type CategoryNode } from "@/types/catalog";
+import { CATALOG_SORTS, type CatalogFilters, type CatalogSort, type CategoryNode, type ShopGroup } from "@/types/catalog";
 import type { ProductGroup } from "@/repositories/products";
 import type { ProductCategory } from "@/repositories/productCategories";
 import { formatPrice } from "@/lib/utils";
@@ -86,3 +86,15 @@ export const groupOptionHint = (group: ProductGroup): string =>
 /** Whether the variants differ in price, so the list shows "Từ" before the lowest one. */
 export const groupHasPriceRange = (group: Pick<ProductGroup, "minPrice" | "maxPrice">): boolean =>
   group.minPrice !== null && group.maxPrice !== null && group.maxPrice > group.minPrice;
+
+/**
+ * Orders products for a home-page showcase: ones with a photo and a price first, then in stock,
+ * keeping the incoming order (newest) within each rank. Only the order changes, nothing is hidden.
+ */
+export const showcaseOrder = <T extends ShopGroup>(groups: T[]): T[] => {
+  const rank = (group: T) => (groupCover(group) ? 0 : 2) + ((group.minPrice ?? 0) > 0 ? 0 : 1) + (group.inStock ? 0 : 4);
+  return groups
+    .map((group, index) => ({ group, index, rank: rank(group) }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index)
+    .map((item) => item.group);
+};

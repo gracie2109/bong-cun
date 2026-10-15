@@ -1,4 +1,36 @@
 import animate from "tailwindcss-animate"
+import plugin from "tailwindcss/plugin"
+
+/**
+ * Layout classes of the public shop. Registered as components (not plain CSS) so they beat the
+ * preflight reset on <ul>/<p> but still lose to a utility on the same element (sm:px-0, sm:grid).
+ */
+const shopLayout = plugin(({ addComponents }) => {
+  addComponents({
+    // One page width for the whole shop: fluid gutters, content capped at 1440px.
+    ".shop-container": {
+      width: "100%",
+      maxWidth: "1440px",
+      marginLeft: "auto",
+      marginRight: "auto",
+      paddingLeft: "1rem",
+      paddingRight: "1rem",
+      "@media (min-width: 640px)": { paddingLeft: "1.5rem", paddingRight: "1.5rem" },
+      "@media (min-width: 1024px)": { paddingLeft: "2.5rem", paddingRight: "2.5rem" },
+    },
+    // A horizontal snap row on phones (categories, chips); sections switch it to a grid from sm up.
+    ".shop-scroll-row": {
+      display: "flex",
+      gap: "0.75rem",
+      overflowX: "auto",
+      overscrollBehaviorX: "contain",
+      scrollSnapType: "x mandatory",
+      paddingBottom: "0.5rem",
+      scrollbarWidth: "none",
+      "&::-webkit-scrollbar": { display: "none" },
+    },
+  })
+})
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -116,7 +148,7 @@ const config = {
       },
     },
   },
-  plugins: [animate],
+  plugins: [animate, shopLayout],
 }
 
 export default config

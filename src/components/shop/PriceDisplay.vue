@@ -1,8 +1,8 @@
 <template>
-  <p v-if="amount !== null" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 tabular-nums">
+  <p v-if="priced" class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 tabular-nums">
     <span v-if="from" class="text-xs font-medium text-muted-foreground">{{ $t("client.catalog.from") }}</span>
     <span class="font-bold tracking-tight" :class="[SIZE[size], onSale ? 'text-destructive' : 'text-foreground']">
-      {{ formatPrice(amount) }}
+      {{ formatPrice(amount ?? 0) }}
     </span>
     <template v-if="onSale">
       <s class="text-muted-foreground" :class="size === 'lg' ? 'text-base' : 'text-xs'">{{ formatPrice(compareAt ?? 0) }}</s>
@@ -25,6 +25,8 @@ const props = withDefaults(
 
 const SIZE = { sm: "text-sm", md: "text-base sm:text-[17px]", lg: "text-3xl" } as const;
 
+// No price yet: null, or 0 left by a product created without one.
+const priced = computed(() => props.amount !== null && props.amount > 0);
 const percent = computed(() => salePercent(props.amount, props.compareAt));
 const onSale = computed(() => percent.value > 0);
 </script>

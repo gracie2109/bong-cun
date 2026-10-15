@@ -38,3 +38,9 @@ export const comboSavingPercent = (combo: SpaCombo): number =>
   combo.price !== null && combo.originPrice !== null && combo.originPrice > combo.price
     ? Math.round(((combo.originPrice - combo.price) / combo.originPrice) * 100)
     : 0;
+
+/** The lowest price of a service for one species, or null when it has none yet ("from 120.000đ"). */
+export const lowestPrice = (service: SpaService, species: SpaSpecies): number | null => {
+  const prices = priceLines(service, species).map((line) => line.price);
+  return prices.length > 0 ? Math.min(...prices) : null;
+};

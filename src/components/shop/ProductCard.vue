@@ -11,7 +11,10 @@
           class="size-full object-contain p-[8%] transition-transform duration-500 ease-out-quart group-hover:scale-[1.04]"
           :class="{ 'opacity-50 grayscale': !group.inStock }"
         />
-        <span v-else class="grid size-full place-content-center bg-muted text-muted-foreground/50"><PawMark class="size-14" /></span>
+        <span v-else class="flex size-full flex-col items-center justify-center gap-2 bg-secondary text-muted-foreground">
+          <PawMark class="size-10 text-brand/40" />
+          <span class="text-xs font-medium">{{ $t("client.catalog.noPhoto") }}</span>
+        </span>
       </RouterLink>
 
       <div class="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1.5">
