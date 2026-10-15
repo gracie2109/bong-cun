@@ -124,7 +124,8 @@
     "medicalVisits": "Visits",
     "medicalVisitDetail": "Exam page",
     "medicalReminders": "Reminders",
-    "accountPetHealth": "Health book"
+    "accountPetHealth": "Health book",
+    "medicalWard": "Ward"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -816,7 +817,8 @@
     "medicalSettings": "Medical settings",
     "medicalQueue": "Exam queue",
     "medicalVisits": "Visits",
-    "medicalReminders": "Reminders"
+    "medicalReminders": "Reminders",
+    "medicalWard": "Ward"
   },
   "pos": {
     "title": "Point of sale",
@@ -2899,7 +2901,8 @@
       "settings": "Medical settings",
       "queue": "Exam queue",
       "visits": "Visits",
-      "reminders": "Reminders"
+      "reminders": "Reminders",
+      "ward": "Ward"
     },
     "common": {
       "active": "Active",
@@ -2940,7 +2943,13 @@
       "bad_unit": "The unit does not belong to this product.",
       "no_vaccine": "This vaccine type cannot be used.",
       "no_lot": "No unexpired batch of {name} in stock at this branch.",
-      "future_date": "The shot cannot be after today."
+      "future_date": "The shot cannot be after today.",
+      "inpatient_active": "The pet is in the ward; discharge it before signing or cancelling.",
+      "no_kennel": "Pick a ward kennel.",
+      "need_isolation": "A contagious case needs an isolation kennel.",
+      "kennel_taken": "This kennel is occupied.",
+      "already_admitted": "The pet is already admitted.",
+      "already_done": "This dose is already handled."
     },
     "settings": {
       "title": "Medical settings",
@@ -3321,6 +3330,67 @@
       "inProgress": "In progress",
       "toPay": "To pay",
       "overdue": "Overdue shots"
+    },
+    "ward": {
+      "title": "Ward",
+      "empty": "No pets are in the ward.",
+      "purpose": {
+        "medical": "Medical",
+        "isolation": "Isolation"
+      },
+      "overdue": "Past planned exit",
+      "since": "In {time}",
+      "addOrder": "Add order",
+      "addLog": "Add care note",
+      "discharge": "Discharge",
+      "stop": "Stop",
+      "give": "Given",
+      "skip": "Skip dose",
+      "skipTitle": "Skip this dose",
+      "skipReason": "Reason for skipping",
+      "noOrders": "No orders yet.",
+      "lastVitals": "Latest vitals",
+      "logTitle": "Care note – {name}",
+      "logKind": "Note type",
+      "logKinds": {
+        "vitals": "Vitals",
+        "treatment": "Treatment",
+        "note": "Note"
+      },
+      "logHint": {
+        "vitals": "E.g. 38.9°C, pulse 120, ate little",
+        "treatment": "E.g. IV fluids 200ml",
+        "note": "Care note"
+      },
+      "orderTitle": "Orders – {name}",
+      "orderKind": {
+        "product": "Drug / supply",
+        "service": "Service",
+        "care": "Care task"
+      },
+      "careName": "Task",
+      "carePlaceholder": "E.g. take temperature, clean wound",
+      "qtyPerDose": "Quantity per dose",
+      "dose": "Dose / how to give",
+      "dosePlaceholder": "E.g. 1 tablet by mouth",
+      "days": "Days",
+      "hours": "Times of day",
+      "note": "Note",
+      "dischargeTitle": "Discharge {name} from the ward?",
+      "dischargeDesc": "Orders stop, the kennel goes to cleaning and the kennel nights are charged. The vet can then sign the record."
+    },
+    "admit": {
+      "title": "Admit {name} to the ward",
+      "isolationHint": "A contagious diagnosis is set, so only isolation kennels are offered.",
+      "ok": "Admit",
+      "kennel": "Kennel",
+      "noKennel": "No suitable ward kennel. Set a kennel's purpose to Medical or Isolation.",
+      "busy": "occupied",
+      "plannedOut": "Planned exit",
+      "button": "Admit to ward",
+      "hint": "Needs watching for days? Admit the pet before signing.",
+      "inWard": "In the ward, kennel {kennel}",
+      "openWard": "Open ward"
     }
   }
 }

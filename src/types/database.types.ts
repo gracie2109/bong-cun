@@ -2924,6 +2924,15 @@ export type Database = {
       my_boarding_stay: { Args: { p_id: string }; Returns: Json }
       boarding_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }
       billable_boarding_charges: { Args: { p_branch: string; p_customer: string }; Returns: Json }
+      inpatient_kennels: { Args: { p_branch: string }; Returns: Json }
+      inpatient_ward: { Args: { p_branch: string; p_date?: string }; Returns: Json }
+      admit_inpatient: { Args: { p_visit: string; p: Json }; Returns: Json }
+      save_inpatient_order: { Args: { p: Json }; Returns: string }
+      stop_inpatient_order: { Args: { p_id: string }; Returns: undefined }
+      give_inpatient_dose: { Args: { p_dose: string }; Returns: Json }
+      skip_inpatient_dose: { Args: { p_dose: string; p_reason: string }; Returns: undefined }
+      add_inpatient_log: { Args: { p_stay_pet: string; p: Json }; Returns: string }
+      discharge_inpatient: { Args: { p_stay: string }; Returns: Json }
       list_medical_attachments: { Args: { p_visit: string }; Returns: Json }
       add_medical_attachment: { Args: { p_visit: string; p: Json }; Returns: string }
       remove_medical_attachment: { Args: { p_id: string }; Returns: string }

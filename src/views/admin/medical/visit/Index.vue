@@ -23,6 +23,8 @@
       <template v-else>
         <VisitHeader :visit="visit" :can-update="canUpdate" :can-cancel="canCancel" @start="startVisit" @cancel="cancelOpen = true" />
 
+        <AdmitBar :visit="visit" :can-update="canUpdate" />
+
         <div class="grid gap-5 xl:grid-cols-[22rem_minmax(0,1fr)]">
           <PetSidePanel v-if="visit.pet" :pet="visit.pet" :current-visit-id="visit.id" />
           <div class="rounded-xl border bg-white p-4">
@@ -66,6 +68,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentWrap, Header } from "@/views/admin/components";
 import MedicalNav from "../MedicalNav.vue";
+import AdmitBar from "./inpatient/AdmitBar.vue";
 import AttachmentsTab from "./attachments/AttachmentsTab.vue";
 import CancelVisitDialog from "./CancelVisitDialog.vue";
 import ItemsTab from "./items/ItemsTab.vue";

@@ -26,6 +26,7 @@ const auth = useAuthStore();
 const tabs = [
   { name: "medicalQueue", icon: "lucide:stethoscope", label: "medical.nav.queue", method: "VIEW" },
   { name: "medicalVisits", icon: "lucide:list-checks", label: "medical.nav.visits", method: "VIEW" },
+  { name: "medicalWard", icon: "lucide:bed-double", label: "medical.nav.ward", method: "VIEW" },
   { name: "medicalReminders", icon: "lucide:bell-ring", label: "medical.nav.reminders", method: "VIEW" },
   { name: "medicalSettings", icon: "lucide:settings-2", label: "medical.nav.settings", method: "VIEW" },
 ];
