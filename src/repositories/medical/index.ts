@@ -8,3 +8,4 @@ export * from "./visits";
 export * from "./vaccinations";
 export * from "./billing";
 export * from "./flags";
+export * from "./attachments";

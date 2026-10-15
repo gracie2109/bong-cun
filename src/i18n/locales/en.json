@@ -3157,7 +3157,8 @@
       "payAtPos": "Pay at POS",
       "tabItems": "Services & medicine",
       "tabVaccines": "Vaccination",
-      "tabMoney": "Billing"
+      "tabMoney": "Billing",
+      "tabFiles": "Files"
     },
     "side": {
       "openPet": "Pet profile",
@@ -3293,6 +3294,33 @@
       "notSigned": "The visit must be signed by the vet before it can be paid at the POS.",
       "goPos": "Open the POS to take payment",
       "empty": "Nothing to pay yet."
+    },
+    "attachments": {
+      "hint": "Lab results, X-rays, photos, consent forms. Image or PDF, 10 MB at most. Only medical staff can see them.",
+      "kindLabel": "Type",
+      "titlePlaceholder": "Title, for example: Blood test 15 Oct",
+      "upload": "Upload",
+      "empty": "No files yet.",
+      "remove": "Remove file",
+      "kind": {
+        "lab": "Lab",
+        "imaging": "Imaging",
+        "photo": "Photo",
+        "consent": "Consent",
+        "other": "Other"
+      },
+      "error": {
+        "type": "Only PNG, JPEG, WebP images or PDF.",
+        "size": "The file must be under 10 MB."
+      }
+    },
+    "dashboard": {
+      "title": "Today's visits",
+      "open": "Open the queue",
+      "waiting": "Waiting",
+      "inProgress": "In progress",
+      "toPay": "To pay",
+      "overdue": "Overdue shots"
     }
   }
 }

@@ -15,6 +15,7 @@
 
       <TodaySalesCard />
       <BoardingTodayCard />
+      <MedicalTodayCard />
 
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <router-link
@@ -45,6 +46,7 @@ import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BoardingTodayCard from "./BoardingTodayCard.vue";
+import MedicalTodayCard from "./MedicalTodayCard.vue";
 import TodaySalesCard from "./TodaySalesCard.vue";
 
 const auth = useAuthStore();

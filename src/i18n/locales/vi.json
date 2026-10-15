@@ -3157,7 +3157,8 @@
       "payAtPos": "Thanh toán tại POS",
       "tabItems": "Chỉ định & thuốc",
       "tabVaccines": "Tiêm phòng",
-      "tabMoney": "Tiền"
+      "tabMoney": "Tiền",
+      "tabFiles": "Đính kèm"
     },
     "side": {
       "openPet": "Hồ sơ thú",
@@ -3293,6 +3294,33 @@
       "notSigned": "Phiếu khám cần được bác sĩ ký trước khi thu tiền ở quầy POS.",
       "goPos": "Mở POS để thu tiền",
       "empty": "Chưa có khoản nào để thu."
+    },
+    "attachments": {
+      "hint": "Kết quả xét nghiệm, X-quang, ảnh, giấy cam kết. Ảnh hoặc PDF, tối đa 10 MB. Chỉ nhân viên y tế xem được.",
+      "kindLabel": "Loại",
+      "titlePlaceholder": "Tên file, ví dụ: Xét nghiệm máu 15/10",
+      "upload": "Tải lên",
+      "empty": "Chưa có file đính kèm.",
+      "remove": "Xóa file",
+      "kind": {
+        "lab": "Xét nghiệm",
+        "imaging": "Chẩn đoán hình ảnh",
+        "photo": "Ảnh",
+        "consent": "Giấy cam kết",
+        "other": "Khác"
+      },
+      "error": {
+        "type": "Chỉ nhận ảnh PNG, JPEG, WebP hoặc PDF.",
+        "size": "File phải nhỏ hơn 10 MB."
+      }
+    },
+    "dashboard": {
+      "title": "Khám hôm nay",
+      "open": "Mở hàng chờ",
+      "waiting": "Đang chờ",
+      "inProgress": "Đang khám",
+      "toPay": "Chờ thanh toán",
+      "overdue": "Mũi tiêm quá hạn"
     }
   }
 }
