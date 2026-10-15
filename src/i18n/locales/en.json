@@ -2101,7 +2101,8 @@
     },
     "segment": {
       "shop": "Shop",
-      "spa": "Spa"
+      "spa": "Spa",
+      "boarding": "Boarding"
     },
     "mix": {
       "segments": "Revenue mix",
@@ -2162,7 +2163,8 @@
       "sales": "Sales",
       "expectedCash": "Expected cash",
       "countedCash": "Counted cash",
-      "difference": "Difference"
+      "difference": "Difference",
+      "boarding": "Boarding"
     },
     "export": {
       "button": "Export CSV",

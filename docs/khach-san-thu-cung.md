@@ -2,7 +2,7 @@
 
 Kế hoạch module lưu trú: khách gửi thú ở lại cửa hàng qua đêm, nhân viên chăm sóc và ghi nhật ký, khách đón về và trả tiền tại quầy. Nguồn: kế hoạch BA/kiến trúc v0.3 (M8 Nội trú & Lưu trú, mục E, quy tắc 16 và 20, MoSCoW 2.3: lưu trú là **Should**). Module đứng sau POS (PR #43), RBAC theo (nhân viên, cơ sở) (PR #42), lịch hẹn spa (`docs/lich-hen-spa.md`), báo cáo doanh thu (`docs/bao-cao-doanh-thu.md`) và giao diện khách hàng (`docs/giao-dien-khach-hang.md`), đều đã merge.
 
-**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) và bước 3 (nhận thú, gia hạn, nhật ký chăm sóc, phát sinh, trả chuồng, trang chi tiết lượt `/admin/boarding/detail/[stayId]`) và bước 4 (thanh toán lưu trú ở POS: hộp "Lưu trú chờ thanh toán", dòng hóa đơn `boarding`, hủy hóa đơn trả khoản phí về chưa thanh toán) đã làm xong. Các bước còn lại chưa có code. Thứ tự làm ở mục 10.
+**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) và bước 3 (nhận thú, gia hạn, nhật ký chăm sóc, phát sinh, trả chuồng, trang chi tiết lượt `/admin/boarding/detail/[stayId]`) và bước 4 (thanh toán lưu trú ở POS: hộp "Lưu trú chờ thanh toán", dòng hóa đơn `boarding`, hủy hóa đơn trả khoản phí về chưa thanh toán) và bước 5 (báo cáo: mảng Lưu trú ở thẻ cơ cấu, biểu đồ ngày, bảng ngày và xếp hạng) đã làm xong. Các bước còn lại chưa có code. Thứ tự làm ở mục 10.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không tích hợp bên ngoài, không đặt cọc.
 
@@ -158,7 +158,7 @@ Phát sinh được ghi ngay khi thêm (để khách thấy tạm tính); dòng 
 
 ### Hóa đơn
 
-`invoice_lines.item_type` thêm giá trị `boarding` (tiền đêm và phụ thu, không có `product_id` / `service_id` / `combo_id`). Phát sinh vào hóa đơn với `item_type = 'service'` như dịch vụ thường. Báo cáo nhận ra mọi dòng lưu trú qua `boarding_charges.invoice_line_id`, không qua `item_type`. Trả hàng (`create_sales_return`) vẫn chỉ nhận dòng sản phẩm; tiền lưu trú hoàn bằng cách hủy hóa đơn, như phiếu spa.
+`invoice_lines.item_type` thêm giá trị `boarding` (tiền đêm và phụ thu, không có `product_id` / `service_id` / `combo_id`). Khi làm thật, cả phát sinh cũng vào hóa đơn với `item_type = 'boarding'` (tên dòng kèm tên thú), nên báo cáo nhận ra mọi dòng lưu trú qua `item_type`; tên dòng trong báo cáo xếp hạng là hằng `boarding`, giao diện dịch. Trả hàng (`create_sales_return`) vẫn chỉ nhận dòng sản phẩm; tiền lưu trú hoàn bằng cách hủy hóa đơn, như phiếu spa.
 
 ## 5. Quy tắc nghiệp vụ
 

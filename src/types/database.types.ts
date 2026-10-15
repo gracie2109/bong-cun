@@ -2685,6 +2685,7 @@ export type Database = {
       report_revenue_series: {
         Args: { p_branch: string | null; p_bucket?: string; p_from: string; p_to: string }
         Returns: {
+          boarding: number
           bucket: string
           card: number
           cash: number
