@@ -21,6 +21,14 @@ export const MEDICAL_ERROR_HINTS = [
   "pet_busy",
   "pet_deceased",
   "taken",
+  "has_items",
+  "paid",
+  "no_service",
+  "not_available",
+  "species_not_allowed",
+  "no_weight",
+  "no_price",
+  "bad_unit",
 ] as const;
 export type MedicalErrorHint = (typeof MEDICAL_ERROR_HINTS)[number];
 

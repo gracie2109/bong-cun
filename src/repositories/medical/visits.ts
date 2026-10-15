@@ -3,9 +3,14 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import type {
   CheckInInput,
+  ItemInput,
+  ItemKind,
+  ItemDirections,
+  ItemResult,
   MedicalQueue,
   MedicalVisit,
   MedicalVisitDetail,
+  Prescription,
   RecordInput,
   ScheduleInput,
   SignResult,
@@ -54,6 +59,7 @@ export const toMedicalVisit = (value: unknown): MedicalVisit => {
     contagious: row.contagious === true,
     branchName: strOrNull(row.branch_name),
     ownerInstructions: strOrNull(row.owner_instructions),
+    estTotal: Number(row.est_total ?? 0),
   };
 };
 
@@ -106,6 +112,30 @@ const toDetail = (value: unknown): MedicalVisitDetail => {
     diagnoses: rowsOf(row.diagnoses).map((item) => {
       const d = asRecord(item);
       return { id: str(d.id), termId: strOrNull(d.term_id), name: str(d.name), isContagious: d.is_contagious === true, note: strOrNull(d.note) };
+    }),
+    items: rowsOf(row.items).map((item) => {
+      const i = asRecord(item);
+      return {
+        id: str(i.id),
+        kind: str(i.kind) as ItemKind,
+        serviceId: strOrNull(i.service_id),
+        productId: strOrNull(i.product_id),
+        name: str(i.name),
+        qty: Number(i.qty ?? 0),
+        unitName: strOrNull(i.unit_name),
+        unitPrice: Number(i.unit_price ?? 0),
+        amount: Number(i.amount ?? 0),
+        takeHome: i.take_home === true,
+        dose: strOrNull(i.dose),
+        frequency: strOrNull(i.frequency),
+        days: numOrNull(i.days),
+        route: strOrNull(i.route),
+        instructions: strOrNull(i.instructions),
+        autoAdded: i.auto_added === true,
+        invoiceLineId: strOrNull(i.invoice_line_id),
+        createdByName: strOrNull(i.created_by_name),
+        createdAt: str(i.created_at),
+      };
     }),
     addenda: rowsOf(row.addenda).map((item) => {
       const a = asRecord(item);
@@ -260,4 +290,95 @@ export const cancelMedicalVisit = async (client: Client, id: string, reason: str
 
 export const markMedicalNoShow = async (client: Client, id: string): Promise<void> => {
   unwrap(await client.rpc("mark_medical_no_show", { p_id: id }));
+};
+
+// ------------------------------------------------------------------- lines
+const toItemResult = (value: unknown): ItemResult => {
+  const row = asRecord(value);
+  return { id: str(row.id), warnings: Array.isArray(row.warnings) ? row.warnings.map(String) : [] };
+};
+
+const directions = (item: ItemDirections) => ({
+  take_home: item.takeHome,
+  dose: item.dose,
+  frequency: item.frequency,
+  days: item.days,
+  route: item.route,
+  instructions: item.instructions,
+});
+
+export const addMedicalItem = async (client: Client, visitId: string, input: ItemInput): Promise<ItemResult> =>
+  toItemResult(
+    unwrap(
+      await client.rpc("add_medical_item", {
+        p_visit: visitId,
+        p: {
+          kind: input.kind,
+          service_id: input.serviceId ?? null,
+          product_id: input.productId ?? null,
+          name: input.name ?? null,
+          qty: input.qty,
+          ...directions(input),
+        },
+      })
+    )
+  );
+
+export const updateMedicalItem = async (
+  client: Client,
+  id: string,
+  patch: Partial<ItemDirections> & { qty?: number }
+): Promise<ItemResult> =>
+  toItemResult(
+    unwrap(
+      await client.rpc("update_medical_item", {
+        p_id: id,
+        p: {
+          ...(patch.qty !== undefined && { qty: patch.qty }),
+          ...(patch.takeHome !== undefined && { take_home: patch.takeHome }),
+          ...(patch.dose !== undefined && { dose: patch.dose }),
+          ...(patch.frequency !== undefined && { frequency: patch.frequency }),
+          ...(patch.days !== undefined && { days: patch.days }),
+          ...(patch.route !== undefined && { route: patch.route }),
+          ...(patch.instructions !== undefined && { instructions: patch.instructions }),
+        },
+      })
+    )
+  );
+
+export const removeMedicalItem = async (client: Client, id: string): Promise<void> => {
+  unwrap(await client.rpc("remove_medical_item", { p_id: id }));
+};
+
+export const getMedicalPrescription = async (client: Client, visitId: string): Promise<Prescription> => {
+  const row = asRecord(unwrap(await client.rpc("medical_prescription", { p_visit: visitId })));
+  return {
+    code: str(row.code),
+    date: str(row.date),
+    branchName: str(row.branch_name),
+    petName: str(row.pet_name),
+    speciesName: strOrNull(row.species_name),
+    weightKg: numOrNull(row.weight_kg),
+    customerName: str(row.customer_name),
+    customerPhone: str(row.customer_phone),
+    vetName: strOrNull(row.vet_name),
+    signed: row.signed === true,
+    ownerInstructions: strOrNull(row.owner_instructions),
+    recheckOn: strOrNull(row.recheck_on),
+    diagnoses: rowsOf(row.diagnoses).map(String),
+    items: rowsOf(row.items).map((item) => {
+      const i = asRecord(item);
+      return {
+        name: str(i.name),
+        qty: Number(i.qty ?? 1),
+        unitName: strOrNull(i.unit_name),
+        dose: strOrNull(i.dose),
+        frequency: strOrNull(i.frequency),
+        days: numOrNull(i.days),
+        route: strOrNull(i.route),
+        instructions: strOrNull(i.instructions),
+        external: i.external === true,
+      };
+    }),
+  };
 };

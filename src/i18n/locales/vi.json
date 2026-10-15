@@ -2882,7 +2882,15 @@
       "not_waiting": "Lượt khám không còn ở trạng thái chờ.",
       "pet_busy": "Thú đang có lượt khám mở ({name}).",
       "pet_deceased": "{name} đã mất, không tiếp nhận được.",
-      "taken": "Ca này đã được {name} nhận."
+      "taken": "Ca này đã được {name} nhận.",
+      "has_items": "Lượt khám đã có dịch vụ hoặc thuốc. Bỏ các dòng đó trước khi hủy.",
+      "paid": "Lượt khám đã thanh toán.",
+      "no_service": "Dịch vụ này không dùng được (cần thuộc nhóm Y tế và đang bật).",
+      "not_available": "Sản phẩm này không dùng được.",
+      "species_not_allowed": "Dịch vụ này không áp dụng cho loài của {name}.",
+      "no_weight": "Cần cân nặng của lượt khám để tính giá dịch vụ {name}.",
+      "no_price": "Chưa có giá cho {name}.",
+      "bad_unit": "Đơn vị không thuộc sản phẩm này."
     },
     "settings": {
       "title": "Cài đặt y tế",
@@ -3045,7 +3053,8 @@
       "diagnosis": "Chẩn đoán / lý do",
       "outcome": "Kết luận",
       "empty": "Chưa có lượt khám nào.",
-      "open": "Mở"
+      "open": "Mở",
+      "total": "Tạm tính"
     },
     "soap": {
       "subjective": "S – Chủ thuật lại",
@@ -3095,7 +3104,8 @@
       "tabRecord": "Bệnh án",
       "recheckOf": "Tái khám của {code}",
       "recheckBooked": "Đã hẹn tái khám {code}.",
-      "payAtPos": "Thanh toán tại POS"
+      "payAtPos": "Thanh toán tại POS",
+      "tabItems": "Chỉ định & thuốc"
     },
     "side": {
       "openPet": "Hồ sơ thú",
@@ -3106,6 +3116,63 @@
       "neutered": "Đã triệt sản",
       "intact": "Chưa triệt sản",
       "next": "Sau"
+    },
+    "items": {
+      "kind": {
+        "service": "Dịch vụ",
+        "product": "Thuốc / vật tư",
+        "external": "Thuốc mua ngoài"
+      },
+      "hint": "Dịch vụ và thuốc tính tiền ở POS sau khi ký. Thêm hoặc bỏ được đến khi vào hóa đơn.",
+      "prescription": "Đơn thuốc",
+      "addService": "Thêm dịch vụ",
+      "addDrug": "Thêm thuốc",
+      "addLine": "Thêm",
+      "empty": "Chưa có dịch vụ hay thuốc nào.",
+      "name": "Nội dung",
+      "qty": "Số lượng",
+      "price": "Đơn giá",
+      "amount": "Thành tiền",
+      "addedBy": "Người thêm",
+      "total": "Tạm tính",
+      "remove": "Bỏ dòng",
+      "takeHome": "Mang về",
+      "billed": "Đã vào hóa đơn",
+      "lowStock": "Tồn kho tại cơ sở không đủ. Vẫn lưu dòng này; kho chỉ trừ lúc thanh toán.",
+      "serviceHint": "Chỉ hiện dịch vụ thuộc nhóm Y tế. Giá tính theo loài và cân của lượt khám.",
+      "service": "Dịch vụ",
+      "servicePlaceholder": "Chọn dịch vụ",
+      "noServices": "Chưa có dịch vụ nhóm Y tế. Tạo ở màn Dịch vụ.",
+      "drugHint": "Thuốc trong kho trừ kho lúc thanh toán; thuốc mua ngoài chỉ in lên đơn.",
+      "source": {
+        "stock": "Thuốc trong kho",
+        "external": "Thuốc mua ngoài"
+      },
+      "allergyChecked": "Đã kiểm tra dị ứng",
+      "product": "Sản phẩm",
+      "change": "Đổi",
+      "externalName": "Tên thuốc",
+      "externalHint": "Không tính tiền, tự động nằm trong đơn mang về.",
+      "takeHomeHint": "Mang về (in vào đơn thuốc)",
+      "dose": "Liều",
+      "doseHint": "1/2 viên",
+      "frequency": "Số lần",
+      "frequencyHint": "2 lần / ngày",
+      "days": "Số ngày",
+      "route": "Cách dùng",
+      "routeHint": "Uống, nhỏ mắt...",
+      "instructions": "Dặn thêm",
+      "daysUnit": "ngày"
+    },
+    "rx": {
+      "title": "Đơn thuốc",
+      "desc": "Thuốc mang về và thuốc mua ngoài của lượt khám.",
+      "print": "In đơn",
+      "pet": "Thú cưng",
+      "owner": "Chủ",
+      "phone": "Điện thoại",
+      "external": "mua ngoài",
+      "vet": "Bác sĩ thú y"
     }
   }
 }

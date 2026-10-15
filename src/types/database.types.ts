@@ -2846,6 +2846,10 @@ export type Database = {
       get_medical_visit: { Args: { p_id: string }; Returns: Json }
       pet_medical_history: { Args: { p_page?: number; p_page_size?: number; p_pet: string }; Returns: Json }
       medical_vets: { Args: { p_branch: string }; Returns: Json }
+      add_medical_item: { Args: { p: Json; p_visit: string }; Returns: Json }
+      update_medical_item: { Args: { p: Json; p_id: string }; Returns: Json }
+      remove_medical_item: { Args: { p_id: string }; Returns: undefined }
+      medical_prescription: { Args: { p_visit: string }; Returns: Json }
       save_diagnosis_term: { Args: { p: Json; p_id?: string }; Returns: string }
       save_medical_settings: { Args: { p: Json; p_branch: string }; Returns: undefined }
       save_vaccine_type: { Args: { p: Json; p_id?: string }; Returns: string }

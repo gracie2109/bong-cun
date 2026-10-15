@@ -3,22 +3,26 @@ import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import {
   addMedicalAddendum,
+  addMedicalItem,
   assignMedicalVet,
   cancelMedicalVisit,
   checkInMedicalVisit,
+  getMedicalPrescription,
   getMedicalQueue,
   getMedicalVisit,
   listMedicalVets,
   listMedicalVisits,
   markMedicalNoShow,
   petMedicalHistory,
+  removeMedicalItem,
   saveMedicalRecord,
   scheduleMedicalVisit,
   signMedicalVisit,
   startMedicalVisit,
+  updateMedicalItem,
 } from "@/repositories/medical";
 import { toPage, type PageParams } from "@/repositories/shared";
-import type { CheckInInput, RecordInput, ScheduleInput, VisitFilter } from "@/types/medicalVisit";
+import type { CheckInInput, ItemDirections, ItemInput, RecordInput, ScheduleInput, VisitFilter } from "@/types/medicalVisit";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";
@@ -70,6 +74,13 @@ export const useMedicalVets = (branchId: MaybeRef<string | undefined>) =>
     staleTime: 5 * 60_000,
   });
 
+export const useMedicalPrescription = (visitId: MaybeRef<string>, enabled: MaybeRef<boolean>) =>
+  useQuery({
+    queryKey: computed(() => [...medicalKeys.visit(unref(visitId)), "prescription"] as const),
+    queryFn: () => getMedicalPrescription(supabaseClient(), unref(visitId)),
+    enabled: computed(() => unref(enabled) && !!unref(visitId)),
+  });
+
 // ------------------------------------------------------------------ writes
 /** Mutation that refreshes every medical read and toasts the refusal the database gives. */
 const useVisitMutation = <TVars, TData>(
@@ -110,3 +121,15 @@ export const useCancelVisit = () =>
   useVisitMutation(({ id, reason }: { id: string; reason: string }) => cancelMedicalVisit(supabaseClient(), id, reason), "delete");
 
 export const useMarkNoShow = () => useVisitMutation((id: string) => markMedicalNoShow(supabaseClient(), id), "update");
+
+// ------------------------------------------------------------------- lines
+export const useAddItem = () =>
+  useVisitMutation(({ visitId, input }: { visitId: string; input: ItemInput }) => addMedicalItem(supabaseClient(), visitId, input), "create");
+
+export const useUpdateItem = () =>
+  useVisitMutation(
+    ({ id, patch }: { id: string; patch: Partial<ItemDirections> & { qty?: number } }) => updateMedicalItem(supabaseClient(), id, patch),
+    "update"
+  );
+
+export const useRemoveItem = () => useVisitMutation((id: string) => removeMedicalItem(supabaseClient(), id), "delete");
