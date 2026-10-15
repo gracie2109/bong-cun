@@ -1,10 +1,14 @@
 <template>
   <Select :model-value="modelValue" @update:model-value="(value) => emit('update:modelValue', value as CatalogSort)">
-    <SelectTrigger class="w-[170px]" :aria-label="$t('client.catalog.sortBy')">
-      <SelectValue />
+    <SelectTrigger
+      class="h-11 w-auto shrink-0 gap-2 rounded-full border-border bg-white px-4 font-medium shadow-none sm:w-[180px]"
+      :aria-label="$t('client.catalog.sortBy')"
+    >
+      <ArrowUpDown class="size-4 shrink-0 text-muted-foreground sm:hidden" />
+      <span class="hidden sm:inline"><SelectValue /></span>
     </SelectTrigger>
-    <SelectContent>
-      <SelectItem v-for="sort in CATALOG_SORTS" :key="sort" :value="sort">
+    <SelectContent align="end" class="rounded-xl">
+      <SelectItem v-for="sort in CATALOG_SORTS" :key="sort" :value="sort" class="h-10 rounded-lg">
         {{ $t(`client.catalog.sort.${sort}`) }}
       </SelectItem>
     </SelectContent>
@@ -12,6 +16,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ArrowUpDown } from "lucide-vue-next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CATALOG_SORTS, type CatalogSort } from "@/types/catalog";
 

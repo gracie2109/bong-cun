@@ -1,73 +1,65 @@
 <template>
-  <div class="container space-y-4 py-6">
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink as-child><RouterLink :to="{ name: 'home' }">{{ $t("client.nav.home") }}</RouterLink></BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem><BreadcrumbPage>{{ $t("client.nav.products") }}</BreadcrumbPage></BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
+  <div>
+    <CatalogHero
+      :title="catalog.activeCategoryName.value ?? $t('client.catalog.allCategories')"
+      :total="catalog.total.value"
+      :loading="catalog.loading.value"
+      :search="catalog.filters.value.search"
+      :roots="catalog.categoryTree.value"
+      :category-id="catalog.filters.value.categoryId"
+      @category="catalog.setCategory"
+    />
 
-    <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
-      <aside class="hidden self-start rounded-xl border bg-white p-4 lg:block">
+    <div class="shop-container grid gap-8 pt-2 lg:grid-cols-[232px_1fr] lg:gap-10">
+      <aside class="sticky top-[88px] hidden max-h-[calc(100dvh-104px)] self-start overflow-y-auto pb-6 pr-1 lg:block">
         <CatalogFilters v-bind="filterProps" @category="catalog.setCategory" @brand="catalog.setBrand" @clear="catalog.clear" />
       </aside>
 
-      <div class="min-w-0 space-y-4">
+      <div class="min-w-0">
         <CatalogToolbar
           v-model:search="catalog.searchText.value"
           :sort="catalog.filters.value.sort"
-          :total="catalog.total.value"
-          :chips="chips"
+          :filter-count="chips.length"
+          :refreshing="catalog.refreshing.value"
           @sort="catalog.setSort"
           @open-filters="filtersOpen = true"
         />
+        <CatalogChips :chips="chips" class="mt-3" @clear="catalog.clear" />
         <CatalogGrid
+          class="mt-5"
           :groups="catalog.groups.value"
           :total="catalog.total.value"
           :loading="catalog.loading.value"
+          :refreshing="catalog.refreshing.value"
           :failed="catalog.failed.value"
+          :filtered="catalog.isFiltered.value"
           :has-more="catalog.hasMore.value"
           :loading-more="catalog.loadingMore.value"
           @load-more="catalog.loadMore"
           @retry="catalog.retry"
+          @clear="catalog.clear"
         />
       </div>
     </div>
 
-    <Sheet v-model:open="filtersOpen">
-      <SheetContent side="left" class="w-[300px] overflow-y-auto">
-        <SheetHeader><SheetTitle>{{ $t("client.catalog.filters") }}</SheetTitle></SheetHeader>
-        <div class="mt-4">
-          <CatalogFilters v-bind="filterProps" @category="pickCategory" @brand="pickBrand" @clear="catalog.clear" />
-        </div>
-      </SheetContent>
-    </Sheet>
+    <CatalogFilterSheet v-model:open="filtersOpen" :count="chips.length" :total="catalog.total.value">
+      <CatalogFilters v-bind="filterProps" @category="catalog.setCategory" @brand="catalog.setBrand" @clear="catalog.clear" />
+    </CatalogFilterSheet>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useCatalog } from "@/composables/shop/useCatalog";
 import { useCatalogChips } from "@/composables/shop/useCatalogChips";
+import CatalogChips from "./components/CatalogChips.vue";
+import CatalogFilterSheet from "./components/CatalogFilterSheet.vue";
 import CatalogFilters from "./components/CatalogFilters.vue";
 import CatalogGrid from "./components/CatalogGrid.vue";
+import CatalogHero from "./components/CatalogHero.vue";
 import CatalogToolbar from "./components/CatalogToolbar.vue";
 
 const catalog = useCatalog();
 const { chips, filterProps } = useCatalogChips(catalog);
-
 const filtersOpen = ref(false);
-const pickCategory = (id: string | null) => {
-  catalog.setCategory(id);
-  filtersOpen.value = false;
-};
-const pickBrand = (id: string | null) => {
-  catalog.setBrand(id);
-  filtersOpen.value = false;
-};
 </script>

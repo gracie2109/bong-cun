@@ -1358,7 +1358,8 @@
       "retry": "Try again",
       "more": "and {n} more",
       "full": "A cart holds at most 30 different items.",
-      "cappedQty": "At most 99 of each item; the quantity was set to 99."
+      "cappedQty": "At most 99 of each item; the quantity was set to 99.",
+      "safeNote": "You only pay when you receive your order"
     },
     "checkout": {
       "title": "Checkout",
@@ -1582,6 +1583,16 @@
         "collectHint": "The money goes into your open cash shift.",
         "collectOk": "Take payment"
       }
+    },
+    "steps": {
+      "label": "Checkout steps",
+      "cart": "Cart",
+      "checkout": "Checkout",
+      "done": "Done"
+    },
+    "freeShip": {
+      "left": "Add {amount} more for free delivery",
+      "reached": "Your order ships free"
     }
   },
   "spa": {
@@ -2068,23 +2079,83 @@
       "contact": "Contact",
       "hotline": "Hotline",
       "hours": "Opening hours",
-      "rights": "All rights reserved by Bông Cún."
+      "rights": "All rights reserved by Bông Cún.",
+      "shop": "Shop & services",
+      "bookSpa": "Book spa online",
+      "ctaTitle": "Bath, trim or a little pampering?",
+      "ctaText": "Book online in a minute or call the shop."
     },
     "home": {
-      "spaCta": {
-        "badge": "Spa service",
-        "title": "Book a spa visit online",
-        "text": "Pick your pet, services and a free time slot on the web. The shop will assign the groomer for you.",
-        "tip1": "Book in a minute",
-        "tip1Text": "No calls, no waiting for a reply.",
-        "tip2": "Pick a free slot",
-        "tip2Text": "See the time slots the shop still accepts.",
-        "tip3": "Cancel easily",
-        "tip3Text": "Free cancellation up to 2 hours before.",
-        "button": "Book now"
+      "viewAll": "View all",
+      "hero": {
+        "badge": "Pet shop & Spa in Ha Dong",
+        "titleStart": "Complete care for your pet,",
+        "titleAccent": "from mealtime to bath time",
+        "text": "Genuine food, pâté, litter and accessories for dogs and cats, plus bath and grooming you can book online.",
+        "shop": "Shop now",
+        "spa": "Book a spa visit",
+        "point1": "Genuine products, clear expiry dates",
+        "point2": "Delivery or in-store pickup",
+        "point3": "Pick a free spa slot",
+        "cardTitle": "Book spa online",
+        "cardText": "Pick a service and a free slot"
       },
-      "featured": "Popular products",
-      "viewAll": "View all products"
+      "photos": {
+        "hero": "A dog and a cat lying side by side",
+        "cat": "A cat looking at the camera",
+        "shop": "A dog waiting for its meal",
+        "spa": "A dog after a bath and brush",
+        "visit": "Two dogs running on the grass"
+      },
+      "highlights": {
+        "label": "Our promises",
+        "genuine": "Genuine products",
+        "genuineText": "Every product tracked by lot and expiry date",
+        "delivery": "Delivery or pickup",
+        "deliveryText": "Choose how to receive it at checkout",
+        "booking": "Online spa booking",
+        "bookingText": "See free slots, cancel easily",
+        "support": "Friendly advice",
+        "supportText": "Open {hours} every day"
+      },
+      "paths": {
+        "eyebrow": "What do you need?",
+        "title": "Shop for your pet or book some care",
+        "shop": {
+          "tag": "Shop",
+          "title": "Food & accessories",
+          "text": "Kibble, pâté, treats, litter and everyday gear for dogs and cats.",
+          "cta": "See products"
+        },
+        "care": {
+          "tag": "Spa & care",
+          "title": "Bath, trim, hygiene",
+          "text": "Prices by weight, money-saving combos, online booking.",
+          "cta": "See services"
+        }
+      },
+      "categories": {
+        "eyebrow": "Categories",
+        "title": "Shop by what your pet needs",
+        "count": "{n} products"
+      },
+      "newArrivals": {
+        "eyebrow": "New in",
+        "title": "New at the shop"
+      },
+      "spa": {
+        "eyebrow": "Spa & care",
+        "title": "A clean, tidy pet without the waiting",
+        "text": "Pick your pet, services and a free time slot on the web. The shop assigns the groomer for you.",
+        "book": "Book now",
+        "prices": "See prices"
+      },
+      "visit": {
+        "eyebrow": "Visit us",
+        "title": "Bring your pet by, our staff are happy to help",
+        "address": "Address",
+        "directions": "Directions"
+      }
     },
     "about": {
       "eyebrow": "About us",
@@ -2126,12 +2197,26 @@
         "price_desc": "Price: high to low",
         "name": "Name A-Z"
       },
-      "found": "{count} products found",
+      "found": "{count} products",
       "showing": "Showing {shown} of {total} products",
       "loadMore": "Show more products",
       "empty": "No matching products",
       "error": "Could not load the products.",
-      "retry": "Try again"
+      "retry": "Try again",
+      "contactPrice": "Contact us for the price",
+      "quickAdd": "Quick buy {name}",
+      "add": "Add",
+      "breadcrumb": "Breadcrumb",
+      "resultsFor": "{count} results for “{q}”",
+      "allShort": "All",
+      "searchLabel": "Search the product list",
+      "clearSearch": "Clear search",
+      "removeFilter": "Remove filter {label}",
+      "showResults": "Show {count} products",
+      "errorHint": "The connection may be slow. Please try again in a few seconds.",
+      "emptyHint": "Try removing a filter or searching with a shorter word.",
+      "emptyShop": "The shop is adding products. Please come back soon.",
+      "seeSpa": "See spa services"
     },
     "product": {
       "sku": "SKU",
@@ -2146,7 +2231,22 @@
       "unit": "Unit",
       "related": "Related products",
       "viewDetail": "View details",
-      "discontinued": "This product is no longer sold"
+      "discontinued": "This product is no longer sold",
+      "prevImage": "Previous image",
+      "nextImage": "Next image",
+      "imageN": "Show image {n}",
+      "discontinuedHint": "This product is no longer sold online. Have a look at the others.",
+      "browse": "Browse other products",
+      "specs": "Product details",
+      "delivery": {
+        "ship": "Home delivery",
+        "shipText": "The delivery fee is shown at checkout.",
+        "freeFrom": "Free delivery on orders from {amount}.",
+        "pickup": "In-store pickup",
+        "pickupText": "Order online, collect and pay at {address}.",
+        "inStoreOnly": "In-store only",
+        "inStoreOnlyText": "This item is not shipped; collect it at the shop."
+      }
     },
     "account": {
       "title": "My account",
@@ -2258,7 +2358,22 @@
         "1": "Best seller",
         "2": "New",
         "4": ""
-      }
+      },
+      "howTo": {
+        "pick": "Pick your pet and services",
+        "pickText": "Single services or combos, priced by weight.",
+        "slot": "Pick a free slot",
+        "slotText": "Confirmed at once, free cancellation up to 2 hours before.",
+        "visit": "Bring your pet in",
+        "visitText": "Pay once the service is done."
+      },
+      "eyebrow": "Spa & care",
+      "branch": "Choose a branch",
+      "species": "Choose your pet type",
+      "priceTitle": "Service prices",
+      "howTitle": "Book online in 3 steps",
+      "price": "Price",
+      "emptyHint": "Call the shop and we will help you book."
     },
     "booking": {
       "title": "Book a spa visit",
@@ -2336,6 +2451,20 @@
         "not_cancellable": "This appointment can no longer be cancelled.",
         "too_late": "Less than 2 hours to go, so it cannot be cancelled online. Please call the shop."
       }
+    },
+    "brand": {
+      "tagline": "Pet shop & Spa"
+    },
+    "header": {
+      "searchLabel": "Search products",
+      "searchPlaceholder": "Search food, accessories, brands...",
+      "cartWithCount": "Cart, {n} items",
+      "bookSpa": "Book a spa visit",
+      "openMenu": "Open menu",
+      "menu": "Main menu",
+      "openHours": "Open {hours} every day",
+      "language": "Language",
+      "skipToContent": "Skip to main content"
     }
   }
 }

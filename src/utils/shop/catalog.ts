@@ -82,3 +82,7 @@ export const groupOptionHint = (group: ProductGroup): string =>
     .filter((attribute) => attribute.values.length > 1)
     .map((attribute) => `${attribute.values.length} ${attribute.name.toLowerCase()}`)
     .join(" · ");
+
+/** Whether the variants differ in price, so the list shows "Từ" before the lowest one. */
+export const groupHasPriceRange = (group: Pick<ProductGroup, "minPrice" | "maxPrice">): boolean =>
+  group.minPrice !== null && group.maxPrice !== null && group.maxPrice > group.minPrice;

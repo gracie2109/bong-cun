@@ -1,0 +1,144 @@
+/* Plain CSS (no @layer): this file is loaded on its own, after the Tailwind utilities. Helper classes
+   that set layout are wrapped in :where() so a utility on the same element (sm:grid) still wins. */
+/* Public shop look (pet shop + spa). The client layout puts `shop-theme` on <html>, so sheets and
+   dialogs teleported to <body> get the same tokens. Admin keeps its own `admin-theme`. */
+html.shop-theme {
+  /* Warm cream canvas, white surfaces, warm ink text. */
+  --background: 36 45% 97%;
+  --foreground: 24 18% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 24 18% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 24 18% 11%;
+
+  /* Burnt orange: the brand orange darkened until white text on it passes WCAG AA (5.2:1). */
+  --primary: 20 88% 40%;
+  --primary-foreground: 0 0% 100%;
+
+  /* The bright brand orange, for fills and highlights that carry no small text. */
+  --brand: 25 95% 53%;
+  --brand-soft: 30 100% 95%;
+
+  /* Sage green for care and trust (spa, services, guarantees). */
+  --sage: 154 33% 28%;
+  --sage-soft: 140 24% 93%;
+
+  --secondary: 34 30% 93%;
+  --secondary-foreground: 24 18% 11%;
+
+  --muted: 34 30% 93%;
+  --muted-foreground: 26 9% 38%;
+
+  --accent: 30 100% 95%;
+  --accent-foreground: 20 88% 32%;
+
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 32 24% 87%;
+  --input: 32 18% 80%;
+  --ring: 20 88% 40%;
+  --radius: 0.75rem;
+
+  --shadow-card: 0 1px 2px rgb(41 28 18 / 0.04), 0 2px 8px rgb(41 28 18 / 0.04);
+  --shadow-lift: 0 18px 36px -16px rgb(41 28 18 / 0.22);
+
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html.shop-theme,
+html.shop-theme body {
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html.shop-theme body {
+  @apply bg-background text-foreground;
+}
+
+html.shop-theme :focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Page width of the shop: 16px gutters on phones, 1240px wide content on desktop. */
+:where(.shop-container) {
+  @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
+}
+
+.shop-eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.08em] text-primary;
+}
+
+.shop-display {
+  @apply text-balance font-extrabold tracking-[-0.02em];
+}
+
+/* Enter animation for a list item; --i is its index, set inline, capped by the caller. */
+.shop-reveal {
+  animation: shop-fade-up 420ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+.shop-skeleton {
+  background: linear-gradient(90deg, hsl(var(--muted)) 0%, hsl(36 40% 97%) 50%, hsl(var(--muted)) 100%);
+  background-size: 200% 100%;
+  animation: shop-shimmer 1.4s linear infinite;
+}
+
+:where(.shop-scroll-row) {
+  @apply flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2;
+  scrollbar-width: none;
+}
+
+.shop-scroll-row::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes shop-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shop-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes shop-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.shop-theme *,
+  html.shop-theme *::before,
+  html.shop-theme *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -6,6 +6,7 @@ definePageMeta({
   name: "products",
   titleKey: "products",
   layout: PAGE_LAYOUT.CLIENT,
+  keepOnQuery: true,
 });
 </script>
 

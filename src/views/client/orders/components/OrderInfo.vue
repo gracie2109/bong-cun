@@ -1,5 +1,5 @@
 <template>
-  <aside class="space-y-4 rounded-xl border bg-white p-5">
+  <aside class="space-y-4 rounded-3xl border bg-white p-5 shadow-card sm:p-6">
     <div class="space-y-1 text-sm">
       <p class="font-semibold">{{ $t(order.deliveryMethod === "delivery" ? "shop.order.receiver" : "shop.order.pickupBy") }}</p>
       <p>{{ order.receiverName }} · {{ order.receiverPhone }}</p>
@@ -27,11 +27,11 @@
         </dd>
       </div>
     </dl>
-    <p v-if="feeWentUp" class="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{{ $t("shop.order.feeWentUp") }}</p>
+    <p v-if="feeWentUp" class="rounded-2xl bg-amber-50 p-3 text-sm text-amber-900">{{ $t("shop.order.feeWentUp") }}</p>
 
-    <div class="flex items-baseline justify-between border-t pt-4">
+    <div class="flex items-baseline justify-between border-t border-dashed pt-4">
       <span class="font-semibold">{{ $t("shop.cart.total") }}</span>
-      <span class="text-2xl font-bold text-primary">{{ formatPrice(order.total) }}</span>
+      <span class="text-2xl font-extrabold tracking-tight tabular-nums">{{ formatPrice(order.total) }}</span>
     </div>
     <p class="text-sm text-muted-foreground">
       {{ $t(`shop.checkout.payment.${order.deliveryMethod}`) }} ·

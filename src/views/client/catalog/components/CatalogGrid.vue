@@ -1,51 +1,59 @@
 <template>
-  <div v-if="loading" class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-    <Skeleton v-for="n in 8" :key="n" class="aspect-[3/4] w-full rounded-xl" />
+  <div v-if="loading" class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 xl:grid-cols-4" :aria-label="$t('petCare.common.loading')">
+    <ProductCardSkeleton v-for="n in 8" :key="n" />
   </div>
 
-  <div v-else-if="failed" class="grid place-items-center gap-3 rounded-xl border bg-white py-16 text-center">
-    <p class="text-muted-foreground">{{ $t("client.catalog.error") }}</p>
-    <Button variant="outline" @click="emit('retry')">{{ $t("client.catalog.retry") }}</Button>
-  </div>
+  <EmptyState v-else-if="failed" tone="error" :title="$t('client.catalog.error')" :text="$t('client.catalog.errorHint')">
+    <template #icon><WifiOff class="size-10" /></template>
+    <Button class="h-11 rounded-full px-6" @click="emit('retry')">{{ $t("client.catalog.retry") }}</Button>
+  </EmptyState>
 
-  <div v-else-if="groups.length === 0" class="grid place-items-center gap-3 rounded-xl border bg-white py-16 text-center">
-    <img :src="emptyBox" alt="" class="w-28 opacity-80" />
-    <p class="text-muted-foreground">{{ $t("client.catalog.empty") }}</p>
-  </div>
+  <EmptyState v-else-if="groups.length === 0" :title="$t('client.catalog.empty')" :text="$t(filtered ? 'client.catalog.emptyHint' : 'client.catalog.emptyShop')">
+    <Button v-if="filtered" class="h-11 rounded-full px-6" @click="emit('clear')">{{ $t("client.catalog.clear") }}</Button>
+    <Button variant="outline" as-child class="h-11 rounded-full px-6">
+      <RouterLink :to="{ name: 'spa' }">{{ $t("client.catalog.seeSpa") }}</RouterLink>
+    </Button>
+  </EmptyState>
 
   <template v-else>
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-      <CatalogCard v-for="group in groups" :key="group.id" :group="group" />
-    </div>
-    <div class="mt-6 space-y-3 rounded-xl border bg-white p-5 text-center">
-      <p class="text-sm">{{ $t("client.catalog.showing", { shown: groups.length, total }) }}</p>
-      <div class="mx-auto h-1.5 max-w-sm overflow-hidden rounded-full bg-muted">
-        <div class="h-full bg-primary" :style="{ width: `${progress}%` }" />
-      </div>
-      <Button v-if="hasMore" variant="outline" :disabled="loadingMore" @click="emit('loadMore')">
-        {{ $t("client.catalog.loadMore") }}
-      </Button>
-    </div>
+    <ul
+      class="grid grid-cols-2 gap-x-4 gap-y-8 transition-opacity duration-300 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-4"
+      :class="{ 'opacity-60': refreshing }"
+      :aria-busy="refreshing"
+    >
+      <li v-for="(group, index) in groups" :key="group.id" class="shop-reveal" :style="{ '--i': revealIndex(index) }">
+        <ProductCard :group="group" />
+      </li>
+    </ul>
+    <CatalogLoadMore
+      :shown="groups.length"
+      :total="total"
+      :has-more="hasMore"
+      :loading-more="loadingMore"
+      @load-more="emit('loadMore')"
+    />
   </template>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import emptyBox from "@/assets/empty-box.png";
+import { WifiOff } from "lucide-vue-next";
+import EmptyState from "@/components/shop/EmptyState.vue";
+import ProductCard from "@/components/shop/ProductCard.vue";
+import ProductCardSkeleton from "@/components/shop/ProductCardSkeleton.vue";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { ShopGroup } from "@/types/catalog";
-import CatalogCard from "./CatalogCard.vue";
+import { revealIndex } from "@/utils/shop/motion";
+import CatalogLoadMore from "./CatalogLoadMore.vue";
 
-const props = defineProps<{
+defineProps<{
   groups: ShopGroup[];
   total: number;
   loading: boolean;
+  refreshing: boolean;
   failed: boolean;
+  filtered: boolean;
   hasMore: boolean;
   loadingMore: boolean;
 }>();
-const emit = defineEmits<{ loadMore: []; retry: [] }>();
-
-const progress = computed(() => (props.total > 0 ? Math.min(100, (props.groups.length / props.total) * 100) : 0));
+const emit = defineEmits<{ loadMore: []; retry: []; clear: [] }>();
 </script>

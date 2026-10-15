@@ -1,7 +1,7 @@
 <template>
   <div class="app_xcontent">
     <NuxtLayout v-if="isOnline">
-      <NuxtPage :page-key="(route) => route.fullPath" />
+      <NuxtPage :page-key="pageKey" />
     </NuxtLayout>
     <div v-else><ServerOffline /></div>
   </div>
@@ -14,13 +14,16 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, type RouteLocationNormalizedLoaded } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useOnline } from "@vueuse/core";
 import { Toaster } from "@/components/ui/sonner";
 import ServerOffline from "./components/ServerOffline.vue";
 
 const route = useRoute();
+// A page re-mounts on any URL change, except pages that keep their filters in the query and
+// update in place (the product list), so typing in its search box keeps focus.
+const pageKey = (to: RouteLocationNormalizedLoaded) => (to.meta.keepOnQuery ? to.path : to.fullPath);
 const { t, localeProperties } = useI18n();
 // SSR-safe: reports online on the server and tracks the browser state after hydration.
 const isOnline = useOnline();

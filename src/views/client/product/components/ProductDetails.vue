@@ -1,16 +1,19 @@
 <template>
-  <section class="grid gap-6 border-t pt-8 lg:grid-cols-[1fr_320px]">
-    <div class="space-y-2">
-      <h2 class="text-xl font-semibold">{{ $t("client.product.description") }}</h2>
-      <p v-if="group.desc" class="whitespace-pre-line text-muted-foreground">{{ group.desc }}</p>
-      <p v-else class="text-muted-foreground">{{ $t("client.product.noDescription") }}</p>
+  <section class="mt-14 grid gap-8 border-t pt-10 md:mt-20 lg:grid-cols-[1fr_360px] lg:gap-14">
+    <div>
+      <h2 class="text-xl font-bold md:text-2xl">{{ $t("client.product.description") }}</h2>
+      <p v-if="group.desc" class="mt-4 max-w-[68ch] whitespace-pre-line leading-relaxed text-foreground/80">{{ group.desc }}</p>
+      <p v-else class="mt-4 text-muted-foreground">{{ $t("client.product.noDescription") }}</p>
     </div>
-    <dl class="space-y-3 self-start rounded-xl bg-muted/40 p-5 text-sm">
-      <div v-for="row in rows" :key="row.label" class="flex justify-between gap-4">
-        <dt class="text-muted-foreground">{{ row.label }}</dt>
-        <dd class="text-right font-medium">{{ row.value }}</dd>
-      </div>
-    </dl>
+    <div>
+      <h2 class="text-xl font-bold md:text-2xl">{{ $t("client.product.specs") }}</h2>
+      <dl class="mt-4 divide-y rounded-2xl border bg-white text-sm">
+        <div v-for="row in rows" :key="row.label" class="flex justify-between gap-4 px-4 py-3">
+          <dt class="text-muted-foreground">{{ row.label }}</dt>
+          <dd class="text-right font-medium">{{ row.value }}</dd>
+        </div>
+      </dl>
+    </div>
   </section>
 </template>
 

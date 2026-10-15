@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 
   css: [
     "~/assets/index.css",
+    "~/assets/shop.css",
     "vue-multiselect/dist/vue-multiselect.min.css",
     "@vuepic/vue-datepicker/dist/main.css",
   ],
@@ -37,7 +38,7 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap",
         },
       ],
     },

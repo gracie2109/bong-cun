@@ -1,30 +1,26 @@
 <template>
-  <button type="button" class="relative" :aria-label="$t('shop.cart.title')" @click="open = true">
-    <div class="relative">
-      <svg
-          class="relative z-[10]"
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-        >
-          <path
-            d="M15.95 6H19.7V17.875C19.7 18.7344 19.3875 19.4635 18.7625 20.0625C18.1635 20.6875 17.4344 21 16.575 21H5.325C4.46563 21 3.72344 20.6875 3.09844 20.0625C2.49948 19.4635 2.2 18.7344 2.2 17.875V6H5.95C5.95 4.61979 6.43177 3.44792 7.39531 2.48438C8.3849 1.49479 9.56979 1 10.95 1C12.3302 1 13.5021 1.49479 14.4656 2.48438C15.4552 3.44792 15.95 4.61979 15.95 6ZM13.1375 3.8125C12.5385 3.1875 11.8094 2.875 10.95 2.875C10.0906 2.875 9.34844 3.1875 8.72344 3.8125C8.12448 4.41146 7.825 5.14062 7.825 6H14.075C14.075 5.14062 13.7625 4.41146 13.1375 3.8125ZM17.825 17.875V7.875H15.95V9.4375C15.95 9.69792 15.8589 9.91927 15.6766 10.1016C15.4943 10.2839 15.2729 10.375 15.0125 10.375C14.7521 10.375 14.5307 10.2839 14.3484 10.1016C14.1661 9.91927 14.075 9.69792 14.075 9.4375V7.875H7.825V9.4375C7.825 9.69792 7.73385 9.91927 7.55156 10.1016C7.36927 10.2839 7.14792 10.375 6.8875 10.375C6.62708 10.375 6.40573 10.2839 6.22344 10.1016C6.04115 9.91927 5.95 9.69792 5.95 9.4375V7.875H4.075V17.875C4.075 18.2135 4.19219 18.5 4.42656 18.7344C4.68698 18.9948 4.98646 19.125 5.325 19.125H16.575C16.9135 19.125 17.2 18.9948 17.4344 18.7344C17.6948 18.5 17.825 18.2135 17.825 17.875Z"
-          ></path>
-        </svg>
-    </div>
-    <span
-      v-if="cart.lines.length > 0"
-      class="absolute -right-2 -top-2 z-[100] grid size-4 place-content-center rounded-full bg-red-600 text-[9px] text-white"
-    >
-      {{ cart.lines.length }}
-    </span>
+  <button
+    type="button"
+    class="relative grid size-11 place-content-center rounded-full text-foreground transition-colors hover:bg-muted"
+    :aria-label="$t('client.header.cartWithCount', { n: count })"
+    @click="open = true"
+  >
+    <ShoppingBag class="size-[22px]" :stroke-width="1.8" />
+    <Transition name="badge">
+      <span
+        v-if="count > 0"
+        :key="count"
+        class="absolute right-0.5 top-0.5 grid h-5 min-w-5 place-content-center rounded-full bg-primary px-1 text-[11px] font-bold tabular-nums text-white ring-2 ring-white"
+      >
+        {{ count > 99 ? "99+" : count }}
+      </span>
+    </Transition>
   </button>
 
   <Sheet :open="open" @update:open="(value) => (open = value)">
-    <SheetContent class="flex w-full flex-col gap-0 p-0 sm:w-[440px]">
+    <SheetContent class="flex w-full flex-col gap-0 p-0 sm:max-w-[440px]">
       <SheetHeader class="border-b px-5 py-4 text-left">
-        <SheetTitle>{{ $t("shop.cart.title") }} ({{ cart.lines.length }})</SheetTitle>
+        <SheetTitle class="text-lg font-bold">{{ $t("shop.cart.title") }} ({{ count }})</SheetTitle>
       </SheetHeader>
       <MiniCartPanel :active="open" @navigate="open = false" />
     </SheetContent>
@@ -32,11 +28,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { ShoppingBag } from "lucide-vue-next";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useCart } from "@/stores";
 import MiniCartPanel from "./MiniCartPanel.vue";
 
 const cart = useCart();
 const open = ref(false);
+const count = computed(() => cart.lines.length);
 </script>
+
+<style scoped>
+.badge-enter-active {
+  animation: shop-pop 320ms var(--ease-pop);
+}
+</style>

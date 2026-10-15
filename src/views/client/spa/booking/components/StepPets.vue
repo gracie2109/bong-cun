@@ -4,15 +4,15 @@
     <details
       v-for="(pet, index) in pets"
       :key="pet.id"
-      class="rounded-xl border bg-white"
+      class="overflow-hidden rounded-2xl border bg-white"
       :open="index === 0 || Boolean(picks[pet.id])"
     >
-      <summary class="flex cursor-pointer items-center justify-between gap-2 p-4">
+      <summary class="flex min-h-12 cursor-pointer items-center justify-between gap-2 p-4 hover:bg-secondary/40">
         <span class="font-semibold">
           {{ pet.name }}
           <span class="font-normal text-muted-foreground">· {{ pet.speciesName }}</span>
         </span>
-        <span v-if="picks[pet.id]" class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span v-if="picks[pet.id]" class="rounded-full bg-sage px-2.5 py-0.5 text-xs font-semibold text-white">
           {{ $t("client.booking.picked", { n: picks[pet.id].length }) }}
         </span>
       </summary>
@@ -21,7 +21,7 @@
           {{ $t("client.booking.noOffer") }}
         </p>
         <template v-if="combosOf(pet).length">
-          <h3 class="text-xs font-semibold uppercase text-muted-foreground">{{ $t("client.spa.combos") }}</h3>
+          <h3 class="shop-eyebrow !text-sage">{{ $t("client.spa.combos") }}</h3>
           <OfferRow
             v-for="combo in combosOf(pet)"
             :key="combo.id"
@@ -32,7 +32,7 @@
           />
         </template>
         <template v-if="servicesOf(pet).length">
-          <h3 class="text-xs font-semibold uppercase text-muted-foreground">{{ $t("client.spa.services") }}</h3>
+          <h3 class="shop-eyebrow !text-sage">{{ $t("client.spa.services") }}</h3>
           <OfferRow
             v-for="service in servicesOf(pet)"
             :key="service.id"
