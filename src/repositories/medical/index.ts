@@ -4,3 +4,4 @@ export * from "./diagnosisTerms";
 export * from "./errors";
 export * from "./rules";
 export * from "./vaccineTypes";
+export * from "./visits";

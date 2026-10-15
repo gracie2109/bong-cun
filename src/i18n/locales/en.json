@@ -119,7 +119,10 @@
     "accountBoardingDetail": "Boarding stay",
     "boarding": "Pet hotel",
     "boardingTimeline": "Kennel calendar",
-    "medicalSettings": "Medical settings"
+    "medicalSettings": "Medical settings",
+    "medicalQueue": "Exam queue",
+    "medicalVisits": "Visits",
+    "medicalVisitDetail": "Exam page"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -391,7 +394,7 @@
         "tabUpcoming": "Upcoming appointments",
         "tabBoarding": "Boarding",
         "tabNotes": "Notes",
-        "tabMedical": "Medical (soon)",
+        "tabMedical": "Medical record",
         "comingSoon": "No data yet; it will show once appointments are linked to individual pets.",
         "checkPrice": "Check service prices",
         "editProfile": "Edit profile",
@@ -807,7 +810,9 @@
     "boardingStays": "Boarding stays",
     "boardingStayDetail": "Stay details",
     "medical": "Clinic",
-    "medicalSettings": "Medical settings"
+    "medicalSettings": "Medical settings",
+    "medicalQueue": "Exam queue",
+    "medicalVisits": "Visits"
   },
   "pos": {
     "title": "Point of sale",
@@ -2845,7 +2850,9 @@
   },
   "medical": {
     "nav": {
-      "settings": "Medical settings"
+      "settings": "Medical settings",
+      "queue": "Exam queue",
+      "visits": "Visits"
     },
     "common": {
       "active": "Active",
@@ -2859,7 +2866,23 @@
       "bad_input": "Missing or invalid information.",
       "bad_protocol": "The protocol is not valid: a series of several shots needs the days between them.",
       "bad_rules": "The rules are not valid: reminder days 0 to 90, contagious warning days 1 to 365, and the exam service must be in the Medical group.",
-      "not_found": "This entry was not found."
+      "not_found": "This entry was not found.",
+      "signed": "The record is signed and cannot be edited. Add an addendum instead.",
+      "bad_recheck": "The re-check date must be today or later.",
+      "bad_vet": "This person cannot be the vet at this branch.",
+      "inpatient_unavailable": "The inpatient outcome is not available yet.",
+      "no_assessment": "Add at least one diagnosis or an assessment (A) before signing.",
+      "no_customer": "Customer not found.",
+      "no_outcome": "Choose an outcome before signing.",
+      "no_pet": "This customer is not the current owner of the pet.",
+      "not_due": "It is not yet time for this action.",
+      "not_editable": "This visit can no longer be edited.",
+      "not_in_progress": "The case has not been taken yet, or is already finished.",
+      "not_scheduled": "Only a booked visit can be checked in or marked no-show.",
+      "not_waiting": "The visit is no longer waiting.",
+      "pet_busy": "The pet already has an open visit ({name}).",
+      "pet_deceased": "{name} has passed away and cannot be checked in.",
+      "taken": "This case was already taken by {name}."
     },
     "settings": {
       "title": "Medical settings",
@@ -2931,6 +2954,158 @@
       "contagiousDaysHint": "A pet with a contagious diagnosis in this period triggers a warning at spa and boarding.",
       "requireVaccine": "Warn when the shot book is missing at boarding check-in",
       "requireVaccineHint": "Only a warning; check-in is never blocked."
+    },
+    "priority": {
+      "urgent": "Urgent"
+    },
+    "flags": {
+      "allergy": "Allergy",
+      "behavior": "Behavior",
+      "contagious": "Contagious"
+    },
+    "status": {
+      "scheduled": "Booked",
+      "waiting": "Waiting",
+      "in_progress": "In exam",
+      "done": "Awaiting payment",
+      "paid": "Paid",
+      "cancelled": "Cancelled",
+      "no_show": "No-show"
+    },
+    "outcome": {
+      "home": "Home",
+      "recheck": "Re-check",
+      "inpatient": "Inpatient",
+      "referred": "Referred",
+      "deceased": "Deceased"
+    },
+    "sex": {
+      "male": "Male",
+      "female": "Female",
+      "unknown": "Unknown"
+    },
+    "queue": {
+      "title": "Exam queue",
+      "checkIn": "Check in",
+      "takeCase": "Take case",
+      "noShow": "No-show",
+      "bookedAt": "Booked for {time}",
+      "waited": "Waiting {minutes} min",
+      "noVet": "No vet yet",
+      "emptyColumn": "No cases.",
+      "prev": "Previous day",
+      "next": "Next day",
+      "today": "Today",
+      "refresh": "Refresh",
+      "waiting": "Waiting",
+      "inProgress": "In exam",
+      "done": "Done, awaiting payment"
+    },
+    "checkIn": {
+      "title": "Check in a pet",
+      "arriveTitle": "Check in booked visit {code}",
+      "subtitle": "Pick the customer and pet, then note the reason and first vitals.",
+      "submit": "Check in",
+      "book": "Book visit",
+      "mode": {
+        "now": "See now",
+        "book": "Book ahead"
+      },
+      "customer": "Customer",
+      "noPets": "This customer has no pets yet.",
+      "openPets": "Open the pet list",
+      "pet": "Pet",
+      "petPlaceholder": "Choose a pet",
+      "date": "Date",
+      "time": "Time",
+      "reason": "Reason for the visit",
+      "reasonPlaceholder": "For example: not eating, vomiting, vaccination...",
+      "vet": "Vet",
+      "noVet": "Not chosen (anyone may take it)",
+      "urgent": "Urgent"
+    },
+    "vitals": {
+      "weight": "Weight",
+      "temperature": "Temperature",
+      "heartRate": "Heart rate (bpm)",
+      "respRate": "Respiratory rate (per min)",
+      "note": "Vitals note"
+    },
+    "visits": {
+      "title": "Visits",
+      "searchPlaceholder": "Search code, pet, customer, phone, diagnosis...",
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "vet": "Vet",
+      "code": "Code",
+      "time": "Time",
+      "pet": "Pet",
+      "customer": "Customer",
+      "diagnosis": "Diagnosis / reason",
+      "outcome": "Outcome",
+      "empty": "No visits yet.",
+      "open": "Open"
+    },
+    "soap": {
+      "subjective": "S – Owner's history",
+      "subjectiveHint": "Symptoms, onset, appetite, vaccines...",
+      "objective": "O – Clinical findings",
+      "objectiveHint": "Mucosa, nodes, heart and lungs, abdomen, tests...",
+      "assessment": "A – Assessment",
+      "assessmentHint": "The vet's impression.",
+      "plan": "P – Plan",
+      "planHint": "Treatment, further tests, monitoring."
+    },
+    "record": {
+      "signedBy": "Signed by {name} at {time}. The content is locked.",
+      "readOnly": "You can only view this record.",
+      "notStarted": "The case has not been taken yet, so the record cannot be written.",
+      "vitals": "Vitals",
+      "soap": "Exam (SOAP)",
+      "instructions": "Instructions for the owner",
+      "instructionsHint": "The part the owner may read: care, feeding, signs to come back for.",
+      "outcome": "Outcome",
+      "outcomePlaceholder": "Choose an outcome",
+      "recheckOn": "Re-check date",
+      "diagnoses": "Diagnoses",
+      "noDiagnosis": "No diagnosis yet.",
+      "diagnosisSearch": "Search a diagnosis or type a name and press Enter",
+      "addFreeText": "Add \"{name}\"",
+      "removeDiagnosis": "Remove diagnosis",
+      "sign": "Finish & sign",
+      "signHint": "An outcome and a diagnosis or an assessment (A) are needed to sign. A signed record cannot be edited."
+    },
+    "addenda": {
+      "title": "Addenda after signing",
+      "empty": "No addenda yet.",
+      "placeholder": "Addendum text (cannot be edited once saved)",
+      "add": "Add addendum"
+    },
+    "cancel": {
+      "action": "Cancel visit",
+      "title": "Cancel visit {code}",
+      "desc": "The visit becomes cancelled and leaves the queue.",
+      "confirm": "Cancel visit",
+      "reason": "Reason"
+    },
+    "detail": {
+      "title": "Exam page",
+      "notFound": "This visit was not found.",
+      "tabRecord": "Record",
+      "recheckOf": "Re-check of {code}",
+      "recheckBooked": "Re-check booked: {code}.",
+      "payAtPos": "Pay at POS"
+    },
+    "side": {
+      "openPet": "Pet profile",
+      "deceased": "This pet has passed away",
+      "lastWeight": "Last weight",
+      "history": "Visit history",
+      "noHistory": "No visits yet.",
+      "neutered": "Neutered",
+      "intact": "Intact",
+      "next": "Next"
     }
   }
 }

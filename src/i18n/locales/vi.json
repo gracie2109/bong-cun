@@ -119,7 +119,10 @@
     "accountBoardingDetail": "Chi tiết lưu trú",
     "boarding": "Khách sạn thú cưng",
     "boardingTimeline": "Lịch chuồng",
-    "medicalSettings": "Cài đặt y tế"
+    "medicalSettings": "Cài đặt y tế",
+    "medicalQueue": "Hàng chờ khám",
+    "medicalVisits": "Lượt khám",
+    "medicalVisitDetail": "Trang khám"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -391,7 +394,7 @@
         "tabUpcoming": "Lịch hẹn sắp tới",
         "tabBoarding": "Lưu trú",
         "tabNotes": "Ghi chú",
-        "tabMedical": "Y tế (sắp có)",
+        "tabMedical": "Bệnh án",
         "comingSoon": "Chưa có dữ liệu, sẽ hiển thị khi lịch hẹn được gắn với từng thú cưng.",
         "checkPrice": "Tra giá dịch vụ",
         "editProfile": "Sửa hồ sơ",
@@ -807,7 +810,9 @@
     "boardingStays": "Lượt lưu trú",
     "boardingStayDetail": "Chi tiết lượt lưu trú",
     "medical": "Y tế",
-    "medicalSettings": "Cài đặt y tế"
+    "medicalSettings": "Cài đặt y tế",
+    "medicalQueue": "Hàng chờ khám",
+    "medicalVisits": "Lượt khám"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -2845,7 +2850,9 @@
   },
   "medical": {
     "nav": {
-      "settings": "Cài đặt y tế"
+      "settings": "Cài đặt y tế",
+      "queue": "Hàng chờ khám",
+      "visits": "Lượt khám"
     },
     "common": {
       "active": "Đang dùng",
@@ -2859,7 +2866,23 @@
       "bad_input": "Thiếu hoặc sai thông tin.",
       "bad_protocol": "Phác đồ chưa hợp lệ: chuỗi nhiều mũi cần số ngày giữa các mũi.",
       "bad_rules": "Quy định chưa hợp lệ: số ngày nhắc trước 0 đến 90, số ngày cảnh báo truyền nhiễm 1 đến 365, dịch vụ khám phải thuộc nhóm Y tế.",
-      "not_found": "Không tìm thấy mục này."
+      "not_found": "Không tìm thấy mục này.",
+      "signed": "Bệnh án đã ký, không sửa được. Hãy thêm bổ sung.",
+      "bad_recheck": "Ngày tái khám phải là hôm nay hoặc sau đó.",
+      "bad_vet": "Người này không thể là bác sĩ ở cơ sở này.",
+      "inpatient_unavailable": "Chưa dùng được kết luận nội trú ở bước này.",
+      "no_assessment": "Cần ít nhất một chẩn đoán hoặc phần đánh giá (A) trước khi ký.",
+      "no_customer": "Không tìm thấy khách hàng.",
+      "no_outcome": "Chọn kết luận trước khi ký.",
+      "no_pet": "Khách hàng này không phải chủ hiện tại của thú.",
+      "not_due": "Chưa đến ngày để thực hiện thao tác này.",
+      "not_editable": "Lượt khám này không còn sửa được.",
+      "not_in_progress": "Lượt khám chưa được nhận hoặc đã xong.",
+      "not_scheduled": "Chỉ lượt đã hẹn mới tiếp nhận hoặc đánh dấu không đến được.",
+      "not_waiting": "Lượt khám không còn ở trạng thái chờ.",
+      "pet_busy": "Thú đang có lượt khám mở ({name}).",
+      "pet_deceased": "{name} đã mất, không tiếp nhận được.",
+      "taken": "Ca này đã được {name} nhận."
     },
     "settings": {
       "title": "Cài đặt y tế",
@@ -2931,6 +2954,158 @@
       "contagiousDaysHint": "Thú có chẩn đoán truyền nhiễm trong khoảng này thì cảnh báo ở spa và lưu trú.",
       "requireVaccine": "Cảnh báo khi thiếu sổ tiêm lúc check-in lưu trú",
       "requireVaccineHint": "Chỉ cảnh báo, không chặn check-in."
+    },
+    "priority": {
+      "urgent": "Cấp cứu"
+    },
+    "flags": {
+      "allergy": "Dị ứng",
+      "behavior": "Hành vi",
+      "contagious": "Truyền nhiễm"
+    },
+    "status": {
+      "scheduled": "Đã hẹn",
+      "waiting": "Chờ khám",
+      "in_progress": "Đang khám",
+      "done": "Chờ thanh toán",
+      "paid": "Đã thanh toán",
+      "cancelled": "Đã hủy",
+      "no_show": "Không đến"
+    },
+    "outcome": {
+      "home": "Về nhà",
+      "recheck": "Tái khám",
+      "inpatient": "Nội trú",
+      "referred": "Chuyển tuyến",
+      "deceased": "Đã mất"
+    },
+    "sex": {
+      "male": "Đực",
+      "female": "Cái",
+      "unknown": "Chưa rõ"
+    },
+    "queue": {
+      "title": "Hàng chờ khám",
+      "checkIn": "Tiếp nhận",
+      "takeCase": "Nhận ca",
+      "noShow": "Không đến",
+      "bookedAt": "Hẹn lúc {time}",
+      "waited": "Chờ {minutes} phút",
+      "noVet": "Chưa có bác sĩ",
+      "emptyColumn": "Chưa có ca nào.",
+      "prev": "Ngày trước",
+      "next": "Ngày sau",
+      "today": "Hôm nay",
+      "refresh": "Tải lại",
+      "waiting": "Chờ khám",
+      "inProgress": "Đang khám",
+      "done": "Xong, chờ thanh toán"
+    },
+    "checkIn": {
+      "title": "Tiếp nhận khám",
+      "arriveTitle": "Tiếp nhận lượt hẹn {code}",
+      "subtitle": "Chọn khách và thú, ghi lý do và sinh hiệu ban đầu.",
+      "submit": "Tiếp nhận",
+      "book": "Đặt lịch hẹn",
+      "mode": {
+        "now": "Khám ngay",
+        "book": "Hẹn trước"
+      },
+      "customer": "Khách hàng",
+      "noPets": "Khách này chưa có thú cưng.",
+      "openPets": "Mở danh sách thú cưng",
+      "pet": "Thú cưng",
+      "petPlaceholder": "Chọn thú",
+      "date": "Ngày hẹn",
+      "time": "Giờ hẹn",
+      "reason": "Lý do khám",
+      "reasonPlaceholder": "Ví dụ: bỏ ăn, nôn, tiêm phòng...",
+      "vet": "Bác sĩ",
+      "noVet": "Chưa chọn (ai nhận cũng được)",
+      "urgent": "Cấp cứu"
+    },
+    "vitals": {
+      "weight": "Cân nặng",
+      "temperature": "Nhiệt độ",
+      "heartRate": "Nhịp tim (lần/phút)",
+      "respRate": "Nhịp thở (lần/phút)",
+      "note": "Ghi chú sinh hiệu"
+    },
+    "visits": {
+      "title": "Lượt khám",
+      "searchPlaceholder": "Tìm mã, tên thú, khách, số điện thoại, chẩn đoán...",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "status": "Trạng thái",
+      "vet": "Bác sĩ",
+      "code": "Mã",
+      "time": "Thời gian",
+      "pet": "Thú cưng",
+      "customer": "Khách hàng",
+      "diagnosis": "Chẩn đoán / lý do",
+      "outcome": "Kết luận",
+      "empty": "Chưa có lượt khám nào.",
+      "open": "Mở"
+    },
+    "soap": {
+      "subjective": "S – Chủ thuật lại",
+      "subjectiveHint": "Triệu chứng, thời gian, ăn uống, tiêm phòng...",
+      "objective": "O – Khám lâm sàng",
+      "objectiveHint": "Niêm mạc, hạch, tim phổi, bụng, xét nghiệm...",
+      "assessment": "A – Đánh giá",
+      "assessmentHint": "Nhận định của bác sĩ.",
+      "plan": "P – Kế hoạch",
+      "planHint": "Điều trị, xét nghiệm tiếp, theo dõi."
+    },
+    "record": {
+      "signedBy": "Đã ký bởi {name} lúc {time}. Nội dung bị khóa.",
+      "readOnly": "Bạn chỉ xem được bệnh án này.",
+      "notStarted": "Chưa nhận ca nên chưa ghi được bệnh án.",
+      "vitals": "Sinh hiệu",
+      "soap": "Khám bệnh (SOAP)",
+      "instructions": "Lời dặn cho chủ",
+      "instructionsHint": "Phần chủ thú được đọc: chăm sóc, ăn uống, dấu hiệu cần quay lại.",
+      "outcome": "Kết luận",
+      "outcomePlaceholder": "Chọn kết luận",
+      "recheckOn": "Ngày tái khám",
+      "diagnoses": "Chẩn đoán",
+      "noDiagnosis": "Chưa có chẩn đoán.",
+      "diagnosisSearch": "Tìm chẩn đoán hoặc gõ tên rồi Enter",
+      "addFreeText": "Thêm \"{name}\"",
+      "removeDiagnosis": "Bỏ chẩn đoán",
+      "sign": "Hoàn tất & ký",
+      "signHint": "Cần chọn kết luận và có chẩn đoán hoặc phần đánh giá (A) mới ký được. Ký xong không sửa được nữa."
+    },
+    "addenda": {
+      "title": "Bổ sung sau khi ký",
+      "empty": "Chưa có bổ sung.",
+      "placeholder": "Nội dung bổ sung (không sửa được sau khi lưu)",
+      "add": "Thêm bổ sung"
+    },
+    "cancel": {
+      "action": "Hủy lượt khám",
+      "title": "Hủy lượt khám {code}",
+      "desc": "Lượt khám sẽ chuyển sang đã hủy và không còn trong hàng chờ.",
+      "confirm": "Hủy lượt khám",
+      "reason": "Lý do hủy"
+    },
+    "detail": {
+      "title": "Trang khám",
+      "notFound": "Không tìm thấy lượt khám này.",
+      "tabRecord": "Bệnh án",
+      "recheckOf": "Tái khám của {code}",
+      "recheckBooked": "Đã hẹn tái khám {code}.",
+      "payAtPos": "Thanh toán tại POS"
+    },
+    "side": {
+      "openPet": "Hồ sơ thú",
+      "deceased": "Thú đã mất",
+      "lastWeight": "Cân gần nhất",
+      "history": "Lịch sử khám",
+      "noHistory": "Chưa có lượt khám nào.",
+      "neutered": "Đã triệt sản",
+      "intact": "Chưa triệt sản",
+      "next": "Sau"
     }
   }
 }

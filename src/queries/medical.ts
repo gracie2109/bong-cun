@@ -26,7 +26,7 @@ import { medicalKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 
 /** Failure toast that turns the medical rules (duplicate name, bad protocol...) into text. */
-const notifyMedicalFailure = (method: RestfullMethod, error: unknown) => {
+export const notifyMedicalFailure = (method: RestfullMethod, error: unknown) => {
   const hint = medicalErrorHint(error);
   if (hint) {
     sendMessageToast("fail", method, "error", i18n.global.t(`medical.errors.${hint}`, { name: medicalErrorDetail(error) }));
