@@ -47,7 +47,7 @@ export const usePosCheckout = (sale: Sale) => {
         discountAmount: sale.discount.value,
         note: sale.note.value.trim() || null,
         lines: sale.lines.value.map((line) => ({
-          type: line.appointmentItemId ? "appointment_item" : line.item.type,
+          type: line.appointmentItemId ? "appointment_item" : line.boardingChargeId ? "boarding_charge" : line.item.type,
           id: line.appointmentItemId ?? line.item.id,
           qty: line.qty,
           unitId: line.item.unitId ?? null,

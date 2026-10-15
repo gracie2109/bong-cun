@@ -2750,6 +2750,7 @@ export type Database = {
       save_kennel_type: { Args: { p: Json; p_id?: string }; Returns: string }
       set_kennel_status: { Args: { p_id: string; p_status: string }; Returns: undefined }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      billable_boarding_charges: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       check_in_appointment: { Args: { p_id: string; p_weights?: Json }; Returns: undefined }

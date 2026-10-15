@@ -164,7 +164,7 @@ export const closeShift = async (
 export type InvoiceLine = {
   id: string;
   lineNo: number;
-  itemType: LineType;
+  itemType: LineType | "boarding";
   productId: string | null;
   name: string;
   unit: string | null;
@@ -204,7 +204,8 @@ export type Invoice = {
 export type InvoiceDetail = Invoice & { lines: InvoiceLine[]; payments: Payment[] };
 
 const LINE_TYPES: readonly LineType[] = ["product", "service", "combo"];
-const toLineType = (value: string): LineType => LINE_TYPES.find((type) => type === value) ?? "product";
+const toLineType = (value: string): LineType | "boarding" =>
+  value === "boarding" ? "boarding" : (LINE_TYPES.find((type) => type === value) ?? "product");
 const toMethod = (value: string): PaymentMethod | "cod" =>
   value === "cod" ? "cod" : (PAYMENT_METHODS.find((method) => method === value) ?? "cash");
 
@@ -313,8 +314,8 @@ export type SaleCustomer =
   | null;
 
 export type SaleLineInput = {
-  /** "appointment_item": a finished spa ticket, `id` is the ticket id. */
-  type: LineType | "appointment_item";
+  /** "appointment_item": a finished spa ticket, `id` is the ticket id. "boarding_charge": a charge of a checked-out stay. */
+  type: LineType | "appointment_item" | "boarding_charge";
   id: string;
   qty: number;
   /** A product's conversion unit; qty then counts that unit. Missing: the base unit. */
@@ -498,6 +499,7 @@ export const previewServicePrice = async (
 export const POS_ERROR_HINTS = [
   "no_open_shift",
   "ticket_not_billable",
+  "charge_not_billable",
   "discount_limit",
   "underpaid",
   "overpaid",

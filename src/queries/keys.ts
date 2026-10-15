@@ -203,6 +203,7 @@ export const boardingKeys = {
   board: (branchId: string, date: string) => [...boardingKeys.all, "board", branchId, date] as const,
   availability: (branchId: string, from: string, to: string) =>
     [...boardingKeys.all, "availability", branchId, from, to] as const,
+  billable: (branchId: string, customerId: string) => [...boardingKeys.all, "billable", branchId, customerId] as const,
   checkoutPreview: (stayId: string) => [...boardingKeys.all, "checkout-preview", stayId] as const,
   quote: (branchId: string, stayId: string, input: unknown) => [...boardingKeys.all, "quote", branchId, stayId, input] as const,
 };

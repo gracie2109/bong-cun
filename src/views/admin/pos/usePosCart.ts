@@ -4,14 +4,27 @@ import { usePermission } from "@/composables/usePermission";
 import { useCustomerPets, useFetchServicePrice } from "@/queries/pos";
 import { DISCOUNT_LIMIT } from "@/repositories/pos";
 import type { BillableTicket } from "@/repositories/spa";
+import type { BillableBoardingStay } from "@/types/boarding";
 import type { ProductUnit } from "@/repositories/products";
 import type { CatalogItem } from "./catalog";
 import type { Buyer } from "./components/CustomerPanel.vue";
 import { parseAmount } from "./format";
 import { itemInUnit } from "./unitPricing";
 
-/** `appointmentItemId` marks a finished spa ticket: fixed price and pet, one per sale. */
-export type CartLine = { key: string; item: CatalogItem; qty: number; petId: string | null; appointmentItemId?: string };
+/**
+ * `appointmentItemId` marks a finished spa ticket and `boardingChargeId` a charge of a checked-out stay:
+ * both come with a fixed price and quantity, one per sale.
+ */
+export type CartLine = {
+  key: string;
+  item: CatalogItem;
+  qty: number;
+  petId: string | null;
+  appointmentItemId?: string;
+  boardingChargeId?: string;
+};
+
+const isFixedLine = (line: CartLine) => !!line.appointmentItemId || !!line.boardingChargeId;
 
 /** The sale being rung up: buyer, lines with their prices, discount and what blocks checkout. */
 export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<boolean>) => {
@@ -59,6 +72,27 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     });
   };
 
+  /** Puts every unpaid charge of a checked-out stay in the cart. */
+  const addBoardingStay = (stay: BillableBoardingStay) => {
+    for (const charge of stay.charges) {
+      if (lines.value.some((line) => line.boardingChargeId === charge.id)) continue;
+      lines.value.push({
+        key: String(nextKey++),
+        item: {
+          type: "service",
+          id: charge.id,
+          name: charge.petName ? `${charge.name} · ${charge.petName}` : charge.name,
+          price: charge.unitPrice,
+          unit: null,
+          hint: stay.code,
+        },
+        qty: charge.qty,
+        petId: null,
+        boardingChargeId: charge.id,
+      });
+    }
+  };
+
   const removeLine = (key: string) => {
     lines.value = lines.value.filter((line) => line.key !== key);
   };
@@ -78,11 +112,11 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     line.petId = petId;
   };
 
-  // Spa tickets belong to one customer: a different buyer drops them.
+  // Spa tickets and stay charges belong to one customer: a different buyer drops them.
   watch(
     () => buyer.value?.customerId,
     () => {
-      lines.value = lines.value.filter((line) => !line.appointmentItemId);
+      lines.value = lines.value.filter((line) => !isFixedLine(line));
     }
   );
 
@@ -91,7 +125,7 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     const ids = new Set(list.map((pet) => pet.id));
     const onlyPet = list.length === 1 ? list[0].id : null;
     for (const line of lines.value) {
-      if (line.item.type === "product" || line.appointmentItemId) continue;
+      if (line.item.type === "product" || isFixedLine(line)) continue;
       if (line.petId && !ids.has(line.petId)) line.petId = null;
       if (!line.petId && onlyPet) line.petId = onlyPet;
     }
@@ -182,6 +216,7 @@ export const usePosCart = (branchId: Ref<string | undefined>, hasShift: Ref<bool
     canCheckout,
     addItem,
     addTicket,
+    addBoardingStay,
     removeLine,
     changeQty,
     changeUnit,

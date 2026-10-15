@@ -19,6 +19,7 @@ import {
   getBoardingRules,
   getBoardingStay,
   getTypeAvailability,
+  listBillableBoarding,
   listBoardingStays,
   listKennels,
   listKennelTypes,
@@ -285,4 +286,12 @@ export const useCheckoutPreview = (id: MaybeRef<string | undefined>, enabled: Ma
     enabled: computed(() => !!unref(id) && unref(enabled)),
     staleTime: 0,
     gcTime: 0,
+  });
+
+// The checked-out stays of a customer that wait for payment in the POS.
+export const useBillableBoarding = (branchId: MaybeRef<string | undefined>, customerId: MaybeRef<string | undefined>) =>
+  useQuery({
+    queryKey: computed(() => boardingKeys.billable(unref(branchId) ?? "", unref(customerId) ?? "")),
+    queryFn: () => listBillableBoarding(supabaseClient(), unref(branchId) as string, unref(customerId) as string),
+    enabled: computed(() => !!unref(branchId) && !!unref(customerId)),
   });

@@ -816,7 +816,8 @@
     "lineType": {
       "product": "Sản phẩm",
       "service": "Dịch vụ",
-      "combo": "Combo"
+      "combo": "Combo",
+      "boarding": "Lưu trú"
     },
     "method": {
       "cash": "Tiền mặt",
@@ -965,7 +966,8 @@
       "return_too_much": "Số lượng trả vượt quá số còn lại của {name}.",
       "return_products_only": "Chỉ trả được sản phẩm, không trả dịch vụ hay combo.",
       "reason_required": "Cần nhập lý do.",
-      "unit_not_available": "Đơn vị bán này không dùng được nữa, hãy chọn lại."
+      "unit_not_available": "Đơn vị bán này không dùng được nữa, hãy chọn lại.",
+      "charge_not_billable": "Khoản phí này chưa check-out, đã thanh toán hoặc không thuộc khách này."
     },
     "returns": {
       "title": "Phiếu trả hàng",
@@ -992,6 +994,13 @@
     },
     "channel": {
       "online": "Online"
+    },
+    "boardingCharges": {
+      "title": "Lưu trú chờ thanh toán ({count})",
+      "charges": "{count} khoản",
+      "add": "Thêm",
+      "added": "Đã thêm",
+      "fromStay": "Phí lưu trú của đơn {code}, số lượng {qty}, giá đã chốt lúc check-out"
     }
   },
   "products": {
@@ -2173,7 +2182,8 @@
     "itemType": {
       "product": "Hàng hóa",
       "service": "Dịch vụ",
-      "combo": "Combo"
+      "combo": "Combo",
+      "boarding": "Lưu trú"
     },
     "items": {
       "title": "Sản phẩm & dịch vụ bán chạy",

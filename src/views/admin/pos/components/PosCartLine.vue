@@ -4,7 +4,7 @@
       <div class="min-w-0">
         <p class="text-sm font-semibold leading-snug">{{ line.item.name }}</p>
         <p class="text-xs text-muted-foreground">
-          {{ $t(`pos.lineType.${line.item.type}`) }}
+          {{ $t(`pos.lineType.${line.boardingChargeId ? "boarding" : line.item.type}`) }}
           <template v-if="price !== null"> · {{ money(price) }}</template>
           <template v-if="line.item.generalPrice !== undefined">
             <s class="ml-1 text-[10px]" :title="$t('pos.catalog.branchPrice', { price: money(line.item.generalPrice) })">
@@ -25,6 +25,9 @@
     </div>
 
     <p v-if="line.appointmentItemId" class="text-xs text-muted-foreground">{{ $t("pos.spaTickets.fromAppointment", { code: line.item.hint }) }}</p>
+    <p v-else-if="line.boardingChargeId" class="text-xs text-muted-foreground">
+      {{ $t("pos.boardingCharges.fromStay", { code: line.item.hint, qty: line.qty }) }}
+    </p>
     <div v-else class="flex flex-wrap items-center gap-2">
       <div class="flex items-center rounded-lg border">
         <Button variant="ghost" size="icon" class="size-8" :aria-label="$t('pos.cart.less')" @click="emit('changeQty', -1)">
