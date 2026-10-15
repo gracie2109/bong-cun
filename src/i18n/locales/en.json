@@ -110,7 +110,8 @@
     "accountPets": "My pets",
     "spa": "Spa services",
     "spaBook": "Book a spa visit",
-    "accountAppointments": "My appointments"
+    "accountAppointments": "My appointments",
+    "boardingSettings": "Boarding settings"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -782,7 +783,9 @@
     "productImport": "Excel import / export",
     "shopOnline": "Online shop",
     "shopOrderSettings": "Online shop settings",
-    "shopOrders": "Online orders"
+    "shopOrders": "Online orders",
+    "boarding": "Boarding",
+    "boardingSettings": "Boarding settings"
   },
   "pos": {
     "title": "Point of sale",
@@ -1746,6 +1749,96 @@
     },
     "source": {
       "web": "Web"
+    }
+  },
+  "boarding": {
+    "common": {
+      "active": "In use",
+      "inactive": "Not in use",
+      "sortOrder": "Display order"
+    },
+    "nav": {
+      "settings": "Boarding settings"
+    },
+    "settings": {
+      "title": "Boarding settings",
+      "readOnly": "View only. The Boarding: Settings permission is needed to add or change kennel types, kennels and hour rules.",
+      "tabTypes": "Kennel types & prices",
+      "tabKennels": "Kennels",
+      "tabRules": "Hour rules"
+    },
+    "types": {
+      "add": "Add kennel type",
+      "edit": "Edit kennel type",
+      "name": "Kennel type name",
+      "namePlaceholder": "e.g. Kennel S (cats, dogs under 5 kg)",
+      "description": "Description",
+      "species": "Species accepted",
+      "speciesHint": "None selected = every species.",
+      "allSpecies": "All species",
+      "maxWeight": "Max weight (kg)",
+      "noLimit": "No limit",
+      "upToKg": "Up to {kg} kg",
+      "maxPets": "Max pets sharing a kennel",
+      "petsPerKennel": "{count} pet(s) / kennel",
+      "capacity": "Capacity",
+      "sharedNightPrice": "Price per night (shared)",
+      "nightPrice": "Price per night",
+      "extraPetPrice": "Price per extra pet sharing",
+      "sameAsNight": "Same as normal price",
+      "extraPetShort": "Extra pet: {price}",
+      "isPublic": "Show on the web price list",
+      "public": "On the web",
+      "branchPrices": "Branch prices",
+      "branchPricesHint": "Switch on the branches that need a price different from the shared one. Others use the shared price.",
+      "ownPrice": "Own price",
+      "branchPriceTag": "Own price at this branch",
+      "kennels": "Kennels",
+      "searchPlaceholder": "Search kennel types",
+      "empty": "No kennel types yet. Add a kennel type and its price first, then add kennels."
+    },
+    "kennels": {
+      "add": "Add kennel",
+      "edit": "Edit kennel",
+      "code": "Kennel code",
+      "codePlaceholder": "e.g. S01",
+      "name": "Name",
+      "type": "Kennel type",
+      "pickType": "Pick a kennel type",
+      "status": "Status",
+      "searchPlaceholder": "Search kennel code or type",
+      "empty": "This branch has no kennels yet.",
+      "markClean": "Cleaned",
+      "markMaintenance": "Maintenance",
+      "markReady": "Back in use"
+    },
+    "kennelStatus": {
+      "ready": "Ready",
+      "cleaning": "Being cleaned",
+      "maintenance": "Maintenance"
+    },
+    "rules": {
+      "title": "Check-in / check-out hours",
+      "hint": "Applies to the selected branch.",
+      "checkInFrom": "Pets accepted from",
+      "checkInFromHint": "The earliest time a pet is accepted.",
+      "checkOutBy": "Check-out before",
+      "checkOutByHint": "Collecting before this time costs no extra.",
+      "lateHalfUntil": "Late pick-up costs half a night until",
+      "lateHalfUntilHint": "After check-out time and before this time: half a night extra. After it: one more night.",
+      "maxNights": "Max nights per stay",
+      "dayStayNights": "Same-day stay counts as",
+      "dayStayNightsHint": "Dropped off and collected on the same day.",
+      "nights": "{count} night(s)",
+      "unavailable": "The rules of this branch could not be read."
+    },
+    "errors": {
+      "duplicate_name": "A kennel type with this name already exists.",
+      "duplicate_code": "This branch already has a kennel with this code.",
+      "no_price": "A price per night is required.",
+      "bad_input": "Some information is not valid.",
+      "bad_rules": "Check-out time must be before the half-night limit; max nights is 1 to 365.",
+      "not_found": "Not found, try reloading the page."
     }
   },
   "reports": {

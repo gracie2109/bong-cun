@@ -110,7 +110,8 @@
     "accountPets": "Thú cưng của tôi",
     "spa": "Dịch vụ spa",
     "spaBook": "Đặt lịch spa",
-    "accountAppointments": "Lịch hẹn của tôi"
+    "accountAppointments": "Lịch hẹn của tôi",
+    "boardingSettings": "Cài đặt lưu trú"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -782,7 +783,9 @@
     "productImport": "Nhập / xuất Excel",
     "shopOnline": "Bán online",
     "shopOrderSettings": "Cài đặt bán online",
-    "shopOrders": "Đơn online"
+    "shopOrders": "Đơn online",
+    "boarding": "Lưu trú",
+    "boardingSettings": "Cài đặt lưu trú"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -1746,6 +1749,96 @@
     },
     "source": {
       "web": "Web"
+    }
+  },
+  "boarding": {
+    "common": {
+      "active": "Đang dùng",
+      "inactive": "Ngừng dùng",
+      "sortOrder": "Thứ tự hiển thị"
+    },
+    "nav": {
+      "settings": "Cài đặt lưu trú"
+    },
+    "settings": {
+      "title": "Cài đặt lưu trú",
+      "readOnly": "Bạn chỉ xem được. Cần quyền Lưu trú: Cài đặt để thêm hoặc sửa loại chuồng, chuồng và quy định giờ.",
+      "tabTypes": "Loại chuồng & giá",
+      "tabKennels": "Chuồng",
+      "tabRules": "Quy định giờ"
+    },
+    "types": {
+      "add": "Thêm loại chuồng",
+      "edit": "Sửa loại chuồng",
+      "name": "Tên loại chuồng",
+      "namePlaceholder": "Ví dụ: Chuồng S (mèo, chó dưới 5 kg)",
+      "description": "Mô tả",
+      "species": "Loài nhận",
+      "speciesHint": "Không chọn loài nào = nhận mọi loài.",
+      "allSpecies": "Mọi loài",
+      "maxWeight": "Cân tối đa (kg)",
+      "noLimit": "Không giới hạn",
+      "upToKg": "Tới {kg} kg",
+      "maxPets": "Số thú ở chung tối đa",
+      "petsPerKennel": "{count} thú / chuồng",
+      "capacity": "Sức chứa",
+      "sharedNightPrice": "Giá mỗi đêm (chung)",
+      "nightPrice": "Giá mỗi đêm",
+      "extraPetPrice": "Giá mỗi thú ở chung thêm",
+      "sameAsNight": "Bằng giá thường",
+      "extraPetShort": "Thú thêm: {price}",
+      "isPublic": "Hiện trên bảng giá web",
+      "public": "Hiện trên web",
+      "branchPrices": "Giá riêng theo cơ sở",
+      "branchPricesHint": "Bật cho cơ sở nào cần giá khác giá chung. Cơ sở không bật dùng giá chung.",
+      "ownPrice": "Giá riêng",
+      "branchPriceTag": "Giá riêng cơ sở này",
+      "kennels": "Số chuồng",
+      "searchPlaceholder": "Tìm loại chuồng",
+      "empty": "Chưa có loại chuồng nào. Thêm loại chuồng và giá trước, rồi thêm chuồng."
+    },
+    "kennels": {
+      "add": "Thêm chuồng",
+      "edit": "Sửa chuồng",
+      "code": "Mã chuồng",
+      "codePlaceholder": "Ví dụ: S01",
+      "name": "Tên gọi",
+      "type": "Loại chuồng",
+      "pickType": "Chọn loại chuồng",
+      "status": "Trạng thái",
+      "searchPlaceholder": "Tìm mã chuồng hoặc loại",
+      "empty": "Cơ sở này chưa có chuồng nào.",
+      "markClean": "Đã dọn",
+      "markMaintenance": "Bảo trì",
+      "markReady": "Dùng lại"
+    },
+    "kennelStatus": {
+      "ready": "Sẵn sàng",
+      "cleaning": "Đang vệ sinh",
+      "maintenance": "Bảo trì"
+    },
+    "rules": {
+      "title": "Quy định giờ nhận / trả",
+      "hint": "Áp dụng cho cơ sở đang chọn.",
+      "checkInFrom": "Nhận thú từ",
+      "checkInFromHint": "Giờ sớm nhất được nhận thú.",
+      "checkOutBy": "Trả trước",
+      "checkOutByHint": "Trả trước giờ này không bị phụ thu.",
+      "lateHalfUntil": "Trả muộn tính nửa đêm đến",
+      "lateHalfUntilHint": "Trả sau giờ trả và trước giờ này: phụ thu nửa đêm. Sau giờ này: thêm một đêm.",
+      "maxNights": "Số đêm tối đa một lượt",
+      "dayStayNights": "Gửi trong ngày tính",
+      "dayStayNightsHint": "Đến và đi cùng một ngày.",
+      "nights": "{count} đêm",
+      "unavailable": "Chưa đọc được quy định của cơ sở này."
+    },
+    "errors": {
+      "duplicate_name": "Đã có loại chuồng cùng tên.",
+      "duplicate_code": "Cơ sở này đã có chuồng cùng mã.",
+      "no_price": "Cần nhập giá mỗi đêm.",
+      "bad_input": "Thông tin chưa hợp lệ.",
+      "bad_rules": "Giờ trả phải trước giờ tính nửa đêm, số đêm tối đa từ 1 đến 365.",
+      "not_found": "Không tìm thấy dữ liệu, thử tải lại trang."
     }
   },
   "reports": {

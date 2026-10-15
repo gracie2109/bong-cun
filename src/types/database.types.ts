@@ -1912,6 +1912,153 @@ export type Database = {
           },
         ]
       }
+      boarding_settings: {
+        Row: {
+          branch_id: string
+          check_in_from: string
+          check_out_by: string
+          day_stay_nights: number
+          late_half_until: string
+          max_nights: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          check_in_from?: string
+          check_out_by?: string
+          day_stay_nights?: number
+          late_half_until?: string
+          max_nights?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          check_in_from?: string
+          check_out_by?: string
+          day_stay_nights?: number
+          late_half_until?: string
+          max_nights?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      kennel_type_prices: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          extra_pet_night_price: number | null
+          id: string
+          kennel_type_id: string
+          night_price: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          extra_pet_night_price?: number | null
+          id?: string
+          kennel_type_id: string
+          night_price: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          extra_pet_night_price?: number | null
+          id?: string
+          kennel_type_id?: string
+          night_price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      kennel_types: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          is_public: boolean
+          max_pets: number
+          max_weight_kg: number | null
+          name: string
+          photo_url: string | null
+          purpose: string
+          sort_order: number
+          species_ids: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          max_pets?: number
+          max_weight_kg?: number | null
+          name: string
+          photo_url?: string | null
+          purpose?: string
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          max_pets?: number
+          max_weight_kg?: number | null
+          name?: string
+          photo_url?: string | null
+          purpose?: string
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      kennels: {
+        Row: {
+          branch_id: string
+          code: string
+          created_at: string
+          id: string
+          is_active: boolean
+          kennel_type_id: string
+          name: string | null
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kennel_type_id: string
+          name?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kennel_type_id?: string
+          name?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       spa_resources: {
         Row: {
           branch_id: string
@@ -2408,6 +2555,26 @@ export type Database = {
           transfer: number
         }[]
       }
+      can_boarding: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
+      boarding_settings_get: { Args: { p_branch: string }; Returns: Json }
+      list_kennel_types: {
+        Args: {
+          p_active_only?: boolean
+          p_branch: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+        }
+        Returns: Json
+      }
+      list_kennels: {
+        Args: { p_branch: string; p_page?: number; p_page_size?: number; p_search?: string; p_type?: string }
+        Returns: Json
+      }
+      save_boarding_settings: { Args: { p: Json; p_branch: string }; Returns: undefined }
+      save_kennel: { Args: { p: Json; p_id?: string }; Returns: string }
+      save_kennel_type: { Args: { p: Json; p_id?: string }; Returns: string }
+      set_kennel_status: { Args: { p_id: string; p_status: string }; Returns: undefined }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
       billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }

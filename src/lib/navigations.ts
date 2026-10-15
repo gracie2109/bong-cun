@@ -53,6 +53,10 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     ],
   },
   {
+    title: "adminNav.boarding",
+    items: [{ title: "adminNav.boardingSettings", icon: "lucide:settings-2", name: "boardingSettings" }],
+  },
+  {
     title: "adminNav.customersPets",
     items: [
       { title: "adminNav.customers", icon: "lucide:users", name: "users" },
