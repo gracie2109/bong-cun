@@ -32,23 +32,6 @@ export type MyPet = {
   allergies: string;
   behaviorNotes: string;
   weightKg: number | null;
-  /** Only the primary owner may edit. */
-  canEdit: boolean;
-  /** An appointment that is not finished yet includes the pet, so it cannot be hidden. */
-  hasOpenAppointment: boolean;
-};
-
-/** What the pet form sends; weight is text so an empty box means "unchanged". */
-export type PetInput = {
-  name: string;
-  speciesId: string;
-  breed: string;
-  sex: PetSex;
-  neutered: boolean;
-  birthDate: string;
-  allergies: string;
-  behaviorNotes: string;
-  weightKg: string;
 };
 
 /** A web account without a customer record, as staff see it when linking. */

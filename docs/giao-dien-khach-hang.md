@@ -64,9 +64,7 @@ Nguồn: [checkout-shop.md](checkout-shop.md), [lich-hen-spa.md](lich-hen-spa.md
 ### 3.4 Thú cưng của tôi
 
 - Khách thấy các thú cưng có `pet_owners.customer_id = hồ sơ của mình` và `to_date is null`, kể cả thú do lễ tân tạo.
-- **Chỉ nhân viên thêm thú** (quyết định của grace, 2026-10-15): khách không tự thêm thú trên web. Cửa hàng đăng ký thú khi khách ghé hoặc đặt lịch; danh sách trống thì hiện ghi chú đó. `save_my_pet` không có `p_id` trả lỗi `added_by_shop` (migration `20261019010000_my_pets_staff_only_create.sql`).
-- Khách sửa được tên, loài, giống, giới tính, triệt sản, ngày sinh, dị ứng, ghi chú tính cách, cân nặng hiện tại (ghi vào `pet_weight_logs`) cho thú **mình là chủ chính**; đồng sở hữu chỉ xem. Không sửa `microchip`, `status` (nhân viên làm).
-- "Xóa" phía khách = ẩn khỏi danh sách của mình (đóng liên kết `pet_owners.to_date = hôm nay`), không xóa dữ liệu vì lịch sử dịch vụ đi theo thú. Thú đang có lịch hẹn chưa xong thì không ẩn được.
+- **Khách chỉ xem** (quyết định của grace, 2026-10-15): khách không thêm, sửa hay ẩn thú trên web. Cửa hàng đăng ký và cập nhật thú khi khách ghé hoặc đặt lịch; danh sách trống thì hiện ghi chú đó, thiếu thú khi đặt lịch thì nhắc liên hệ cửa hàng. Migration `20261019010000` chặn thêm, `20261019020000_my_pets_read_only.sql` xóa `save_my_pet` và `hide_my_pet`, chỉ còn `my_pets()`.
 
 ### 3.5 Đặt lịch spa online
 
@@ -117,8 +115,7 @@ Không có bảng mới. Một cột mới:
 | `ensure_my_customer(p_full_name, p_phone)` | authenticated | Mục 3.3. Lỗi `hint = 'phone_in_use'` |
 | `save_my_profile(p jsonb)` | authenticated | Sửa tên, SĐT, ngày sinh trên `users` và hồ sơ khách. Lỗi `phone_in_use` |
 | `my_pets()` | authenticated | Danh sách thú của tôi: id, tên, loài, giống, giới tính, triệt sản, ngày sinh, cân nặng gần nhất, vai trò của tôi |
-| `save_my_pet(p jsonb, p_id uuid default null)` | authenticated | Chỉ sửa theo 3.4 (thêm bị chặn, hint `added_by_shop`); ghi `pet_weight_logs` khi cân nặng đổi |
-| `hide_my_pet(p_id uuid)` | authenticated | Đóng liên kết; lỗi `hint = 'has_open_appointment'` |
+| `save_my_pet`, `hide_my_pet` | | Đã xóa (2026-10-15): khách chỉ xem thú, xem 3.4 |
 | `link_customer_account(p_customer uuid, p_user uuid)` | nhân viên | Nối tài khoản web chưa có hồ sơ vào hồ sơ khách chưa có tài khoản |
 | `spa_web_rules()` | nội bộ | Hằng số: `min_lead` 2 giờ, `max_days` 30, `max_open` 3, `cancel_before` 2 giờ |
 | `spa_public_catalog(p_branch uuid)` | anon, authenticated | Dịch vụ và combo đang bán: tên, mô tả, thời lượng, loài áp dụng, giá chung hoặc bảng giá theo khung cân nặng của cơ sở |

@@ -1,7 +1,7 @@
-// "My pets": the pets the signed-in customer owns, edited through RPCs (docs 3.4). Only staff add pets.
+// "My pets": the pets the signed-in customer owns, read-only (docs 3.4). Only staff add, edit or remove pets.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
-import { PET_SEXES, type MyPet, type PetInput, type PetSex } from "@/types/account";
+import { PET_SEXES, type MyPet, type PetSex } from "@/types/account";
 import { unwrap } from "../shared";
 
 type Client = SupabaseClient<Database>;
@@ -18,8 +18,6 @@ type PetJson = {
   allergies: string | null;
   behavior_notes: string | null;
   weight_kg: number | null;
-  can_edit: boolean;
-  has_open_appointment: boolean;
 };
 
 const toSex = (value: string): PetSex => PET_SEXES.find((sex) => sex === value) ?? "unknown";
@@ -36,53 +34,7 @@ const toPet = (row: PetJson): MyPet => ({
   allergies: row.allergies ?? "",
   behaviorNotes: row.behavior_notes ?? "",
   weightKg: row.weight_kg === null ? null : Number(row.weight_kg),
-  canEdit: row.can_edit,
-  hasOpenAppointment: row.has_open_appointment,
 });
 
 export const listMyPets = async (client: Client): Promise<MyPet[]> =>
   (unwrap(await client.rpc("my_pets")) as PetJson[]).map(toPet);
-
-/** Edits a pet I am primary owner of; returns the pet id. */
-export const saveMyPet = async (client: Client, input: PetInput, id: string): Promise<string> =>
-  unwrap(
-    await client.rpc("save_my_pet", {
-      p: {
-        name: input.name.trim(),
-        species_id: input.speciesId,
-        breed: input.breed.trim(),
-        sex: input.sex,
-        neutered: input.neutered,
-        birth_date: input.birthDate || null,
-        allergies: input.allergies.trim(),
-        behavior_notes: input.behaviorNotes.trim(),
-        weight_kg: input.weightKg.trim(),
-      },
-      p_id: id,
-    })
-  );
-
-export const hideMyPet = async (client: Client, id: string): Promise<void> => {
-  unwrap(await client.rpc("hide_my_pet", { p_id: id }));
-};
-
-/** Error hints raised by save_my_pet and hide_my_pet, for readable messages. */
-export const PET_ERROR_HINTS = [
-  "no_customer",
-  "added_by_shop",
-  "invalid_name",
-  "invalid_species",
-  "invalid_sex",
-  "invalid_birth_date",
-  "invalid_weight",
-  "too_many_pets",
-  "not_found",
-  "not_primary",
-  "has_open_appointment",
-] as const;
-export type PetErrorHint = (typeof PET_ERROR_HINTS)[number];
-
-export const petErrorHint = (error: unknown): PetErrorHint | null => {
-  const hint = (error as { hint?: string } | null)?.hint;
-  return PET_ERROR_HINTS.find((item) => item === hint) ?? null;
-};
