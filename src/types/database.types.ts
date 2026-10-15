@@ -2751,6 +2751,8 @@ export type Database = {
       save_kennel_type: { Args: { p: Json; p_id?: string }; Returns: string }
       set_kennel_status: { Args: { p_id: string; p_status: string }; Returns: undefined }
       can_schedule: { Args: { p_branch: string; p_method: string }; Returns: boolean }
+      boarding_timeline: { Args: { p_branch: string; p_from?: string; p_days?: number }; Returns: Json }
+      move_boarding_pet: { Args: { p_stay_pet: string; p_kennel: string }; Returns: undefined }
       my_boarding_stays: { Args: { p_scope?: string; p_page?: number; p_page_size?: number }; Returns: Json }
       my_boarding_stay: { Args: { p_id: string }; Returns: Json }
       boarding_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }

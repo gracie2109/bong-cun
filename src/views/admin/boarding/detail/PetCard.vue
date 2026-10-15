@@ -5,9 +5,14 @@
         {{ pet.petName }}
         <span v-if="pet.hasNotes" class="ml-1 text-amber-600" :title="$t('boarding.board.hasNotes')">⚠ {{ $t("boarding.detail.hasNotes") }}</span>
       </h3>
-      <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-        {{ pet.kennelCode }} · {{ pet.kennelTypeName }}
-      </span>
+      <div class="flex items-center gap-2">
+        <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+          {{ pet.kennelCode }} · {{ pet.kennelTypeName }}
+        </span>
+        <Button v-if="canMove" variant="outline" size="sm" class="h-7 text-xs" @click="emit('move')">
+          <ArrowRightLeft class="mr-1 size-3.5" />{{ $t("boarding.move.button") }}
+        </Button>
+      </div>
     </div>
     <dl class="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-2">
       <div>
@@ -46,8 +51,11 @@
 </template>
 
 <script lang="ts" setup>
+import { ArrowRightLeft } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
 import type { StayPet } from "@/types/boarding";
 import { money } from "../format";
 
-defineProps<{ pet: StayPet; checkedIn: boolean }>();
+defineProps<{ pet: StayPet; checkedIn: boolean; canMove?: boolean }>();
+const emit = defineEmits<{ move: [] }>();
 </script>

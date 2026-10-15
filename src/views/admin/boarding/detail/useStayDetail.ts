@@ -2,6 +2,7 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useBoardingStay, useMarkBoardingNoShow } from "@/queries/boarding";
 import { useAuthStore } from "@/stores";
+import type { StayPet } from "@/types/boarding";
 
 /** The stay of the route with what the signed-in staff may do to it, and which dialog is open. */
 export const useStayDetail = () => {
@@ -21,12 +22,14 @@ export const useStayDetail = () => {
   const checkInOpen = ref(false);
   const extendOpen = ref(false);
   const checkOutOpen = ref(false);
+  /** The pet whose kennel is being changed. */
+  const movePet = ref<StayPet | null>(null);
 
   const noShow = useMarkBoardingNoShow();
   const markNoShow = () => stay.value && noShow.mutate(stay.value.id);
 
   return {
     stayQuery, stay, activePets, isIn, canCreate, canUpdate,
-    editOpen, checkInOpen, extendOpen, checkOutOpen, markNoShow,
+    editOpen, checkInOpen, extendOpen, checkOutOpen, movePet, markNoShow,
   };
 };

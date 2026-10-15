@@ -117,7 +117,8 @@
     "boardingStayDetail": "Stay details",
     "accountBoarding": "My boarding stays",
     "accountBoardingDetail": "Boarding stay",
-    "boarding": "Pet hotel"
+    "boarding": "Pet hotel",
+    "boardingTimeline": "Kennel calendar"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -1778,7 +1779,8 @@
     "nav": {
       "settings": "Boarding settings",
       "board": "Kennel board",
-      "stays": "Stays"
+      "stays": "Stays",
+      "timeline": "Calendar"
     },
     "settings": {
       "title": "Boarding settings",
@@ -1879,7 +1881,10 @@
       "need_weight": "Enter the weight of {name}.",
       "kennel_not_ready": "Kennel {name} is not ready (cleaning or maintenance). Press Cleaned on the Kennel board first.",
       "too_old": "The entry is older than 24 hours and cannot be deleted.",
-      "no_service": "This service is no longer available."
+      "no_service": "This service is no longer available.",
+      "wrong_type": "Pick a kennel of the same type.",
+      "same_kennel": "The pet is already in this kennel.",
+      "kennel_full": "This kennel already holds another pet of the same stay."
     },
     "board": {
       "title": "Kennel board",
@@ -2051,6 +2056,26 @@
       "qty": "Quantity",
       "add": "Add",
       "empty": "No extras yet."
+    },
+    "timeline": {
+      "title": "Kennel calendar",
+      "prev": "Previous 14 days",
+      "next": "Next 14 days",
+      "kennel": "Kennel"
+    },
+    "move": {
+      "button": "Change kennel",
+      "title": "Change kennel of {name}",
+      "subtitle": "Now in {code} · {type}",
+      "kennel": "New kennel (same type)",
+      "pick": "Pick a kennel",
+      "ok": "Change kennel",
+      "none": "No other kennel of this type.",
+      "hint": "The new kennel must be free on every night of this stay. The old kennel goes to cleaning once the pet has been in it."
+    },
+    "dashboard": {
+      "title": "Pet hotel today",
+      "open": "Open kennel board"
     }
   },
   "reports": {

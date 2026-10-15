@@ -33,7 +33,14 @@
         />
 
         <section class="grid gap-3 lg:grid-cols-2">
-          <PetCard v-for="pet in stay.pets" :key="pet.id" :pet="pet" :checked-in="stay.checkedInAt !== null" />
+          <PetCard
+            v-for="pet in stay.pets"
+            :key="pet.id"
+            :pet="pet"
+            :checked-in="stay.checkedInAt !== null"
+            :can-move="canUpdate && pet.status === 'active' && (stay.status === 'booked' || stay.status === 'checked_in')"
+            @move="movePet = pet"
+          />
         </section>
 
         <Tabs default-value="care">
@@ -56,6 +63,7 @@
         <StayDialog v-model:open="editOpen" :branch-id="stay.branchId" :stay="stay" />
         <CheckInDialog v-model:open="checkInOpen" :stay="stay" />
         <ExtendDialog v-model:open="extendOpen" :stay="stay" />
+        <MoveKennelDialog v-if="movePet" :open="true" :stay="stay" :pet="movePet" @update:open="movePet = null" />
         <CheckOutDialog v-model:open="checkOutOpen" :stay="stay" />
       </template>
     </div>
@@ -76,12 +84,13 @@ import CheckInDialog from "./CheckInDialog.vue";
 import CheckOutDialog from "./CheckOutDialog.vue";
 import ExtendDialog from "./ExtendDialog.vue";
 import ExtrasTab from "./ExtrasTab.vue";
+import MoveKennelDialog from "./MoveKennelDialog.vue";
 import PetCard from "./PetCard.vue";
 import StayHeader from "./StayHeader.vue";
 import { useStayDetail } from "./useStayDetail";
 
 const {
   stayQuery, stay, activePets, isIn, canCreate, canUpdate,
-  editOpen, checkInOpen, extendOpen, checkOutOpen, markNoShow,
+  editOpen, checkInOpen, extendOpen, checkOutOpen, movePet, markNoShow,
 } = useStayDetail();
 </script>

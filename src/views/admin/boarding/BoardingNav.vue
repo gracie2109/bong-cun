@@ -25,6 +25,7 @@ const auth = useAuthStore();
 // Everything is read with "boarding: VIEW"; kennels, prices and rules are changed with "SETTING".
 const tabs = [
   { name: "boardingBoard", icon: "lucide:home", label: "boarding.nav.board", method: "VIEW" },
+  { name: "boardingTimeline", icon: "lucide:calendar-range", label: "boarding.nav.timeline", method: "VIEW" },
   { name: "boardingStays", icon: "lucide:list-checks", label: "boarding.nav.stays", method: "VIEW" },
   { name: "boardingSettings", icon: "lucide:settings-2", label: "boarding.nav.settings", method: "VIEW" },
 ];

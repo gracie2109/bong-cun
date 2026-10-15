@@ -27,6 +27,9 @@ export const BOARDING_ERROR_HINTS = [
   "kennel_not_ready",
   "too_old",
   "no_service",
+  "wrong_type",
+  "same_kennel",
+  "kennel_full",
 ] as const;
 export type BoardingErrorHint = (typeof BOARDING_ERROR_HINTS)[number];
 
