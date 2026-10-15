@@ -57,12 +57,12 @@ const notifyPetFailure = (error: unknown, method: "create" | "update" | "delete"
 export const useSaveMyPet = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ input, id }: { input: PetInput; id?: string }) => saveMyPet(supabaseClient(), input, id),
-    onSuccess: async (_id, { id }) => {
+    mutationFn: ({ input, id }: { input: PetInput; id: string }) => saveMyPet(supabaseClient(), input, id),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: accountKeys.pets() });
-      notifySuccess(id ? "update" : "create");
+      notifySuccess("update");
     },
-    onError: (error, { id }) => notifyPetFailure(error, id ? "update" : "create"),
+    onError: (error) => notifyPetFailure(error, "update"),
   });
 };
 

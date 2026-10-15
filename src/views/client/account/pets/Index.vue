@@ -1,14 +1,8 @@
 <template>
   <section class="max-w-4xl space-y-4 pb-12">
-    <div class="flex items-center justify-between gap-3">
-      <div>
-        <h2 class="text-lg font-semibold">{{ $t("client.pets.title") }}</h2>
-        <p class="text-sm text-muted-foreground">{{ $t("client.pets.intro") }}</p>
-      </div>
-      <Button v-if="page.hasCustomer.value" @click="page.openNew">
-        <Plus class="mr-1 size-4" />
-        {{ $t("client.pets.add") }}
-      </Button>
+    <div>
+      <h2 class="text-lg font-semibold">{{ $t("client.pets.title") }}</h2>
+      <p class="text-sm text-muted-foreground">{{ $t("client.pets.intro") }}</p>
     </div>
 
     <p v-if="page.loading.value" class="py-8 text-center text-muted-foreground">{{ $t("petCare.common.loading") }}</p>
@@ -41,7 +35,6 @@
       :errors="page.errors.value"
       :submitted="page.submitted.value"
       :saving="page.saving.value"
-      :editing="page.editingId.value !== null"
       :species="page.species.value"
       @submit="page.submit"
     />
@@ -60,7 +53,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Plus } from "lucide-vue-next";
 import { DialogConfirm } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { useMyPets } from "@/composables/account/useMyPets";

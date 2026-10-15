@@ -1,7 +1,7 @@
 <template>
   <AppDialog
     v-model:open="open"
-    :title="editing ? $t('client.pets.editTitle') : $t('client.pets.addTitle')"
+    :title="$t('client.pets.editTitle')"
     size="xl"
     :ok-text="$t('petCare.common.save')"
     :cancel-text="$t('petCare.common.cancel')"
@@ -88,7 +88,6 @@ const props = defineProps<{
   errors: PetErrors;
   submitted: boolean;
   saving: boolean;
-  editing: boolean;
   species: { id: string; name: string }[];
 }>();
 const emit = defineEmits<{ submit: [] }>();

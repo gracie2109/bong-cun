@@ -4,7 +4,7 @@ import { useSpeciesOptions } from "@/queries/species";
 import type { MyPet } from "@/types/account";
 import { emptyPetForm, normalizePetForm, petErrors, petToForm, type PetForm } from "@/utils/account/pet";
 
-/** The "my pets" page: the list, the add / edit dialog and hiding a pet. */
+/** The "my pets" page: the list, the edit dialog and hiding a pet. Only the shop adds pets. */
 export const useMyPets = () => {
   const profile = useMyProfile();
   const hasCustomer = computed(() => Boolean(profile.data.value?.customerId));
@@ -20,20 +20,19 @@ export const useMyPets = () => {
   const errors = computed(() => petErrors(form));
   const toHide = ref<MyPet | null>(null);
 
-  const openWith = (next: PetForm, id: string | null) => {
-    Object.assign(form, next);
-    editingId.value = id;
+  const openEdit = (pet: MyPet) => {
+    Object.assign(form, petToForm(pet));
+    editingId.value = pet.id;
     submitted.value = false;
     open.value = true;
   };
-  const openNew = () => openWith(emptyPetForm(), null);
-  const openEdit = (pet: MyPet) => openWith(petToForm(pet), pet.id);
 
   const submit = async () => {
     submitted.value = true;
-    if (Object.keys(errors.value).length > 0) return;
+    const id = editingId.value;
+    if (!id || Object.keys(errors.value).length > 0) return;
     try {
-      await saveMutation.mutateAsync({ input: normalizePetForm(form), id: editingId.value ?? undefined });
+      await saveMutation.mutateAsync({ input: normalizePetForm(form), id });
       open.value = false;
     } catch {
       // the mutation already showed the failure toast
@@ -67,7 +66,6 @@ export const useMyPets = () => {
     errors,
     submitted,
     saving: saveMutation.isPending,
-    openNew,
     openEdit,
     submit,
     toHide,

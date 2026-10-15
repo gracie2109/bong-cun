@@ -17,11 +17,7 @@
         <RouterLink :to="{ name: 'account-profile' }">{{ $t("client.pets.goProfile") }}</RouterLink>
       </Button>
     </EmptyState>
-    <EmptyState v-else-if="wizard.pets.value.length === 0" :title="$t('client.booking.needPet')">
-      <Button as-child class="h-11 rounded-full px-6">
-        <RouterLink :to="{ name: 'account-pets' }">{{ $t("client.booking.addPet") }}</RouterLink>
-      </Button>
-    </EmptyState>
+    <EmptyState v-else-if="wizard.pets.value.length === 0" :title="$t('client.booking.needPet')" :text="$t('client.booking.needPetHint')" />
 
     <div v-else class="space-y-6 rounded-3xl border bg-white p-5 sm:p-8">
       <BookingSteps :steps="wizard.steps.value" :current="wizard.stepIndex.value" />
