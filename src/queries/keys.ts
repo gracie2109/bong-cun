@@ -16,6 +16,7 @@ import type {
   TopItemFilter,
 } from "@/repositories/reports";
 import type { AppointmentFilter } from "@/repositories/spa";
+import type { KennelFilter, KennelTypeFilter } from "@/types/boarding";
 import type { UserListFilter } from "@/repositories/users";
 
 export const speciesKeys = {
@@ -187,6 +188,15 @@ export const spaKeys = {
   billable: (branchId: string, customerId: string) => [...spaKeys.all, "billable", branchId, customerId] as const,
   appointment: (id: string) => [...spaKeys.all, "appointment", id] as const,
   board: (branchId: string, date: string) => [...spaKeys.all, "board", branchId, date] as const,
+};
+
+export const boardingKeys = {
+  all: ["boarding"] as const,
+  kennelTypes: (branchId: string, page: PageParams, filter: KennelTypeFilter) =>
+    [...boardingKeys.all, "kennel-types", branchId, page, filter] as const,
+  kennels: (branchId: string, page: PageParams, filter: KennelFilter) =>
+    [...boardingKeys.all, "kennels", branchId, page, filter] as const,
+  rules: (branchId: string) => [...boardingKeys.all, "rules", branchId] as const,
 };
 
 export const shopKeys = {
