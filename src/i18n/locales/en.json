@@ -122,7 +122,8 @@
     "medicalSettings": "Medical settings",
     "medicalQueue": "Exam queue",
     "medicalVisits": "Visits",
-    "medicalVisitDetail": "Exam page"
+    "medicalVisitDetail": "Exam page",
+    "medicalReminders": "Reminders"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."
@@ -399,7 +400,8 @@
         "checkPrice": "Check service prices",
         "editProfile": "Edit profile",
         "born": "Born {date}",
-        "markDeceased": "Mark as deceased"
+        "markDeceased": "Mark as deceased",
+        "tabVaccines": "Vaccination"
       },
       "import": {
         "title": "Import customers and pets from a file",
@@ -812,7 +814,8 @@
     "medical": "Clinic",
     "medicalSettings": "Medical settings",
     "medicalQueue": "Exam queue",
-    "medicalVisits": "Visits"
+    "medicalVisits": "Visits",
+    "medicalReminders": "Reminders"
   },
   "pos": {
     "title": "Point of sale",
@@ -2852,7 +2855,8 @@
     "nav": {
       "settings": "Medical settings",
       "queue": "Exam queue",
-      "visits": "Visits"
+      "visits": "Visits",
+      "reminders": "Reminders"
     },
     "common": {
       "active": "Active",
@@ -2890,7 +2894,10 @@
       "species_not_allowed": "This service is not for {name}'s species.",
       "no_weight": "The visit needs a weight to price {name}.",
       "no_price": "No price for {name}.",
-      "bad_unit": "The unit does not belong to this product."
+      "bad_unit": "The unit does not belong to this product.",
+      "no_vaccine": "This vaccine type cannot be used.",
+      "no_lot": "No unexpired batch of {name} in stock at this branch.",
+      "future_date": "The shot cannot be after today."
     },
     "settings": {
       "title": "Medical settings",
@@ -3105,7 +3112,8 @@
       "recheckOf": "Re-check of {code}",
       "recheckBooked": "Re-check booked: {code}.",
       "payAtPos": "Pay at POS",
-      "tabItems": "Services & medicine"
+      "tabItems": "Services & medicine",
+      "tabVaccines": "Vaccination"
     },
     "side": {
       "openPet": "Pet profile",
@@ -3173,6 +3181,64 @@
       "phone": "Phone",
       "external": "bought elsewhere",
       "vet": "Veterinarian"
+    },
+    "book": {
+      "empty": "No shots yet.",
+      "state": {
+        "ok": "Valid",
+        "due_soon": "Due soon",
+        "overdue": "Overdue"
+      },
+      "dose": "Shot {n}",
+      "lot": "lot",
+      "external": "elsewhere",
+      "void": "Void shot",
+      "voidTitle": "Void the shot",
+      "voidDesc": "The shot is struck out of the book; its charge (if not on an invoice yet) is removed too.",
+      "visitHint": "A shot given at the clinic adds a charged line (the vaccine from stock) and goes into the pet's e-book.",
+      "petHint": "The pet's e-book of shots, by type. Shots given at the clinic are recorded from the exam page.",
+      "give": "Give a shot",
+      "giveTitle": "Record a shot",
+      "giveDesc": "Pick the type; the batch that expires first is chosen for you.",
+      "type": "Type",
+      "typePlaceholder": "Choose a vaccine or dewormer",
+      "lotLabel": "Batch",
+      "lotPlaceholder": "Choose a batch",
+      "noExpiry": "no expiry",
+      "noLots": "This product has no unexpired batch in stock at this branch.",
+      "doseNo": "Shot no.",
+      "nextDue": "Remind on",
+      "protocol": "Protocol: {doses} basic shots, {interval} days apart, booster after {booster} days.",
+      "addExternal": "Add a shot from elsewhere",
+      "externalDesc": "A shot given at another clinic: no stock, no charge.",
+      "givenOn": "Date given",
+      "place": "Where",
+      "lotNo": "Batch no.",
+      "expiry": "Expiry",
+      "warnings": {
+        "too_young": "The pet is younger than the minimum age for this type.",
+        "species_mismatch": "This type is not meant for the pet's species."
+      }
+    },
+    "reminders": {
+      "title": "Reminders",
+      "searchPlaceholder": "Search pet, owner, phone...",
+      "scope": {
+        "due": "Due soon",
+        "overdue": "Overdue",
+        "recheck": "Re-checks"
+      },
+      "pet": "Pet",
+      "owner": "Owner",
+      "what": "Shot / reason",
+      "dueOn": "Due",
+      "called": "Called",
+      "empty": "Nobody to remind.",
+      "mark": "Called",
+      "markTitle": "Called the owner of {pet}",
+      "markDesc": "Only records the call; the due day stays.",
+      "note": "Note",
+      "noteHint": "For example: booked Saturday"
     }
   }
 }

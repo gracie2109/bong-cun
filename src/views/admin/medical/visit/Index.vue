@@ -29,10 +29,14 @@
             <Tabs default-value="record">
               <TabsList>
                 <TabsTrigger value="record">{{ $t("medical.detail.tabRecord") }}</TabsTrigger>
+                <TabsTrigger value="vaccines">{{ $t("medical.detail.tabVaccines") }}</TabsTrigger>
                 <TabsTrigger value="items">{{ $t("medical.detail.tabItems") }} ({{ visit.items.length }})</TabsTrigger>
               </TabsList>
               <TabsContent value="record" class="pt-4">
                 <RecordTab :visit="visit" :can-edit="canEditRecord" :can-add-addendum="canUpdate" />
+              </TabsContent>
+              <TabsContent value="vaccines" class="pt-4">
+                <VaccinesTab :visit="visit" :can-update="canUpdate" />
               </TabsContent>
               <TabsContent value="items" class="pt-4">
                 <ItemsTab :visit="visit" :can-update="canUpdate" />
@@ -58,6 +62,7 @@ import CancelVisitDialog from "./CancelVisitDialog.vue";
 import ItemsTab from "./items/ItemsTab.vue";
 import RecordTab from "./record/RecordTab.vue";
 import PetSidePanel from "./side/PetSidePanel.vue";
+import VaccinesTab from "./vaccines/VaccinesTab.vue";
 import { useVisitDetail } from "./useVisitDetail";
 import VisitHeader from "./VisitHeader.vue";
 

@@ -5,3 +5,4 @@ export * from "./errors";
 export * from "./rules";
 export * from "./vaccineTypes";
 export * from "./visits";
+export * from "./vaccinations";

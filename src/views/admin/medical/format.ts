@@ -1,5 +1,6 @@
 import type { VaccineKind } from "@/types/medical";
 import type { VisitStatus } from "@/types/medicalVisit";
+import type { BookState } from "@/types/vaccination";
 
 export { dateTime, money } from "@/views/admin/pos/format";
 export { addDays, dateKeyOf, timeOf, todayKey, toIso } from "@/views/admin/schedule/format";
@@ -25,3 +26,10 @@ export const VISIT_TONE: Record<VisitStatus, string> = {
 /** Whole minutes since an ISO time; 0 when there is none or it lies ahead. */
 export const minutesSince = (iso: string | null, now: number = Date.now()): number =>
   iso ? Math.max(Math.floor((now - Date.parse(iso)) / 60_000), 0) : 0;
+
+/** Badge colours of the state of a vaccine in the e-book. */
+export const BOOK_STATE_TONE: Record<BookState, string> = {
+  ok: "bg-emerald-100 text-emerald-800",
+  due_soon: "bg-amber-100 text-amber-800",
+  overdue: "bg-red-100 text-red-700",
+};

@@ -122,7 +122,8 @@
     "medicalSettings": "Cài đặt y tế",
     "medicalQueue": "Hàng chờ khám",
     "medicalVisits": "Lượt khám",
-    "medicalVisitDetail": "Trang khám"
+    "medicalVisitDetail": "Trang khám",
+    "medicalReminders": "Nhắc lịch"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -399,7 +400,8 @@
         "checkPrice": "Tra giá dịch vụ",
         "editProfile": "Sửa hồ sơ",
         "born": "Sinh {date}",
-        "markDeceased": "Đánh dấu đã mất"
+        "markDeceased": "Đánh dấu đã mất",
+        "tabVaccines": "Sổ tiêm"
       },
       "import": {
         "title": "Nhập khách và thú cưng từ file",
@@ -812,7 +814,8 @@
     "medical": "Y tế",
     "medicalSettings": "Cài đặt y tế",
     "medicalQueue": "Hàng chờ khám",
-    "medicalVisits": "Lượt khám"
+    "medicalVisits": "Lượt khám",
+    "medicalReminders": "Nhắc lịch"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -2852,7 +2855,8 @@
     "nav": {
       "settings": "Cài đặt y tế",
       "queue": "Hàng chờ khám",
-      "visits": "Lượt khám"
+      "visits": "Lượt khám",
+      "reminders": "Nhắc lịch"
     },
     "common": {
       "active": "Đang dùng",
@@ -2890,7 +2894,10 @@
       "species_not_allowed": "Dịch vụ này không áp dụng cho loài của {name}.",
       "no_weight": "Cần cân nặng của lượt khám để tính giá dịch vụ {name}.",
       "no_price": "Chưa có giá cho {name}.",
-      "bad_unit": "Đơn vị không thuộc sản phẩm này."
+      "bad_unit": "Đơn vị không thuộc sản phẩm này.",
+      "no_vaccine": "Loại vắc-xin này không dùng được.",
+      "no_lot": "Không còn lô còn hạn và còn hàng của {name} tại cơ sở.",
+      "future_date": "Ngày tiêm không được sau hôm nay."
     },
     "settings": {
       "title": "Cài đặt y tế",
@@ -3105,7 +3112,8 @@
       "recheckOf": "Tái khám của {code}",
       "recheckBooked": "Đã hẹn tái khám {code}.",
       "payAtPos": "Thanh toán tại POS",
-      "tabItems": "Chỉ định & thuốc"
+      "tabItems": "Chỉ định & thuốc",
+      "tabVaccines": "Tiêm phòng"
     },
     "side": {
       "openPet": "Hồ sơ thú",
@@ -3173,6 +3181,64 @@
       "phone": "Điện thoại",
       "external": "mua ngoài",
       "vet": "Bác sĩ thú y"
+    },
+    "book": {
+      "empty": "Chưa có mũi tiêm nào.",
+      "state": {
+        "ok": "Còn hạn",
+        "due_soon": "Sắp đến hạn",
+        "overdue": "Quá hạn"
+      },
+      "dose": "Mũi {n}",
+      "lot": "lô",
+      "external": "nơi khác",
+      "void": "Hủy mũi",
+      "voidTitle": "Hủy mũi tiêm",
+      "voidDesc": "Mũi tiêm được gạch bỏ khỏi sổ; tiền của mũi này (nếu chưa vào hóa đơn) cũng bị bỏ.",
+      "visitHint": "Mũi tiêm tại phòng khám tự thêm dòng tính tiền (vắc-xin trong kho) và ghi vào sổ tiêm của thú.",
+      "petHint": "Sổ tiêm điện tử của thú, theo từng loại. Mũi tiêm tại phòng khám ghi từ trang khám.",
+      "give": "Tiêm mũi",
+      "giveTitle": "Ghi mũi tiêm",
+      "giveDesc": "Chọn loại; lô hết hạn sớm nhất được chọn sẵn.",
+      "type": "Loại",
+      "typePlaceholder": "Chọn loại vắc-xin / tẩy giun",
+      "lotLabel": "Lô",
+      "lotPlaceholder": "Chọn lô",
+      "noExpiry": "không hạn",
+      "noLots": "Sản phẩm này không còn lô nào còn hạn và còn hàng tại cơ sở.",
+      "doseNo": "Mũi thứ",
+      "nextDue": "Ngày nhắc",
+      "protocol": "Phác đồ: {doses} mũi cơ bản, cách nhau {interval} ngày, nhắc lại sau {booster} ngày.",
+      "addExternal": "Thêm mũi ngoại viện",
+      "externalDesc": "Mũi tiêm ở nơi khác: không trừ kho, không tính tiền.",
+      "givenOn": "Ngày tiêm",
+      "place": "Nơi tiêm",
+      "lotNo": "Số lô",
+      "expiry": "Hạn dùng",
+      "warnings": {
+        "too_young": "Thú nhỏ hơn tuổi tối thiểu của loại này.",
+        "species_mismatch": "Loại này không dành cho loài của thú."
+      }
+    },
+    "reminders": {
+      "title": "Nhắc lịch",
+      "searchPlaceholder": "Tìm tên thú, khách, số điện thoại...",
+      "scope": {
+        "due": "Sắp đến hạn",
+        "overdue": "Quá hạn",
+        "recheck": "Tái khám"
+      },
+      "pet": "Thú cưng",
+      "owner": "Chủ",
+      "what": "Mũi tiêm / lý do",
+      "dueOn": "Đến hạn",
+      "called": "Đã gọi",
+      "empty": "Không có ai cần nhắc.",
+      "mark": "Đã gọi",
+      "markTitle": "Đã gọi cho chủ của {pet}",
+      "markDesc": "Chỉ ghi nhận cuộc gọi; ngày đến hạn giữ nguyên.",
+      "note": "Ghi chú",
+      "noteHint": "Ví dụ: hẹn thứ bảy"
     }
   }
 }

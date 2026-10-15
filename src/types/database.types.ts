@@ -2849,6 +2849,16 @@ export type Database = {
       add_medical_item: { Args: { p: Json; p_visit: string }; Returns: Json }
       update_medical_item: { Args: { p: Json; p_id: string }; Returns: Json }
       remove_medical_item: { Args: { p_id: string }; Returns: undefined }
+      vaccine_lots: { Args: { p_branch: string; p_vaccine_type: string }; Returns: Json }
+      give_vaccination: { Args: { p: Json; p_visit: string }; Returns: Json }
+      add_external_vaccination: { Args: { p: Json; p_pet: string }; Returns: string }
+      void_vaccination: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      pet_vaccinations: { Args: { p_pet: string }; Returns: Json }
+      medical_reminders: {
+        Args: { p_branch: string; p_page?: number; p_page_size?: number; p_scope?: string; p_search?: string }
+        Returns: Json
+      }
+      mark_reminded: { Args: { p_note?: string; p_vaccination: string }; Returns: undefined }
       medical_prescription: { Args: { p_visit: string }; Returns: Json }
       save_diagnosis_term: { Args: { p: Json; p_id?: string }; Returns: string }
       save_medical_settings: { Args: { p: Json; p_branch: string }; Returns: undefined }

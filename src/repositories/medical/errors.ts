@@ -29,6 +29,9 @@ export const MEDICAL_ERROR_HINTS = [
   "no_weight",
   "no_price",
   "bad_unit",
+  "no_vaccine",
+  "no_lot",
+  "future_date",
 ] as const;
 export type MedicalErrorHint = (typeof MEDICAL_ERROR_HINTS)[number];
 
