@@ -114,7 +114,10 @@
     "boardingSettings": "Cài đặt lưu trú",
     "boardingBoard": "Sơ đồ chuồng",
     "boardingStays": "Lượt lưu trú",
-    "boardingStayDetail": "Chi tiết lượt lưu trú"
+    "boardingStayDetail": "Chi tiết lượt lưu trú",
+    "accountBoarding": "Lưu trú của tôi",
+    "accountBoardingDetail": "Chi tiết lưu trú",
+    "boarding": "Khách sạn thú cưng"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -2367,7 +2370,8 @@
       "products": "Sản phẩm",
       "spa": "Dịch vụ spa",
       "about": "Giới thiệu",
-      "contact": "Liên hệ"
+      "contact": "Liên hệ",
+      "boarding": "Khách sạn thú cưng"
     },
     "menu": {
       "login": "Đăng nhập",
@@ -2565,7 +2569,8 @@
         "addresses": "Sổ địa chỉ",
         "orders": "Đơn hàng",
         "pets": "Thú cưng",
-        "appointments": "Lịch hẹn"
+        "appointments": "Lịch hẹn",
+        "boarding": "Lưu trú"
       },
       "profile": {
         "info": "Thông tin cá nhân",
@@ -2598,7 +2603,9 @@
         "petsHint": "Xem và cập nhật thú cưng cửa hàng đã đăng ký cho bạn",
         "petsCount": "{n} thú cưng",
         "nextAppointment": "Lịch hẹn sắp tới",
-        "noAppointment": "Chưa có lịch. Đặt lịch spa ngay"
+        "noAppointment": "Chưa có lịch. Đặt lịch spa ngay",
+        "currentStay": "Đang lưu trú",
+        "noStay": "Chưa có thú đang ở khách sạn"
       }
     },
     "pets": {
@@ -2746,6 +2753,57 @@
       "openHours": "Mở cửa {hours} mỗi ngày",
       "language": "Ngôn ngữ",
       "skipToContent": "Bỏ qua, tới nội dung chính"
+    },
+    "boarding": {
+      "scope": {
+        "upcoming": "Sắp tới",
+        "current": "Đang ở",
+        "past": "Đã xong"
+      },
+      "empty": {
+        "upcoming": "Bạn chưa có lượt lưu trú sắp tới.",
+        "current": "Hiện chưa có bé nào đang ở khách sạn.",
+        "past": "Chưa có lượt lưu trú nào đã xong."
+      },
+      "loadFailed": "Không tải được thông tin lưu trú.",
+      "status": {
+        "booked": "Đã đặt",
+        "checked_in": "Đang ở",
+        "checked_out": "Đã trả",
+        "paid": "Đã thanh toán",
+        "cancelled": "Đã hủy",
+        "no_show": "Không đến"
+      },
+      "until": "Đến {day}",
+      "nights": "{n} đêm",
+      "estimate": "Tạm tính",
+      "total": "Tổng tiền",
+      "view": "Xem chi tiết",
+      "back": "Lưu trú của tôi",
+      "callToBook": "Muốn đặt chỗ? Gọi cửa hàng:",
+      "pets": "Thú cưng",
+      "feeding": "Chế độ ăn",
+      "medication": "Thuốc",
+      "careLog": "Nhật ký chăm sóc",
+      "noLogs": "Chưa có nhật ký nào để xem.",
+      "estimateNote": "Số tiền tạm tính theo giá đêm và các phát sinh đến hiện tại; cửa hàng chốt khi bạn đón bé.",
+      "eyebrow": "Khách sạn thú cưng",
+      "pageTitle": "Chỗ ở an toàn cho bé khi bạn vắng nhà",
+      "intro": "Chuồng sạch, được cho ăn đúng bữa, đi dạo và cập nhật nhật ký chăm sóc mỗi ngày.",
+      "priceTitle": "Giá mỗi đêm",
+      "night": "đêm",
+      "speciesLabel": "Nhận",
+      "maxWeight": "Tối đa {kg} kg",
+      "sharing": "Cho tối đa {n} bé cùng một chuồng",
+      "extraPet": "bé thứ hai trở đi {price} / đêm",
+      "rulesTitle": "Quy định giờ",
+      "ruleCheckIn": "Nhận bé từ {time}.",
+      "ruleCheckOut": "Trả bé trước {time} để không bị tính thêm.",
+      "ruleLate": "Trả muộn sau {half} tính thêm nửa đêm, sau {full} tính thêm một đêm.",
+      "ruleVaccine": "Vui lòng mang sổ tiêm phòng khi gửi bé.",
+      "priceNote": "Giá tham khảo; cửa hàng chốt số tiền khi bạn đón bé. Gọi cửa hàng để đặt chỗ.",
+      "emptyHint": "Gọi cửa hàng để được tư vấn.",
+      "emptyPublic": "Chưa có bảng giá khách sạn"
     }
   }
 }
