@@ -991,7 +991,8 @@
       "return_products_only": "Only products can be returned, not services or combos.",
       "reason_required": "A reason is required.",
       "unit_not_available": "This unit can no longer be used, pick another.",
-      "charge_not_billable": "This boarding charge is not checked out yet, is already paid, or belongs to another customer."
+      "charge_not_billable": "This boarding charge is not checked out yet, is already paid, or belongs to another customer.",
+      "medical_item_not_billable": "This medical line is not signed yet, is already paid, or belongs to another customer."
     },
     "returns": {
       "title": "Returns",
@@ -1025,6 +1026,13 @@
       "add": "Add",
       "added": "Added",
       "fromStay": "Boarding charge of stay {code}, quantity {qty}, price fixed at check-out"
+    },
+    "medicalVisits": {
+      "title": "Medical visits to pay ({count})",
+      "lines": "{count} lines",
+      "add": "Add",
+      "added": "Added",
+      "fromVisit": "Line of visit {code}, quantity {qty}, price fixed when the vet signed"
     }
   },
   "products": {
@@ -3113,7 +3121,8 @@
       "recheckBooked": "Re-check booked: {code}.",
       "payAtPos": "Pay at POS",
       "tabItems": "Services & medicine",
-      "tabVaccines": "Vaccination"
+      "tabVaccines": "Vaccination",
+      "tabMoney": "Billing"
     },
     "side": {
       "openPet": "Pet profile",
@@ -3239,6 +3248,16 @@
       "markDesc": "Only records the call; the due day stays.",
       "note": "Note",
       "noteHint": "For example: booked Saturday"
+    },
+    "money": {
+      "total": "Total",
+      "paid": "Paid",
+      "unpaid": "To pay",
+      "statePaid": "Paid",
+      "stateUnpaid": "Waiting",
+      "notSigned": "The visit must be signed by the vet before it can be paid at the POS.",
+      "goPos": "Open the POS to take payment",
+      "empty": "Nothing to pay yet."
     }
   }
 }

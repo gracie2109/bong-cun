@@ -48,6 +48,7 @@
             <CustomerPanel v-model="buyer" />
             <SpaTicketsPanel :branch-id="branchId" :customer-id="buyer?.customerId ?? undefined" :added="addedTickets" @add="addTicket" />
             <BoardingChargesPanel :branch-id="branchId" :customer-id="buyer?.customerId ?? undefined" :added="addedCharges" @add="addBoardingStay" />
+            <MedicalVisitsPanel :branch-id="branchId" :customer-id="buyer?.customerId ?? undefined" :added="addedMedical" @add="addMedicalVisit" />
           </div>
 
           <div class="min-h-0 flex-1 overflow-y-auto">
@@ -118,6 +119,7 @@ import PaymentDialog from "./components/PaymentDialog.vue";
 import PosCartFooter from "./components/PosCartFooter.vue";
 import PosCartLine from "./components/PosCartLine.vue";
 import BoardingChargesPanel from "./components/BoardingChargesPanel.vue";
+import MedicalVisitsPanel from "./components/MedicalVisitsPanel.vue";
 import SpaTicketsPanel from "./components/SpaTicketsPanel.vue";
 import PosNav from "./PosNav.vue";
 import { dateTime } from "./format";
@@ -148,6 +150,7 @@ const {
   addItem,
   addTicket,
   addBoardingStay,
+  addMedicalVisit,
   removeLine,
   changeQty,
   changeUnit,
@@ -160,6 +163,8 @@ const {
 const addedTickets = computed(() => new Set(lines.value.flatMap((line) => (line.appointmentItemId ? [line.appointmentItemId] : []))));
 
 const addedCharges = computed(() => new Set(lines.value.flatMap((line) => (line.boardingChargeId ? [line.boardingChargeId] : []))));
+
+const addedMedical = computed(() => new Set(lines.value.flatMap((line) => (line.medicalItemId ? [line.medicalItemId] : []))));
 
 const { paymentOpen, result, printing, creating, pay, print } = usePosCheckout({
   branchId,

@@ -2920,6 +2920,7 @@ export type Database = {
       my_boarding_stay: { Args: { p_id: string }; Returns: Json }
       boarding_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }
       billable_boarding_charges: { Args: { p_branch: string; p_customer: string }; Returns: Json }
+      billable_medical_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       cancel_appointment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       check_in_appointment: { Args: { p_id: string; p_weights?: Json }; Returns: undefined }

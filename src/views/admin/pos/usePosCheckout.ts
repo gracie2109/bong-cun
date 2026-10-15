@@ -27,6 +27,10 @@ const toSaleCustomer = (value: Buyer | null): SaleCustomer => {
   return { fullName: value.fullName, phone: value.phone };
 };
 
+/** The line type the sale function expects: tickets, boarding charges and visit lines are paid by id. */
+const lineType = (line: CartLine) =>
+  line.appointmentItemId ? "appointment_item" : line.boardingChargeId ? "boarding_charge" : line.medicalItemId ? "medical_item" : line.item.type;
+
 /** Paying for the cart, printing the receipt, and starting the next sale once the dialog closes. */
 export const usePosCheckout = (sale: Sale) => {
   const { t } = useI18n();
@@ -47,7 +51,7 @@ export const usePosCheckout = (sale: Sale) => {
         discountAmount: sale.discount.value,
         note: sale.note.value.trim() || null,
         lines: sale.lines.value.map((line) => ({
-          type: line.appointmentItemId ? "appointment_item" : line.boardingChargeId ? "boarding_charge" : line.item.type,
+          type: lineType(line),
           id: line.appointmentItemId ?? line.item.id,
           qty: line.qty,
           unitId: line.item.unitId ?? null,
