@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { NumberFieldRootEmits, NumberFieldRootProps } from 'radix-vue'
-import { NumberFieldRoot, useForwardPropsEmits } from 'radix-vue'
+import type { NumberFieldRootEmits, NumberFieldRootProps } from 'reka-ui'
+import { NumberFieldRoot, useForwardPropsEmits } from 'reka-ui'
 import { type HTMLAttributes, computed } from 'vue'
 import { cn } from '@/lib/utils'
 

@@ -13,7 +13,7 @@ Các mục 4.1, 4.2, 4.8 và 5 đã được xử lý theo [ke-hoach-sua-kien-tr
 - Không còn file nào trong `src/` trên 300 dòng (PR #130).
 - Mục 4.3: rà lại cho thấy các chỗ gác bằng `is_staff()` là chủ ý (xem bên dưới); test quyền đã có cho POS.
 
-Còn để sau: 4.4 (kiểu `jsonb`), 4.5 (`radix-vue` sang `reka-ui`), 4.6 (`pg_cron`), 4.7 (bảng tổng hợp báo cáo), test cho lưu trú và y tế.
+Còn để sau: 4.4 (kiểu `jsonb`), 4.6 (`pg_cron`), 4.7 (bảng tổng hợp báo cáo), (test SQL cho lưu trú và y tế đã có ở PR #132, `radix-vue` đã chuyển sang `reka-ui` ở PR sau đó).
 
 ## 1. Trả lời ngắn
 
@@ -81,7 +81,7 @@ Còn để sau: 4.4 (kiểu `jsonb`), 4.5 (`radix-vue` sang `reka-ui`), 4.6 (`pg
 - `radix-vue` (tên cũ) dùng ở 155 file, `reka-ui` (tên mới của cùng thư viện) ở 10 file. Hai bản cùng nằm trong bundle.
 - `@vuepic/vue-datepicker` không còn component nào import nhưng CSS của nó vẫn nạp toàn cục trong `nuxt.config.ts`; `uuid` không còn được import (code dùng `crypto.randomUUID()`); `vue-multiselect`, `lodash-es`, `vue-zoomable` mỗi cái chỉ dùng ở 1 file. Tên package vẫn là `beer-sys`.
 
-**Hướng sửa:** chuyển dần `radix-vue` sang `reka-ui` theo từng thư mục `components/ui`, gỡ các gói không dùng. Làm khi đụng tới, không cần đợt riêng.
+**Đã sửa (2026-10-15):** đổi toàn bộ import sang `reka-ui`, gỡ `radix-vue`. `Checkbox` và `Switch` giữ API `checked`/`update:checked` cũ nên không phải sửa ~35 chỗ dùng. Typecheck 0 lỗi, build chạy; chưa bấm thử trên trình duyệt.
 
 ### 4.6 Việc chạy nền chưa có chỗ (thấp bây giờ, cao khi có khách)
 

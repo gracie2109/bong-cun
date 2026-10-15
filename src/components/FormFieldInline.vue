@@ -41,7 +41,7 @@ import { ref, defineProps, defineEmits } from "vue";
 import { InfoIcon } from "lucide-vue-next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { FormControl, FormField, FormItem } from "./ui/form";
-import { PopoverArrow, PopoverClose } from "radix-vue";
+import { PopoverArrow, PopoverClose } from "reka-ui";
 
 defineProps<{
   name: string;

@@ -6,7 +6,7 @@ import {
   type SelectItemProps,
   SelectItemText,
   useForwardProps,
-} from 'radix-vue'
+} from 'reka-ui'
 import { CheckIcon } from '@radix-icons/vue'
 import { cn } from '@/lib/utils'
 

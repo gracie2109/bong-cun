@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import type { PrimitiveProps } from 'radix-vue';
+import type { PrimitiveProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
 
 export { default as Input } from './Input.vue';
