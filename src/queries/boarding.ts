@@ -18,7 +18,9 @@ import {
   getBoardingBoard,
   getBoardingRules,
   getBoardingStay,
+  getBoardingTimeline,
   getTypeAvailability,
+  moveBoardingPet,
   listBillableBoarding,
   listBoardingStays,
   listKennels,
@@ -295,3 +297,16 @@ export const useBillableBoarding = (branchId: MaybeRef<string | undefined>, cust
     queryFn: () => listBillableBoarding(supabaseClient(), unref(branchId) as string, unref(customerId) as string),
     enabled: computed(() => !!unref(branchId) && !!unref(customerId)),
   });
+
+// ---------------------------------------------------------------- calendar
+export const useBoardingTimeline = (branchId: MaybeRef<string | undefined>, from: MaybeRef<string>, days: number) =>
+  useQuery({
+    queryKey: computed(() => boardingKeys.timeline(unref(branchId) ?? "", unref(from), days)),
+    queryFn: () => getBoardingTimeline(supabaseClient(), unref(branchId) as string, unref(from), days),
+    enabled: computed(() => !!unref(branchId)),
+    placeholderData: keepPreviousData,
+  });
+
+export const useMoveBoardingPet = () =>
+  useBoardingAction(({ stayPetId, kennelId }: { stayPetId: string; kennelId: string }) =>
+    moveBoardingPet(supabaseClient(), stayPetId, kennelId));

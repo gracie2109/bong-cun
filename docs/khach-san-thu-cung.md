@@ -2,7 +2,7 @@
 
 Kế hoạch module lưu trú: khách gửi thú ở lại cửa hàng qua đêm, nhân viên chăm sóc và ghi nhật ký, khách đón về và trả tiền tại quầy. Nguồn: kế hoạch BA/kiến trúc v0.3 (M8 Nội trú & Lưu trú, mục E, quy tắc 16 và 20, MoSCoW 2.3: lưu trú là **Should**). Module đứng sau POS (PR #43), RBAC theo (nhân viên, cơ sở) (PR #42), lịch hẹn spa (`docs/lich-hen-spa.md`), báo cáo doanh thu (`docs/bao-cao-doanh-thu.md`) và giao diện khách hàng (`docs/giao-dien-khach-hang.md`), đều đã merge.
 
-**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) và bước 3 (nhận thú, gia hạn, nhật ký chăm sóc, phát sinh, trả chuồng, trang chi tiết lượt `/admin/boarding/detail/[stayId]`) và bước 4 (thanh toán lưu trú ở POS: hộp "Lưu trú chờ thanh toán", dòng hóa đơn `boarding`, hủy hóa đơn trả khoản phí về chưa thanh toán) và bước 5 (báo cáo: mảng Lưu trú ở thẻ cơ cấu, biểu đồ ngày, bảng ngày và xếp hạng) và bước 6 (phía khách: `/account/boarding` và chi tiết, ô "Đang lưu trú" trên tổng quan tài khoản, trang công khai `/boarding` với bảng giá) đã làm xong. Các bước còn lại chưa có code. Thứ tự làm ở mục 10.
+**Tiến độ:** bước 1 (quyền, loại chuồng và giá, chuồng, quy định giờ, màn Cài đặt lưu trú) và bước 2 (đặt chỗ, sơ đồ chuồng, danh sách lượt) và bước 3 (nhận thú, gia hạn, nhật ký chăm sóc, phát sinh, trả chuồng, trang chi tiết lượt `/admin/boarding/detail/[stayId]`) và bước 4 (thanh toán lưu trú ở POS: hộp "Lưu trú chờ thanh toán", dòng hóa đơn `boarding`, hủy hóa đơn trả khoản phí về chưa thanh toán) và bước 5 (báo cáo: mảng Lưu trú ở thẻ cơ cấu, biểu đồ ngày, bảng ngày và xếp hạng) và bước 6 (phía khách: `/account/boarding` và chi tiết, ô "Đang lưu trú" trên tổng quan tài khoản, trang công khai `/boarding` với bảng giá) và bước 7 (lịch chuồng 14 ngày `/admin/boarding/timeline`, đổi chuồng cùng loại ở trang chi tiết, ô "Khách sạn hôm nay" trên dashboard) đã làm xong. Cả 7 bước đã có code. Thứ tự làm ở mục 10.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi giữ ở mức một cơ sở vận hành được hằng ngày, thiết kế sẵn cho nhiều cơ sở, không tích hợp bên ngoài, không đặt cọc.
 
@@ -199,7 +199,7 @@ Theo quy ước repo: nghiệp vụ nhiều bước trong Postgres function `sec
 | `boarding_timeline(p_branch, p_from, p_days)` | 2 (Should) | Lịch chuồng: các đoạn đêm đã đặt của mỗi chuồng trong `p_days` ngày (tối đa 31) |
 | `check_in_boarding(p_id, p_pets jsonb)` | 3 | Mỗi thú: cân (ghi `pet_weight_logs`), sổ tiêm, đồ mang theo, ăn, thuốc; chốt `night_price`; chuyển `checked_in`. Check-in sớm hơn ngày dự kiến thì dời `nights` nếu chuồng trống |
 | `extend_boarding_stay(p_id, p_planned_out_at)` | 3 | Gia hạn / rút ngắn lượt đang ở; lỗi `kennel_taken` nếu đêm thêm đã có lượt khác |
-| `move_boarding_pet(p_stay_pet, p_kennel)` | 3 (Should) | Đổi sang chuồng cùng loại còn trống từ hôm nay |
+| `move_boarding_pet(p_stay_pet, p_kennel)` | 7 (Should) | Đổi sang chuồng cùng loại; một dòng thú chỉ có một chuồng cho mọi đêm nên chuồng mới phải trống mọi đêm của lượt (lỗi `kennel_taken` nếu không), không nhập vào chuồng đã có thú khác của cùng lượt (`kennel_full`) |
 | `add_care_log(p_stay_pet, p jsonb)`, `delete_care_log(p_id)` | 3 | Ghi / xóa nhật ký |
 | `add_boarding_extra(p_stay_pet, p_service, p_qty)`, `remove_boarding_extra(p_id)` | 3 | Thêm / bỏ phát sinh; giá theo `get_service_price` với cân lúc check-in |
 | `boarding_checkout_preview(p_id, p_at timestamptz default now())` | 3 | Các khoản sẽ thu nếu trả lúc này, chưa lưu |

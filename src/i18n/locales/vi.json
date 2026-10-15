@@ -117,7 +117,8 @@
     "boardingStayDetail": "Chi tiết lượt lưu trú",
     "accountBoarding": "Lưu trú của tôi",
     "accountBoardingDetail": "Chi tiết lưu trú",
-    "boarding": "Khách sạn thú cưng"
+    "boarding": "Khách sạn thú cưng",
+    "boardingTimeline": "Lịch chuồng"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -1778,7 +1779,8 @@
     "nav": {
       "settings": "Cài đặt lưu trú",
       "board": "Sơ đồ chuồng",
-      "stays": "Danh sách lượt"
+      "stays": "Danh sách lượt",
+      "timeline": "Lịch chuồng"
     },
     "settings": {
       "title": "Cài đặt lưu trú",
@@ -1879,7 +1881,10 @@
       "need_weight": "Hãy nhập cân nặng của {name}.",
       "kennel_not_ready": "Chuồng {name} chưa sẵn sàng (đang vệ sinh hoặc bảo trì). Bấm Đã dọn ở Sơ đồ chuồng trước.",
       "too_old": "Nhật ký đã quá 24 giờ, không xóa được.",
-      "no_service": "Dịch vụ này không còn dùng."
+      "no_service": "Dịch vụ này không còn dùng.",
+      "wrong_type": "Hãy chọn chuồng cùng loại.",
+      "same_kennel": "Bé đang ở chuồng này rồi.",
+      "kennel_full": "Chuồng này đã có bé khác của cùng lượt."
     },
     "board": {
       "title": "Sơ đồ chuồng",
@@ -2051,6 +2056,26 @@
       "qty": "Số lượng",
       "add": "Thêm",
       "empty": "Chưa có khoản phát sinh nào."
+    },
+    "timeline": {
+      "title": "Lịch chuồng",
+      "prev": "14 ngày trước",
+      "next": "14 ngày sau",
+      "kennel": "Chuồng"
+    },
+    "move": {
+      "button": "Đổi chuồng",
+      "title": "Đổi chuồng của {name}",
+      "subtitle": "Đang ở {code} · {type}",
+      "kennel": "Chuồng mới (cùng loại)",
+      "pick": "Chọn chuồng",
+      "ok": "Đổi chuồng",
+      "none": "Không có chuồng cùng loại để đổi.",
+      "hint": "Chuồng mới phải trống mọi đêm của lượt này. Chuồng cũ chuyển sang đang vệ sinh khi bé đã ở trong đó."
+    },
+    "dashboard": {
+      "title": "Khách sạn hôm nay",
+      "open": "Mở sơ đồ chuồng"
     }
   },
   "reports": {

@@ -294,3 +294,28 @@ export type BillableCharge = { id: string; name: string; petName: string | null;
 
 /** A checked-out stay with the charges still to pay, for the POS cart. */
 export type BillableBoardingStay = { stayId: string; code: string; total: number; charges: BillableCharge[] };
+
+// ---------------------------------------------------------------- calendar
+/** The nights one pet holds a kennel, as the calendar draws them: [from, to) in yyyy-MM-dd. */
+export type TimelineSegment = {
+  stayId: string;
+  stayCode: string;
+  stayStatus: StayStatus;
+  stayPetId: string;
+  petName: string;
+  customerName: string;
+  from: string;
+  to: string;
+};
+
+export type TimelineKennel = {
+  id: string;
+  code: string;
+  name: string | null;
+  kennelTypeId: string;
+  kennelTypeName: string;
+  status: KennelStatus;
+  segments: TimelineSegment[];
+};
+
+export type BoardingTimeline = { from: string; days: number; kennels: TimelineKennel[] };
