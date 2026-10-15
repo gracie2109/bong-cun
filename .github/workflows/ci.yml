@@ -1,0 +1,47 @@
+name: CI
+
+# Checks every pull request before it can reach production: the app type-checks and builds,
+# and the whole migration history applies to an empty database and passes the SQL tests.
+# Nothing here touches the hosted Supabase project and no secret is needed.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run type-check
+      - run: npm run build
+
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          # Same version as the db:* npm scripts, so supabase/schema.sql comes out identical.
+          version: 2.121.0
+      - name: Apply every migration and the seed to an empty database
+        run: supabase db start
+      - name: SQL tests (supabase/tests)
+        run: supabase test db
+      - name: supabase/schema.sql matches the migrations
+        run: |
+          supabase db dump --local --schema public -f supabase/schema.sql
+          if ! git diff --quiet -- supabase/schema.sql; then
+            echo "::error file=supabase/schema.sql::Out of date. Run 'npm run db:start && npm run db:schema' and commit supabase/schema.sql."
+            git diff --stat -- supabase/schema.sql
+            exit 1
+          fi

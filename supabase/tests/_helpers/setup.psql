@@ -1,0 +1,106 @@
+set client_min_messages = warning;
+
+-- Shared fixtures for the pgTAP tests. Included at the top of each test file with
+--   \ir _helpers/setup.psql
+-- inside the test's transaction, so everything here is rolled back with the test.
+
+create extension if not exists pgtap with schema extensions;
+
+create schema if not exists tests;
+
+-- An auth user with an account type (users.role: customer, cashier, admin, superAdmin...).
+create or replace function tests.create_user(p_email text, p_role text default 'customer')
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at)
+  values (v_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', p_email,
+          jsonb_build_object('full_name', split_part(p_email, '@', 1)), now(), now());
+  update public.users set role = p_role where id = v_id;
+  return v_id;
+end;
+$$;
+
+-- Signs in as the user for the rest of the transaction: the same claims the access token
+-- hook puts in a real JWT (sub, user_role, branch_ids). Follow it with `set local role authenticated`.
+create or replace function tests.login(p_user uuid)
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', p_user,
+    'role', 'authenticated',
+    'user_role', (select role from public.users where id = p_user),
+    'branch_ids', (select coalesce(jsonb_agg(branch_id), '[]'::jsonb)
+                   from public.staff_branches where user_id = p_user)
+  )::text, true);
+end;
+$$;
+
+create or replace function tests.logout()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', '', true);
+end;
+$$;
+
+create or replace function tests.create_branch(p_code text)
+returns uuid
+language sql
+as $$
+  insert into public.branches (code, name) values (p_code, 'Branch ' || p_code) returning id;
+$$;
+
+-- A stock-tracked product at a fixed price, in its own product group.
+create or replace function tests.create_product(p_name text, p_price numeric)
+returns uuid
+language sql
+as $$
+  with g as (
+    insert into public.product_groups (name) values (p_name) returning id
+  )
+  insert into public.products (name, price, group_id, track_stock)
+  select p_name, p_price, g.id, true from g
+  returning id;
+$$;
+
+create or replace function tests.add_lot(
+  p_branch uuid, p_product uuid, p_qty numeric, p_expiry date, p_lot_no text
+) returns uuid
+language sql
+as $$
+  insert into public.stock_lots (branch_id, product_id, lot_no, expiry_date, qty_on_hand, unit_cost)
+  values (p_branch, p_product, p_lot_no, p_expiry, p_qty, 1000)
+  returning id;
+$$;
+
+create or replace function tests.lot_qty(p_lot uuid)
+returns numeric
+language sql
+as $$
+  select qty_on_hand from public.stock_lots where id = p_lot;
+$$;
+
+grant usage on schema tests to anon, authenticated;
+grant execute on all functions in schema tests to anon, authenticated;
+
+-- A cashier who holds the given role at the branch, with an open cash shift there.
+create or replace function tests.create_cashier(p_email text, p_branch uuid, p_role text default 'cashier')
+returns uuid
+language plpgsql
+as $$
+declare
+  v_user uuid := tests.create_user(p_email, 'cashier');
+begin
+  insert into public.staff_branches (user_id, branch_id, role) values (v_user, p_branch, p_role);
+  insert into public.cash_shifts (code, branch_id, opened_by, opening_cash)
+  values ('CA-' || left(v_user::text, 8), p_branch, v_user, 0);
+  return v_user;
+end;
+$$;
