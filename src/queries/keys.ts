@@ -19,6 +19,7 @@ import type { AppointmentFilter } from "@/repositories/spa";
 import type { KennelFilter, KennelTypeFilter, StayFilter } from "@/types/boarding";
 import type { DiagnosisTermFilter, VaccineTypeFilter } from "@/types/medical";
 import type { VisitFilter } from "@/types/medicalVisit";
+import type { ReminderFilter } from "@/types/vaccination";
 import type { UserListFilter } from "@/repositories/users";
 
 export const speciesKeys = {
@@ -223,6 +224,9 @@ export const medicalKeys = {
   visit: (id: string) => [...medicalKeys.all, "visit", id] as const,
   history: (petId: string, page: PageParams) => [...medicalKeys.all, "history", petId, page] as const,
   vets: (branchId: string) => [...medicalKeys.all, "vets", branchId] as const,
+  book: (petId: string) => [...medicalKeys.all, "book", petId] as const,
+  lots: (branchId: string, typeId: string) => [...medicalKeys.all, "lots", branchId, typeId] as const,
+  reminders: (branchId: string, page: PageParams, filter: ReminderFilter) => [...medicalKeys.all, "reminders", branchId, page, filter] as const,
 };
 
 export const shopKeys = {

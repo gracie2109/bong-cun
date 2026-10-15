@@ -65,6 +65,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
     items: [
       { title: "adminNav.medicalQueue", icon: "lucide:stethoscope", name: "medicalQueue" },
       { title: "adminNav.medicalVisits", icon: "lucide:list-checks", name: "medicalVisits" },
+      { title: "adminNav.medicalReminders", icon: "lucide:bell-ring", name: "medicalReminders" },
       { title: "adminNav.medicalSettings", icon: "lucide:settings-2", name: "medicalSettings" },
     ],
   },
