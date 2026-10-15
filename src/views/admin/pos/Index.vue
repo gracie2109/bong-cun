@@ -47,6 +47,7 @@
             <h2 class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{{ $t("pos.customer.title") }}</h2>
             <CustomerPanel v-model="buyer" />
             <SpaTicketsPanel :branch-id="branchId" :customer-id="buyer?.customerId ?? undefined" :added="addedTickets" @add="addTicket" />
+            <BoardingChargesPanel :branch-id="branchId" :customer-id="buyer?.customerId ?? undefined" :added="addedCharges" @add="addBoardingStay" />
           </div>
 
           <div class="min-h-0 flex-1 overflow-y-auto">
@@ -116,6 +117,7 @@ import OpenShiftDialog from "./components/OpenShiftDialog.vue";
 import PaymentDialog from "./components/PaymentDialog.vue";
 import PosCartFooter from "./components/PosCartFooter.vue";
 import PosCartLine from "./components/PosCartLine.vue";
+import BoardingChargesPanel from "./components/BoardingChargesPanel.vue";
 import SpaTicketsPanel from "./components/SpaTicketsPanel.vue";
 import PosNav from "./PosNav.vue";
 import { dateTime } from "./format";
@@ -145,6 +147,7 @@ const {
   canCheckout,
   addItem,
   addTicket,
+  addBoardingStay,
   removeLine,
   changeQty,
   changeUnit,
@@ -155,6 +158,8 @@ const {
 } = usePosCart(branchId, computed(() => !!shift.value));
 
 const addedTickets = computed(() => new Set(lines.value.flatMap((line) => (line.appointmentItemId ? [line.appointmentItemId] : []))));
+
+const addedCharges = computed(() => new Set(lines.value.flatMap((line) => (line.boardingChargeId ? [line.boardingChargeId] : []))));
 
 const { paymentOpen, result, printing, creating, pay, print } = usePosCheckout({
   branchId,

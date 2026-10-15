@@ -288,3 +288,9 @@ export type CheckoutLine = Pick<StayCharge, "stayPetId" | "petName" | "kind" | "
 export type CheckoutBelonging = { stayPetId: string; petName: string; belongings: string; returned: boolean };
 
 export type CheckoutPreview = { at: string; items: CheckoutLine[]; total: number; belongings: CheckoutBelonging[] };
+
+/** A charge of a checked-out stay that is not on an invoice yet. */
+export type BillableCharge = { id: string; name: string; petName: string | null; qty: number; unitPrice: number; amount: number };
+
+/** A checked-out stay with the charges still to pay, for the POS cart. */
+export type BillableBoardingStay = { stayId: string; code: string; total: number; charges: BillableCharge[] };

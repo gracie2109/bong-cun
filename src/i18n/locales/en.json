@@ -816,7 +816,8 @@
     "lineType": {
       "product": "Product",
       "service": "Service",
-      "combo": "Combo"
+      "combo": "Combo",
+      "boarding": "Boarding"
     },
     "method": {
       "cash": "Cash",
@@ -965,7 +966,8 @@
       "return_too_much": "More than what is left to return of {name}.",
       "return_products_only": "Only products can be returned, not services or combos.",
       "reason_required": "A reason is required.",
-      "unit_not_available": "This unit can no longer be used, pick another."
+      "unit_not_available": "This unit can no longer be used, pick another.",
+      "charge_not_billable": "This boarding charge is not checked out yet, is already paid, or belongs to another customer."
     },
     "returns": {
       "title": "Returns",
@@ -992,6 +994,13 @@
     },
     "channel": {
       "online": "Online"
+    },
+    "boardingCharges": {
+      "title": "Boarding stays to pay ({count})",
+      "charges": "{count} charges",
+      "add": "Add",
+      "added": "Added",
+      "fromStay": "Boarding charge of stay {code}, quantity {qty}, price fixed at check-out"
     }
   },
   "products": {
@@ -2173,7 +2182,8 @@
     "itemType": {
       "product": "Goods",
       "service": "Service",
-      "combo": "Combo"
+      "combo": "Combo",
+      "boarding": "Boarding"
     },
     "items": {
       "title": "Best-selling products & services",
