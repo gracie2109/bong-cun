@@ -32,6 +32,12 @@ export const MEDICAL_ERROR_HINTS = [
   "no_vaccine",
   "no_lot",
   "future_date",
+  "inpatient_active",
+  "no_kennel",
+  "need_isolation",
+  "kennel_taken",
+  "already_admitted",
+  "already_done",
 ] as const;
 export type MedicalErrorHint = (typeof MEDICAL_ERROR_HINTS)[number];
 

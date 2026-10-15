@@ -124,7 +124,8 @@
     "medicalVisits": "Lượt khám",
     "medicalVisitDetail": "Trang khám",
     "medicalReminders": "Nhắc lịch",
-    "accountPetHealth": "Sổ sức khỏe"
+    "accountPetHealth": "Sổ sức khỏe",
+    "medicalWard": "Nội trú"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -816,7 +817,8 @@
     "medicalSettings": "Cài đặt y tế",
     "medicalQueue": "Hàng chờ khám",
     "medicalVisits": "Lượt khám",
-    "medicalReminders": "Nhắc lịch"
+    "medicalReminders": "Nhắc lịch",
+    "medicalWard": "Nội trú"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -2899,7 +2901,8 @@
       "settings": "Cài đặt y tế",
       "queue": "Hàng chờ khám",
       "visits": "Lượt khám",
-      "reminders": "Nhắc lịch"
+      "reminders": "Nhắc lịch",
+      "ward": "Nội trú"
     },
     "common": {
       "active": "Đang dùng",
@@ -2940,7 +2943,13 @@
       "bad_unit": "Đơn vị không thuộc sản phẩm này.",
       "no_vaccine": "Loại vắc-xin này không dùng được.",
       "no_lot": "Không còn lô còn hạn và còn hàng của {name} tại cơ sở.",
-      "future_date": "Ngày tiêm không được sau hôm nay."
+      "future_date": "Ngày tiêm không được sau hôm nay.",
+      "inpatient_active": "Thú đang nội trú, hãy cho ra trước khi ký hoặc hủy.",
+      "no_kennel": "Chọn chuồng nội trú.",
+      "need_isolation": "Bệnh truyền nhiễm cần chuồng cách ly.",
+      "kennel_taken": "Chuồng này đang có thú.",
+      "already_admitted": "Thú đã nhập nội trú.",
+      "already_done": "Liều này đã được xử lý."
     },
     "settings": {
       "title": "Cài đặt y tế",
@@ -3321,6 +3330,67 @@
       "inProgress": "Đang khám",
       "toPay": "Chờ thanh toán",
       "overdue": "Mũi tiêm quá hạn"
+    },
+    "ward": {
+      "title": "Nội trú",
+      "empty": "Hiện không có thú nào nằm nội trú.",
+      "purpose": {
+        "medical": "Y tế",
+        "isolation": "Cách ly"
+      },
+      "overdue": "Quá hạn ra",
+      "since": "Vào {time}",
+      "addOrder": "Thêm y lệnh",
+      "addLog": "Ghi chăm sóc",
+      "discharge": "Cho ra",
+      "stop": "Dừng",
+      "give": "Đã cho",
+      "skip": "Bỏ liều",
+      "skipTitle": "Bỏ liều này",
+      "skipReason": "Lý do bỏ liều",
+      "noOrders": "Chưa có y lệnh.",
+      "lastVitals": "Chỉ số gần nhất",
+      "logTitle": "Ghi chăm sóc – {name}",
+      "logKind": "Loại ghi chú",
+      "logKinds": {
+        "vitals": "Chỉ số sinh tồn",
+        "treatment": "Thủ thuật",
+        "note": "Ghi chú"
+      },
+      "logHint": {
+        "vitals": "VD: 38.9°C, mạch 120, ăn ít",
+        "treatment": "VD: truyền dịch 200ml",
+        "note": "Ghi chú chăm sóc"
+      },
+      "orderTitle": "Y lệnh – {name}",
+      "orderKind": {
+        "product": "Thuốc / vật tư",
+        "service": "Dịch vụ",
+        "care": "Chăm sóc"
+      },
+      "careName": "Việc cần làm",
+      "carePlaceholder": "VD: đo nhiệt độ, vệ sinh vết mổ",
+      "qtyPerDose": "Số lượng mỗi lần",
+      "dose": "Liều / cách dùng",
+      "dosePlaceholder": "VD: 1 viên uống",
+      "days": "Số ngày",
+      "hours": "Giờ thực hiện",
+      "note": "Ghi chú",
+      "dischargeTitle": "Cho {name} ra khỏi nội trú?",
+      "dischargeDesc": "Các y lệnh sẽ dừng, chuồng chuyển sang dọn dẹp và tính tiền chuồng theo số đêm. Sau đó bác sĩ có thể ký bệnh án."
+    },
+    "admit": {
+      "title": "Cho {name} nhập nội trú",
+      "isolationHint": "Có bệnh truyền nhiễm, chỉ chọn được chuồng cách ly.",
+      "ok": "Nhập nội trú",
+      "kennel": "Chuồng",
+      "noKennel": "Chưa có chuồng nội trú phù hợp. Hãy đặt mục đích chuồng là Y tế hoặc Cách ly.",
+      "busy": "đang có thú",
+      "plannedOut": "Dự kiến ra",
+      "button": "Nhập nội trú",
+      "hint": "Cần theo dõi nhiều ngày? Cho thú nằm nội trú trước khi ký.",
+      "inWard": "Đang nội trú ở chuồng {kennel}",
+      "openWard": "Mở bảng nội trú"
     }
   }
 }
