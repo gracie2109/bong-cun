@@ -1063,7 +1063,9 @@
       "category": "Danh mục",
       "brand": "Thương hiệu",
       "noCategory": "Không có danh mục",
-      "noBrand": "Không có thương hiệu"
+      "noBrand": "Không có thương hiệu",
+      "clinicOnly": "Chỉ bán tại phòng khám",
+      "clinicOnlyHint": "Bật thì ẩn khỏi shop online và không đặt hàng được; vẫn bán ở POS và kê trong phiếu khám. Lưu ngay khi gạt."
     },
     "noStock": "Không quản lý tồn",
     "variantsCount": "{n} biến thể",
@@ -3015,9 +3017,9 @@
       "urgent": "Cấp cứu"
     },
     "flags": {
-      "allergy": "Dị ứng",
-      "behavior": "Hành vi",
-      "contagious": "Truyền nhiễm"
+      "contagious": "có bệnh truyền nhiễm gần đây, cần hỏi kỹ và cách ly nếu cần",
+      "vaccineOverdue": "sổ tiêm có mũi quá hạn",
+      "allergies": "dị ứng: {text}"
     },
     "status": {
       "scheduled": "Đã hẹn",

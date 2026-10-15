@@ -1063,7 +1063,9 @@
       "category": "Category",
       "brand": "Brand",
       "noCategory": "No category",
-      "noBrand": "No brand"
+      "noBrand": "No brand",
+      "clinicOnly": "Clinic only",
+      "clinicOnlyHint": "Hidden from the online shop and not orderable; still sold at the POS and used in visits. Saved as soon as you switch it."
     },
     "noStock": "No stock tracking",
     "variantsCount": "{n} variants",
@@ -3015,9 +3017,9 @@
       "urgent": "Urgent"
     },
     "flags": {
-      "allergy": "Allergy",
-      "behavior": "Behavior",
-      "contagious": "Contagious"
+      "contagious": "had a contagious disease recently: ask first and isolate if needed",
+      "vaccineOverdue": "has an overdue vaccine",
+      "allergies": "allergies: {text}"
     },
     "status": {
       "scheduled": "Booked",

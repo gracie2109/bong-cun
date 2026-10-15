@@ -24,6 +24,7 @@
         <Label for="group-desc">{{ $t("products.form.desc") }}</Label>
         <Textarea id="group-desc" v-model="form.desc" rows="2" class="resize-none" />
       </div>
+      <ClinicOnlySwitch :group-id="groupId" />
     </div>
   </div>
 </template>
@@ -32,6 +33,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import ClinicOnlySwitch from "./ClinicOnlySwitch.vue";
 import BrandSelect from "../pickers/BrandSelect.vue";
 import CategorySelect from "../pickers/CategorySelect.vue";
 
@@ -46,5 +48,6 @@ defineProps<{
     brandName: string;
   };
   submitted: boolean;
+  groupId: string | null;
 }>();
 </script>

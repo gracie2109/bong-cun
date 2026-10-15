@@ -1086,6 +1086,7 @@ export type Database = {
         Row: {
           brand_id: string | null
           category_id: string | null
+          clinic_only: boolean
           created_at: string
           created_by: string | null
           description: string | null
@@ -1098,6 +1099,7 @@ export type Database = {
         Insert: {
           brand_id?: string | null
           category_id?: string | null
+          clinic_only?: boolean
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -1110,6 +1112,7 @@ export type Database = {
         Update: {
           brand_id?: string | null
           category_id?: string | null
+          clinic_only?: boolean
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -2921,6 +2924,8 @@ export type Database = {
       my_boarding_stay: { Args: { p_id: string }; Returns: Json }
       boarding_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }
       billable_boarding_charges: { Args: { p_branch: string; p_customer: string }; Returns: Json }
+      set_product_group_clinic_only: { Args: { p_group: string; p_value: boolean }; Returns: undefined }
+      pet_health_flags: { Args: { p_pet_ids: string[] }; Returns: Json }
       my_pet_health: { Args: { p_pet: string }; Returns: Json }
       billable_medical_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }
       billable_appointment_items: { Args: { p_branch: string; p_customer: string }; Returns: Json }

@@ -7,3 +7,4 @@ export * from "./vaccineTypes";
 export * from "./visits";
 export * from "./vaccinations";
 export * from "./billing";
+export * from "./flags";
