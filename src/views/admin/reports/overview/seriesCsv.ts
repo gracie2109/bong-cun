@@ -11,6 +11,7 @@ export const seriesCsvColumns = (t: (key: string) => string): CsvColumn<SeriesPo
   { header: t("reports.cols.netRevenue"), value: (row) => row.netRevenue, kind: "money", sum: true },
   { header: t("reports.cols.shop"), value: (row) => row.shop, kind: "money", sum: true },
   { header: t("reports.cols.spa"), value: (row) => row.spa, kind: "money", sum: true },
+  { header: t("reports.cols.boarding"), value: (row) => row.boarding, kind: "money", sum: true },
   { header: t("reports.cols.cash"), value: (row) => row.cash, kind: "money", sum: true },
   { header: t("reports.cols.transfer"), value: (row) => row.transfer, kind: "money", sum: true },
   { header: t("reports.cols.card"), value: (row) => row.card, kind: "money", sum: true },

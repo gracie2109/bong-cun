@@ -2,7 +2,7 @@
   <tr class="border-t">
     <td class="px-4 py-3 text-muted-foreground">{{ rank }}</td>
     <td class="px-4 py-3">
-      <span class="font-semibold">{{ item.name }}</span>
+      <span class="font-semibold">{{ itemName }}</span>
       <span v-if="item.sku" class="block text-xs text-muted-foreground">{{ item.sku }}</span>
     </td>
     <td class="px-4 py-3">
@@ -29,10 +29,15 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import type { TopItem } from "@/repositories/reports";
 import { money, percent } from "../shared/format";
 
 const props = defineProps<{ item: TopItem; rank: number }>();
+const { t } = useI18n();
+
+// Every boarding line comes back under one row named "boarding".
+const itemName = computed(() => (props.item.itemType === "boarding" ? t("reports.itemType.boarding") : props.item.name));
 
 const profitClass = computed(() => ((props.item.grossProfit ?? 0) < 0 ? "text-red-600" : ""));
 // Margin on revenue after refunds; services have no cost, so no margin.
