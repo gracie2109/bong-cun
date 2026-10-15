@@ -47,6 +47,7 @@ const emit = defineEmits<{ open: []; clean: [] }>();
 const clickable = computed(
   () =>
     (props.kennel.state === "free" && props.kennel.status === "ready" && props.canCreate) ||
-    (props.kennel.arriving.length > 0 && props.canUpdate)
+    props.kennel.pets.length > 0 ||
+    props.kennel.arriving.length > 0
 );
 </script>

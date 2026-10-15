@@ -6,7 +6,15 @@ import { sendMessageToast } from "@/lib/utils";
 import {
   boardingErrorDetail,
   boardingErrorHint,
+  addBoardingExtra,
+  addCareLog,
   cancelBoardingStay,
+  checkInBoarding,
+  checkOutBoarding,
+  deleteCareLog,
+  extendBoardingStay,
+  getCheckoutPreview,
+  removeBoardingExtra,
   getBoardingBoard,
   getBoardingRules,
   getBoardingStay,
@@ -29,6 +37,8 @@ import type {
   KennelInput,
   KennelStatus,
   KennelTypeFilter,
+  CareLogInput,
+  CheckInPetInput,
   KennelTypeInput,
   StayFilter,
   StayInput,
@@ -223,4 +233,56 @@ export const useBoardingBoard = (branchId: MaybeRef<string | undefined>, date: M
     refetchInterval: 60_000,
     refetchOnWindowFocus: true,
     placeholderData: keepPreviousData,
+  });
+
+// ------------------------------------------------------- care, check-in/out
+/** A stay changes under all of the board, the list and the detail, so every action refreshes them. */
+const useBoardingAction = <Variables, Result = void>(
+  action: (variables: Variables) => Promise<Result>,
+  method: RestfullMethod = "update"
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: action,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: boardingKeys.all });
+      notifySuccess(method);
+    },
+    onError: (error) => notifyBoardingFailure(method, error),
+  });
+};
+
+export const useAddCareLog = () =>
+  useBoardingAction(({ stayPetId, input }: { stayPetId: string; input: CareLogInput }) =>
+    addCareLog(supabaseClient(), stayPetId, input), "create");
+
+export const useDeleteCareLog = () => useBoardingAction((id: string) => deleteCareLog(supabaseClient(), id), "delete");
+
+export const useAddBoardingExtra = () =>
+  useBoardingAction(({ stayPetId, serviceId, qty }: { stayPetId: string; serviceId: string; qty: number }) =>
+    addBoardingExtra(supabaseClient(), stayPetId, serviceId, qty), "create");
+
+export const useRemoveBoardingExtra = () =>
+  useBoardingAction((id: string) => removeBoardingExtra(supabaseClient(), id), "delete");
+
+export const useCheckInBoarding = () =>
+  useBoardingAction(({ id, pets, emergencyPhone }: { id: string; pets: CheckInPetInput[]; emergencyPhone: string }) =>
+    checkInBoarding(supabaseClient(), id, pets, emergencyPhone));
+
+export const useExtendBoardingStay = () =>
+  useBoardingAction(({ id, plannedOutAt }: { id: string; plannedOutAt: string }) =>
+    extendBoardingStay(supabaseClient(), id, plannedOutAt));
+
+export const useCheckOutBoarding = () =>
+  useBoardingAction(({ id, returnedPetIds }: { id: string; returnedPetIds: string[] }) =>
+    checkOutBoarding(supabaseClient(), id, returnedPetIds));
+
+/** What leaving now would cost; read fresh every time the dialog opens. */
+export const useCheckoutPreview = (id: MaybeRef<string | undefined>, enabled: MaybeRef<boolean>) =>
+  useQuery({
+    queryKey: computed(() => boardingKeys.checkoutPreview(unref(id) ?? "")),
+    queryFn: () => getCheckoutPreview(supabaseClient(), unref(id) as string),
+    enabled: computed(() => !!unref(id) && unref(enabled)),
+    staleTime: 0,
+    gcTime: 0,
   });

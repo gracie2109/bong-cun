@@ -5,7 +5,7 @@
       :key="tab.name"
       :to="{ name: tab.name }"
       class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-colors"
-      :class="route.name === tab.name ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'"
+      :class="isActive(tab.name) ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'"
     >
       <Icon :icon="tab.icon" class="size-4" />
       {{ $t(tab.label) }}
@@ -28,5 +28,7 @@ const tabs = [
   { name: "boardingStays", icon: "lucide:list-checks", label: "boarding.nav.stays", method: "VIEW" },
   { name: "boardingSettings", icon: "lucide:settings-2", label: "boarding.nav.settings", method: "VIEW" },
 ];
+// A stay's detail page belongs to the stays tab.
+const isActive = (name: string): boolean => route.name === name || (name === "boardingStays" && route.name === "boardingStayDetail");
 const visibleTabs = computed(() => tabs.filter((tab) => auth.can("boarding", tab.method)));
 </script>

@@ -2721,6 +2721,14 @@ export type Database = {
         Returns: Json
       }
       mark_boarding_no_show: { Args: { p_id: string }; Returns: undefined }
+      add_care_log: { Args: { p: Json; p_stay_pet: string }; Returns: string }
+      delete_care_log: { Args: { p_id: string }; Returns: undefined }
+      add_boarding_extra: { Args: { p_qty?: number; p_service: string; p_stay_pet: string }; Returns: string }
+      remove_boarding_extra: { Args: { p_id: string }; Returns: undefined }
+      check_in_boarding: { Args: { p_emergency_phone?: string; p_id: string; p_pets: Json }; Returns: Json }
+      extend_boarding_stay: { Args: { p_id: string; p_planned_out_at: string }; Returns: undefined }
+      boarding_checkout_preview: { Args: { p_at?: string; p_id: string }; Returns: Json }
+      check_out_boarding: { Args: { p_id: string; p_returned?: string[] }; Returns: Json }
       save_boarding_stay: { Args: { p: Json; p_id?: string }; Returns: Json }
       boarding_settings_get: { Args: { p_branch: string }; Returns: Json }
       list_kennel_types: {

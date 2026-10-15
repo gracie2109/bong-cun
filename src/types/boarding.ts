@@ -144,6 +144,9 @@ export type BoardingStay = {
   /** Estimated (or fixed) price of all nights of the active pets. */
   estTotal: number;
   pets: StayPet[];
+  /** Only the detail carries these; the list leaves them empty. */
+  careLogs: CareLog[];
+  charges: StayCharge[];
 };
 
 export type StayFilter = { from?: string; to?: string; status?: StayStatus | ""; search?: string };
@@ -227,3 +230,61 @@ export type BoardKennel = {
 export type BoardCounts = { arriving: number; departing: number; occupied: number; overdue: number; free: number };
 
 export type DayBoard = { date: string; counts: BoardCounts; kennels: BoardKennel[] };
+
+// ------------------------------------------------------------ care and money
+export type CareKind = "meal" | "walk" | "potty" | "medication" | "note";
+export const CARE_KINDS: readonly CareKind[] = ["meal", "walk", "potty", "medication", "note"];
+
+export type MealEaten = "all" | "some" | "none";
+export const MEAL_EATEN: readonly MealEaten[] = ["all", "some", "none"];
+
+export type CareLog = {
+  id: string;
+  stayPetId: string;
+  petName: string;
+  kind: CareKind;
+  mealEaten: MealEaten | null;
+  content: string | null;
+  visibleToCustomer: boolean;
+  loggedAt: string;
+  createdByName: string | null;
+  canDelete: boolean;
+};
+
+export type CareLogInput = {
+  kind: CareKind;
+  mealEaten?: MealEaten;
+  content: string;
+  visibleToCustomer: boolean;
+};
+
+export type ChargeKind = "night" | "late" | "extra";
+
+export type StayCharge = {
+  id: string;
+  stayPetId: string | null;
+  petName: string | null;
+  kind: ChargeKind;
+  name: string;
+  qty: number;
+  unitPrice: number;
+  amount: number;
+  invoiceLineId: string | null;
+};
+
+/** What the check-in dialog sends for one pet. */
+export type CheckInPetInput = {
+  stayPetId: string;
+  weightKg: number;
+  vaccineChecked: boolean;
+  vaccineNote: string;
+  belongings: string;
+  feeding: string;
+  medication: string;
+};
+
+export type CheckoutLine = Pick<StayCharge, "stayPetId" | "petName" | "kind" | "name" | "qty" | "unitPrice" | "amount">;
+
+export type CheckoutBelonging = { stayPetId: string; petName: string; belongings: string; returned: boolean };
+
+export type CheckoutPreview = { at: string; items: CheckoutLine[]; total: number; belongings: CheckoutBelonging[] };

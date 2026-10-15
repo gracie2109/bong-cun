@@ -13,6 +13,7 @@ import type {
   StayStatus,
   TypeAvailability,
 } from "@/types/boarding";
+import { toCareLog, toCharge } from "./care";
 import { unwrap, type Page, type PageParams } from "../shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 
@@ -67,6 +68,8 @@ export const toBoardingStay = (value: unknown): BoardingStay => {
     cancelReason: strOrNull(row.cancel_reason),
     estTotal: Number(row.est_total ?? 0),
     pets: Array.isArray(row.pets) ? row.pets.map(toStayPet) : [],
+    careLogs: Array.isArray(row.care_logs) ? row.care_logs.map(toCareLog) : [],
+    charges: Array.isArray(row.charges) ? row.charges.map(toCharge) : [],
   };
 };
 

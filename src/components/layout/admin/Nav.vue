@@ -33,6 +33,7 @@ defineProps<{ items: LinkProp[]; badges?: Record<string, number> }>();
 const PARENT_ROUTE: Record<string, string> = {
   petDetail: "pets",
   usersGroup: "users",
+  boardingStayDetail: "boardingStays",
 };
 
 const route = useRoute();
