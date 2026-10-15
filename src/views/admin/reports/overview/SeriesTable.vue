@@ -62,6 +62,7 @@ const numberCols: { key: NumberKey; label: string; money: boolean }[] = [
   { key: "shop", label: "reports.cols.shop", money: true },
   { key: "spa", label: "reports.cols.spa", money: true },
   { key: "boarding", label: "reports.cols.boarding", money: true },
+  { key: "medical", label: "reports.cols.medical", money: true },
   { key: "cash", label: "reports.cols.cash", money: true },
   { key: "transfer", label: "reports.cols.transfer", money: true },
   { key: "card", label: "reports.cols.card", money: true },

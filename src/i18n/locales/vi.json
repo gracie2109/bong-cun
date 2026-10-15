@@ -2158,7 +2158,8 @@
     "segment": {
       "shop": "Shop",
       "spa": "Spa",
-      "boarding": "Lưu trú"
+      "boarding": "Lưu trú",
+      "medical": "Y tế"
     },
     "mix": {
       "segments": "Cơ cấu doanh thu",
@@ -2220,7 +2221,8 @@
       "expectedCash": "Tiền mặt dự kiến",
       "countedCash": "Tiền đếm",
       "difference": "Chênh lệch",
-      "boarding": "Lưu trú"
+      "boarding": "Lưu trú",
+      "medical": "Y tế"
     },
     "export": {
       "button": "Xuất CSV",
