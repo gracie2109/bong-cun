@@ -1,3 +1,5 @@
+import type { ServiceCategory } from "@/types/medical";
+
 export type ServicePricing = "by_weight" | "all";
 
 /** Longest duration of a service, in minutes (one day less a minute). */
@@ -9,6 +11,14 @@ export const DEFAULT_UNIT = "unit1";
 export const SERVICE_UNITS = [
   { value: "unit1", label: "petCare.services.form.unitTime" },
   { value: "unit2", label: "petCare.services.form.unitDay" },
+] as const;
+
+/** The groups a service belongs to; the spa lists only show "spa". */
+export const DEFAULT_CATEGORY: ServiceCategory = "spa";
+export const SERVICE_CATEGORY_OPTIONS = [
+  { value: "spa", label: "petCare.services.category.spa" },
+  { value: "medical", label: "petCare.services.category.medical" },
+  { value: "other", label: "petCare.services.category.other" },
 ] as const;
 
 export const SERVICE_PRICING = [

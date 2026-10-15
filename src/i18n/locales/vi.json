@@ -118,7 +118,8 @@
     "accountBoarding": "Lưu trú của tôi",
     "accountBoardingDetail": "Chi tiết lưu trú",
     "boarding": "Khách sạn thú cưng",
-    "boardingTimeline": "Lịch chuồng"
+    "boardingTimeline": "Lịch chuồng",
+    "medicalSettings": "Cài đặt y tế"
   },
   "seo": {
     "description": "Thức ăn, phụ kiện cho chó mèo và đặt lịch chăm sóc thú cưng."
@@ -451,8 +452,8 @@
       "noSelection": "Chọn một loài ở bên trái"
     },
     "services": {
-      "title": "Dịch vụ spa",
-      "subtitle": "Dịch vụ, thời lượng và cách tính giá",
+      "title": "Dịch vụ",
+      "subtitle": "Dịch vụ spa, y tế và khác: thời lượng và cách tính giá",
       "add": "Thêm dịch vụ",
       "edit": "Sửa dịch vụ",
       "searchPlaceholder": "Tìm dịch vụ",
@@ -468,7 +469,8 @@
         "price": "Giá",
         "duration": "Thời lượng",
         "web": "Hiển thị web",
-        "actions": "Thao tác"
+        "actions": "Thao tác",
+        "category": "Nhóm"
       },
       "minutes": "{n} phút",
       "empty": "Chưa có dịch vụ nào",
@@ -492,7 +494,15 @@
         "removeSpeciesWarning": "Bỏ loài sẽ xóa các mức giá đã đặt cho loài đó khi lưu.",
         "errSpecies": "Chọn ít nhất một loài",
         "errPrice": "Nhập giá lớn hơn hoặc bằng 0",
-        "errDuration": "Thời lượng từ 0 đến 1439 phút"
+        "errDuration": "Thời lượng từ 0 đến 1439 phút",
+        "category": "Nhóm dịch vụ",
+        "categoryHint": "Danh sách đặt lịch spa và bảng giá spa trên web chỉ hiện nhóm Spa. Quầy thu ngân thấy mọi nhóm."
+      },
+      "filterCategory": "Nhóm",
+      "category": {
+        "spa": "Spa",
+        "medical": "Y tế",
+        "other": "Khác"
       }
     },
     "prices": {
@@ -757,7 +767,7 @@
     "pets": "Hồ sơ thú cưng",
     "servicesPrices": "Dịch vụ & Giá",
     "species": "Danh mục loài",
-    "services": "Dịch vụ spa",
+    "services": "Dịch vụ",
     "prices": "Bảng giá",
     "combos": "Gói dịch vụ Combo",
     "system": "Hệ thống",
@@ -795,7 +805,9 @@
     "boardingSettings": "Cài đặt lưu trú",
     "boardingBoard": "Sơ đồ chuồng",
     "boardingStays": "Lượt lưu trú",
-    "boardingStayDetail": "Chi tiết lượt lưu trú"
+    "boardingStayDetail": "Chi tiết lượt lưu trú",
+    "medical": "Y tế",
+    "medicalSettings": "Cài đặt y tế"
   },
   "pos": {
     "title": "Bán tại quầy",
@@ -2829,6 +2841,96 @@
       "priceNote": "Giá tham khảo; cửa hàng chốt số tiền khi bạn đón bé. Gọi cửa hàng để đặt chỗ.",
       "emptyHint": "Gọi cửa hàng để được tư vấn.",
       "emptyPublic": "Chưa có bảng giá khách sạn"
+    }
+  },
+  "medical": {
+    "nav": {
+      "settings": "Cài đặt y tế"
+    },
+    "common": {
+      "active": "Đang dùng",
+      "inactive": "Ngừng dùng",
+      "sortOrder": "Thứ tự hiển thị",
+      "allSpecies": "Mọi loài",
+      "speciesHint": "Không chọn loài nào = áp dụng cho mọi loài."
+    },
+    "errors": {
+      "duplicate_name": "Đã có mục trùng tên.",
+      "bad_input": "Thiếu hoặc sai thông tin.",
+      "bad_protocol": "Phác đồ chưa hợp lệ: chuỗi nhiều mũi cần số ngày giữa các mũi.",
+      "bad_rules": "Quy định chưa hợp lệ: số ngày nhắc trước 0 đến 90, số ngày cảnh báo truyền nhiễm 1 đến 365, dịch vụ khám phải thuộc nhóm Y tế.",
+      "not_found": "Không tìm thấy mục này."
+    },
+    "settings": {
+      "title": "Cài đặt y tế",
+      "readOnly": "Bạn chỉ xem được. Cần quyền Y tế: Cài đặt để thêm hoặc sửa chẩn đoán, vắc-xin và quy định.",
+      "tabDiagnoses": "Chẩn đoán",
+      "tabVaccines": "Vắc-xin & tẩy giun",
+      "tabRules": "Quy định"
+    },
+    "diagnoses": {
+      "add": "Thêm chẩn đoán",
+      "edit": "Sửa chẩn đoán",
+      "name": "Tên chẩn đoán",
+      "namePlaceholder": "Ví dụ: Parvo, viêm da, ve rận",
+      "species": "Loài áp dụng",
+      "contagious": "Bệnh truyền nhiễm",
+      "contagiousHint": "Thú mắc bệnh này được gắn nhãn đỏ ở hàng chờ, và cảnh báo khi đặt spa hoặc lưu trú trong thời gian quy định.",
+      "contagiousTag": "Truyền nhiễm",
+      "searchPlaceholder": "Tìm chẩn đoán",
+      "empty": "Chưa có chẩn đoán nào. Bác sĩ vẫn gõ tự do được khi khám."
+    },
+    "vaccines": {
+      "add": "Thêm loại vắc-xin",
+      "edit": "Sửa loại vắc-xin",
+      "name": "Tên",
+      "namePlaceholder": "Ví dụ: Vắc-xin 7 bệnh chó, Dại, Tẩy giun",
+      "kind": "Loại",
+      "kinds": {
+        "vaccine": "Vắc-xin",
+        "deworm": "Tẩy giun",
+        "other": "Phòng ngừa khác"
+      },
+      "species": "Loài áp dụng",
+      "product": "Sản phẩm trong kho",
+      "productHint": "Có sản phẩm thì mũi tiêm được tính tiền và trừ kho theo lô. Bỏ trống nếu chỉ ghi sổ.",
+      "clearProduct": "Bỏ chọn",
+      "recordOnly": "Chỉ ghi sổ",
+      "stock": "Còn {qty} {unit}",
+      "protocol": "Phác đồ",
+      "protocolHint": "Chuỗi mũi cơ bản cách nhau vài ngày, sau đó nhắc lại định kỳ. Ngày nhắc bác sĩ vẫn sửa được lúc tiêm.",
+      "seriesDoses": "Số mũi cơ bản",
+      "seriesGap": "Cách nhau (ngày)",
+      "booster": "Nhắc lại sau (ngày)",
+      "minAge": "Tuổi tối thiểu (tuần)",
+      "noReminder": "Không nhắc lại",
+      "noLimit": "Không giới hạn",
+      "seriesSingle": "1 mũi",
+      "seriesShort": "{doses} mũi, cách {days} ngày",
+      "boosterShort": "Nhắc lại sau {days} ngày",
+      "searchPlaceholder": "Tìm vắc-xin",
+      "empty": "Chưa có loại vắc-xin nào.",
+      "errors": {
+        "doses": "Số mũi cơ bản từ 1 đến 10.",
+        "gap": "Chuỗi nhiều mũi cần số ngày giữa các mũi.",
+        "booster": "Số ngày nhắc lại phải lớn hơn 0 (hoặc để trống).",
+        "age": "Tuổi tối thiểu không âm (hoặc để trống)."
+      }
+    },
+    "rules": {
+      "title": "Quy định y tế của cơ sở",
+      "hint": "Mỗi cơ sở có quy định riêng.",
+      "unavailable": "Chưa đọc được quy định.",
+      "examService": "Dịch vụ khám mặc định",
+      "examServiceHint": "Tự thêm vào lượt khám khi bác sĩ nhận ca.",
+      "noExam": "Không tự thêm",
+      "noMedicalService": "Chưa có dịch vụ nhóm Y tế. Tạo ở màn Dịch vụ với nhóm Y tế (ví dụ Khám tổng quát).",
+      "remindAheadDays": "Nhắc mũi tiêm trước (ngày)",
+      "remindAheadDaysHint": "Màn Nhắc lịch hiện các mũi đến hạn trong bấy nhiêu ngày tới.",
+      "contagiousDays": "Cảnh báo truyền nhiễm trong (ngày)",
+      "contagiousDaysHint": "Thú có chẩn đoán truyền nhiễm trong khoảng này thì cảnh báo ở spa và lưu trú.",
+      "requireVaccine": "Cảnh báo khi thiếu sổ tiêm lúc check-in lưu trú",
+      "requireVaccineHint": "Chỉ cảnh báo, không chặn check-in."
     }
   }
 }

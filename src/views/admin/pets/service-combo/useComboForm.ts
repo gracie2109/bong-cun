@@ -8,7 +8,7 @@ const dateInput = (iso: string | undefined): string => (iso ? iso.slice(0, 10) :
 
 /** The combo form: its fields, what the chosen services add up to, and the input to save. */
 export const useComboForm = (isOpen: () => boolean, combo: () => PetCombo | null) => {
-  const servicesQuery = useAllPetServices();
+  const servicesQuery = useAllPetServices("spa");
 
   const name = ref("");
   const desc = ref("");

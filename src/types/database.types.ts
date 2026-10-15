@@ -800,6 +800,7 @@ export type Database = {
       }
       pet_services: {
         Row: {
+          category: string
           created_at: string
           description: string | null
           duration_minutes: number | null
@@ -813,6 +814,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string
           created_at?: string
           description?: string | null
           duration_minutes?: number | null
@@ -826,6 +828,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string
           created_at?: string
           description?: string | null
           duration_minutes?: number | null
@@ -2203,6 +2206,114 @@ export type Database = {
         }
         Relationships: []
       }
+      diagnosis_terms: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          is_contagious: boolean
+          name: string
+          sort_order: number
+          species_ids: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_contagious?: boolean
+          name: string
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_contagious?: boolean
+          name?: string
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      medical_settings: {
+        Row: {
+          branch_id: string
+          contagious_days: number
+          exam_service_id: string | null
+          remind_ahead_days: number
+          require_vaccine_for_boarding: boolean
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          contagious_days?: number
+          exam_service_id?: string | null
+          remind_ahead_days?: number
+          require_vaccine_for_boarding?: boolean
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          contagious_days?: number
+          exam_service_id?: string | null
+          remind_ahead_days?: number
+          require_vaccine_for_boarding?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vaccine_types: {
+        Row: {
+          booster_interval_days: number | null
+          created_at: string
+          id: string
+          is_active: boolean
+          kind: string
+          min_age_weeks: number | null
+          name: string
+          product_id: string | null
+          series_doses: number
+          series_interval_days: number | null
+          sort_order: number
+          species_ids: string[]
+          updated_at: string
+        }
+        Insert: {
+          booster_interval_days?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: string
+          min_age_weeks?: number | null
+          name: string
+          product_id?: string | null
+          series_doses?: number
+          series_interval_days?: number | null
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Update: {
+          booster_interval_days?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: string
+          min_age_weeks?: number | null
+          name?: string
+          product_id?: string | null
+          series_doses?: number
+          series_interval_days?: number | null
+          sort_order?: number
+          species_ids?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       spa_resources: {
         Row: {
           branch_id: string
@@ -2700,6 +2811,27 @@ export type Database = {
           transfer: number
         }[]
       }
+      can_medical: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
+      list_diagnosis_terms: {
+        Args: { p_active_only?: boolean; p_page?: number; p_page_size?: number; p_search?: string; p_species?: string }
+        Returns: Json
+      }
+      list_vaccine_types: {
+        Args: {
+          p_active_only?: boolean
+          p_branch?: string
+          p_kind?: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+          p_species?: string
+        }
+        Returns: Json
+      }
+      medical_settings_get: { Args: { p_branch: string }; Returns: Json }
+      save_diagnosis_term: { Args: { p: Json; p_id?: string }; Returns: string }
+      save_medical_settings: { Args: { p: Json; p_branch: string }; Returns: undefined }
+      save_vaccine_type: { Args: { p: Json; p_id?: string }; Returns: string }
       can_boarding: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
       boarding_availability: {
         Args: { p_branch: string; p_from: string; p_to: string }

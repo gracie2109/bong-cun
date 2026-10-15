@@ -41,6 +41,7 @@
           <ServicesFilterFields
             v-model:species-id="draft.speciesId"
             v-model:type="draft.type"
+            v-model:category="draft.category"
             v-model:show-archived="draft.showArchived"
             :species="species"
           />
@@ -53,6 +54,7 @@
           <thead>
             <tr class="text-left text-[11px] uppercase tracking-wide text-muted-foreground">
               <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.service") }}</th>
+              <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.category") }}</th>
               <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.species") }}</th>
               <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.pricing") }}</th>
               <th class="px-4 py-3 font-semibold">{{ $t("petCare.services.col.duration") }}</th>
@@ -60,7 +62,7 @@
             </tr>
           </thead>
           <tbody>
-            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="5" :pending="servicesQuery.isPending.value" :empty="services.length === 0" :empty-text="$t('petCare.services.empty')" skeleton-class="h-10 w-full" />
+            <TableStateRows :filtered="isFiltered" @clear="clearAll" :colspan="6" :pending="servicesQuery.isPending.value" :empty="services.length === 0" :empty-text="$t('petCare.services.empty')" skeleton-class="h-10 w-full" />
             <ServiceRow
               v-for="service in services"
               :key="service.id"

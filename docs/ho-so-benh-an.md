@@ -2,7 +2,7 @@
 
 Kế hoạch module Y tế: tiếp nhận khám, hàng chờ, bệnh án SOAP có ký khóa, chẩn đoán, chỉ định dịch vụ và đơn thuốc trừ kho theo lô, sổ tiêm và danh sách nhắc tiêm, thanh toán qua POS, báo cáo, khách xem sổ tiêm và lịch sử khám, nội trú điều trị dùng chung chuồng lưu trú. Nguồn: kế hoạch BA/kiến trúc v0.3 (mục 1.2 A–E, edge case 10–16, module M4, M5, M8; Y tế là **Phase 2**). Module đứng sau RBAC theo (nhân viên, cơ sở) (PR #42), POS (PR #43), kho theo lô FEFO (`docs/kho-theo-lo-han-dung.md`), lịch hẹn spa (`docs/lich-hen-spa.md`) và khách sạn thú cưng (`docs/khach-san-thu-cung.md`), đều đã merge.
 
-**Tiến độ:** chưa code. Thứ tự làm ở mục 10.
+**Tiến độ:** bước 1 xong (quyền và vai trò bác sĩ, nhóm dịch vụ, danh mục chẩn đoán và vắc-xin, quy định, màn Cài đặt y tế). Bước 2 đến 8 chưa làm. Thứ tự làm ở mục 10.
 
 Dự án là pet project cá nhân, chưa có doanh thu, nên phạm vi giữ ở mức một phòng khám nhỏ dùng được hằng ngày: một bác sĩ hoặc vài bác sĩ, một cơ sở, thiết kế sẵn cho nhiều cơ sở, không tích hợp bên ngoài (không Zalo/SMS, không HĐĐT), không tạm ứng.
 

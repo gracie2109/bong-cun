@@ -13,6 +13,11 @@
       <p v-if="service.desc" class="line-clamp-1 text-xs text-muted-foreground">{{ service.desc }}</p>
     </td>
     <td class="px-4 py-3">
+      <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="CATEGORY_TONE[service.category]">
+        {{ $t(`petCare.services.category.${service.category}`) }}
+      </span>
+    </td>
+    <td class="px-4 py-3">
       <div class="flex flex-wrap gap-1">
         <span
           v-for="item in service.species"
@@ -73,8 +78,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
 import type { PetService } from "@/repositories/petServices";
+import type { ServiceCategory } from "@/types/medical";
 
 defineProps<{ service: PetService; canUpdate: boolean }>();
+
+const CATEGORY_TONE: Record<ServiceCategory, string> = {
+  spa: "bg-primary/10 text-primary",
+  medical: "bg-rose-100 text-rose-700",
+  other: "bg-slate-200 text-slate-700",
+};
 
 const emit = defineEmits<{
   edit: [service: PetService];
