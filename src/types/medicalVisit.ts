@@ -237,3 +237,19 @@ export type BillableVisitItem = {
 // -------------------------------------------------------------------- flags
 /** What the counters may know about a pet's health: flags only, never the record. */
 export type PetHealthFlags = { contagious: boolean; vaccineOverdue: boolean; allergies: string | null };
+
+// -------------------------------------------------------------- attachments
+export const ATTACHMENT_KINDS = ["lab", "imaging", "photo", "consent", "other"] as const;
+export type AttachmentKind = (typeof ATTACHMENT_KINDS)[number];
+
+export type MedicalAttachment = {
+  id: string;
+  visitId: string;
+  kind: AttachmentKind;
+  title: string;
+  filePath: string;
+  mimeType: string;
+  sizeBytes: number;
+  createdByName: string | null;
+  createdAt: string;
+};

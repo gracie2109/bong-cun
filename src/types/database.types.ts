@@ -2924,6 +2924,9 @@ export type Database = {
       my_boarding_stay: { Args: { p_id: string }; Returns: Json }
       boarding_public_catalog: { Args: { p_branch?: string | null }; Returns: Json }
       billable_boarding_charges: { Args: { p_branch: string; p_customer: string }; Returns: Json }
+      list_medical_attachments: { Args: { p_visit: string }; Returns: Json }
+      add_medical_attachment: { Args: { p_visit: string; p: Json }; Returns: string }
+      remove_medical_attachment: { Args: { p_id: string }; Returns: string }
       set_product_group_clinic_only: { Args: { p_group: string; p_value: boolean }; Returns: undefined }
       pet_health_flags: { Args: { p_pet_ids: string[] }; Returns: Json }
       my_pet_health: { Args: { p_pet: string }; Returns: Json }

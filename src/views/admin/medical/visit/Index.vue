@@ -31,6 +31,7 @@
                 <TabsTrigger value="record">{{ $t("medical.detail.tabRecord") }}</TabsTrigger>
                 <TabsTrigger value="vaccines">{{ $t("medical.detail.tabVaccines") }}</TabsTrigger>
                 <TabsTrigger value="items">{{ $t("medical.detail.tabItems") }} ({{ visit.items.length }})</TabsTrigger>
+                <TabsTrigger value="files">{{ $t("medical.detail.tabFiles") }}</TabsTrigger>
                 <TabsTrigger value="money">{{ $t("medical.detail.tabMoney") }}</TabsTrigger>
               </TabsList>
               <TabsContent value="record" class="pt-4">
@@ -41,6 +42,9 @@
               </TabsContent>
               <TabsContent value="items" class="pt-4">
                 <ItemsTab :visit="visit" :can-update="canUpdate" />
+              </TabsContent>
+              <TabsContent value="files" class="pt-4">
+                <AttachmentsTab :visit="visit" :can-update="canUpdate" />
               </TabsContent>
               <TabsContent value="money" class="pt-4">
                 <MoneyTab :visit="visit" />
@@ -62,6 +66,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentWrap, Header } from "@/views/admin/components";
 import MedicalNav from "../MedicalNav.vue";
+import AttachmentsTab from "./attachments/AttachmentsTab.vue";
 import CancelVisitDialog from "./CancelVisitDialog.vue";
 import ItemsTab from "./items/ItemsTab.vue";
 import MoneyTab from "./money/MoneyTab.vue";

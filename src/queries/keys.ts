@@ -226,6 +226,7 @@ export const medicalKeys = {
   vets: (branchId: string) => [...medicalKeys.all, "vets", branchId] as const,
   book: (petId: string) => [...medicalKeys.all, "book", petId] as const,
   lots: (branchId: string, typeId: string) => [...medicalKeys.all, "lots", branchId, typeId] as const,
+  attachments: (visitId: string) => [...medicalKeys.all, "attachments", visitId] as const,
   flags: (petIds: string[]) => [...medicalKeys.all, "flags", [...petIds].sort()] as const,
   billable: (branchId: string, customerId: string) => [...medicalKeys.all, "billable", branchId, customerId] as const,
   reminders: (branchId: string, page: PageParams, filter: ReminderFilter) => [...medicalKeys.all, "reminders", branchId, page, filter] as const,
