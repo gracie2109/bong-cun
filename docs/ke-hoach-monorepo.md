@@ -716,3 +716,11 @@ Làm phần "chưa làm" ở mục 24 cho các luồng tiền. Không đổi mig
 Cách chạy: mỗi test mở một giao dịch, nạp fixture dùng chung với pgTAP (`supabase/tests/_helpers/setup.psql`), đăng nhập bằng cùng claims như JWT thật, gọi RPC rồi `rollback`, nên không để lại dữ liệu. Đã thử đổi tên một khóa trong schema thì test đỏ.
 
 Vẫn chưa làm: mapper sang kiểu miền cho các feature khác, hợp đồng cho lưu trú và y tế, đưa queries và composables vào `features/`. Làm khi chạm tới từng module.
+
+### 25.1 Bổ sung: hợp đồng đầu vào, mã lỗi theo `hint`, đối chiếu quyền (2026-10-16)
+
+Làm thêm trên nền mục 25, không đổi migration:
+
+- `core/pos/contract.ts` và `core/shop/contract.ts` thêm schema zod **đầu vào** (camelCase) cho bán hàng, trả hàng, mở/đóng ca, đặt đơn online, thu tiền nhận tại quầy, cùng schema kết quả các bước nhân viên trên đơn (`staffOrderResultSchema`).
+- `AppError` nhận thêm mã nghiệp vụ là `hint` của hàm SQL (`POS_ERROR_HINTS`, mới có `SHOP_ERROR_HINTS`); `toAppError` đọc mã Postgres trước, rồi mới đến `hint`. Test đơn vị đọc `supabase/schema.sql` để chắc mọi `hint` mà hàm tiền ném ra đều có tên trong `core` và không có tên nào thừa.
+- Test DB mới: `permissions.parity.test.ts` (so `canUse` ở menu với `has_permission` ở DB cho mọi vai trò × quyền × phương thức; phạm vi chi nhánh; RLS hóa đơn theo vai trò và chi nhánh) và `orderSteps.contract.test.ts` (đặt, xác nhận, đóng gói, thu tiền nhận tại quầy).
