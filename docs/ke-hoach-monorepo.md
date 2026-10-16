@@ -644,3 +644,18 @@ Q7 đổi thành: đặt tên `@bongcun/core`, `@bongcun/supabase`, `@bongcun/nu
 ## 22. Việc tiếp theo (thay mục 11)
 
 Nếu grace đồng ý Q1 (a), Q8 (a), Q11 (a), Q12 (a), Q14 (a): bắt đầu bằng PR 0a đến 0d (dọn ranh giới, `AppError`, Vitest, gom hằng số trùng), rồi giai đoạn 1 vào lúc không có thread nào đang code, rồi giai đoạn 2 theo từng feature (mỗi PR một feature: hợp đồng, mapper, chuyển repo). Nhánh B chỉ mở khi có yêu cầu thật (thanh toán, thông báo, mobile). Mỗi PR: typecheck, build, CI xanh, squash merge, không đổi migration, không chạy SQL.
+
+## 23. Quyết định đã chốt (grace, 2026-10-16)
+
+| # | Chọn | Hệ quả cho kế hoạch |
+| --- | --- | --- |
+| Q1 | (a) Làm giai đoạn 0 đến 3 rồi dừng | Không tách CMS (giai đoạn 5) và không làm mobile (giai đoạn 6) trong đợt này. Giai đoạn 4 (layer `nuxt-base`) cũng hoãn: UI dùng chung vẫn nằm trong `apps/web` |
+| Q2 | (a) Khi tách CMS thì dùng tên miền con `admin.<domain>` | Chỉ áp dụng khi mở lại giai đoạn 5 |
+| Q3 | (b) Mobile là Capacitor bọc Vue | Mobile dùng lại component Vue và `nuxt-base`; app mobile là một app Vue/Nuxt build tĩnh (SPA) bọc bằng Capacitor, không viết lại giao diện. `packages/core` vẫn không phụ thuộc framework (nên giữ), nhưng lợi ích "dùng chung với React Native" không còn là lý do chính. Giai đoạn 6 rẻ hơn kế hoạch cũ: cần plugin Capacitor (camera, thông báo đẩy, lưu file) và adapter lưu file thay vì viết lại UI |
+| Q4 | (a) npm workspaces | Giữ `package-lock.json`, chưa dùng Turborepo |
+| Q5 | (a) dependency-cruiser | Đưa vào CI ở giai đoạn 0 |
+| Q6 | (a) Proxy GHN giữ ở Nuxt server | Không đổi tới khi làm mobile hoặc NestJS |
+| Q7 | Theo gợi ý | `@bongcun/core`, `@bongcun/supabase`, `@bongcun/nuxt-base`, `@bongcun/config`; không phát hành lên npm. Vì hoãn giai đoạn 4 nên `nuxt-base` và `config` chưa tạo ngay |
+| Q8 | (a) Giữ Supabase Auth ở mọi kịch bản | NestJS (nếu có) chỉ xác minh JWT Supabase |
+
+Chưa trả lời: Q9 đến Q14 (hosting NestJS, nguồn sự thật tiền/kho, tách `packages/supabase` ngay, ports chỉ cho dịch vụ ngoài, OpenAPI, Vitest + dependency-cruiser). Chưa bắt đầu code. Giai đoạn 0b, 0c, 2 phụ thuộc Q11 và Q14, nên chờ grace chọn hoặc xác nhận theo khuyến nghị.
