@@ -1,11 +1,6 @@
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
-import {
-  hasPgCode,
-  PG_FOREIGN_KEY_VIOLATION,
-  PG_INSUFFICIENT_PRIVILEGE,
-  PG_UNIQUE_VIOLATION,
-} from "@/repositories/shared";
+import { toAppError } from "@/repositories/errors";
 import { UserFunctionError } from "@/repositories/users";
 import type { RestfullMethod } from "@/types";
 
@@ -16,12 +11,11 @@ export const notifyFailure = (method: RestfullMethod, error: unknown, subject = 
 
   if (error instanceof UserFunctionError) {
     message = error.message;
-  } else if (hasPgCode(error, PG_UNIQUE_VIOLATION)) {
-    message = t("common.dataExisted", { field: subject });
-  } else if (hasPgCode(error, PG_FOREIGN_KEY_VIOLATION)) {
-    message = t("common.inUse");
-  } else if (hasPgCode(error, PG_INSUFFICIENT_PRIVILEGE)) {
-    message = t("common.noPermission");
+  } else {
+    const code = toAppError(error)?.code;
+    if (code === "conflict") message = t("common.dataExisted", { field: subject });
+    else if (code === "in_use") message = t("common.inUse");
+    else if (code === "forbidden") message = t("common.noPermission");
   }
 
   sendMessageToast("fail", method, "error", message);
