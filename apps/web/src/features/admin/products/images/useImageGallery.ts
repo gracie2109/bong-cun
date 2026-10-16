@@ -3,7 +3,7 @@ import { supabaseClient } from "@/lib/supabase";
 import type { ProductImage } from "@bongcun/supabase/products";
 import { MAX_GROUP_IMAGES } from "@bongcun/supabase/products";
 import { uploadCatalogImage, validateImage } from "@bongcun/supabase/storage";
-import { compressImage } from "./compressImage";
+import { compressImage } from "@/lib/images/compressImage";
 
 export type GalleryImage = { key: string; url: string; storagePath: string | null };
 
