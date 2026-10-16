@@ -99,7 +99,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAllPetServices } from "@/queries/petServices";
 import { useCustomerPets, useSellableCombos } from "@/queries/pos";
 import { useBranchStaff, useCancelAppointment, useSaveAppointment, useSpaResources, useWeekHours } from "@/queries/spa";
-import type { Appointment } from "@/repositories/spa";
+import type { Appointment } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import CustomerPanel, { type Buyer } from "@/views/admin/pos/components/CustomerPanel.vue";
 import { dateKeyOf, isoWeekday, timeOf, timeSlots, todayKey } from "../format";

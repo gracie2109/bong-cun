@@ -67,7 +67,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
-import type { PetCombo } from "@/repositories/petCombos";
+import type { PetCombo } from "@bongcun/supabase/spa";
 import { COMBO_STATUS_CLASS, comboStatus, DEFAULT_MARK } from "./comboStatus";
 
 const props = defineProps<{ combo: PetCombo; canUpdate: boolean }>();

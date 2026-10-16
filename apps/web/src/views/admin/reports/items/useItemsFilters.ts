@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
-import type { ItemKind, ItemSort, TopItemFilter } from "@/repositories/reports";
+import type { ItemKind, ItemSort, TopItemFilter } from "@bongcun/supabase/reports";
 import { useReportFilters } from "../shared/useReportFilters";
 
 const PAGE_SIZE = 20;

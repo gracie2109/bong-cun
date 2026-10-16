@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { CashShift } from "@/repositories/pos";
+import type { CashShift } from "@bongcun/supabase/pos";
 
 const difference = (row: CashShift): number | null =>
   row.countedCash === null || row.expectedCash === null ? null : row.countedCash - row.expectedCash;

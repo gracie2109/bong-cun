@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useTableExport } from "@/composables/useTableExport";
 import type { ExportColumn } from "@/lib/data-io/columns";
 import { formatDate } from "@/lib/data-io/formatCell";
-import type { ReportFilter } from "@/repositories/reports";
+import type { ReportFilter } from "@bongcun/supabase/reports";
 
 type ExportOptions<T, F extends ReportFilter> = {
   /** Tab name in the file name: bao-cao-<tab>-<from>-<to>.<ext> */

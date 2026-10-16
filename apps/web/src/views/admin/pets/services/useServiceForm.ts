@@ -1,5 +1,5 @@
 import { computed, ref, watch } from "vue";
-import type { PetService, PetServiceInput } from "@/repositories/petServices";
+import type { PetService, PetServiceInput } from "@bongcun/supabase/spa";
 import type { ServiceCategory } from "@bongcun/core/medical";
 import {
   DEFAULT_CATEGORY,

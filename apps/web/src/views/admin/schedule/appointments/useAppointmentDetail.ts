@@ -9,7 +9,7 @@ import {
   useMarkNoShow,
   useSetTicketStatus,
 } from "@/queries/spa";
-import { isCancellable, isEditable, isServing, type Appointment, type TicketStatus } from "@/repositories/spa";
+import { isCancellable, isEditable, isServing, type Appointment, type TicketStatus } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 
 export type ConfirmKind = "noShow" | "cancel";

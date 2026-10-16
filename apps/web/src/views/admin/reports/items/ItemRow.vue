@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { TopItem } from "@/repositories/reports";
+import type { TopItem } from "@bongcun/supabase/reports";
 import { money, percent } from "../shared/format";
 
 const props = defineProps<{ item: TopItem; rank: number }>();

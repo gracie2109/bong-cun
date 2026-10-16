@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { Appointment } from "@/repositories/spa";
+import type { Appointment } from "@bongcun/supabase/spa";
 
 const STATUS_TEXT: Record<string, string> = {
   booked: "Đã đặt",

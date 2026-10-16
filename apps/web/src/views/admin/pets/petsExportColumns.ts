@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { PetListItem, PetSex, PetStatus } from "@/repositories/pets";
+import type { PetListItem, PetSex, PetStatus } from "@bongcun/supabase/pets";
 
 const SEX_TEXT: Record<PetSex, string> = { male: "Đực", female: "Cái", unknown: "Không rõ" };
 const STATUS_TEXT: Record<PetStatus, string> = { active: "Đang theo dõi", archived: "Đã lưu trữ", deceased: "Đã mất" };

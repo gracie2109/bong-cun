@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Adjustment } from "@/repositories/reports";
+import type { Adjustment } from "@bongcun/supabase/reports";
 import { dateTime } from "@/views/admin/pos/format";
 import { money } from "../shared/format";
 

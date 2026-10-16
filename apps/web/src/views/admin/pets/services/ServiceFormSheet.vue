@@ -130,7 +130,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreatePetService, useUpdatePetService } from "@/queries/petServices";
 import { useSpeciesOptions } from "@/queries/species";
-import type { PetService } from "@/repositories/petServices";
+import type { PetService } from "@bongcun/supabase/spa";
 import { MAX_DURATION_MINUTES, SERVICE_CATEGORY_OPTIONS, SERVICE_PRICING, SERVICE_UNITS } from "./serviceForm";
 import { useServiceForm } from "./useServiceForm";
 

@@ -1,5 +1,5 @@
 import type { CsvColumn } from "@/lib/csv";
-import type { ShiftRecon } from "@/repositories/reports";
+import type { ShiftRecon } from "@bongcun/supabase/reports";
 
 /** Columns of the shift reconciliation export; `t` turns an i18n key into the header text. */
 export const shiftsCsvColumns = (t: (key: string) => string): CsvColumn<ShiftRecon>[] => [

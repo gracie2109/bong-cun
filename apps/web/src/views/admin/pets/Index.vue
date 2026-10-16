@@ -109,7 +109,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { useAuthStore } from "@/stores";
 import { usePetsList, useSetPetStatus } from "@/queries/pets";
-import type { PetListItem, PetStatus } from "@/repositories/pets";
+import type { PetListItem, PetStatus } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsImportDialog from "./import/PetsImportDialog.vue";
 import PetRow from "./components/PetRow.vue";

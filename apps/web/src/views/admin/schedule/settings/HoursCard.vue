@@ -38,7 +38,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useSaveWeekHours, useWeekHours } from "@/queries/spa";
-import type { DayHours } from "@/repositories/spa";
+import type { DayHours } from "@bongcun/supabase/spa";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean }>();
 

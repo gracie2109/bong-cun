@@ -1,6 +1,6 @@
 // Date ranges of the reports. Pure functions on yyyy-MM-dd strings (Vietnam calendar days).
 import { addDays, differenceInCalendarDays, endOfMonth, format, parseISO, startOfMonth, subMonths } from "date-fns";
-import { MAX_REPORT_DAYS } from "@/repositories/reports";
+import { MAX_REPORT_DAYS } from "@bongcun/supabase/reports";
 
 export const PRESETS = ["today", "yesterday", "last7", "thisMonth", "lastMonth", "custom"] as const;
 export type Preset = (typeof PRESETS)[number];

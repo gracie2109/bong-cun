@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { SalesReturn } from "@/repositories/pos";
+import type { SalesReturn } from "@bongcun/supabase/pos";
 import { dateTime, money } from "../format";
 
 defineProps<{ salesReturns: SalesReturn[] }>();

@@ -29,7 +29,7 @@ import {
   type PetWeight,
   type SpaResourceInput,
   type TicketStatus,
-} from "@/repositories/spa";
+} from "@bongcun/supabase/spa";
 import type { RestfullMethod } from "@/types";
 import { spaKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

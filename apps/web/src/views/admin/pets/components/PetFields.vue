@@ -122,8 +122,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { PetSex } from "@/repositories/pets";
-import type { Species } from "@/repositories/species";
+import type { PetSex } from "@bongcun/supabase/pets";
+import type { Species } from "@bongcun/supabase/pets";
 import { todayInput } from "../format";
 import type { PetFormErrors, PetFormState } from "../pet-form";
 

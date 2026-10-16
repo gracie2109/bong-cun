@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { StaffRevenue } from "@/repositories/reports";
+import type { StaffRevenue } from "@bongcun/supabase/reports";
 import { money } from "../shared/format";
 
 defineProps<{ row: StaffRevenue }>();

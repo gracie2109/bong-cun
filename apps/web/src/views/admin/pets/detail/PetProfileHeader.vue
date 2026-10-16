@@ -83,7 +83,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PetProfile, PetStatus } from "@/repositories/pets";
+import type { PetProfile, PetStatus } from "@bongcun/supabase/pets";
 import { formatAge, formatDate, initials } from "../format";
 
 defineProps<{

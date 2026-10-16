@@ -2,7 +2,7 @@ import { computed } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL, SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useSpeciesOptions } from "@/queries/species";
-import type { PetServiceFilter } from "@/repositories/petServices";
+import type { PetServiceFilter } from "@bongcun/supabase/spa";
 import type { ServiceCategory } from "@bongcun/core/medical";
 
 const PAGE_SIZE = 10;

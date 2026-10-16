@@ -71,7 +71,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
 import { useI18n } from "vue-i18n";
 import { useTopItems } from "@/queries/reports";
-import { EXPORT_LIMIT, listTopItems } from "@/repositories/reports";
+import { EXPORT_LIMIT, listTopItems } from "@bongcun/supabase/reports";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";

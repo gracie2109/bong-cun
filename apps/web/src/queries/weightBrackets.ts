@@ -5,7 +5,7 @@ import {
   listWeightBrackets,
   saveWeightBrackets,
   type WeightBracketInput,
-} from "@/repositories/weightBrackets";
+} from "@bongcun/supabase/pets";
 import { weightBracketKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

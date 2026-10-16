@@ -1,4 +1,4 @@
-import type { TicketInput } from "@/repositories/spa";
+import type { TicketInput } from "@bongcun/supabase/spa";
 import { toIso } from "../format";
 
 /** Select value for "nobody / no table" (a Select cannot hold an empty string). */

@@ -15,7 +15,7 @@ import {
   type ShiftReconFilter,
   type StaffFilter,
   type TopItemFilter,
-} from "@/repositories/reports";
+} from "@bongcun/supabase/reports";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { reportKeys } from "./keys";
 

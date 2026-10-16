@@ -9,7 +9,7 @@ import type {
   OrderListFilter,
 } from "@bongcun/core/shop";
 import { unwrap, type PageParams } from "@bongcun/supabase/shared";
-import type { PaymentMethod } from "../pos";
+import type { PaymentMethod } from "@bongcun/supabase/pos";
 
 type Client = SupabaseClient<Database>;
 

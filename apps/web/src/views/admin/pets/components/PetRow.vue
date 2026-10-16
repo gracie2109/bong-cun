@@ -98,7 +98,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PetListItem } from "@/repositories/pets";
+import type { PetListItem } from "@bongcun/supabase/pets";
 import { formatAge, formatShortDate, initials } from "../format";
 
 defineProps<{ pet: PetListItem; canUpdate: boolean }>();

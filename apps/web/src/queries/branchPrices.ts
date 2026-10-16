@@ -7,7 +7,7 @@ import {
   listProductBranchPrices,
   setProductBranchPrices,
   type BranchPriceChange,
-} from "@/repositories/branchPrices";
+} from "@bongcun/supabase/spa";
 import { branchPriceKeys, productKeys } from "./keys";
 import { notifyFailure } from "./notify";
 

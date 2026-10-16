@@ -1,5 +1,5 @@
 import type { CsvColumn } from "@/lib/csv";
-import type { StaffRevenue, StaffRole } from "@/repositories/reports";
+import type { StaffRevenue, StaffRole } from "@bongcun/supabase/reports";
 
 /** Columns of the staff export for a role; `t` turns an i18n key into the header text. */
 export const staffCsvColumns = (role: StaffRole, t: (key: string) => string): CsvColumn<StaffRevenue>[] => {

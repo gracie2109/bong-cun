@@ -107,7 +107,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { usePermission } from "@/composables/usePermission";
 import { useSetSpeciesActive } from "@/queries/species";
-import type { Species, SpeciesSummary } from "@/repositories/species";
+import type { Species, SpeciesSummary } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import BracketsEditor from "./BracketsEditor.vue";

@@ -123,7 +123,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatPrice } from "@/lib/utils";
 import { useCreatePetCombo, useUpdatePetCombo } from "@/queries/petCombos";
 import { useSpeciesOptions } from "@/queries/species";
-import type { PetCombo } from "@/repositories/petCombos";
+import type { PetCombo } from "@bongcun/supabase/spa";
 import { COMBO_MARKS } from "./comboStatus";
 import { useComboForm } from "./useComboForm";
 

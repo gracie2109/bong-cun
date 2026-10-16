@@ -45,8 +45,8 @@ import { computed, ref, watch } from "vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatPrice } from "@/lib/utils";
-import type { PetService } from "@/repositories/petServices";
-import { findBracket, type WeightBracket } from "@/repositories/weightBrackets";
+import type { PetService } from "@bongcun/supabase/spa";
+import { findBracket, type WeightBracket } from "@bongcun/supabase/pets";
 
 const props = defineProps<{
   services: PetService[];

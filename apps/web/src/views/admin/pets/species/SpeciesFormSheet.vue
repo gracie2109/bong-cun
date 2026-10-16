@@ -66,7 +66,7 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateSpecies, useUpdateSpecies } from "@/queries/species";
-import type { Species } from "@/repositories/species";
+import type { Species } from "@bongcun/supabase/pets";
 
 const ICONS = ["lucide:dog", "lucide:cat", "lucide:rabbit", "lucide:bird", "lucide:fish", "lucide:squirrel"];
 

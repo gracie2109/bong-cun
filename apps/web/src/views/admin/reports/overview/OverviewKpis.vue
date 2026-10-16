@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ReportOverview } from "@/repositories/reports";
+import type { ReportOverview } from "@bongcun/supabase/reports";
 import { money } from "../shared/format";
 import KpiCard from "../shared/KpiCard.vue";
 

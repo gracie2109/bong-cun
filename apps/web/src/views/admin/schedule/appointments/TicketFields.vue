@@ -76,9 +76,9 @@ import { Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CustomerPet, SellableCombo } from "@/repositories/pos";
-import type { PetService } from "@/repositories/petServices";
-import type { BranchStaff, SpaResource } from "@/repositories/spa";
+import type { CustomerPet, SellableCombo } from "@bongcun/supabase/pos";
+import type { PetService } from "@bongcun/supabase/spa";
+import type { BranchStaff, SpaResource } from "@bongcun/supabase/spa";
 import { choiceOf, NONE, type TicketDraft } from "./ticketDraft";
 
 const props = defineProps<{

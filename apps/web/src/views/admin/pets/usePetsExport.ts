@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listPets, type PetListFilter } from "@/repositories/pets";
+import { listPets, type PetListFilter } from "@bongcun/supabase/pets";
 import { petsExportColumns } from "./petsExportColumns";
 
 /** Export of the pets (with their owner) under the filter the list is showing. */

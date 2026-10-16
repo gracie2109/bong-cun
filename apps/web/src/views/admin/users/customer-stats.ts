@@ -1,6 +1,6 @@
 // Per-customer figures derived from their orders. Cancelled lines do not count
 // as spending or as a visit.
-import type { CustomerOrder } from "@/repositories/orders";
+import type { CustomerOrder } from "@bongcun/supabase/customers";
 
 /** An account created within this many days is shown as a new customer. */
 export const NEW_CUSTOMER_DAYS = 30;

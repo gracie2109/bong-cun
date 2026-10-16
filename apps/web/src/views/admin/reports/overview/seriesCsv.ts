@@ -1,5 +1,5 @@
 import type { CsvColumn } from "@/lib/csv";
-import type { SeriesPoint } from "@/repositories/reports";
+import type { SeriesPoint } from "@bongcun/supabase/reports";
 
 /** Columns of the revenue-by-day export; `t` turns an i18n key into the header text. */
 export const seriesCsvColumns = (t: (key: string) => string): CsvColumn<SeriesPoint>[] => [

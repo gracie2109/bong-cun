@@ -9,7 +9,7 @@ import {
   setSpeciesActive,
   updateSpecies,
   type SpeciesInput,
-} from "@/repositories/species";
+} from "@bongcun/supabase/pets";
 import { speciesKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

@@ -42,7 +42,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { REFUND_METHODS, type InvoiceLine, type RefundMethod } from "@/repositories/pos";
+import { REFUND_METHODS, type InvoiceLine, type RefundMethod } from "@bongcun/supabase/pos";
 import { money } from "../format";
 
 defineProps<{

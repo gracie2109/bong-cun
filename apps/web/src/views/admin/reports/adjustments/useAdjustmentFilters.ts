@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { usePagedSearch } from "@/composables/usePagedSearch";
-import type { AdjustmentFilter, AdjustmentKind } from "@/repositories/reports";
+import type { AdjustmentFilter, AdjustmentKind } from "@bongcun/supabase/reports";
 import { useReportFilters } from "../shared/useReportFilters";
 
 const PAGE_SIZE = 20;

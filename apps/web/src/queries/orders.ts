@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { listOrdersByUserIds } from "@/repositories/orders";
+import { listOrdersByUserIds } from "@bongcun/supabase/customers";
 import { orderKeys } from "./keys";
 
 export const useOrdersByUsers = (userIds: MaybeRef<string[]>) =>

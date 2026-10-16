@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { Bucket, SeriesPoint } from "@/repositories/reports";
+import type { Bucket, SeriesPoint } from "@bongcun/supabase/reports";
 import type { ChartPoint, ChartSeries } from "../shared/chartScale";
 import { bucketLabel, formatDay, formatMonth } from "../shared/dateRange";
 import { compactMoney, money } from "../shared/format";

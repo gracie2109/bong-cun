@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { usePagedSearch } from "@/composables/usePagedSearch";
-import type { StaffFilter, StaffRole } from "@/repositories/reports";
+import type { StaffFilter, StaffRole } from "@bongcun/supabase/reports";
 import { useReportFilters } from "../shared/useReportFilters";
 
 const PAGE_SIZE = 20;

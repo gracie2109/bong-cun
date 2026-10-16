@@ -78,7 +78,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCloseShift, useShiftSummary } from "@/queries/pos";
-import type { CashShift } from "@/repositories/pos";
+import type { CashShift } from "@bongcun/supabase/pos";
 import { money, parseAmount } from "../format";
 
 const props = defineProps<{ open: boolean; shift: CashShift | null }>();

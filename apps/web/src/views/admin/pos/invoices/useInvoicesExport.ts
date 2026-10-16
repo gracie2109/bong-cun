@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listInvoices, type InvoiceFilter } from "@/repositories/pos";
+import { listInvoices, type InvoiceFilter } from "@bongcun/supabase/pos";
 import { invoicesExportColumns } from "./invoicesExportColumns";
 
 /** Export of the invoices under the filter the list is showing. */

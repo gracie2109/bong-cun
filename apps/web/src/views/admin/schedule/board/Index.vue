@@ -115,7 +115,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useDayBoard, useFindAppointment } from "@/queries/spa";
-import { SLOT_MINUTES, type Appointment, type BoardTicket } from "@/repositories/spa";
+import { SLOT_MINUTES, type Appointment, type BoardTicket } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";

@@ -106,7 +106,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { usePetCombosList, useSetPetComboActive } from "@/queries/petCombos";
-import type { PetCombo } from "@/repositories/petCombos";
+import type { PetCombo } from "@bongcun/supabase/spa";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import ComboFormSheet from "./ComboFormSheet.vue";

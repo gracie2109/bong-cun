@@ -81,7 +81,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useKennels } from "@/queries/boarding";
-import type { CustomerPet } from "@/repositories/pos";
+import type { CustomerPet } from "@bongcun/supabase/pos";
 import type { KennelType, TypeAvailability } from "@bongcun/core/boarding";
 import { AUTO, NONE, typesForPet, type PetDraft } from "./stayDraft";
 

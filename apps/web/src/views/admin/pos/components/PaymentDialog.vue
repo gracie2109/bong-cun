@@ -78,7 +78,7 @@ import { toast } from "vue-sonner";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { SaleResult } from "@/repositories/pos";
+import type { SaleResult } from "@bongcun/supabase/pos";
 import { money } from "../format";
 import { usePaymentSplit, type PaymentEntry } from "../usePaymentSplit";
 import { useScanGuard } from "../useScanGuard";

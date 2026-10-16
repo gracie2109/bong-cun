@@ -28,7 +28,7 @@
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { useBillableTickets } from "@/queries/spa";
-import type { BillableTicket } from "@/repositories/spa";
+import type { BillableTicket } from "@bongcun/supabase/spa";
 import { money } from "../format";
 
 const props = defineProps<{

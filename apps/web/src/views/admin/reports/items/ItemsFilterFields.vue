@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { FilterField } from "@/components/common/search-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { ItemSort } from "@/repositories/reports";
+import type { ItemSort } from "@bongcun/supabase/reports";
 
 const sort = defineModel<ItemSort>({ required: true });
 

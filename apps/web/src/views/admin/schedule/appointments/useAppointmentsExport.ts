@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listAppointments, type AppointmentFilter } from "@/repositories/spa";
+import { listAppointments, type AppointmentFilter } from "@bongcun/supabase/spa";
 import { appointmentsExportColumns } from "./appointmentsExportColumns";
 
 // list_appointments serves 100 rows per page at most.

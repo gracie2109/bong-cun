@@ -46,7 +46,7 @@ import { Link2 } from "lucide-vue-next";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { Customer } from "@bongcun/supabase/customers";
-import type { PetOwner } from "@/repositories/pets";
+import type { PetOwner } from "@bongcun/supabase/pets";
 import { initials } from "../format";
 import LinkAccountDialog from "./link/LinkAccountDialog.vue";
 

@@ -66,7 +66,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { WeightBracket } from "@/repositories/weightBrackets";
+import type { WeightBracket } from "@bongcun/supabase/pets";
 
 defineProps<{
   /** Rows to show. */

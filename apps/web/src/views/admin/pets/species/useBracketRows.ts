@@ -1,7 +1,7 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useSaveWeightBrackets, useWeightBrackets } from "@/queries/weightBrackets";
-import { checkBrackets, type WeightBracketInput } from "@/repositories/weightBrackets";
+import { checkBrackets, type WeightBracketInput } from "@bongcun/supabase/pets";
 
 /** One editable bracket. Text fields hold what was typed; numbers are parsed on save. */
 export type BracketRow = { key: number; id?: string; label: string; min: string; max: string };

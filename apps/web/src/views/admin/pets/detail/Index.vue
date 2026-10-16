@@ -60,7 +60,7 @@ import { ChevronRight, PawPrint } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePermission } from "@/composables/usePermission";
 import { usePet, useSetPetStatus } from "@/queries/pets";
-import type { PetStatus } from "@/repositories/pets";
+import type { PetStatus } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetEditSheet from "../components/PetEditSheet.vue";
 import PetsNav from "../PetsNav.vue";

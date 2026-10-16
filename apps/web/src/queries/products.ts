@@ -17,7 +17,7 @@ import {
   type ProductFilter,
   type ProductGroupInput,
 } from "@bongcun/supabase/products";
-import { errorDetail } from "@/repositories/pos";
+import { errorDetail } from "@bongcun/supabase/pos";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { inventoryKeys, productKeys } from "./keys";

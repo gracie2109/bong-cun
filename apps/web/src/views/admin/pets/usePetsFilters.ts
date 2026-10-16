@@ -3,7 +3,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL, SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useSpeciesOptions } from "@/queries/species";
 import { useWeightBrackets } from "@/queries/weightBrackets";
-import type { PetListFilter, PetStatus } from "@/repositories/pets";
+import type { PetListFilter, PetStatus } from "@bongcun/supabase/pets";
 
 export const PET_STATUSES: PetStatus[] = ["active", "archived", "deceased"];
 
