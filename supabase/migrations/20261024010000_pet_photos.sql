@@ -40,7 +40,8 @@ create policy "pet-photos: upload" on storage.objects
   with check (
     bucket_id = 'pet-photos'
     and public.can_edit_pet_photos()
-    and exists (select 1 from public.pets p where p.id::text = (storage.foldername(name))[1])
+    -- objects.name, not name: inside the subquery a bare name would be the pet's own name column
+    and exists (select 1 from public.pets p where p.id::text = (storage.foldername(objects.name))[1])
   );
 
 drop policy if exists "pet-photos: read" on storage.objects;
