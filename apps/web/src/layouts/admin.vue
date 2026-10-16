@@ -18,7 +18,7 @@ import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useShopOrderBadge } from "@/queries/shopOrdersAdmin";
 import { useAppStore, useAuthStore } from "@/stores";
-import { initials } from "@/views/admin/pets/format";
+import { initials } from "@/features/admin/pets/format";
 
 // The admin palette lives on <html> (see index.css) so teleported sheets and dialogs get it too.
 onMounted(() => document.documentElement.classList.add("admin-theme"));

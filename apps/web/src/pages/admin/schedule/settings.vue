@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/schedule/settings/Index.vue";
+import View from "@/features/admin/schedule/settings/Index.vue";
 
 definePageMeta({
   name: "spaSettings",

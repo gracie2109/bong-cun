@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/boarding/detail/Index.vue";
+import View from "@/features/admin/boarding/detail/Index.vue";
 
 definePageMeta({
   name: "boardingStayDetail",

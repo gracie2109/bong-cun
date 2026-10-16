@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/products/Index.vue";
+import View from "@/features/admin/products/Index.vue";
 
 definePageMeta({
   name: "adminProducts",

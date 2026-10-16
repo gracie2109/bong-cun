@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/auth/ForgotPassView.vue";
+import View from "@/features/auth/ForgotPassView.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
 definePageMeta({

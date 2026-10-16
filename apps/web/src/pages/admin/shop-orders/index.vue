@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/shop-orders/orders/Index.vue";
+import View from "@/features/admin/shop-orders/orders/Index.vue";
 
 definePageMeta({
   name: "shopOrders",

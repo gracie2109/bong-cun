@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/pos/shifts/Index.vue";
+import View from "@/features/admin/pos/shifts/Index.vue";
 
 definePageMeta({
   name: "cashShifts",

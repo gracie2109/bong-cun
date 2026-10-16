@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/settings/matrix/Index.vue";
+import View from "@/features/admin/settings/matrix/Index.vue";
 
 definePageMeta({
   name: "permissionMatrix",

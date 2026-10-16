@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/client/catalog/Index.vue";
+import View from "@/features/shop/catalog/Index.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
 definePageMeta({

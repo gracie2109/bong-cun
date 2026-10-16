@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/schedule/board/Index.vue";
+import View from "@/features/admin/schedule/board/Index.vue";
 
 definePageMeta({
   name: "spaBoard",

@@ -11,9 +11,9 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import ForgotPassView from "@/views/auth/ForgotPassView.vue";
-import LoginView from "@/views/auth/LoginView.vue";
-import RegisterView from "@/views/auth/RegisterView.vue";
+import ForgotPassView from "@/features/auth/ForgotPassView.vue";
+import LoginView from "@/features/auth/LoginView.vue";
+import RegisterView from "@/features/auth/RegisterView.vue";
 
 type AuthView = "login" | "register" | "forgot";
 

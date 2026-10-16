@@ -33,7 +33,7 @@ import { storeToRefs } from "pinia";
 import { CalendarHeart, UserRound } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores";
-import AccountMenu from "@/views/client/layout/AccountMenu.vue";
+import AccountMenu from "@/features/shop/layout/AccountMenu.vue";
 import CartMenu from "./CartMenu.vue";
 import LangToggle from "./LangToggle.vue";
 import LoginDialog from "./LoginDialog.vue";
