@@ -1,11 +1,10 @@
 // Pure shipping rules of the shop checkout: no Vue, Pinia or network.
+import { MAX_DELIVERY_G, MAX_QUOTE_FEE } from "./shippingLimits";
+
+export { MAX_DELIVERY_G, MAX_QUOTE_FEE };
 
 /** Grams of packaging added to every order. */
 export const PACKAGING_G = 100;
-/** The shop delivers nothing heavier than this; heavier orders can only be collected in store. */
-export const MAX_DELIVERY_G = 30_000;
-/** The estimated fee is kept inside this range when an order is placed. */
-export const MAX_QUOTE_FEE = 500_000;
 /** The confirmed fee may exceed the estimate by this much before staff are told to call the customer. */
 export const FEE_WARN_DIFF = 10_000;
 
