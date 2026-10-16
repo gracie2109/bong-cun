@@ -6884,6 +6884,7 @@ begin
               jsonb_build_object(
                 'name', i.name,
                 'pet_name', pt.name,
+                'pet_photo_url', pt.photo_url,
                 'start_at', i.start_at,
                 'status', i.status,
                 'est_price', i.est_price
@@ -6983,6 +6984,7 @@ CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_json"("p_stay" "public"."b
     'pets', coalesce((
       select jsonb_agg(jsonb_build_object(
         'pet_name', sp.pet_name,
+        'pet_photo_url', (select pt.photo_url from public.pets pt where pt.id = sp.pet_id),
         'status', sp.status,
         'kennel_type_name', t.name,
         'nights_from', lower(sp.nights),
@@ -7110,6 +7112,7 @@ begin
   return jsonb_build_object(
     'pet_id', v_pet.id,
     'pet_name', v_pet.name,
+    'pet_photo_url', v_pet.photo_url,
     'phone', (
       select b.phone from public.branches b where b.is_active and b.phone is not null
       order by b.created_at limit 1
@@ -7199,6 +7202,7 @@ begin
                'species_id', p.species_id,
                'species_name', s.name,
                'breed', p.breed,
+               'photo_url', p.photo_url,
                'sex', p.sex,
                'neutered', p.neutered,
                'birth_date', p.birth_date,

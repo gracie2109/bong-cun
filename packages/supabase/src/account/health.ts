@@ -64,6 +64,7 @@ export const getMyPetHealth = async (client: Client, petId: string): Promise<Pet
   return {
     petId: str(row.pet_id),
     petName: str(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     phone: str(row.phone),
     vaccines: listOf(row.vaccines).map(toVaccine),
     visits: listOf(row.visits).map(toVisit),

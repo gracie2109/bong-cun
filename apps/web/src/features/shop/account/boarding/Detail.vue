@@ -31,7 +31,10 @@
         <h2 class="text-sm font-semibold">{{ $t("client.boarding.pets") }}</h2>
         <ul class="space-y-2">
           <li v-for="(pet, index) in stay.pets" :key="index" class="rounded-lg border bg-white px-3 py-2 text-sm">
-            <p><span class="font-medium">{{ pet.petName }}</span> · {{ pet.kennelTypeName }} · {{ $t("client.boarding.nights", { n: pet.chargedNights }) }}</p>
+            <p class="flex items-center gap-2">
+              <PetAvatar :name="pet.petName" :photo-url="pet.petPhotoUrl" class="size-7 text-[10px]" />
+              <span><span class="font-medium">{{ pet.petName }}</span> · {{ pet.kennelTypeName }} · {{ $t("client.boarding.nights", { n: pet.chargedNights }) }}</span>
+            </p>
             <p v-if="pet.feeding" class="text-muted-foreground">{{ $t("client.boarding.feeding") }}: {{ pet.feeding }}</p>
             <p v-if="pet.medication" class="text-muted-foreground">{{ $t("client.boarding.medication") }}: {{ pet.medication }}</p>
           </li>
@@ -61,6 +64,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
