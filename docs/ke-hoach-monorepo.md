@@ -1,6 +1,6 @@
 # Audit và kế hoạch chuyển sang monorepo
 
-Ngày: 2026-10-16. Yêu cầu của grace: audit toàn bộ dự án, đề xuất kế hoạch refactor sang monorepo (mỗi sản phẩm Web, CMS, Mobile là một app, phần dùng chung ở `packages/`), lấy Feature-First làm cấu trúc chính, chỉ dùng Ports & Adapters ở chỗ nghiệp vụ phức tạp hoặc phụ thuộc dịch vụ ngoài. **Tài liệu này không đổi code.** Mọi số liệu đo trên `main` commit `0cde6de` bằng quét tĩnh (grep, đếm dòng); chưa chạy thử bước nào của kế hoạch.
+Ngày: 2026-10-16. **Bản 2** (cùng ngày): thêm hướng dài hạn "backend thay được" (Supabase, NestJS hoặc nhiều backend), xem mục 12 đến 19. Những chỗ bản 1 nói khác đã được sửa tại chỗ; thay đổi chính ghi ở mục 12.1. Yêu cầu ban đầu của grace: audit toàn bộ dự án, đề xuất kế hoạch refactor sang monorepo (mỗi sản phẩm Web, CMS, Mobile là một app, phần dùng chung ở `packages/`), lấy Feature-First làm cấu trúc chính, chỉ dùng Ports & Adapters ở chỗ nghiệp vụ phức tạp hoặc phụ thuộc dịch vụ ngoài. **Tài liệu này không đổi code.** Mọi số liệu đo trên `main` commit `0cde6de` bằng quét tĩnh (grep, đếm dòng); chưa chạy thử bước nào của kế hoạch.
 
 Đọc kèm: [danh-gia-kien-truc.md](danh-gia-kien-truc.md) (kết luận Nuxt + Supabase là đủ), [ke-hoach-sua-kien-truc.md](ke-hoach-sua-kien-truc.md), PR #53 (NestJS và app, đang hoãn).
 
@@ -9,6 +9,7 @@ Ngày: 2026-10-16. Yêu cầu của grace: audit toàn bộ dự án, đề xu�
 - **Nên làm, nhưng làm theo nấc và dừng được ở bất kỳ nấc nào.** Phần đáng giá nhất (gom code theo feature, tách phần TypeScript thuần ra `packages/core` để app sau này dùng lại) rẻ và có ích ngay. Phần đắt nhất (tách admin thành app CMS riêng) có lợi ít hơn mình tưởng, nên để làm khi có lý do cụ thể.
 - **Không cần Hexagonal cho phần lớn module.** Nghiệp vụ thật (hóa đơn, trừ kho FEFO, ca thu ngân, lưu trú, bệnh án) nằm trong RPC Postgres. Phía TypeScript chỉ gọi RPC và hiển thị, nên bọc thêm port/adapter ở POS, kho, y tế chỉ là thêm file mà không thêm an toàn. Repository hiện tại đã nhận `client` làm tham số, đó chính là "cổng" đủ dùng.
 - **Ports & Adapters chỉ ở 4 chỗ dính dịch vụ ngoài:** vận chuyển (GHN), thanh toán (SePay/VietQR, khi làm), lưu file (ảnh, đính kèm y tế, vì app mobile upload khác web), gửi thông báo (khi có kênh).
+- **Bản 2: nghiệp vụ hiện nằm trong Postgres, không phải TypeScript.** 262 hàm SQL, 50 trigger, 214 policy RLS. Vì vậy "đổi backend" thật ra là đổi nơi chạy nghiệp vụ, và phần giữ được lâu dài là **hợp đồng** (tên use case, dữ liệu vào/ra, lỗi, quyền) chứ không phải mã. Kế hoạch này đặt hợp đồng và quy tắc thuần vào `packages/core` (không phụ thuộc Supabase), còn mọi thứ chạm `supabase-js` vào một chỗ duy nhất (`packages/supabase`).
 - **Database và `supabase/` giữ nguyên ở gốc repo.** Workflow tự chạy migration, backup, CI SQL không phải đổi.
 - **Công cụ: npm workspaces, chưa cần Turborepo, chưa đổi sang pnpm.**
 - App mobile là giai đoạn sau. Quy tắc quan trọng nhất cho nó phải áp dụng từ bây giờ: `packages/core` không được import Vue, Nuxt, Pinia hay DOM, để sau này React Native hay Capacitor đều dùng lại được.
@@ -81,8 +82,8 @@ pages/ (vỏ mỏng) → views/<admin|client>/<module>/ (component + composable 
 | --- | --- | --- | --- |
 | **Giữ nguyên** | Toàn bộ database: migration, test pgTAP, `schema.sql`, edge function, template email | `supabase/` | Giữ ở gốc repo, mọi app dùng chung một project Supabase |
 | Giữ | Nghiệp vụ trong RPC + RLS | `supabase/migrations` | Không đưa nghiệp vụ lên TypeScript |
-| Giữ | Mẫu repository nhận `client` | `src/repositories/**` | Chuyển nguyên vào `packages/core` |
-| Giữ | `parseRpc`, `unwrap`, `pageRange`, mã lỗi Postgres | `src/repositories/shared.ts` | `packages/core/src/shared/` |
+| Giữ | Mẫu repository nhận `client` | `src/repositories/**` | Chuyển vào `packages/supabase/<feature>/repo.ts` (bản 2), đổi kiểu trả về sang kiểu miền của `core` |
+| Giữ | `parseRpc`, `unwrap`, `pageRange`, mã lỗi Postgres | `src/repositories/shared.ts` | `packages/supabase/src/shared/` (hàm), mã lỗi nghiệp vụ trong `core/shared/errors.ts` |
 | Giữ | Quyền giao diện thuần | `src/lib/access.ts` | `packages/core/src/auth/access.ts` |
 | Giữ | Bộ nhập/xuất Excel/CSV/PDF | `src/lib/data-io`, `components/common/data-io` | Chỉ CMS dùng, vào feature `data-io` của CMS |
 | **Tách** | Quy tắc và hằng số đang nằm trong repository | `repositories/inventory/index.ts` (`isExpired`, `businessDate`, `STOCK_STATUSES`, `DOC_TYPES`), `repositories/users.ts` (`USER_SORT`)... | `core/<feature>/model.ts` (kiểu, hằng số) và `rules.ts` (hàm thuần); `repo.ts` chỉ còn gọi Supabase |
@@ -90,9 +91,9 @@ pages/ (vỏ mỏng) → views/<admin|client>/<module>/ (component + composable 
 | Tách | i18n | `src/i18n/locales/*.json` | Khóa chung (`common`, `validation`, `locale`) trong layer; khóa admin vào CMS; khóa shop vào Web |
 | Tách | `lib/constants.ts`, `lib/utils.ts` | `src/lib/` | Theo feature; `cn()` vào UI; hàm format tiền, ngày vào `core/shared/format.ts` |
 | Tách | `composables/shop` | `src/composables/shop/` | Phần admin (`useShopSettingsForm`, `useShippingTest`, `useOrderSheet`, `useOrdersPage`) sang CMS |
-| **Chuyển** | Kiểu dữ liệu | `src/types/*.ts` | `core/<feature>/model.ts`; `database.types.ts` vào `core/src/db/` |
-| Chuyển | Schema zod | `src/validations/*.ts` | `core/<feature>/schemas.ts` |
-| Chuyển | Queries | `src/queries/*.ts` | Khóa cache và hàm lấy dữ liệu vào `core/<feature>/queries.ts` (không Vue); `useQuery` bọc mỏng nằm trong feature của từng app |
+| **Chuyển** | Kiểu dữ liệu | `src/types/*.ts` | `core/<feature>/model.ts`; `database.types.ts` vào `packages/supabase/src/db/` |
+| Chuyển | Schema zod | `src/validations/*.ts` | `core/<feature>/contract.ts` |
+| Chuyển | Queries | `src/queries/*.ts` | Khóa cache và hàm lấy dữ liệu vào `core/<feature>/keys.ts` (khóa, không Vue) và `packages/supabase/<feature>/repo.ts` (hàm lấy dữ liệu); `useQuery` bọc mỏng nằm trong feature của từng app |
 | Chuyển | Màn admin | `src/views/admin/<module>/` | `apps/cms/app/features/<module>/` |
 | Chuyển | Màn khách | `src/views/client/**`, `views/home`, `components/shop`, `layout/client` | `apps/web/app/features/<module>/` |
 | Chuyển | UI dùng chung | `components/ui`, phần chung của `components/common`, `assets/*.css`, phần chung `tailwind.config.js` | `packages/nuxt-base` (Nuxt layer) |
@@ -134,19 +135,23 @@ bong-cun/
 │  │        └─ data-io/
 │  └─ mobile/                   # GIAI ĐOẠN SAU (mục 7, quyết định Q3)
 └─ packages/
-   ├─ core/                     # TS thuần: KHÔNG Vue/Nuxt/Pinia/DOM
-   │  └─ src/
-   │     ├─ db/                 # database.types.ts (sinh), type Db = SupabaseClient<Database>
-   │     ├─ shared/             # unwrap, parseRpc, pageRange, format tiền/ngày, mã lỗi
-   │     ├─ auth/               # access.ts, kiểu role
-   │     ├─ ports/              # interface cho dịch vụ ngoài (mục 5)
+   ├─ core/                     # TS thuần: KHÔNG Vue/Nuxt/Pinia/DOM và KHÔNG supabase-js
+   │  └─ src/                    # phụ thuộc duy nhất: zod, date-fns
+   │     ├─ shared/             # format tiền/ngày, Page<T>, lỗi nghiệp vụ (AppError), kiểu Result
+   │     ├─ auth/               # access.ts, kiểu role, Session (kiểu của mình, không phải của Supabase)
+   │     ├─ ports/              # interface cho dịch vụ ngoài (mục 5) và cho feature đã chuyển backend (mục 15)
    │     └─ <feature>/          # pos, inventory, products, medical, boarding, spa, shop, ...
-   │        ├─ model.ts         # kiểu, hằng số, trạng thái
-   │        ├─ rules.ts         # hàm thuần (isExpired, tính giá theo cân nặng...)
-   │        ├─ schemas.ts       # zod (form + parse kết quả RPC jsonb)
-   │        ├─ repo.ts          # gọi Supabase (có thể là thư mục nếu > 300 dòng)
-   │        ├─ queries.ts       # khóa cache + queryFn, không phụ thuộc framework
+   │        ├─ model.ts         # kiểu miền, hằng số, trạng thái
+   │        ├─ rules.ts         # hàm thuần (isExpired, phí ship, giá hiển thị...)
+   │        ├─ contract.ts      # zod: dữ liệu vào/ra từng use case, mã lỗi nghiệp vụ (mục 14)
+   │        ├─ keys.ts          # khóa cache + luật làm mới, không phụ thuộc framework
    │        └─ index.ts         # API công khai của feature
+   ├─ supabase/                 # NƠI DUY NHẤT import @supabase/supabase-js (mục 13)
+   │  └─ src/
+   │     ├─ db/                 # database.types.ts (sinh), type Db
+   │     ├─ shared/             # unwrap, parseRpc, pageRange, dịch lỗi Postgres → AppError
+   │     ├─ auth/               # đọc claim user_role/branch_ids, đăng nhập/đăng xuất
+   │     └─ <feature>/repo.ts   # hàm gọi RPC/bảng, trả kiểu của core (mapper), không trả Row
    ├─ nuxt-base/                # Nuxt layer dùng chung cho web và cms
    │  ├─ nuxt.config.ts         # modules supabase, i18n, pinia, vueuse; css; tailwind
    │  ├─ components/ui/         # shadcn-vue
@@ -158,7 +163,7 @@ bong-cun/
    └─ config/                   # tsconfig gốc, tailwind preset, token màu (JSON)
 ```
 
-**Vì sao chỉ 3 package.** Có thể tách `core` thành `types`, `domain`, `api`, `validation` riêng, nhưng mỗi package thêm một `package.json`, một lần build và một chỗ phải giữ phiên bản. Với một người làm, một package `core` chia thư mục theo feature và xuất theo đường con (`@bongcun/core/pos`) cho cùng ranh giới mà rẻ hơn nhiều. Tách thêm khi một phần thật sự cần phát hành riêng.
+**Vì sao 4 package (bản 2: thêm `supabase`).** Có thể tách `core` thành `types`, `domain`, `api`, `validation` riêng, nhưng mỗi package thêm một `package.json`, một lần build và một chỗ phải giữ phiên bản. Với một người làm, một package `core` chia thư mục theo feature và xuất theo đường con (`@bongcun/core/pos`) cho cùng ranh giới mà rẻ hơn nhiều. **Ngoại lệ có lợi ích thật là `supabase`**: nếu để repository trong `core`, thì `core` mang theo `supabase-js` trong `package.json`, và NestJS (hoặc bất kỳ backend nào) dùng lại `core` sẽ kéo cả thư viện đó; ranh giới chỉ còn dựa vào kỷ luật. Tách thành package riêng khiến luật "core không biết Supabase" được **`package.json` ép** (không khai báo thì không import được) thay vì chỉ ghi trên giấy. Các phần còn lại (types, validation, queries) vẫn là thư mục trong `core`, không thành package.
 
 **Feature trong app** có dạng:
 
@@ -200,7 +205,7 @@ export interface ShippingProvider {
 }
 
 // packages/core/src/shop/rules.ts: chọn phí GHN hoặc phí cố định khi lỗi (đang nằm ở composable)
-// apps/web, apps/cms: adapter gọi /api/ghn/* (code của src/services/*.ts hiện nay)
+// apps/web, apps/cms: adapter gọi /api/ghn/* (code của src/services/*.ts hiện nay), đặt trong app hoặc nuxt-base
 // apps/mobile (sau): adapter gọi edge function `ghn` của Supabase
 ```
 
@@ -210,13 +215,15 @@ Khi có app mobile, proxy GHN nên chuyển từ `server/api/ghn` (Nitro trên V
 
 ```
 apps/web ─┐                  apps/mobile ─┐
-apps/cms ─┼─► packages/nuxt-base ─► packages/core ─► (supabase-js, zod, date-fns)
-          └──────────────────────────►┘           ▲
-                                      apps/mobile ┘ (không dùng nuxt-base)
+apps/cms ─┼─► packages/nuxt-base ─┐      (không dùng nuxt-base)
+          └───────────────────────┼─► packages/supabase ─► packages/core ─► (zod, date-fns)
+                       apps/mobile ┘          │ (supabase-js)                   ▲
+                                              └─────────────────────────────────┘
+                              (tương lai) apps/api (NestJS) ─► packages/core  (không cần packages/supabase)
 ```
 
 1. `apps/*` được import `packages/*`. **Không** chiều ngược lại, và **app không import app**.
-2. `packages/core` chỉ phụ thuộc `@supabase/supabase-js` (kiểu và client), `zod`, `date-fns`. Cấm `vue`, `nuxt`, `#imports`, `pinia`, `@tanstack/vue-query`, `window`, `document`, `process.env`.
+2. `packages/core` chỉ phụ thuộc `zod`, `date-fns`. Cấm `@supabase/supabase-js`, `vue`, `nuxt`, `#imports`, `pinia`, `@tanstack/*`, `window`, `document`, `process.env`. `packages/supabase` phụ thuộc `core` và `@supabase/supabase-js`; `core` không bao giờ import ngược lại. Chỉ `packages/supabase` được import `@supabase/supabase-js` và `database.types.ts`; app lấy client từ nó hoặc từ `@nuxtjs/supabase` rồi truyền vào.
 3. Trong `core`, feature A dùng feature B chỉ qua `core/B/index.ts`, không vào file bên trong. Cạnh được phép khai báo rõ, ví dụ `pos → products, inventory, shared`; `medical → pos, products, inventory`; `boarding → pos`. Không vòng.
 4. Trong app, `features/A` dùng `features/B` chỉ qua `index.ts`. `pages/` được import `features/*`, không ngược lại.
 5. Import sâu vào package bị cấm: dùng `@bongcun/core/pos`, không `@bongcun/core/src/pos/repo`. `package.json` của `core` khai `exports` theo đường con để chặn từ gốc.
@@ -228,12 +235,12 @@ apps/cms ─┼─► packages/nuxt-base ─► packages/core ─► (supabase-j
 
 | Loại | Cách chia | Ghi chú |
 | --- | --- | --- |
-| Kiểu DB | `packages/core/src/db/database.types.ts`, sinh bằng `supabase gen types typescript --local` | Thêm bước CI kiểm file này khớp migration, giống `schema.sql` |
-| Supabase client | `core` chỉ khai `type Db = SupabaseClient<Database>`. Mỗi app tự tạo client: web/CMS qua `@nuxtjs/supabase` (cookie), mobile qua `createClient` với AsyncStorage | Đúng như `src/lib/supabase.ts` hiện tại, chỉ là bên nhận |
-| Kiểu kết quả RPC `jsonb` | Schema zod trong `core/<feature>/schemas.ts`, kiểu suy từ `z.infer` | Một nguồn cho cả kiểu và kiểm tra lúc chạy (đã bắt đầu ở `parseRpc`) |
-| Validation form | Schema zod trong `core`, thông báo lỗi là khóa i18n; app gắn vào vee-validate (Vue) hay react-hook-form (RN) | |
-| Truy vấn | `core/<feature>/queries.ts` trả `{ queryKey, queryFn }` thuần; Vue bọc bằng `useQuery(...)`, React bọc bằng `useQuery(...)` của `@tanstack/react-query` | Khóa cache và luật làm mới (`invalidatePos`...) dùng chung, không viết hai lần |
-| Quy tắc nghiệp vụ phía client | `core/<feature>/rules.ts` | Ví dụ giá theo cân nặng, hạn dùng, trạng thái đơn |
+| Kiểu DB | `packages/supabase/src/db/database.types.ts`, sinh bằng `supabase gen types typescript --local`. Kiểu `Row` không ra khỏi package này; `core` có kiểu miền riêng | Thêm bước CI kiểm file này khớp migration, giống `schema.sql` |
+| Supabase client | `packages/supabase` khai `type Db = SupabaseClient<Database>`. Mỗi app tự tạo client: web/CMS qua `@nuxtjs/supabase` (cookie), mobile qua `createClient` với AsyncStorage | Đúng như `src/lib/supabase.ts` hiện tại, chỉ là bên nhận |
+| Kiểu kết quả RPC `jsonb` | Schema zod trong `core/<feature>/contract.ts`, kiểu suy từ `z.infer`; `packages/supabase` parse bằng `parseRpc` | Một nguồn cho cả kiểu và kiểm tra lúc chạy (đã bắt đầu ở `parseRpc`) |
+| Validation form | Schema zod trong `core/<feature>/contract.ts`, thông báo lỗi là khóa i18n; app gắn vào vee-validate (Vue) hay react-hook-form (RN) | |
+| Truy vấn | `core/<feature>/keys.ts` giữ khóa cache và luật làm mới (`invalidatePos`...); `queryFn` là hàm của `packages/supabase`; Vue bọc bằng `useQuery(...)`, React bằng `useQuery(...)` của `@tanstack/react-query` | Không viết hai lần |
+| Quy tắc nghiệp vụ dạng hàm thuần | `core/<feature>/rules.ts` (test bằng Vitest, backend nào cũng chạy) | Ví dụ giá theo cân nặng, hạn dùng, trạng thái đơn |
 | UI | Vue dùng chung qua layer `nuxt-base`. Mobile **không** dùng chung component | Chỉ chia token màu, font, khoảng cách qua `packages/config` (JSON) |
 | i18n | Khóa chung trong layer, khóa riêng theo app | Mobile đọc cùng JSON nếu cần |
 
@@ -260,9 +267,9 @@ Mỗi giai đoạn là một hoặc vài PR, merge xong app vẫn chạy như c�
 
 ### Giai đoạn 2: Tách `packages/core` theo từng feature (khoảng 8 đến 10 PR nhỏ)
 
-- PR đầu: tạo `packages/core` với `db/`, `shared/`, `auth/`; đặt alias để `apps/web` import `@bongcun/core/...`. Đổi lệnh sinh kiểu DB sang đường mới.
+- PR đầu: tạo `packages/core` (`shared/`, `auth/`) và `packages/supabase` (`db/`, `shared/`, `auth/`); đặt alias để `apps/web` import `@bongcun/core/...` và `@bongcun/supabase/...`. Đổi lệnh sinh kiểu DB sang đường mới.
 - Mỗi PR sau một feature, theo thứ tự ít phụ thuộc trước: `branches`/`users`/`permissions` → `products` → `inventory` → `pos` → `spa` → `boarding` → `medical` → `shop` → `reports`.
-- Trong mỗi PR: chuyển `types/<f>`, `validations/<f>`, `repositories/<f>` vào `core/<f>/`, tách hằng số và hàm thuần ra `model.ts`/`rules.ts`, chuyển khóa cache và `queryFn` từ `queries/<f>` sang `core/<f>/queries.ts`. Sửa import bằng codemod (`jscodeshift` hoặc script `sed` có kiểm), không sửa tay từng file.
+- Trong mỗi PR: kiểu miền, hằng số, hàm thuần và schema zod vào `core/<f>/` (`model.ts`, `rules.ts`, `contract.ts`); `repositories/<f>` vào `packages/supabase/<f>/repo.ts` và đổi giá trị trả về từ kiểu `Row` sang kiểu của `core` (mapper); khóa cache từ `queries/<f>` sang `core/<f>/keys.ts`. Sửa import bằng codemod (`jscodeshift` hoặc script `sed` có kiểm), không sửa tay từng file.
 - Thêm vài test Vitest cho `rules.ts` vừa tách (hàm thuần, test rẻ). Hiện TS chưa có test nào.
 - Luật `dependency-cruiser` cho `core` bật ngay từ PR đầu.
 
@@ -330,8 +337,310 @@ Mỗi giai đoạn là một hoặc vài PR, merge xong app vẫn chạy như c�
 | Q4 | Công cụ monorepo | (a) npm workspaces; (b) pnpm + Turborepo | **(a)**. Repo đang dùng npm và `package-lock.json`; đổi trình quản lý gói không đem lại gì ở quy mô này. |
 | Q5 | Kiểm ranh giới | (a) dependency-cruiser; (b) ESLint + plugin boundaries; (c) không kiểm | **(a)**. Không cần dựng ESLint (repo chưa có). |
 | Q6 | Proxy GHN | (a) giữ ở Nuxt server trong layer; (b) chuyển sang edge function ngay | **(a)** tới giai đoạn 6, rồi (b). |
-| Q7 | Đặt tên package | `@bongcun/core`, `@bongcun/nuxt-base`, `@bongcun/config` | Dùng tên này, không phát hành lên npm. |
+| Q7 | Đặt tên package | `@bongcun/core`, `@bongcun/supabase`, `@bongcun/nuxt-base`, `@bongcun/config` | Dùng tên này, không phát hành lên npm. |
 
-## 11. Việc tiếp theo
+## 11. Việc tiếp theo (bản 1; bản 2 xem mục 22)
 
 Nếu grace đồng ý với khuyến nghị Q1 (a), làm giai đoạn 0 trước, rồi giai đoạn 1 vào lúc không có thread nào đang code, sau đó 2 và 3 theo từng feature. Mỗi PR theo quy tắc đang có: typecheck, build, CI xanh, squash merge, không đổi migration.
+
+---
+
+# Phần bổ sung (bản 2): kiến trúc cho backend thay được
+
+Yêu cầu thêm của grace (2026-10-16): hệ thống có thể tiếp tục dùng Supabase, chuyển sang NestJS hoặc kết hợp nhiều backend trong tương lai; domain, quy tắc và use case độc lập framework/backend; chỉ dùng Ports & Adapters ở chỗ có lý do; không tạo hàng loạt package hay interface; lộ trình PR nhỏ giữ nguyên hành vi production. Số liệu mục 13 và 14 đo trên `main` commit `9ee0417` bằng quét tĩnh (`supabase/schema.sql` và `src/`), không chạy trên database thật.
+
+## 12. Nguyên tắc và thay đổi so với bản 1
+
+### 12.1 Bản 1 sửa gì
+
+| Chỗ | Bản 1 | Bản 2 | Lý do |
+| --- | --- | --- | --- |
+| Vị trí repository | `packages/core/<f>/repo.ts` | `packages/supabase/<f>/repo.ts` | `core` phải không biết Supabase thì NestJS mới dùng lại được mà không kéo `supabase-js` |
+| Số package | 3 (`core`, `nuxt-base`, `config`) | 4 (thêm `supabase`) | Một package có lợi ích thật: ranh giới do `package.json` ép |
+| Schema zod | `schemas.ts` | `contract.ts` (vào/ra từng use case + mã lỗi) | Đây là thứ phải giữ khi đổi nơi chạy nghiệp vụ |
+| Khóa cache | `queries.ts` (khóa + `queryFn`) | `keys.ts` (chỉ khóa và luật làm mới) | `queryFn` gọi backend nên thuộc adapter |
+| Kiểu trả về của repo | tùy | kiểu miền của `core`, không trả `Row` | Đổi backend không làm vỡ giao diện |
+| Ports | 4 chỗ dịch vụ ngoài | giữ 4 chỗ + cách mở thêm khi một feature chuyển backend (mục 15) | Không tạo interface trước khi có cài đặt thứ hai |
+
+### 12.2 Năm nguyên tắc
+
+1. **Ranh giới bền vững là hợp đồng use case**, không phải thư viện. Một use case là một việc nghiệp vụ có tên (ví dụ `createInvoice`) với dữ liệu vào, dữ liệu ra, lỗi có mã, quyền cần có và cam kết giao dịch. Hôm nay nó được thực thi bằng một RPC Postgres; mai có thể là một endpoint NestJS với cùng hợp đồng.
+2. **Nghiệp vụ nằm ở nơi nó đang đúng và có test.** Không viết lại SQL sang TypeScript chỉ để kiến trúc "sạch". Tiền, kho và quyền giữ ở Postgres cho tới khi có lý do cụ thể để chuyển (mục 16).
+3. **Quy tắc rule of two:** chỉ tạo port/interface khi sắp có cài đặt thứ hai hoặc khi đó là dịch vụ ngoài. Một interface chỉ có một cài đặt và không có lý do thay thế là chi phí thuần.
+4. **Quy tắc chạy được trên mọi backend nằm trong `core`:** hàm thuần, hằng số, zod. Test bằng Vitest, không cần database.
+5. **Mọi bước giữ nguyên hành vi, không đổi database, có đường lui bằng `git revert` hoặc đổi cờ cấu hình.**
+
+## 13. Audit: phần nào đang dính trực tiếp Supabase
+
+| Nhóm | Số đo | Nằm ở đâu | Đánh giá |
+| --- | --- | --- | --- |
+| Gọi hàm Postgres | 184 lời gọi `.rpc()`, 176 RPC khác nhau, 67 file | `src/repositories/**` | Đây là "API" thật của hệ thống. Tên RPC + tham số `p_*` + khóa JSON trả về |
+| Đọc bảng trực tiếp | 65 lời gọi `.from(bảng)`, 27 bảng, 28 file (nhiều nhất: `pet_services` 6, `users` 4, `species` 4, `pet_service_combos` 4, `permissions` 4) | `src/repositories/**` | Dính cả RLS và cú pháp PostgREST. Khó thay nhất vì mỗi truy vấn phải thành một endpoint |
+| Cú pháp PostgREST | `.eq` 60, `.order` 33, `.range` 9, `.or("a.ilike.%x%,...")` 9, `.in` 6 | `src/repositories/**`, `shared.ts` (`searchOr`, `pageRange`) | Tập trung ở repository, view không biết |
+| Đăng nhập, phiên | 17 chỗ `.auth.` | `src/stores/modules/auth.ts` (9), `auth-parts/recovery.ts` (5), `verification.ts` (3) | Supabase Auth: OTP email, đặt lại mật khẩu, đọc claim. Store `auth` đang vừa giữ phiên vừa gọi SDK |
+| Claim JWT | `user_role` (TS đọc), `branch_ids` (SQL đọc) | Custom Access Token Hook; `auth.uid()` 72 chỗ, `auth.jwt()` 4 chỗ trong SQL | Danh tính truyền vào Postgres qua JWT. Backend mới phải truyền được danh tính này |
+| Storage | 2 bucket: `images` (public), `medical` (private, signed URL) | `repositories/storage.ts`, `medical/attachments.ts` | Cần port vì web upload `File`, mobile upload URI |
+| Edge function | 1: `admin-create-user` | `supabase/functions`; gọi ở `repositories/users.ts:162` | Cần service role. Ứng viên chuyển sang NestJS đầu tiên nếu có |
+| Realtime | không dùng (polling `usePolling`) | | Không có gì phải thay |
+| Lỗi | mã Postgres 23505/23503/42501 dịch ở `queries/notify.ts`; lỗi nghiệp vụ có `hint` (385 chỗ `raise exception ... hint`, 145 mã khác nhau) với danh sách theo module (`POS_ERROR_HINTS`...) | `queries/notify.ts`, `repositories/*/errors.ts` | Đã có sẵn một **hợp đồng lỗi phi chính thức** là `hint`. Chỉ có 1 chỗ ngoài repository biết mã Postgres |
+| Kiểu `Row` | dùng ở 20 file repository, **0 file ngoài repository** | | Rất tốt: giao diện chưa biết hình dạng bảng |
+| Client Supabase | duy nhất `src/lib/supabase.ts` | | Tốt |
+| `supabase-js` trong view/component | 0 | | Tốt |
+
+**Kết luận audit:** sự phụ thuộc vào Supabase **tập trung** (repository, store `auth`, `lib/supabase.ts`) chứ không rải khắp giao diện. Có hai loại phụ thuộc với chi phí gỡ rất khác nhau:
+
+- **Phụ thuộc SDK** (cú pháp `.rpc`, `.from`, `.auth`): rẻ gỡ, chỉ sửa lớp repository.
+- **Phụ thuộc ngữ nghĩa** (RLS dựa vào `auth.uid()`, `has_permission` đọc claim, trigger trừ kho, giao dịch trong RPC): đắt gỡ, vì chúng là nghiệp vụ chứ không phải thư viện.
+
+Một số rò rỉ nhỏ cần vá khi tách `core`/`supabase`: `queries/notify.ts` đọc mã Postgres (chuyển vào adapter, trả lỗi nghiệp vụ), `types/index.ts` import `lib/constants`, khoảng 13 file repository trả kết quả RPC bằng ép kiểu `as unknown as` hoặc `return unwrap(...)` không qua mapper (chỉ 3 luồng tiền có `parseRpc`).
+
+## 14. Phân biệt: nghiệp vụ trong PostgreSQL và nghiệp vụ trong TypeScript
+
+### 14.1 Số liệu
+
+| | PostgreSQL | TypeScript |
+| --- | --- | --- |
+| Khối lượng | 262 hàm `public.*` (lớn nhất: `create_invoice` 350 dòng, `import_one_group` 294, `boarding_apply_stay` 273, `save_product_group` 264, `place_shop_order` 255, `save_appointment` 230), 50 trigger, 214 policy RLS, 76 bảng, 101 chỗ `FOR UPDATE`, 7 chỗ `pg_advisory` | Khoảng 730 dòng `src/utils/**` (giỏ hàng, phí ship, chọn dịch vụ spa, format), `src/lib/access.ts` (94), `repositories/medical/rules.ts` (33), `server/utils/ghnQuote.ts` (quy tắc báo giá GHN) |
+| Vai trò | **Nguồn sự thật** cho tiền, kho, quyền, chống trùng giờ, chọn chuồng, khóa bệnh án | **Xem trước và trải nghiệm**: tính tạm, ràng buộc nhập liệu, chặn sớm, gọi dịch vụ ngoài (GHN) |
+| Giao dịch | Mỗi RPC là một giao dịch: hóa đơn + thanh toán + trừ kho, hủy + trả kho, check-out lưu trú... | Không có |
+| Quyền | RLS + hàm `can_*`, `has_permission(perm, method, branch)` | `access.ts` chỉ chặn giao diện (ghi rõ "UX gating only") |
+| Test | 6 file pgTAP (61 ca: RLS, quyền, POS, lưu trú, y tế, hủy đơn tự động) | Không có test TS nào |
+
+### 14.2 Theo từng feature
+
+| Feature | Quy tắc quyết định nằm ở | TS giữ gì | Tính di động |
+| --- | --- | --- | --- |
+| POS và hóa đơn | SQL: `create_invoice` (giá tính phía server), trigger trừ kho FEFO trên `invoice_lines`, ca thu ngân, trả hàng | Giỏ POS, hiển thị | Thấp: giao dịch + trigger + khóa dòng |
+| Kho theo lô | SQL: `move_stock`, `take_stock_fefo`, `next_doc_code`, phiếu nhập/xuất/kiểm | Hằng số trạng thái, `isExpired`, `businessDate` (nằm lẫn trong repository) | Thấp. Phần hằng số và `isExpired` đưa được vào `core` |
+| Checkout shop | SQL: `place_shop_order` (kiểm tồn, giá, cân nặng, chính sách ship), xác nhận đơn, hủy tự động | Giỏ hàng (localStorage), báo giá GHN, `resolveShippingFee`, giới hạn | Trung bình. **Có trùng lặp**: `MAX_DELIVERY_G` 30.000 g định nghĩa ở `utils/shop/shipping.ts` và `server/utils/ghnQuote.ts`; trần phí 500.000 ở `shipping.ts` (`MAX_QUOTE_FEE`) và trong `place_shop_order` |
+| Spa | SQL: `save_appointment` (chặn trùng giờ, bàn spa) | Chọn dịch vụ, tuỳ chọn, nhãn giờ (`utils/spa`) | Thấp phần đặt lịch, cao phần giao diện |
+| Lưu trú | SQL: `boarding_apply_stay` (tự xếp chuồng, tính đêm) | Kiểu, hiển thị lịch | Thấp |
+| Y tế | SQL: ký khóa bệnh án, kê đơn trừ kho theo lô, sổ tiêm | `getMedicalRules` chỉ đọc cấu hình | Thấp |
+| Báo cáo | SQL: 11 hàm `report_*` | Biểu đồ, xuất file | Trung bình: có thể thay bằng view hoặc job, chỉ cần giữ hợp đồng |
+| Quyền | SQL: `has_permission`, RLS, `my_permissions` | `ADMIN_ROUTE_PERMISSIONS` (bản sao dùng để ẩn menu) | Thấp. Bản sao ở TS có thể lệch SQL (xem 17.5) |
+| Nhập/xuất dữ liệu | TS: đọc Excel/CSV, kiểm cột; SQL: `import_*` ghi từng dòng | Toàn bộ bộ `lib/data-io` | Cao: bộ này không cần Supabase, chuyển sang NestJS được nếu muốn xử lý file lớn |
+| Vận chuyển GHN | TS (Nitro `server/api/ghn`): token, chọn dịch vụ theo cân nặng | Toàn bộ | Cao: không dính Supabase, là dịch vụ ngoài thuần |
+| Tạo tài khoản | Edge function `admin-create-user` | gọi qua `functions.invoke` | Cao: cần service role, dễ chuyển sang NestJS |
+
+### 14.3 Hệ quả cho thiết kế
+
+- **Domain model "độc lập backend" trong dự án này chủ yếu là kiểu dữ liệu, hằng số, hàm thuần và hợp đồng**, không phải entity có hành vi, vì hành vi nằm ở SQL. Không nên viết class `Invoice` với phương thức TS song song với `create_invoice`: đó là hai nơi cùng giữ một quy tắc, rất dễ lệch.
+- Quy tắc trùng ở cả hai phía (phí ship, trần phí, cân nặng tối đa) phải có **một nguồn ghi và một test đối chiếu** (mục 17.5).
+- Use case = tên hàm repository hiện có, thêm kiểu vào/ra rõ ràng. Không cần tầng "service" mới.
+
+## 15. Kiến trúc đích và chỗ nào dùng Ports & Adapters
+
+```
+Giao diện (Vue / React Native)
+   │  gọi composable useXxx (state, không biết backend)
+   ▼
+Hàm use case  ◄── kiểu vào/ra, mã lỗi, quyền lấy từ  packages/core/<feature>/contract.ts
+   │
+   ├─ [mặc định]      packages/supabase/<feature>/repo.ts  ─► RPC / bảng Supabase
+   ├─ [khi cần]       adapter HTTP (gọi NestJS cùng hợp đồng)  ─► apps/api ─► RPC hoặc logic TS
+   └─ [dịch vụ ngoài] adapter của port (GHN, SePay, Storage, Thông báo)
+```
+
+### 15.1 Bốn mức xử lý, theo lý do
+
+| Mức | Dùng khi | Feature hiện tại | Cách làm |
+| --- | --- | --- | --- |
+| **A. Quy tắc thuần** | Muốn test nghiệp vụ không cần DB; chạy ở mọi backend | phí ship, giỏ hàng, giá hiển thị, chọn dịch vụ spa, `isExpired`, hạn dùng, quyền giao diện | `core/<f>/rules.ts` + Vitest. **Không cần port** |
+| **B. Hợp đồng + adapter cụ thể** | Nghiệp vụ nằm ở SQL, chưa có lý do thay | POS, kho, sản phẩm, spa, lưu trú, y tế, báo cáo, quyền, nhập/xuất | `contract.ts` (zod vào/ra, mã lỗi) + `packages/supabase/<f>/repo.ts` trả kiểu của `core`. **Chưa có interface** |
+| **C. Port + nhiều adapter** | Dịch vụ ngoài, hoặc cần thay hạ tầng | Vận chuyển (GHN), thanh toán (SePay, khi làm), lưu file, thông báo (khi có kênh) | `core/ports/*.ts` + adapter. Test nghiệp vụ bằng adapter giả |
+| **D. Port tạm cho feature chuyển backend** | Khi một feature thật sự sắp có cài đặt NestJS | chưa có | Tạo interface từ chính các hàm của `repo.ts` (đã có kiểu), thêm adapter HTTP, đổi chỗ gọi qua một registry. Làm **tại thời điểm chuyển**, trong một PR |
+
+Vì sao hoãn mức D: các hàm repository đã có dạng `(client, input) => Promise<kết quả>`; nếu chúng dùng kiểu của `core` (mức B), thì rút ra interface sau này là việc cơ học, vài file mỗi feature. Làm sớm chỉ thêm file mà chưa có người dùng.
+
+### 15.2 Những thứ cố ý không làm
+
+- Không tạo interface `IXxxRepository` cho từng feature.
+- Không dùng DI container, CQRS, event bus, class entity có hành vi, hay mapping nhiều tầng. Chỉ có một mapper ở biên repository (dòng DB → kiểu miền).
+- Không tách thêm package `types`, `validation`, `api`, `domain` riêng. Chúng là thư mục trong `core`.
+- Không dựng sẵn `apps/api` khi chưa có use case nào cần nó.
+- Không đưa `supabase-js` vào `core`, và không để `core` đọc biến môi trường.
+
+### 15.3 Xác thực và danh tính
+
+Giữ **Supabase Auth trong mọi kịch bản** (khuyến nghị, quyết định Q8): người dùng, OTP email, JWT có claim `user_role` và `branch_ids`, gói Free dùng được. NestJS xác minh JWT bằng khóa công khai của Supabase và, khi cần gọi database **thay mặt người dùng**, truyền lại JWT đó (kết nối với vai trò `authenticated`) để RLS và `auth.uid()` vẫn đúng. Chỉ dùng service role cho việc hệ thống (webhook, cron), không dùng thay cho người dùng. `core/auth` khai kiểu `Session`/`Role` của riêng mình để giao diện không phụ thuộc kiểu `Session` của Supabase.
+
+## 16. Bốn kịch bản backend: dùng lại gì, viết lại gì
+
+| Kịch bản | Mô tả | Khi nào hợp lý |
+| --- | --- | --- |
+| **S0. Chỉ Supabase** (hiện tại) | RPC + RLS, Nuxt server chỉ có proxy GHN | Hiện tại và vài chục khách đầu. Rẻ nhất |
+| **S1. Supabase + NestJS bên cạnh** | NestJS chỉ làm việc mà Postgres làm kém: webhook SePay/GHN, job nền, thông báo, xử lý file, báo cáo nặng. Ghi dữ liệu qua RPC mới (ví dụ `record_payment`) | Khi làm thanh toán thật, thông báo, mobile cần API chung. **Khuyến nghị làm trước nếu cần backend** |
+| **S2. NestJS làm cổng (strangler) cho từng feature** | Giao diện gọi HTTP `/v1/...`. NestJS thực thi bằng cách (a) chuyển tiếp tới đúng RPC cũ, hoặc (b) tự cài lại logic bằng TS | (a) khi muốn một API chung cho web/mobile/bên thứ ba; (b) chỉ khi có lý do cứng cho feature đó |
+| **S3. Chuyển toàn bộ nghiệp vụ sang NestJS** | Database chỉ còn bảng và ràng buộc | Chỉ khi có lý do cứng (giới hạn nền tảng, tuân thủ, đội ngũ). Không khuyến nghị bây giờ |
+
+### 16.1 Bảng tái sử dụng
+
+| Thành phần | S1 | S2(a) | S2(b) / S3 |
+| --- | --- | --- | --- |
+| Giao diện (`apps/web`, `apps/cms`, `nuxt-base`) | giữ | giữ | giữ |
+| `packages/core`: kiểu, hằng số, hàm thuần, hợp đồng zod, khóa cache, port | giữ nguyên | giữ nguyên | giữ nguyên (NestJS import cùng gói) |
+| Test Vitest của `rules.ts` | giữ | giữ | giữ |
+| `packages/supabase` (repo) | giữ cho các feature chưa chuyển | thay bằng adapter HTTP ở feature đã chuyển | thay hoàn toàn ở feature đã chuyển |
+| Lược đồ DB: bảng, ràng buộc, index, migration | giữ | giữ | giữ (vẫn là nguồn lược đồ) |
+| 262 hàm SQL + 50 trigger | giữ | giữ (NestJS gọi lại) | **viết lại bằng TS** cho feature đã chuyển, rồi gỡ khi hết dùng |
+| 214 policy RLS | giữ | giữ (NestJS kết nối vai trò `authenticated`) | giữ làm lớp chặn cuối; thêm kiểm quyền ở tầng NestJS |
+| `has_permission`, `role_permissions`, `staff_branches` | giữ | giữ | giữ làm dữ liệu; thêm `PermissionService` TS đọc cùng bảng |
+| Giao dịch nguyên tử (hóa đơn + trừ kho + thanh toán) | trong RPC | trong RPC | **tạo lại thủ công**: một giao dịch DB, cùng thứ tự khóa, `SELECT ... FOR UPDATE`; số chứng từ vẫn từ bảng/sequence của DB |
+| Trigger trừ kho FEFO trên `invoice_lines`, trả kho khi hủy | giữ | giữ | **viết lại** thành bước trong use case, hoặc giữ trigger nếu vẫn ghi vào cùng bảng |
+| pgTAP (61 ca) | giữ | giữ | dùng làm **đặc tả hành vi**: dịch thành test tích hợp NestJS chạy trên DB thật |
+| `pg_cron` hủy đơn quá hạn | giữ | giữ | giữ hoặc chuyển thành scheduler của NestJS |
+| Edge function `admin-create-user` | giữ | giữ | ứng viên chuyển sang NestJS |
+| Proxy GHN trong Nitro | giữ hoặc chuyển | chuyển thành adapter của port vận chuyển, chạy ở NestJS | như S2 |
+| Supabase Auth, JWT, claim | giữ | giữ | giữ (khuyến nghị) |
+
+### 16.2 Phần bắt buộc viết lại khi chuyển nơi thực thi nghiệp vụ (S2(b)/S3)
+
+1. Mọi RPC của feature chuyển (ví dụ POS: `create_invoice` 350 dòng, `cancel_invoice`, `create_sales_return`, ca thu ngân) thành use case TS **cùng hợp đồng, cùng thứ tự khóa**.
+2. Trigger và hàm phụ trợ (trừ kho FEFO, sinh số chứng từ, chống âm kho) thành mã TS trong cùng một giao dịch hoặc giữ ở DB.
+3. 65 lời gọi `.from(bảng)` đọc trực tiếp: mỗi truy vấn danh sách, tìm kiếm, phân trang (`or(...ilike...)`, `range`) cần một endpoint, vì NestJS không có PostgREST.
+4. Phân quyền theo chi nhánh: cài `PermissionService` và guard, kiểm parity với `has_permission` bằng cùng bộ ca pgTAP.
+5. Bộ test: dịch pgTAP thành test tích hợp; chạy cả hai phía song song cho tới khi chuyển xong.
+6. Ước lượng chi phí nằm ở phân tích PR #53 (`docs/kien-truc-web-app-nestjs.md` trên nhánh của PR đó: ước tính 3 đến 7 tháng nếu chuyển toàn bộ sang NestJS; chưa kiểm lại số này ở bản 2); đây là lý do kịch bản S3 không được khuyến nghị khi chưa có khách.
+
+## 17. Hợp đồng API (API contracts)
+
+### 17.1 Một hợp đồng gồm gì
+
+Mỗi use case ghi trong `core/<feature>/contract.ts`:
+
+| Mục | Ví dụ với `createInvoice` |
+| --- | --- |
+| Tên | `createInvoice` (tên miền, không phải `create_invoice`) |
+| Vào | zod `createInvoiceInput` (camelCase, chưa có tiền tố `p_`) |
+| Ra | zod `createInvoiceResult` |
+| Lỗi | mã nghiệp vụ: `no_open_shift`, `out_of_stock`, `discount_limit`... (chính là `hint` hiện có) |
+| Quyền | `pos` + `CREATE` + phạm vi chi nhánh |
+| Cam kết | một giao dịch; không có trạng thái nửa chừng |
+| Idempotency | khóa `clientRef` nếu có (checkout shop đã có `client_ref`) |
+
+Adapter Supabase chịu trách nhiệm dịch tên (`p_branch` ↔ `branchId`, `snake_case` ↔ `camelCase`) và đóng gói lỗi; giao diện không biết hai thứ này.
+
+### 17.2 Mô hình lỗi
+
+```ts
+// packages/core/src/shared/errors.ts
+export type AppErrorCode = "forbidden" | "not_found" | "conflict" | "in_use" | "validation" | "unavailable"
+  | PosErrorHint | InventoryErrorHint | MedicalErrorHint | /* mỗi module khai mã của mình */ never;
+export class AppError extends Error { constructor(readonly code: AppErrorCode, readonly detail?: string) { super(code) } }
+```
+
+`packages/supabase/src/shared/errors.ts` dịch: 42501 → `forbidden`, 23505 → `conflict`, 23503 → `in_use`, `hint` → mã module. Chuyển logic từ `queries/notify.ts` sang đây (một PR nhỏ, phần giao diện chỉ còn dịch `AppError.code` ra chữ). Adapter HTTP sau này dịch mã HTTP/JSON sang cùng `AppError`.
+
+### 17.3 Vận chuyển (transport) theo giai đoạn
+
+| Giai đoạn | Giao diện gọi | Ghi chú |
+| --- | --- | --- |
+| Hiện tại | `supabase.rpc("create_invoice", { p_... })` | Không đổi |
+| S1 | như trên; thêm HTTP chỉ cho việc mới (webhook, thông báo) | Webhook là endpoint công khai có chữ ký, không phải API cho giao diện |
+| S2 | `POST /v1/pos/invoices` | JSON giống hợp đồng, xác thực bằng JWT Supabase |
+
+OpenAPI: **chưa sinh**. Khi có HTTP thật thì sinh từ zod (ví dụ `zod-to-openapi` hoặc `nestjs-zod`) để mobile native hoặc bên thứ ba đọc.
+
+### 17.4 Tương thích ngược và phiên bản
+
+- Chỉ **thêm** trường mới (tùy chọn); không đổi tên hay xóa trường trong hợp đồng đang dùng.
+- Đổi tên/đổi chữ ký RPC theo expand/contract: tạo hàm mới, chuyển client, giữ hàm cũ tới khi không còn bản app nào gọi, rồi mới gỡ. Với mobile, bản app đã cài không ép cập nhật được nên hàm cũ giữ lâu hơn.
+- API HTTP gắn tiền tố `/v1`; hợp đồng đổi phá vỡ thì thành `/v2` song song.
+- Không migration nào bị sửa; việc thêm hàm mới đi theo quy trình migration hiện có (forward-only, tự chạy khi merge).
+
+### 17.5 Kiểm thử hợp đồng
+
+| Kiểm tra | Cách làm | Bắt được |
+| --- | --- | --- |
+| Hình dạng kết quả RPC | Test chạy trên DB cục bộ của CI (đã có bước `supabase db start`): gọi RPC với dữ liệu mẫu, `parse` bằng zod của `core` | Đổi khóa trong SQL mà quên sửa TS |
+| Hằng số/quy tắc trùng TS↔SQL | Test đọc hằng số trong `core` và so với kết quả RPC (ví dụ trần phí 500.000, cân nặng tối đa) | Hai nơi lệch nhau |
+| Bản sao quyền | Test so `ADMIN_ROUTE_PERMISSIONS` với mã quyền trong bảng `permissions` | Menu hiện mà RPC từ chối, hoặc ngược lại |
+| Cùng một bộ test chạy với hai adapter | Khi có adapter HTTP, chạy lại đúng bộ test hợp đồng với cả hai | NestJS không khớp hành vi cũ |
+
+## 18. Ranh giới module và quy tắc dependency (bổ sung cho mục 6)
+
+| Quy tắc | Nội dung | Kiểm tra |
+| --- | --- | --- |
+| R1 | `core` không import `supabase-js`, framework, `process.env`, DOM | `package.json` của `core` không khai; dependency-cruiser |
+| R2 | `supabase` chỉ import `core` và `supabase-js` | dependency-cruiser |
+| R3 | App và `nuxt-base` không import `supabase-js` trực tiếp, trừ chỗ tạo client | dependency-cruiser |
+| R4 | `supabase` trả kiểu của `core`, không trả `Row` | typecheck (kiểu `Row` không export ra ngoài package) |
+| R5 | `core/<A>` dùng `core/<B>` qua `index.ts`, chỉ theo cạnh khai báo, không vòng | dependency-cruiser |
+| R6 | `ports/` chỉ chứa interface và kiểu; không import adapter | dependency-cruiser |
+| R7 | Adapter dịch vụ ngoài nằm ở app hoặc package adapter, không trong `core` | review + dependency-cruiser |
+| R8 | Mọi lỗi ra khỏi `supabase` là `AppError` | test đơn vị của hàm dịch lỗi |
+
+Ranh giới theo module (cạnh cho phép trong `core`): `pos → products, inventory, shared`; `medical → pos, products, inventory, boarding(kennels)`; `boarding → pos`; `shop → products, inventory, shared`; `reports → shared` (chỉ đọc); `spa → pos, products`. `inventory` và `products` không phụ thuộc feature nào khác. Nếu một cạnh mới cần thiết, thêm vào luật và ghi lý do.
+
+## 19. Lộ trình bản 2: PR nhỏ, giữ hành vi, có đường lui
+
+Lộ trình ở mục 8 vẫn đúng (giai đoạn 0 đến 6). Bản 2 thêm **các bước chuẩn bị backend thay được** chèn vào đúng chỗ và một **nhánh B tùy chọn** chỉ làm khi có nhu cầu. Mọi bước dưới đây: không sửa `supabase/migrations`, không chạy migration, không đổi hành vi production.
+
+### 19.1 Bước chuẩn bị (chèn vào giai đoạn 0 và 2)
+
+| PR | Nội dung | Rủi ro | Đường lui |
+| --- | --- | --- | --- |
+| 0a | Dọn ranh giới (mục 8, giai đoạn 0) | thấp | `git revert` |
+| 0b | Thêm `AppError` và hàm dịch lỗi vào `repositories/shared.ts`; `queries/notify.ts` chỉ còn đọc `AppError.code` | thấp | `git revert` |
+| 0c | Vitest + test hàm thuần đầu tiên: `utils/shop/shipping.ts`, `utils/shop/cart.ts`, `isExpired`; thêm vào CI | thấp | `git revert` |
+| 0d | Gom trùng lặp TS: một nơi định nghĩa `MAX_DELIVERY_G`, trần phí | thấp | `git revert` |
+| 2.x (mỗi feature) | `contract.ts` (zod vào/ra, mã lỗi), mapper trả kiểu miền, chuyển repo sang `packages/supabase`; test hình dạng RPC trên DB CI | trung bình (đổi import hàng loạt) | `git revert` PR đó; các feature khác độc lập |
+| 2.y | Tách `stores/auth`: phiên và hồ sơ (dùng chung) khỏi `adminGrants`; `core/auth` có kiểu `Session`/`Role` riêng | trung bình | `git revert` |
+
+### 19.2 Nhánh B (tùy chọn, độc lập với việc tách app)
+
+| Bước | Điều kiện bắt đầu | Nội dung | Giao dịch / quyền / tương thích | Đường lui |
+| --- | --- | --- | --- | --- |
+| B0 | Có yêu cầu thật cần backend (thanh toán, thông báo, mobile) | Quyết định hosting và chi phí (Q9) | | Không làm gì |
+| B1 | Sau B0 | `apps/api` (NestJS) chỉ có `/health` và guard xác minh JWT Supabase; chưa chạm DB | Không ảnh hưởng production | Xóa thư mục |
+| B2 | Sau B1, khi làm thanh toán | Port `PaymentGateway` trong `core/ports`, adapter SePay, endpoint webhook ở `apps/api`; ghi qua **một RPC mới** `record_payment` (migration riêng, forward-only, idempotent theo mã giao dịch) | Giao dịch nằm trong RPC; webhook dùng service role, có chữ ký và lưu `webhook_events`; không đổi RPC cũ | Tắt webhook trong cấu hình SePay; RPC mới không ảnh hưởng luồng cũ |
+| B3 | Khi có kênh thông báo | Port `Notifier`, adapter Zalo/SMS/email, job đọc DB qua RPC | Dùng service role, chỉ đọc danh sách cần nhắc | Tắt job |
+| B4 | Chỉ khi cần API chung cho mobile/bên thứ ba | Cổng HTTP cho **một** feature, kiểu S2(a): endpoint gọi lại đúng RPC cũ với JWT của người dùng; thêm adapter HTTP trong `packages/` hoặc app; cờ `NUXT_PUBLIC_BACKEND_<FEATURE>=supabase\|api` | Giao dịch giữ nguyên (vẫn một RPC); RLS vẫn áp dụng vì dùng JWT người dùng; HTTP có `/v1` | Đổi cờ về `supabase` |
+| B5 | Chỉ khi có lý do cứng | Cài lại một feature bằng TS (S2(b)), **chạy song song** (shadow): gọi cả hai trên staging, so kết quả; có cờ cắt chuyển | Một giao dịch DB, cùng thứ tự khóa, số chứng từ lấy từ DB; `PermissionService` đọc cùng bảng, pass bộ ca pgTAP dịch sang test tích hợp; hàm SQL cũ giữ ít nhất một chu kỳ phát hành sau cắt chuyển (expand/contract) | Đổi cờ; SQL cũ vẫn còn |
+
+### 19.3 Bảo đảm xuyên suốt
+
+- **Giao dịch:** một thao tác nghiệp vụ là một giao dịch database. Không tách một thao tác ra nhiều lời gọi HTTP. Nếu cài lại bằng TS, dùng một kết nối/giao dịch, giữ nguyên thứ tự khóa của hàm SQL gốc, không sinh số chứng từ trong bộ nhớ ứng dụng.
+- **Phân quyền:** ba lớp giữ nguyên: RLS làm lớp chặn cuối (NestJS không kết nối bằng vai trò bỏ qua RLS khi làm thay người dùng), `has_permission` là nguồn sự thật, giao diện chỉ ẩn nút. Bảng `role_permissions`, `staff_branches` vẫn là một nguồn dữ liệu quyền duy nhất.
+- **Tương thích ngược:** mục 17.4. Cờ theo từng feature cho phép web chuyển trước, mobile chuyển sau.
+- **Đường lui:** mọi bước đổi code dùng `git revert`; mọi bước đổi nơi thực thi dùng cờ cấu hình; không bước nào xóa hàm SQL cũ cho tới khi hết bản client nào gọi.
+
+### 19.4 Khi nào nên làm gì (tóm tắt)
+
+| Tình huống | Làm |
+| --- | --- |
+| Không có nhu cầu mới, chưa có khách thật | Giai đoạn 0 đến 3 (kể cả 0b, 0c, 0d và 2.x). Dừng. |
+| Làm thanh toán SePay thật | Thêm B0 đến B2 |
+| Có kênh thông báo | B3 |
+| Làm app mobile | Giai đoạn 6; B4 chỉ khi mobile cần API chung (còn không thì gọi thẳng Supabase như web) |
+| Gặp giới hạn Supabase hoặc yêu cầu pháp lý | Cân nhắc B5 từng feature; chưa có dấu hiệu nào hôm nay |
+
+## 20. Rủi ro bổ sung
+
+| Rủi ro | Mức | Cách giảm |
+| --- | --- | --- |
+| Tạo port/interface quá sớm, thêm file mà không có người dùng | Trung bình | Quy tắc rule of two (12.2) và danh sách "không làm" (15.2) |
+| Hợp đồng zod lệch với RPC thật vì không ai chạy | Cao nếu bỏ qua | Test hình dạng RPC trong CI (17.5) |
+| Quy tắc trùng TS↔SQL lệch dần (phí ship, quyền) | Trung bình | Một nơi định nghĩa + test đối chiếu |
+| Cài lại nghiệp vụ bằng TS làm mất khóa/giao dịch (bán âm kho, trùng số chứng từ) | Cao | Chỉ làm B5 khi cần, shadow mode, cùng thứ tự khóa, test cạnh tranh |
+| NestJS dùng service role thay người dùng, vô tình bỏ qua RLS | Cao | Quy tắc 15.3: JWT người dùng cho việc của người dùng; service role chỉ cho webhook và cron |
+| Chi phí vận hành NestJS (hosting, giám sát) với dự án chưa có doanh thu | Trung bình | Chỉ B1 khi có nhu cầu thật; S1 trước S2/S3 |
+| Chia `packages/supabase` làm tăng số bước import khi sửa một feature | Thấp | Mỗi feature vẫn có thư mục tương ứng ở hai nơi, đặt tên giống nhau |
+
+## 21. Quyết định cần grace chọn (bổ sung Q1 đến Q7)
+
+Q7 đổi thành: đặt tên `@bongcun/core`, `@bongcun/supabase`, `@bongcun/nuxt-base`, `@bongcun/config`; không phát hành lên npm.
+
+| # | Câu hỏi | Lựa chọn | Khuyến nghị |
+| --- | --- | --- | --- |
+| Q8 | Xác thực dài hạn | (a) giữ Supabase Auth ở mọi kịch bản; (b) tự làm auth trong NestJS | **(a)**. Auth tự làm tốn nhiều công và rủi ro bảo mật, trong khi Supabase Auth đang chạy tốt |
+| Q9 | Nếu cần NestJS, chạy ở đâu | (a) dịch vụ container giá thấp (Fly.io, Render, Railway); (b) VPS; (c) Vercel serverless | Chọn ở B0, không phải bây giờ. Nghiêng (a); (c) không hợp với webhook cần chạy nền ổn định |
+| Q10 | Nguồn sự thật cho tiền và kho | (a) SQL; (b) TS | **(a)** cho tới khi có lý do cứng. TS chỉ xem trước và chặn sớm |
+| Q11 | Tách `packages/supabase` ngay ở giai đoạn 2 hay để sau | (a) ngay; (b) sau | **(a)**. Chi phí là thao tác di chuyển có sẵn trong giai đoạn 2; để sau thì phải di chuyển lần hai |
+| Q12 | Ports trong đợt này | (a) chỉ dịch vụ ngoài (GHN, thanh toán, lưu file, thông báo); (b) cho mọi feature | **(a)** |
+| Q13 | Sinh OpenAPI | (a) chưa; (b) ngay | **(a)**, khi có HTTP thật |
+| Q14 | Thêm Vitest và `dependency-cruiser` vào CI | (a) có; (b) không | **(a)**. Hiện TS chưa có test nào; đây là lưới an toàn rẻ nhất cho việc tách code |
+
+## 22. Việc tiếp theo (thay mục 11)
+
+Nếu grace đồng ý Q1 (a), Q8 (a), Q11 (a), Q12 (a), Q14 (a): bắt đầu bằng PR 0a đến 0d (dọn ranh giới, `AppError`, Vitest, gom hằng số trùng), rồi giai đoạn 1 vào lúc không có thread nào đang code, rồi giai đoạn 2 theo từng feature (mỗi PR một feature: hợp đồng, mapper, chuyển repo). Nhánh B chỉ mở khi có yêu cầu thật (thanh toán, thông báo, mobile). Mỗi PR: typecheck, build, CI xanh, squash merge, không đổi migration, không chạy SQL.

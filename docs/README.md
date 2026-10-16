@@ -20,6 +20,7 @@
 | [danh-gia-kien-truc.md](danh-gia-kien-truc.md) | Đánh giá kiến trúc Nuxt + Supabase sau khi xong các module chính: điểm mạnh, nợ kỹ thuật theo ưu tiên (CI, test SQL, quyền trong hàm security definer, kiểu jsonb), file lớn, đa chi nhánh, lộ trình |
 | [ke-hoach-sua-kien-truc.md](ke-hoach-sua-kien-truc.md) | Kế hoạch sửa nợ kỹ thuật theo bài đánh giá kiến trúc: sửa typecheck, CI trên PR, bản chụp schema, test SQL pgTAP, backup hằng tuần, tách file lớn |
 | [ke-hoach-viec-con-lai-kien-truc.md](ke-hoach-viec-con-lai-kien-truc.md) | Ba việc còn lại của đợt sửa kiến trúc: kiểu cho RPC `jsonb` (đã làm cho luồng tiền), `pg_cron` và bảng tổng hợp báo cáo (chưa cần, có ngưỡng) |
+| [ke-hoach-monorepo.md](ke-hoach-monorepo.md) | Audit codebase và kế hoạch chuyển sang monorepo (apps web/cms/mobile, packages core, supabase, nuxt-base), feature-first; bản 2: backend thay được (Supabase, NestJS), nghiệp vụ trong SQL so với TS, hợp đồng use case, ports chỉ ở dịch vụ ngoài, lộ trình PR nhỏ có đường lui |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
