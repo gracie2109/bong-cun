@@ -1,40 +1,34 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { POS_ERROR_HINTS } from "@bongcun/core/pos";
-import { SHOP_ERROR_HINTS } from "@bongcun/core/shop";
+import { GENERIC_HINTS, HINT_MODULES, KNOWN_UNRAISED } from "./errorHintModules";
 import { toAppError } from "@bongcun/supabase/shared";
 
 const schema = readFileSync(fileURLToPath(new URL("../../../../supabase/schema.sql", import.meta.url)), "utf8");
 
 /** Hints a function raises, read from its body in the generated schema. */
+/** Every hint a `hint =` line can produce, also when it is picked by a `case` expression. */
+const raisedHints = new Set(
+  [...schema.matchAll(/hint = [^\n]*/g)].flatMap((line) => [...line[0].matchAll(/'([a-z_]+)'/g)].map((match) => match[1]!))
+);
+
 const hintsRaisedBy = (fn: string): string[] => {
-  const body = new RegExp(`CREATE OR REPLACE FUNCTION "public"\\."${fn}"\\(.*?\\n\\$\\$;`, "s").exec(schema)?.[0];
+  const body = new RegExp(`CREATE OR REPLACE FUNCTION "public"\\."${fn}"\\(.*?\\n\\$_?\\$;`, "s").exec(schema)?.[0];
   if (!body) throw new Error(`function ${fn} not found in supabase/schema.sql`);
   return [...new Set([...body.matchAll(/hint = '([a-z_]+)'/g)].map((match) => match[1]!))];
 };
 
-const MONEY_FUNCTIONS = [
-  "create_invoice", "cancel_invoice", "create_sales_return", "open_cash_shift", "close_cash_shift",
-  "place_shop_order", "confirm_shop_order", "pack_shop_order", "ship_shop_order", "deliver_shop_order",
-  "return_shop_order", "cancel_shop_order", "cancel_my_shop_order", "pay_pickup_shop_order",
-  "shop_order_for_update", "take_stock_fefo",
-];
+describe.each(HINT_MODULES)("error hints of $module", ({ hints, functions }) => {
+  const known = new Set<string>(hints);
 
-// Generic hints every module shares; they have no business code of their own.
-const GENERIC = new Set(["not_found", "bad_input", "not_signed_in", "not_editable", "forbidden"]);
-
-describe("error hints of the money flows", () => {
-  const known = new Set<string>([...POS_ERROR_HINTS, ...SHOP_ERROR_HINTS]);
-
-  it.each(MONEY_FUNCTIONS)("%s raises only hints that core names", (fn) => {
-    const unknown = hintsRaisedBy(fn).filter((hint) => !known.has(hint) && !GENERIC.has(hint));
+  it.each(functions)("%s raises only hints that core names", (fn) => {
+    const unknown = hintsRaisedBy(fn).filter((hint) => !known.has(hint) && !GENERIC_HINTS.has(hint));
     expect(unknown).toEqual([]);
   });
 
   it("names no hint the database never raises", () => {
-    const raised = new Set([...schema.matchAll(/hint = '([a-z_]+)'/g)].map((match) => match[1]!));
-    expect([...known].filter((hint) => !raised.has(hint))).toEqual([]);
+    const dead = [...known].filter((hint) => !raisedHints.has(hint) && !KNOWN_UNRAISED.has(hint));
+    expect(dead).toEqual([]);
   });
 });
 
@@ -46,6 +40,13 @@ describe("toAppError with hints", () => {
 
   it("lets the Postgres code win over a hint", () => {
     expect(toAppError({ code: "42501", hint: "out_of_stock" })?.code).toBe("forbidden");
+  });
+
+  it("reads the hints of inventory, spa, boarding and medical", () => {
+    expect(toAppError({ code: "P0001", hint: "lot_short" })?.code).toBe("lot_short");
+    expect(toAppError({ code: "P0001", hint: "slot_staff" })?.code).toBe("slot_staff");
+    expect(toAppError({ code: "P0001", hint: "kennel_taken" })?.code).toBe("kennel_taken");
+    expect(toAppError({ code: "P0001", hint: "no_vaccine" })?.code).toBe("no_vaccine");
   });
 
   it("ignores a hint nobody named", () => {

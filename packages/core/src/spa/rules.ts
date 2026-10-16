@@ -41,6 +41,13 @@ export const SPA_ERROR_HINTS = [
   "no_price",
   "not_due",
   "bad_status",
+  // Online booking (book_my_appointment, spa_web_quote).
+  "empty",
+  "too_soon",
+  "too_far",
+  "too_many",
+  "slot_full",
+  "pet_busy",
 ] as const;
 export type SpaErrorHint = (typeof SPA_ERROR_HINTS)[number];
 
