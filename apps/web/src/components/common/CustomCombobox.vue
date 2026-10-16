@@ -12,7 +12,9 @@ type TCheckbox = boolean | 'indeterminate'
 const dataValue = ref<string[]>([]);
 const dataValueWithLabel = ref(new Map())
 const optionValue = ref<SelectOptionValue[]>([])
-const renderValue = ref([])
+const renderValue = computed(() =>
+  props.hasAll && dataValue.value.includes('all') ? dataValue.value.slice(1) : dataValue.value
+)
 const open = ref(false);
 const isAllChecked = ref<TCheckbox>(false);
 
@@ -125,12 +127,12 @@ onMounted(() => {
 });
 
 
+watch(() => props.value, (next) => {
+  if (Array.isArray(next)) dataValue.value = [...next]
+})
+
 watch(() => dataValue.value, () => {
   if (props.hasAll) {
-    const isAll = ['All', 'all'].some(itemB => dataValue.value.includes(itemB.toLowerCase()));
-    //@ts-ignore
-    renderValue.value = isAll ? dataValue.value.slice(1) : dataValue.value;
-
     isAllChecked.value = dataValue.value.length - 1 === props.options.length ? true : dataValue.value.length - 1 > 0 ? 'indeterminate' : false
     ;
   }
@@ -158,7 +160,7 @@ watch(() => dataValue.value, () => {
             </Badge>
             <div v-else>{{ dataValueWithLabel.get(dataValue[0]) }}</div>
           </div>
-          <span v-else>Select framework...</span>
+          <span v-else class="text-muted-foreground">{{ props.placeholder }}</span>
           <div class="flex flex-end items-center gap-2">
             <div v-show="props.showClear  && dataValue.length > 0"
                  class="bg-[#dcdcdc] w-4 h-4 grid place-items-center rounded-full"
