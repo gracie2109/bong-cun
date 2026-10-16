@@ -69,6 +69,8 @@ export type PetProfile = {
   allergies: string | null;
   behaviorNotes: string | null;
   status: PetStatus;
+  deceasedOn: string | null;
+  deceasedNote: string | null;
   owners: PetOwner[];
   weights: PetWeightLog[];
 };
@@ -183,6 +185,8 @@ export const getPet = async (client: Client, id: string): Promise<PetProfile | n
     allergies: row.allergies,
     behaviorNotes: row.behavior_notes,
     status: toStatus(row.status),
+    deceasedOn: row.deceased_on,
+    deceasedNote: row.deceased_note,
     owners: row.pet_owners.flatMap((link) =>
       link.customers
         ? [{

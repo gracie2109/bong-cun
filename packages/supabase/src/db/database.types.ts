@@ -886,6 +886,8 @@ export type Database = {
           breed: string | null
           created_at: string
           created_by: string | null
+          deceased_note: string | null
+          deceased_on: string | null
           id: string
           microchip: string | null
           name: string
@@ -903,6 +905,8 @@ export type Database = {
           breed?: string | null
           created_at?: string
           created_by?: string | null
+          deceased_note?: string | null
+          deceased_on?: string | null
           id?: string
           microchip?: string | null
           name: string
@@ -920,6 +924,8 @@ export type Database = {
           breed?: string | null
           created_at?: string
           created_by?: string | null
+          deceased_note?: string | null
+          deceased_on?: string | null
           id?: string
           microchip?: string | null
           name?: string
@@ -2932,6 +2938,9 @@ export type Database = {
       inpatient_ward: { Args: { p_branch: string; p_date?: string }; Returns: Json }
       admit_inpatient: { Args: { p_visit: string; p: Json }; Returns: Json }
       save_inpatient_order: { Args: { p: Json }; Returns: string }
+      pet_deceased_preview: { Args: { p_pet: string }; Returns: Json }
+      mark_pet_deceased: { Args: { p_pet: string; p?: Json }; Returns: Json }
+      restore_pet: { Args: { p_pet: string }; Returns: undefined }
       stop_inpatient_order: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       update_inpatient_order: { Args: { p_id: string; p: Json }; Returns: Json }
       replace_inpatient_order: { Args: { p_id: string; p: Json }; Returns: string }

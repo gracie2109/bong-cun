@@ -158,6 +158,34 @@
           "customer_has_account": "Hồ sơ khách này đã có tài khoản web.",
           "account_has_customer": "Tài khoản này đã gắn với một hồ sơ khách khác."
         }
+      },
+      "deceased": {
+        "title": "Đánh dấu {name} đã mất",
+        "desc": "Hồ sơ và bệnh án được giữ lại. Lịch chưa bắt đầu của thú cưng sẽ tự hủy, không đặt lịch mới được nữa.",
+        "confirm": "Đánh dấu đã mất",
+        "date": "Ngày mất",
+        "note": "Ghi chú",
+        "notePlaceholder": "Nguyên nhân, nếu muốn ghi lại",
+        "on": "Mất ngày {date}",
+        "nothingBooked": "Không có lịch nào đang chờ của thú cưng này.",
+        "cancel": {
+          "appointments": "Hủy {n} lịch spa chưa bắt đầu",
+          "stays": "Hủy {n} lượt lưu trú đã đặt",
+          "visits": "Hủy {n} lượt khám đã hẹn"
+        },
+        "partOnly": "chỉ bỏ dòng của thú này, thú khác giữ lịch",
+        "blocked": "Thú đang ở trong chuồng, hãy cho ra hoặc xuất viện trước.",
+        "blockedType": {
+          "boarding": "Lưu trú",
+          "inpatient": "Nội trú"
+        },
+        "openWork": "Việc đang làm dở, không tự hủy, hãy xử lý tay:",
+        "openType": {
+          "appointment": "Lịch spa",
+          "visit": "Lượt khám"
+        },
+        "restoreTitle": "Khôi phục {name}",
+        "restoreDesc": "Thú cưng trở lại trạng thái đang theo dõi và xóa ngày mất. Các lịch đã hủy không tự bật lại."
       }
     },
     "species": {
@@ -1391,7 +1419,8 @@
       "already_admitted": "Thú đã nhập nội trú.",
       "already_done": "Liều này đã được xử lý.",
       "replace_order": "Thuốc hoặc dịch vụ không sửa được, hãy dùng \"Đổi thuốc\".",
-      "order_stopped": "Y lệnh này đã dừng."
+      "order_stopped": "Y lệnh này đã dừng.",
+      "pet_in_kennel": "Thú đang ở trong chuồng, hãy cho ra hoặc xuất viện trước."
     },
     "settings": {
       "title": "Cài đặt y tế",
