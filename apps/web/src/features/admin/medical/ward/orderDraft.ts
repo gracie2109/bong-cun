@@ -1,5 +1,5 @@
 import { addDays, todayKey } from "@/features/admin/schedule/format";
-import type { OrderInput, OrderKind } from "@bongcun/core/medical";
+import type { OrderInput, OrderKind, WardOrder } from "@bongcun/core/medical";
 
 export const HOUR_PRESETS = ["06:00", "08:00", "12:00", "14:00", "18:00", "20:00", "22:00"];
 
@@ -26,6 +26,24 @@ export const emptyOrderDraft = (): OrderDraft => ({
   days: 3,
   note: "",
 });
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** A new order that repeats an existing one, for the days it has left (at least one, at most 30). */
+export const draftFromOrder = (order: WardOrder): OrderDraft => {
+  const left = Math.round((Date.parse(order.endOn) - Date.parse(todayKey())) / DAY_MS) + 1;
+  return {
+    kind: order.kind,
+    productId: order.productId ?? "",
+    serviceId: order.serviceId ?? "",
+    name: order.name,
+    dose: order.dose,
+    qtyPerDose: order.qtyPerDose,
+    times: [...order.times],
+    days: Math.min(Math.max(left, 1), 30),
+    note: order.note,
+  };
+};
 
 export const isOrderDraftComplete = (draft: OrderDraft, serviceNames: Map<string, string>): boolean => {
   if (draft.times.length === 0 || draft.qtyPerDose <= 0 || draft.days < 1 || draft.days > 30) return false;

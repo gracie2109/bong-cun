@@ -2932,7 +2932,10 @@ export type Database = {
       inpatient_ward: { Args: { p_branch: string; p_date?: string }; Returns: Json }
       admit_inpatient: { Args: { p_visit: string; p: Json }; Returns: Json }
       save_inpatient_order: { Args: { p: Json }; Returns: string }
-      stop_inpatient_order: { Args: { p_id: string }; Returns: undefined }
+      stop_inpatient_order: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
+      update_inpatient_order: { Args: { p_id: string; p: Json }; Returns: Json }
+      replace_inpatient_order: { Args: { p_id: string; p: Json }; Returns: string }
+      inpatient_order_history: { Args: { p_order: string }; Returns: Json }
       give_inpatient_dose: { Args: { p_dose: string }; Returns: Json }
       skip_inpatient_dose: { Args: { p_dose: string; p_reason: string }; Returns: undefined }
       add_inpatient_log: { Args: { p_stay_pet: string; p: Json }; Returns: string }

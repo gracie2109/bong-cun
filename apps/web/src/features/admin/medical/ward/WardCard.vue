@@ -43,7 +43,13 @@
             <span v-if="order.kind !== 'care'" class="text-muted-foreground"> × {{ order.qtyPerDose }}</span>
             <span class="text-xs text-muted-foreground"> · {{ order.times.join(", ") }}</span>
           </p>
-          <Button v-if="canUpdate" size="sm" variant="ghost" class="h-7 text-xs text-red-600" @click="emit('stop', order.id)">{{ $t("medical.ward.stop") }}</Button>
+          <div class="flex shrink-0 items-center gap-1.5">
+            <OrderHistoryPopover v-if="order.edited > 0" :order="order" />
+            <span v-if="order.missed > 0" class="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-800">
+              {{ $t("medical.ward.missed", { count: order.missed }) }}
+            </span>
+            <OrderActions v-if="canUpdate" :order="order" @edit="emit('edit', order)" @replace="emit('replace', order)" @stop="emit('stop', order)" />
+          </div>
         </div>
         <div class="flex flex-wrap gap-1.5">
           <template v-for="dose in dosesOf(order.id)" :key="dose.id">
@@ -71,12 +77,23 @@
 import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Activity, Ban, Check, LogOut, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { WardDose, WardRow } from "@bongcun/core/medical";
+import type { WardDose, WardOrder, WardRow } from "@bongcun/core/medical";
 import { timeOf } from "@/features/admin/schedule/format";
 import { dateTime } from "../format";
+import OrderActions from "./OrderActions.vue";
+import OrderHistoryPopover from "./OrderHistoryPopover.vue";
 
 const props = defineProps<{ row: WardRow; canUpdate: boolean }>();
-const emit = defineEmits<{ order: []; log: []; discharge: []; stop: [id: string]; give: [dose: WardDose]; skip: [dose: WardDose] }>();
+const emit = defineEmits<{
+  order: [];
+  log: [];
+  discharge: [];
+  edit: [order: WardOrder];
+  replace: [order: WardOrder];
+  stop: [order: WardOrder];
+  give: [dose: WardDose];
+  skip: [dose: WardDose];
+}>();
 
 const dosesOf = (orderId: string) => props.row.doses.filter((dose) => dose.orderId === orderId);
 const isLate = (dose: WardDose) => new Date(dose.dueAt).getTime() < Date.now();

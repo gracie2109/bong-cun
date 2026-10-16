@@ -10,3 +10,4 @@ export * from "./billing";
 export * from "./flags";
 export * from "./attachments";
 export * from "./inpatient";
+export * from "./inpatientOrders";

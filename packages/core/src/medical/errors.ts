@@ -38,6 +38,8 @@ export const MEDICAL_ERROR_HINTS = [
   "kennel_taken",
   "already_admitted",
   "already_done",
+  "replace_order",
+  "order_stopped",
 ] as const;
 export type MedicalErrorHint = (typeof MEDICAL_ERROR_HINTS)[number];
 

@@ -1,9 +1,10 @@
 import { computed, ref } from "vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useDischarge, useGiveDose, useInpatientWard, useStopOrder } from "@/queries/inpatient";
+import { useDischarge, useGiveDose, useInpatientWard } from "@/queries/inpatient";
 import { useAuthStore } from "@/stores";
 import type { WardDose, WardRow } from "@bongcun/core/medical";
 import { todayKey } from "../../boarding/format";
+import { useOrderEdit } from "./useOrderEdit";
 
 /** The ward of today: who is in, the doses to give, and the actions on a pet. */
 export const useWard = () => {
@@ -15,9 +16,9 @@ export const useWard = () => {
   const canUpdate = computed(() => auth.can("medical", "UPDATE"));
 
   const give = useGiveDose();
-  const stop = useStopOrder();
   const discharge = useDischarge();
 
+  const { editOrder, replaceOrder, stopOrder } = useOrderEdit();
   const orderFor = ref<WardRow | null>(null);
   const logFor = ref<WardRow | null>(null);
   const skipDose = ref<WardDose | null>(null);
@@ -44,7 +45,9 @@ export const useWard = () => {
     skipDose,
     dischargeRow,
     giveDose: (dose: WardDose) => give.mutate(dose.id),
-    stopOrder: (id: string) => stop.mutate(id),
+    editOrder,
+    replaceOrder,
+    stopOrder,
     confirmDischarge,
     discharging: discharge.isPending,
   };

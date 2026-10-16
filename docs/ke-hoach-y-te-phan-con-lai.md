@@ -1,6 +1,6 @@
 # Y tế: ba việc còn lại
 
-**Tiến độ:** bước 1 xong (nhãn Nội trú trên bảng chuồng, chặn trả chuồng, gia hạn, dịch vụ thêm với lượt nội trú; migration `20261023010000`).
+**Tiến độ:** bước 1 xong (nhãn Nội trú trên bảng chuồng, chặn trả chuồng, gia hạn, dịch vụ thêm với lượt nội trú; migration `20261023010000`). Bước 2 xong (sửa giờ, ngày kết thúc, số lượng, liều, ghi chú của y lệnh; đổi thuốc; dừng có lý do; nhật ký y lệnh; mỗi liều lưu số lượng của nó; khóa y lệnh và liều khi bệnh án đã ký; migration `20261023020000`). Màn hình sửa có ô "Từ ngày" chỉ bật khi y lệnh chưa bắt đầu.
 
 Kế hoạch cho ba việc còn thiếu sau khi module Y tế (`docs/ho-so-benh-an.md`, 8 bước, migration `20261021*`) đã xong:
 

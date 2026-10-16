@@ -1389,7 +1389,9 @@
       "need_isolation": "A contagious case needs an isolation kennel.",
       "kennel_taken": "This kennel is occupied.",
       "already_admitted": "The pet is already admitted.",
-      "already_done": "This dose is already handled."
+      "already_done": "This dose is already handled.",
+      "replace_order": "The medicine or service cannot be edited, use Replace.",
+      "order_stopped": "This order is already stopped."
     },
     "settings": {
       "title": "Medical settings",
@@ -1817,7 +1819,38 @@
       "hours": "Times of day",
       "note": "Note",
       "dischargeTitle": "Discharge {name} from the ward?",
-      "dischargeDesc": "Orders stop, the kennel goes to cleaning and the kennel nights are charged. The vet can then sign the record."
+      "dischargeDesc": "Orders stop, the kennel goes to cleaning and the kennel nights are charged. The vet can then sign the record.",
+      "editTitle": "Edit order – {name}",
+      "editFixed": "The medicine or service cannot change. To use another one, pick \"Replace\" in the order menu.",
+      "qtyHint": "Applies to doses given from now on; what was already added to the visit stays.",
+      "startOn": "From",
+      "endOn": "Until",
+      "editDosesHint": "Doses not yet due are rebuilt from the new hours and dates. Doses already given, skipped or past their time stay as they are.",
+      "reason": "Reason (optional)",
+      "reasonPlaceholder": "E.g. dose changed by the vet",
+      "orderActions": "Order actions",
+      "replace": "Replace",
+      "replaceTitle": "Replace {name}",
+      "replaceHint": "The old order stops and the new one starts now. Doses already given are kept.",
+      "stopTitle": "Stop {name}?",
+      "stopDesc": "Doses not yet due are removed. Doses already given are kept.",
+      "edited": "Edited {count}×",
+      "missed": "{count} missed",
+      "history": "Order history",
+      "action": {
+        "create": "Created",
+        "update": "Edited",
+        "stop": "Stopped",
+        "replace": "Replaced"
+      },
+      "field": {
+        "dose": "Dose",
+        "qtyPerDose": "Quantity per dose",
+        "times": "Hours",
+        "startOn": "From",
+        "endOn": "Until",
+        "note": "Note"
+      }
     },
     "admit": {
       "title": "Admit {name} to the ward",

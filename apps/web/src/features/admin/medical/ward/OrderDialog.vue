@@ -1,10 +1,10 @@
 <template>
   <AppDialog
     :open="open"
-    :title="$t('medical.ward.orderTitle', { name: row?.petName ?? '' })"
+    :title="replaceOf ? $t('medical.ward.replaceTitle', { name: replaceOf.name }) : $t('medical.ward.orderTitle', { name: row?.petName ?? '' })"
     :ok-text="$t('petCare.common.save')"
     :ok-disabled="!valid"
-    :busy="saving.isPending.value"
+    :busy="saving.isPending.value || replacing.isPending.value"
     form-id="ward-order-form"
     size="lg"
     @update:open="emit('update:open', $event)"
@@ -64,25 +64,16 @@
         </div>
       </div>
 
-      <div class="space-y-1.5">
-        <Label>{{ $t("medical.ward.hours") }}</Label>
-        <div class="flex flex-wrap gap-2">
-          <button
-            v-for="hour in HOUR_PRESETS"
-            :key="hour"
-            type="button"
-            class="rounded-full border px-3 py-1 text-sm font-semibold transition-colors"
-            :class="draft.times.includes(hour) ? 'border-primary bg-primary text-primary-foreground' : 'bg-white text-muted-foreground hover:bg-muted'"
-            @click="toggleHour(hour)"
-          >
-            {{ hour }}
-          </button>
-        </div>
-      </div>
+      <OrderHoursField v-model="draft.times" />
 
       <div class="space-y-1.5">
         <Label for="ward-note">{{ $t("medical.ward.note") }}</Label>
         <Input id="ward-note" v-model="draft.note" />
+      </div>
+      <div v-if="replaceOf" class="space-y-1.5">
+        <Label for="ward-replace-reason">{{ $t("medical.ward.reason") }}</Label>
+        <Input id="ward-replace-reason" v-model="reason" :placeholder="$t('medical.ward.reasonPlaceholder')" />
+        <p class="text-xs text-muted-foreground">{{ $t("medical.ward.replaceHint") }}</p>
       </div>
     </form>
   </AppDialog>
@@ -94,25 +85,35 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useSaveOrder } from "@/queries/inpatient";
+import { useReplaceOrder, useSaveOrder } from "@/queries/inpatient";
 import { useAllPetServices } from "@/queries/petServices";
 import type { SellableProduct } from "@bongcun/supabase/products";
-import type { OrderKind, WardRow } from "@bongcun/core/medical";
+import type { OrderKind, WardOrder, WardRow } from "@bongcun/core/medical";
 import ProductPicker from "@/features/admin/inventory/documents/ProductPicker.vue";
-import { emptyOrderDraft, HOUR_PRESETS, isOrderDraftComplete, toOrderInput, type OrderDraft } from "./orderDraft";
+import OrderHoursField from "./OrderHoursField.vue";
+import { draftFromOrder, emptyOrderDraft, isOrderDraftComplete, toOrderInput, type OrderDraft } from "./orderDraft";
 
 const KINDS: OrderKind[] = ["product", "service", "care"];
 
-const props = defineProps<{ open: boolean; row: WardRow | null }>();
+const props = defineProps<{ open: boolean; row: WardRow | null; replaceOf?: WardOrder | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
 const saving = useSaveOrder();
+const replacing = useReplaceOrder();
+const reason = ref("");
 const servicesQuery = useAllPetServices("medical");
 const services = computed(() => servicesQuery.data.value ?? []);
 const serviceNames = computed(() => new Map(services.value.map((service) => [service.id, service.name])));
 
 const draft = ref<OrderDraft>(emptyOrderDraft());
-watch(() => props.open, (isOpen) => isOpen && (draft.value = emptyOrderDraft()));
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (!isOpen) return;
+    draft.value = props.replaceOf ? draftFromOrder(props.replaceOf) : emptyOrderDraft();
+    reason.value = "";
+  }
+);
 
 const valid = computed(() => isOrderDraftComplete(draft.value, serviceNames.value));
 
@@ -121,15 +122,12 @@ const pickProduct = (product: SellableProduct) => {
   draft.value.name = product.name;
 };
 
-const toggleHour = (hour: string) => {
-  const times = draft.value.times;
-  draft.value.times = times.includes(hour) ? times.filter((time) => time !== hour) : [...times, hour].sort();
-};
-
 const submit = async () => {
   if (!props.row || !valid.value) return;
   try {
-    await saving.mutateAsync(toOrderInput(props.row.stayPetId, draft.value));
+    const input = toOrderInput(props.row.stayPetId, draft.value);
+    if (props.replaceOf) await replacing.mutateAsync({ id: props.replaceOf.id, input, reason: reason.value });
+    else await saving.mutateAsync(input);
     emit("update:open", false);
   } catch {
     // the mutation already showed the failure toast

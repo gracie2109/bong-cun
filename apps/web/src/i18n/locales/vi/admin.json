@@ -1389,7 +1389,9 @@
       "need_isolation": "Bệnh truyền nhiễm cần chuồng cách ly.",
       "kennel_taken": "Chuồng này đang có thú.",
       "already_admitted": "Thú đã nhập nội trú.",
-      "already_done": "Liều này đã được xử lý."
+      "already_done": "Liều này đã được xử lý.",
+      "replace_order": "Thuốc hoặc dịch vụ không sửa được, hãy dùng \"Đổi thuốc\".",
+      "order_stopped": "Y lệnh này đã dừng."
     },
     "settings": {
       "title": "Cài đặt y tế",
@@ -1817,7 +1819,38 @@
       "hours": "Giờ thực hiện",
       "note": "Ghi chú",
       "dischargeTitle": "Cho {name} ra khỏi nội trú?",
-      "dischargeDesc": "Các y lệnh sẽ dừng, chuồng chuyển sang dọn dẹp và tính tiền chuồng theo số đêm. Sau đó bác sĩ có thể ký bệnh án."
+      "dischargeDesc": "Các y lệnh sẽ dừng, chuồng chuyển sang dọn dẹp và tính tiền chuồng theo số đêm. Sau đó bác sĩ có thể ký bệnh án.",
+      "editTitle": "Sửa y lệnh – {name}",
+      "editFixed": "Thuốc hoặc dịch vụ không đổi được. Muốn đổi thuốc, chọn \"Đổi thuốc\" ở menu của y lệnh.",
+      "qtyHint": "Chỉ áp dụng cho các liều cho sau đó; số đã cộng vào lượt khám không đổi.",
+      "startOn": "Từ ngày",
+      "endOn": "Đến ngày",
+      "editDosesHint": "Liều chưa tới giờ được sắp lại theo giờ và ngày mới. Liều đã cho, đã bỏ hoặc đã quá giờ giữ nguyên.",
+      "reason": "Lý do (không bắt buộc)",
+      "reasonPlaceholder": "VD: bác sĩ điều chỉnh liều",
+      "orderActions": "Thao tác với y lệnh",
+      "replace": "Đổi thuốc",
+      "replaceTitle": "Đổi thuốc thay cho {name}",
+      "replaceHint": "Y lệnh cũ sẽ dừng và y lệnh mới bắt đầu ngay. Liều đã cho vẫn được giữ.",
+      "stopTitle": "Dừng y lệnh {name}?",
+      "stopDesc": "Các liều chưa tới giờ sẽ bị xóa. Liều đã cho vẫn được giữ.",
+      "edited": "Đã sửa {count} lần",
+      "missed": "Lỡ {count} liều",
+      "history": "Lịch sử y lệnh",
+      "action": {
+        "create": "Tạo y lệnh",
+        "update": "Sửa",
+        "stop": "Dừng",
+        "replace": "Đổi thuốc"
+      },
+      "field": {
+        "dose": "Liều",
+        "qtyPerDose": "Số lượng mỗi lần",
+        "times": "Giờ",
+        "startOn": "Từ ngày",
+        "endOn": "Đến ngày",
+        "note": "Ghi chú"
+      }
     },
     "admit": {
       "title": "Cho {name} nhập nội trú",

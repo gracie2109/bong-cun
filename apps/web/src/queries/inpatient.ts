@@ -7,14 +7,17 @@ import {
   addInpatientLog,
   admitInpatient,
   dischargeInpatient,
+  getInpatientOrderHistory,
   getInpatientWard,
   giveInpatientDose,
   listInpatientKennels,
+  replaceInpatientOrder,
   saveInpatientOrder,
   skipInpatientDose,
   stopInpatientOrder,
+  updateInpatientOrder,
 } from "@bongcun/supabase/medical";
-import type { AdmitInput, LogKind, OrderInput } from "@bongcun/core/medical";
+import type { AdmitInput, LogKind, OrderInput, UpdateOrderInput } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";
@@ -36,6 +39,14 @@ export const useInpatientKennels = (branchId: MaybeRef<string | undefined>, enab
     queryKey: computed(() => medicalKeys.kennels(unref(branchId) ?? "")),
     queryFn: () => listInpatientKennels(supabaseClient(), unref(branchId) as string),
     enabled: computed(() => !!unref(branchId) && unref(enabled)),
+  });
+
+/** The change log of one order; it loads when the popover opens. */
+export const useOrderHistory = (orderId: MaybeRef<string | undefined>, enabled: MaybeRef<boolean>) =>
+  useQuery({
+    queryKey: computed(() => medicalKeys.orderHistory(unref(orderId) ?? "")),
+    queryFn: () => getInpatientOrderHistory(supabaseClient(), unref(orderId) as string),
+    enabled: computed(() => !!unref(orderId) && unref(enabled)),
   });
 
 // ------------------------------------------------------------------ writes
@@ -60,7 +71,18 @@ export const useAdmitInpatient = () =>
 
 export const useSaveOrder = () => useWardMutation((input: OrderInput) => saveInpatientOrder(supabaseClient(), input), "create");
 
-export const useStopOrder = () => useWardMutation((id: string) => stopInpatientOrder(supabaseClient(), id), "update");
+export const useStopOrder = () =>
+  useWardMutation(({ id, reason }: { id: string; reason?: string }) => stopInpatientOrder(supabaseClient(), id, reason), "update");
+
+export const useUpdateOrder = () =>
+  useWardMutation(({ id, input }: { id: string; input: UpdateOrderInput }) => updateInpatientOrder(supabaseClient(), id, input), "update");
+
+/** Another medicine for the same pet: stops the old order and starts the new one. */
+export const useReplaceOrder = () =>
+  useWardMutation(
+    ({ id, input, reason }: { id: string; input: OrderInput; reason?: string }) => replaceInpatientOrder(supabaseClient(), id, input, reason),
+    "update"
+  );
 
 export const useGiveDose = () => {
   const mutation = useWardMutation(

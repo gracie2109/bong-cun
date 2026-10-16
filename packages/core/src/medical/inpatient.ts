@@ -6,6 +6,8 @@ export type OrderKind = "product" | "service" | "care";
 export type WardOrder = {
   id: string;
   kind: OrderKind;
+  productId: string | null;
+  serviceId: string | null;
   name: string;
   dose: string;
   qtyPerDose: number;
@@ -13,6 +15,9 @@ export type WardOrder = {
   startOn: string;
   endOn: string;
   note: string;
+  /** How many times the order was edited, and how many of today's doses are late and not recorded. */
+  edited: number;
+  missed: number;
 };
 
 export type WardDose = {
@@ -22,6 +27,8 @@ export type WardDose = {
   givenAt: string | null;
   givenByName: string | null;
   skippedReason: string | null;
+  /** The quantity added to the visit when the dose was given. */
+  qty: number | null;
 };
 
 export type WardRow = {
