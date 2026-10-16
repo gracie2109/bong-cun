@@ -13,7 +13,7 @@ import {
   saveInpatientOrder,
   skipInpatientDose,
   stopInpatientOrder,
-} from "@/repositories/medical";
+} from "@bongcun/supabase/medical";
 import type { AdmitInput, LogKind, OrderInput } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";

@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { getShopOrder, getShopOrderBadge, listShopOrders, runOrderStep, type OrderStepCall } from "@/repositories/shop";
+import { getShopOrder, getShopOrderBadge, listShopOrders, runOrderStep, type OrderStepCall } from "@bongcun/supabase/shop";
 import type { PageParams } from "@bongcun/supabase/shared";
 import type { OrderListFilter } from "@bongcun/core/shop";
 import { shopKeys } from "./keys";

@@ -9,7 +9,7 @@ import {
   saveKennel,
   saveKennelType,
   setKennelStatus,
-} from "@/repositories/boarding";
+} from "@bongcun/supabase/boarding";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type {
   BoardingRules,

@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listMedicalReminders } from "@/repositories/medical";
+import { listMedicalReminders } from "@bongcun/supabase/medical";
 import type { ReminderFilter } from "@bongcun/core/medical";
 import { remindersExportColumns } from "./remindersExportColumns";
 

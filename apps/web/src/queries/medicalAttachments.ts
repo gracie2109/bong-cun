@@ -7,7 +7,7 @@ import {
   removeMedicalAttachment,
   signedAttachmentUrl,
   type AttachmentInput,
-} from "@/repositories/medical";
+} from "@bongcun/supabase/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";

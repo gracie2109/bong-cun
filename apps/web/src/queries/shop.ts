@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { supabaseClient } from "@/lib/supabase";
-import { getAdminSettings, getPublicSettings, saveSettings } from "@/repositories/shop";
+import { getAdminSettings, getPublicSettings, saveSettings } from "@bongcun/supabase/shop";
 import type { ShopSettings } from "@bongcun/core/shop";
 import { shopKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

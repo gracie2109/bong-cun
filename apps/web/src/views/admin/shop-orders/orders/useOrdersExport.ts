@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listShopOrders } from "@/repositories/shop/ordersAdmin";
+import { listShopOrders } from "@bongcun/supabase/shop";
 import type { OrderListFilter } from "@bongcun/core/shop";
 import { ordersExportColumns } from "./ordersExportColumns";
 

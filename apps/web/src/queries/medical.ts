@@ -12,7 +12,7 @@ import {
   saveDiagnosisTerm,
   saveMedicalRules,
   saveVaccineType,
-} from "@/repositories/medical";
+} from "@bongcun/supabase/medical";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import type {

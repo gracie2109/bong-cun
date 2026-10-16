@@ -1,7 +1,7 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { fetchVariantAvailability, listRelatedGroups, listShopGroups } from "@/repositories/shop";
+import { fetchVariantAvailability, listRelatedGroups, listShopGroups } from "@bongcun/supabase/shop";
 import type { CatalogFilters } from "@bongcun/core/shop";
 import { shopCatalogKeys } from "./keys";
 
