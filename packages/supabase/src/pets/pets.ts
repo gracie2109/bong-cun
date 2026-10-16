@@ -73,6 +73,8 @@ export type PetProfile = {
   weights: PetWeightLog[];
 };
 
+// The photo is not part of the pet form: it changes only through setPetPhoto (petPhotos.ts), so
+// editing a profile never wipes it.
 export type PetInput = {
   speciesId: string;
   name: string;
@@ -81,7 +83,6 @@ export type PetInput = {
   neutered?: boolean;
   birthDate?: string | null;
   microchip?: string | null;
-  photoUrl?: string | null;
   allergies?: string | null;
   behaviorNotes?: string | null;
 };
@@ -210,7 +211,6 @@ const toPetColumns = (input: PetInput) => ({
   neutered: input.neutered ?? false,
   birth_date: input.birthDate || null,
   microchip: input.microchip || null,
-  photo_url: input.photoUrl || null,
   allergies: input.allergies || null,
   behavior_notes: input.behaviorNotes || null,
 });
