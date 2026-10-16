@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { saleResult as saleResultSchema } from "@bongcun/core/pos";
+import { saleResultSchema } from "@bongcun/core/pos";
 import { filterSafe, pageRange, parseRpc, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import {
   PAYMENT_METHODS,

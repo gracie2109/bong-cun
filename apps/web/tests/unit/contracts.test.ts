@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  closeShiftInput, paymentMethod, saleInput, saleResult, salesReturnInput, salesReturnResult, shiftSummaryResult,
+  closeShiftInput, paymentMethod, saleInput, saleResultSchema, salesReturnInput, salesReturnResultSchema, shiftSummarySchema,
 } from "@bongcun/core/pos";
-import { payPickupInput, placeOrderInput, placedOrderResult } from "@bongcun/core/shop";
+import { payPickupInput, placeOrderInput, placedOrderResultSchema } from "@bongcun/core/shop";
 
 const id = "7b0c6a52-0a6e-4f6c-9d5f-0d3f0a1b2c3d";
 
@@ -31,9 +31,9 @@ describe("pos contracts", () => {
   });
 
   it("reads the answers the database gives", () => {
-    expect(saleResult.parse({ id, code: "HD1", total: 5, change_amount: 0 }).replayed).toBeUndefined();
-    expect(salesReturnResult.safeParse({ id, code: "TH1" }).success).toBe(false);
-    expect(shiftSummaryResult.safeParse({ opening_cash: 1 }).success).toBe(false);
+    expect(saleResultSchema.parse({ id, code: "HD1", total: 5, change_amount: 0 }).replayed).toBeUndefined();
+    expect(salesReturnResultSchema.safeParse({ id, code: "TH1" }).success).toBe(false);
+    expect(shiftSummarySchema.safeParse({ opening_cash: 1 }).success).toBe(false);
   });
 });
 
@@ -63,7 +63,7 @@ describe("shop contracts", () => {
   });
 
   it("takes a numeric string total from the database", () => {
-    expect(placedOrderResult.parse({ id, code: "DH1", total: "150000", replayed: false }).total).toBe(150000);
+    expect(placedOrderResultSchema.parse({ id, code: "DH1", total: "150000", replayed: false }).total).toBe(150000);
   });
 
   it("wants at least one payment to collect a pickup order", () => {

@@ -44,10 +44,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Contract tests (RPC shapes and permissions) against the migrated database
+      - name: Contract tests (the app's zod schemas against the real RPC results)
         run: npm run test:db
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       - name: supabase/schema.sql matches the migrations
         run: |
           supabase db dump --local --schema public -f supabase/schema.sql

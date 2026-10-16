@@ -1,13 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { REFUND_METHODS, salesReturnResult as returnResultSchema, type RefundMethod } from "@bongcun/core/pos";
+import { salesReturnResultSchema } from "@bongcun/core/pos";
 import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 
 type Client = SupabaseClient<Database>;
 
 // ------------------------------------------------------------------ returns
-export { REFUND_METHODS, type RefundMethod };
+export type RefundMethod = "cash" | "transfer";
+export const REFUND_METHODS: readonly RefundMethod[] = ["cash", "transfer"];
 
 export type SalesReturn = {
   id: string;
@@ -70,6 +71,6 @@ export const createSalesReturn = async (
       },
     })
   );
-  const parsed = parseRpc("create_sales_return", returnResultSchema, raw);
+  const parsed = parseRpc("create_sales_return", salesReturnResultSchema, raw);
   return { id: parsed.id, code: parsed.code, refundAmount: parsed.refund_amount };
 };

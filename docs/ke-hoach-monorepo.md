@@ -692,7 +692,7 @@ Khác với kế hoạch gốc, có chủ ý:
 - `packages/supabase` có lib DOM vì `storage.ts` và đính kèm y tế còn nhận `File`; sẽ thành port lưu file khi làm mobile. `core` không có DOM.
 - Barrel `export *` theo feature (`@bongcun/core/shop`, `@bongcun/supabase/pos`...) thay vì khai `exports` từng đường con.
 - Luật dependency-cruiser: `core` không import framework hay `supabase-js`; `supabase` chỉ import `core`; trong `apps/web` không file nào import `supabase-js`.
-- Mapper sang kiểu miền chưa làm. Hợp đồng zod cho luồng tiền, test hình dạng RPC và test đối chiếu quyền (mục 17.5) đã làm, xem mục "Giai đoạn 3b: hợp đồng và test trên DB" bên dưới.
+- Hợp đồng zod, mapper, test hình dạng RPC trên DB CI và test đối chiếu quyền (mục 17.5) chưa làm; cần DB trong test.
 - Nitro inline `@bongcun/core` để bundle server (proxy GHN) không import TypeScript ngoài.
 
 Giai đoạn 3, có chủ ý khác kế hoạch gốc:
@@ -700,9 +700,27 @@ Giai đoạn 3, có chủ ý khác kế hoạch gốc:
 - Chỉ chuyển thư mục màn hình (views) sang `features/`. Queries và composables theo module vẫn ở `src/queries`, `src/composables`: nhiều module dùng chung nên chuyển bây giờ phải đoán chủ sở hữu; làm dần khi chạm vào module.
 - Chưa có luật "feature chỉ import feature khác qua index.ts" vì các feature chưa có barrel; thêm khi tách queries/composables.
 
-### Giai đoạn 3b: hợp đồng và test trên DB (luồng tiền)
+## 25. Hợp đồng RPC và test đối chiếu (2026-10-16, sau khi grace bấm thử giai đoạn 3 và xác nhận ổn)
 
-- `packages/core/src/pos/contract.ts` và `shop/contract.ts`: zod vào (camelCase) và ra (đúng `jsonb` của hàm SQL) cho bán hàng tại quầy (`create_invoice`), trả hàng, ca thu ngân, đặt đơn online (`place_shop_order`), các bước nhân viên và thu tiền nhận tại quầy. Repository trong `packages/supabase` dùng đúng các schema này qua `parseRpc`. `core` thêm phụ thuộc `zod`.
-- Mã lỗi: `AppError` nhận thêm mã nghiệp vụ là `hint` của hàm SQL (`POS_ERROR_HINTS`, `SHOP_ERROR_HINTS`); `toAppError` đọc mã Postgres trước, rồi mới đến `hint`. Test đơn vị đọc `supabase/schema.sql` để bảo đảm mọi `hint` mà hàm tiền ném ra đều có tên trong `core` và không có tên nào thừa.
-- `apps/web/tests/db` (`npm run test:db`, cần `DATABASE_URL`): gọi thật từng RPC tiền trên DB đã chạy hết migration, `parse` bằng schema của `core`; so `ADMIN_ROUTE_PERMISSIONS` với bảng `permissions`; so `canUse` (menu) với `has_permission` (DB) cho mọi vai trò × quyền × phương thức; kiểm tra phạm vi chi nhánh và RLS hóa đơn theo vai trò. Mỗi test chạy trong giao dịch rồi rollback. CI chạy bước này trong job `db` ngay sau `supabase test db`.
-- Chưa làm: hợp đồng cho kho, y tế, lưu trú, spa; mapper sang kiểu miền; chạy cùng bộ test với adapter HTTP.
+Làm phần "chưa làm" ở mục 24 cho các luồng tiền. Không đổi migration, không chạy SQL lên database thật.
+
+| Việc | Ở đâu |
+| --- | --- |
+| Schema zod kết quả RPC của POS (`create_invoice`, `create_sales_return`, `cash_shift_summary`) chuyển từ repository về hợp đồng | `packages/core/src/pos/contract.ts`; `packages/supabase/src/pos/*` import lại |
+| Checkout `place_shop_order` giờ được parse bằng `parseRpc` (trước đó chỉ ép kiểu) | `packages/core/src/shop/contract.ts`, `packages/supabase/src/shop/orders.ts` |
+| Test chạy hàm thật trên DB của CI rồi parse bằng đúng các schema trên: POS (bán, trả hàng, tóm tắt ca) và checkout (đặt đơn, gửi lại cùng lần bấm) | `apps/web/tests/db/*.contract.test.ts` |
+| Đối chiếu TS và SQL: trần phí ship `MAX_QUOTE_FEE` (500.000) và ngưỡng nặng `MAX_DELIVERY_G` cộng 100 g bao bì khớp `place_shop_order` | `apps/web/tests/db/shop.contract.test.ts` |
+| Đối chiếu quyền: mọi mã trong `ADMIN_ROUTE_PERMISSIONS` phải có phương thức VIEW trong bảng `permissions` | `apps/web/tests/db/permissions.contract.test.ts` |
+| Chạy trong CI: job `db` cài Node, `npm ci`, `npm run test:db` sau `supabase test db`. Cục bộ: `npm run test:db` với `DATABASE_URL` trỏ tới DB đã áp mọi migration (mặc định cổng 54322 của `supabase start`) | `.github/workflows/ci.yml`, `apps/web/vitest.db.config.ts` |
+
+Cách chạy: mỗi test mở một giao dịch, nạp fixture dùng chung với pgTAP (`supabase/tests/_helpers/setup.psql`), đăng nhập bằng cùng claims như JWT thật, gọi RPC rồi `rollback`, nên không để lại dữ liệu. Đã thử đổi tên một khóa trong schema thì test đỏ.
+
+Vẫn chưa làm: mapper sang kiểu miền cho các feature khác, hợp đồng cho lưu trú và y tế, đưa queries và composables vào `features/`. Làm khi chạm tới từng module.
+
+### 25.1 Bổ sung: hợp đồng đầu vào, mã lỗi theo `hint`, đối chiếu quyền (2026-10-16)
+
+Làm thêm trên nền mục 25, không đổi migration:
+
+- `core/pos/contract.ts` và `core/shop/contract.ts` thêm schema zod **đầu vào** (camelCase) cho bán hàng, trả hàng, mở/đóng ca, đặt đơn online, thu tiền nhận tại quầy, cùng schema kết quả các bước nhân viên trên đơn (`staffOrderResultSchema`).
+- `AppError` nhận thêm mã nghiệp vụ là `hint` của hàm SQL (`POS_ERROR_HINTS`, mới có `SHOP_ERROR_HINTS`); `toAppError` đọc mã Postgres trước, rồi mới đến `hint`. Test đơn vị đọc `supabase/schema.sql` để chắc mọi `hint` mà hàm tiền ném ra đều có tên trong `core` và không có tên nào thừa.
+- Test DB mới: `permissions.parity.test.ts` (so `canUse` ở menu với `has_permission` ở DB cho mọi vai trò × quyền × phương thức; phạm vi chi nhánh; RLS hóa đơn theo vai trò và chi nhánh) và `orderSteps.contract.test.ts` (đặt, xác nhận, đóng gói, thu tiền nhận tại quầy).

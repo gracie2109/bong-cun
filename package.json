@@ -13,11 +13,11 @@
     "type-check": "npm run type-check -w @bongcun/core -w @bongcun/supabase -w @bongcun/web",
     "deps:check": "npm run deps:check -w @bongcun/web && depcruise packages --config packages/.dependency-cruiser.cjs --output-type err",
     "test": "npm run test -w @bongcun/web",
-    "test:db": "npm run test:db -w @bongcun/web",
     "seed:test-accounts": "npm run seed:test-accounts -w @bongcun/web",
     "db:start": "npx -y supabase@2.121.0 db start",
     "db:test": "npx -y supabase@2.121.0 test db",
     "db:schema": "npx -y supabase@2.121.0 db dump --local --schema public -f supabase/schema.sql",
-    "db:stop": "npx -y supabase@2.121.0 stop"
+    "db:stop": "npx -y supabase@2.121.0 stop",
+    "test:db": "npm run test:db -w @bongcun/web"
   }
 }

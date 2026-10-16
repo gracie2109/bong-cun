@@ -23,11 +23,11 @@ export const placeOrderInput = z
   });
 
 /** `place_shop_order` answers `{ id, code, total, replayed }`; `total` can arrive as a numeric string. */
-export const placedOrderResult = z.object({
+export const placedOrderResultSchema = z.object({
   id: z.string(),
   code: z.string(),
   total: z.coerce.number(),
-  replayed: z.boolean(),
+  replayed: z.boolean().nullish(),
 });
 
 export const payPickupInput = z.object({
@@ -38,7 +38,7 @@ export const payPickupInput = z.object({
 });
 
 /** The keys every staff step on an order (`confirm`, `pack`, `ship`, `deliver`, `pay_pickup`...) answers with. */
-export const staffOrderResult = z.object({
+export const staffOrderResultSchema = z.object({
   id: z.string(),
   code: z.string(),
   branch_id: z.string(),

@@ -13,7 +13,7 @@
     "test": "vitest run",
     "postinstall": "nuxt prepare",
     "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs",
-    "test:db": "vitest run --config vitest.db.config.ts"
+    "test:db": "vitest run -c vitest.db.config.ts"
   },
   "dependencies": {
     "@bongcun/core": "*",

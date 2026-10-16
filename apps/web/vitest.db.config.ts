@@ -1,8 +1,10 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-// Contract tests that call the real database functions. They need DATABASE_URL pointing at a database
-// with every migration applied (CI: `supabase db start`, then postgresql://postgres:postgres@127.0.0.1:54322/postgres).
-// Each test runs in a transaction that is rolled back, so nothing is left behind.
+// Tests that run the real database functions. They need a database with every migration applied
+// (`supabase db start`, port 54322 by default; set DATABASE_URL for another one) and are kept out
+// of `npm test` so the unit tests stay free of any database.
 export default defineConfig({
-  test: { environment: "node", include: ["tests/db/**/*.test.ts"], testTimeout: 30_000, fileParallelism: false },
+  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  test: { environment: "node", include: ["tests/db/**/*.test.ts"], fileParallelism: false, testTimeout: 30_000 },
 });

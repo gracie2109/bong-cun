@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { shiftSummaryResult as shiftSummarySchema } from "@bongcun/core/pos";
+import { shiftSummarySchema } from "@bongcun/core/pos";
 import { pageRange, parseRpc, searchOr, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 import type { ShiftStatus } from "./types";

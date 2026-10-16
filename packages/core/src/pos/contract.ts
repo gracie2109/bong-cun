@@ -8,9 +8,7 @@ export const PAYMENT_METHODS = ["cash", "transfer", "card"] as const;
 export const paymentMethod = z.enum(PAYMENT_METHODS);
 export type PaymentMethod = z.infer<typeof paymentMethod>;
 
-export const REFUND_METHODS = ["cash", "transfer"] as const;
-export const refundMethod = z.enum(REFUND_METHODS);
-export type RefundMethod = z.infer<typeof refundMethod>;
+const refundMethod = z.enum(["cash", "transfer"]);
 
 const uuid = z.string().uuid();
 
@@ -49,7 +47,7 @@ export const saleInput = z.object({
 export type SaleInputContract = z.infer<typeof saleInput>;
 
 /** `create_invoice` answers `{ id, code, total, change_amount, replayed }`. */
-export const saleResult = z.object({
+export const saleResultSchema = z.object({
   id: z.string(),
   code: z.string(),
   total: z.number(),
@@ -66,7 +64,7 @@ export const salesReturnInput = z.object({
 });
 
 /** `create_sales_return` answers `{ id, code, refund_amount }`. */
-export const salesReturnResult = z.object({ id: z.string(), code: z.string(), refund_amount: z.number() });
+export const salesReturnResultSchema = z.object({ id: z.string(), code: z.string(), refund_amount: z.number() });
 
 // ---------------------------------------------------------------- cash shifts
 export const openShiftInput = z.object({
@@ -82,7 +80,7 @@ export const closeShiftInput = z.object({
 });
 
 /** `cash_shift_summary` (and `close_cash_shift`, which adds `counted_cash`). */
-export const shiftSummaryResult = z.object({
+export const shiftSummarySchema = z.object({
   shift_id: z.string().optional(),
   opening_cash: z.number(),
   invoice_count: z.number(),
@@ -99,4 +97,3 @@ export const shiftSummaryResult = z.object({
   expected_cash: z.number(),
   counted_cash: z.number().optional(),
 });
-export type ShiftSummaryResult = z.infer<typeof shiftSummaryResult>;

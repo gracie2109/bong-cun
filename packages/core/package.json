@@ -13,10 +13,10 @@
   "scripts": {
     "type-check": "tsc --noEmit -p tsconfig.json"
   },
-  "devDependencies": {
-    "typescript": "~5.9"
-  },
   "dependencies": {
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "~5.9"
   }
 }
