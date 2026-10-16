@@ -33,7 +33,7 @@ and `supabase/` stays at the repo root.
 See docs/ke-hoach-monorepo.md.
 
 - `src/pages/` routes. Each page is a thin wrapper that sets `definePageMeta`
-  (route name, layout, `titleKey`, access rules) and renders a view from `src/views/`.
+  (route name, layout, `titleKey`, access rules) and renders a view from `src/features/`.
 - `src/middleware/auth.global.ts` route access (UX only, RLS enforces).
 - `routeRules` in `nuxt.config.ts` choose SSR or SPA per route (`/admin/**`,
   auth and cart pages are SPA).

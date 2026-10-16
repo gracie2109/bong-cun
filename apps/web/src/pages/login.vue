@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/auth/LoginView.vue";
+import View from "@/features/auth/LoginView.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
 definePageMeta({

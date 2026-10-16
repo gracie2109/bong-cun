@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/reports/staff/Index.vue";
+import View from "@/features/admin/reports/staff/Index.vue";
 
 definePageMeta({
   name: "reportsStaff",

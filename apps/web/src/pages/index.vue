@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/home/HomeView.vue";
+import View from "@/features/home/HomeView.vue";
 import { PAGE_LAYOUT } from "@/lib/constants";
 
 definePageMeta({

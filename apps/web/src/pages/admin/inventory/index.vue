@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/inventory/stock/Index.vue";
+import View from "@/features/admin/inventory/stock/Index.vue";
 
 definePageMeta({
   name: "inventoryStock",

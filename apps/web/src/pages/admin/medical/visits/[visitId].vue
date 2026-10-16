@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/medical/visit/Index.vue";
+import View from "@/features/admin/medical/visit/Index.vue";
 
 definePageMeta({
   name: "medicalVisitDetail",

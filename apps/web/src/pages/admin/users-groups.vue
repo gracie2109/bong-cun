@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/users/user-groups/Index.vue";
+import View from "@/features/admin/users/user-groups/Index.vue";
 
 definePageMeta({
   name: "usersGroup",

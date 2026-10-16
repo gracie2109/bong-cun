@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import View from "@/views/admin/pets/prices/Index.vue";
+import View from "@/features/admin/pets/prices/Index.vue";
 
 definePageMeta({
   name: "petPrices",

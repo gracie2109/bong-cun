@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import ShopHeader from "@/components/layout/client/ShopHeader.vue";
-import ClientFooter from "@/views/client/layout/ClientFooter.vue";
+import ClientFooter from "@/features/shop/layout/ClientFooter.vue";
 
 // The shop palette and font; on <html> so sheets and dialogs teleported to <body> share it.
 useHead({ htmlAttrs: { class: "shop-theme" } });
