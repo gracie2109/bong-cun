@@ -46,11 +46,3 @@ export const parseRpc = <T>(rpc: string, schema: ZodType<T>, data: unknown): T =
   const issue = result.error.issues[0];
   throw new Error(`${rpc} returned an unexpected shape at "${issue?.path.join(".") ?? ""}": ${issue?.message ?? "invalid"}`);
 };
-
-// Postgres error codes surfaced by PostgREST.
-export const PG_UNIQUE_VIOLATION = "23505";
-export const PG_FOREIGN_KEY_VIOLATION = "23503";
-export const PG_INSUFFICIENT_PRIVILEGE = "42501";
-
-export const hasPgCode = (error: unknown, code: string): boolean =>
-  typeof error === "object" && error !== null && (error as { code?: string }).code === code;
