@@ -1,8 +1,8 @@
 // The kennel calendar and moving a pet to another kennel.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { BoardingTimeline, KennelStatus, StayStatus, TimelineKennel, TimelineSegment } from "@/types/boarding";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

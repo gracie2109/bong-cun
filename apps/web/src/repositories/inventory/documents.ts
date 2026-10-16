@@ -1,8 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
+import type { Database, Tables } from "@bongcun/supabase/db";
 import { toUnit } from "../products/mappers";
 import type { ProductUnit } from "../products/types";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "../shared";
+import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 
 type Client = SupabaseClient<Database>;

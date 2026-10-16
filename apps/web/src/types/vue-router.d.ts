@@ -1,5 +1,5 @@
 import "vue-router";
-import type { AccessMeta } from "@/lib/access";
+import type { AccessMeta } from "@bongcun/core/auth";
 
 declare module "vue-router" {
   interface RouteMeta extends AccessMeta {

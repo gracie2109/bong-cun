@@ -1,8 +1,8 @@
 // "My pets": the pets the signed-in customer owns, read-only (docs 3.4). Only staff add, edit or remove pets.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import { PET_SEXES, type MyPet, type PetSex } from "@/types/account";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

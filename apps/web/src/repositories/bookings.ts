@@ -1,7 +1,7 @@
 // Public booking requests ("Đặt lịch"), submitted from the home page by visitors
 // who may not be signed in.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 
 type Client = SupabaseClient<Database>;
 

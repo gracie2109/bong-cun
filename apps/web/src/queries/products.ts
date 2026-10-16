@@ -18,7 +18,7 @@ import {
   type ProductGroupInput,
 } from "@/repositories/products";
 import { errorDetail } from "@/repositories/pos";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { inventoryKeys, productKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

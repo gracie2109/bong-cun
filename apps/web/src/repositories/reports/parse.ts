@@ -1,5 +1,5 @@
 // Row mappers of the report RPCs: snake_case JSON from the database to camelCase numbers.
-import type { Json } from "@/types/database.types";
+import type { Json } from "@bongcun/supabase/db";
 import type { Adjustment, OverviewComparison, ReportOverview, SeriesPoint, ShiftRecon, StaffRevenue, TopItem } from "./types";
 
 export const num = (value: unknown): number => Number(value ?? 0);

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { pageRange, unwrap, type Page, type PageParams } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num, toStaffRevenue, toTopItem } from "./parse";
 import type { StaffFilter, StaffRevenue, TopItem, TopItemFilter } from "./types";
 

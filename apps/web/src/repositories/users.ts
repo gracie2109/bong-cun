@@ -2,10 +2,10 @@
 // Vue/Pinia/router/env, so it runs unchanged in Nuxt (client or server).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { IROLE } from "@/types";
-import type { Database, Tables } from "@/types/database.types";
+import type { Database, Tables } from "@bongcun/supabase/db";
 import type { IAddress } from "@/types/location.type";
 import { initAddress, type IUser } from "@/types/user.type";
-import { pageRange, type Page, type PageParams } from "./shared";
+import { pageRange, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 export type UserRow = Tables<"users">;

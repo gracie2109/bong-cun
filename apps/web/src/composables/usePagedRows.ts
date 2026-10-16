@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import type { PaginationState } from "@tanstack/vue-table";
 import { getIndex } from "@/lib/utils";
-import type { Page } from "@/repositories/shared";
+import type { Page } from "@bongcun/supabase/shared";
 
 /** Rows (numbered across pages) and the total for a paginated query, as the admin tables expect. */
 export default function <T extends object>(

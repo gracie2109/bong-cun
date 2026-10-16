@@ -1,8 +1,8 @@
 // Check-in, extend and check-out of a stay.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { CheckInPetInput, CheckoutPreview } from "@/types/boarding";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str } from "../spa/parse";
 import { toCharge } from "./care";
 

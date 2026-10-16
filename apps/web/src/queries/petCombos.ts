@@ -8,7 +8,7 @@ import {
   updatePetCombo,
   type PetComboInput,
 } from "@/repositories/petCombos";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petComboKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

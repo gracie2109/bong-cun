@@ -2,8 +2,8 @@
 // role grants keep the shape the role form already uses:
 // [{ id: <permission name>, method: ['CREATE', 'VIEW', ...] }].
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database, Tables } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 type RoleRow = Tables<"roles"> & {

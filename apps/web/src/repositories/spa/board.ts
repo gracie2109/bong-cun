@@ -1,7 +1,7 @@
 // The day view and the lookup behind a click on one of its tickets.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { unwrap } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 import { type Appointment, listAppointments } from "./appointments";
 import { asRecord, str, strOrNull } from "./parse";
 import type { AppointmentStatus, TicketStatus } from "./rules";

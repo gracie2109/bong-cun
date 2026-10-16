@@ -21,7 +21,7 @@ import {
   startMedicalVisit,
   updateMedicalItem,
 } from "@/repositories/medical";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { CheckInInput, ItemDirections, ItemInput, RecordInput, ScheduleInput, VisitFilter } from "@/types/medicalVisit";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";

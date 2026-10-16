@@ -1,8 +1,8 @@
 // The diagnosis catalog shared by every branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { DiagnosisTerm, DiagnosisTermFilter, DiagnosisTermInput } from "@/types/medical";
-import { unwrap, type Page, type PageParams } from "../shared";
+import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, str } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

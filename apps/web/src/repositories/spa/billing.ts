@@ -1,7 +1,7 @@
 // Finished spa tickets that can be paid in the POS (see 20261013050000_spa_billing.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { unwrap } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "./parse";
 
 type Client = SupabaseClient<Database>;

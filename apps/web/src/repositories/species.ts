@@ -1,7 +1,7 @@
 // Species catalog (Chó, Mèo...). One row per kind of animal; the individual animals are in pets.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database, Tables } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 export type SpeciesRow = Tables<"species">;

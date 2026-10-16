@@ -11,7 +11,7 @@ import {
   quoteBoardingStay,
   saveBoardingStay,
 } from "@/repositories/boarding";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { StayFilter, StayInput } from "@/types/boarding";
 import { boardingKeys } from "../keys";
 import { notifySuccess } from "../notify";

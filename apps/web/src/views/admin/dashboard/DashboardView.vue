@@ -41,7 +41,7 @@
 import { computed } from "vue";
 import { Icon } from "@iconify/vue";
 import { LayoutDashboard } from "lucide-vue-next";
-import { canOpenAdminRoute } from "@/lib/access";
+import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";

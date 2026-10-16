@@ -1,8 +1,8 @@
 // Signed visits that can be paid in the POS (see 20261021050000_medical_billing.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { BillableVisit } from "@/types/medicalVisit";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

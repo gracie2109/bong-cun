@@ -1,6 +1,6 @@
 // Booking spa visits from the website: rules, free slots, a quote and the booking itself.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import {
   DEFAULT_BOOKING_RULES,
   type BookingInput,
@@ -11,7 +11,7 @@ import {
   type SpaSlot,
   type WebQuote,
 } from "@/types/spaWeb";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

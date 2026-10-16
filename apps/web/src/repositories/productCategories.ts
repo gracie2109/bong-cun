@@ -1,8 +1,8 @@
 // Product categories (two levels) and brands. Both are shared by every branch and written
 // through functions that check the "products" permission.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { pageRange, type Page, type PageParams } from "./shared";
+import type { Database } from "@bongcun/supabase/db";
+import { pageRange, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

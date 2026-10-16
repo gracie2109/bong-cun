@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { pageRange, unwrap, type Page, type PageParams } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num, toAdjustment, toShiftRecon } from "./parse";
 import type { Adjustment, AdjustmentFilter, ShiftRecon, ShiftReconFilter } from "./types";
 

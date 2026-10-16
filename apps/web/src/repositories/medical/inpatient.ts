@@ -1,8 +1,8 @@
 // In-patient care. Reads and writes go through RPCs (supabase/migrations/20261021080*.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { AdmitInput, InpatientKennel, LogKind, OrderInput, OrderKind, Ward, WardDose, WardOrder, WardRow } from "@/types/inpatient";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

@@ -17,7 +17,7 @@ import {
   type ProductBrandInput,
   type ProductCategoryInput,
 } from "@/repositories/productCategories";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { productBrandKeys, productCategoryKeys, productKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

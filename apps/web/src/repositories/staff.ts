@@ -1,8 +1,8 @@
 // Staff accounts and the role each one holds at each branch (staff_branches).
 // A staff account is any user whose account type (users.role) is not "customer".
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

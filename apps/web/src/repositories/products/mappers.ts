@@ -1,4 +1,4 @@
-import type { Tables } from "@/types/database.types";
+import type { Tables } from "@bongcun/supabase/db";
 import type { ShipPolicy } from "@/types/shop";
 import type { Product, ProductAttribute, ProductGroup, ProductUnit } from "./types";
 

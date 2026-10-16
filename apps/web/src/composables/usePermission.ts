@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { SUPER_ADMIN_ROLE } from "@/lib/access";
+import { SUPER_ADMIN_ROLE } from "@bongcun/core/auth";
 import { useAuthStore } from "@/stores";
 
 // What the signed-in staff member may do with one permission code (users, pets, ...), for

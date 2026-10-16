@@ -8,7 +8,7 @@ import {
   type CreateUserInput,
   type UserListFilter,
 } from "@/repositories/users";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { userKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

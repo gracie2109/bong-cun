@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-10-01",
   srcDir: "src/",
 
+  // Workspace packages ship TypeScript source.
+  build: { transpile: ["@bongcun/core", "@bongcun/supabase"] },
+
   modules: ["@pinia/nuxt", "@nuxtjs/supabase", "@nuxtjs/i18n", "@vueuse/nuxt"],
 
   // Components keep their explicit imports (shadcn-vue ui/* barrels would
@@ -71,7 +74,7 @@ export default defineNuxtConfig({
   supabase: {
     // Access control is done by our own middleware (src/middleware/auth.global.ts).
     redirect: false,
-    types: "~/types/database.types.ts",
+    types: "~~/../../packages/supabase/src/db/database.types.ts",
   },
 
   i18n: {
