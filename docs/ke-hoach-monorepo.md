@@ -658,4 +658,15 @@ Nếu grace đồng ý Q1 (a), Q8 (a), Q11 (a), Q12 (a), Q14 (a): bắt đầu b
 | Q7 | Theo gợi ý | `@bongcun/core`, `@bongcun/supabase`, `@bongcun/nuxt-base`, `@bongcun/config`; không phát hành lên npm. Vì hoãn giai đoạn 4 nên `nuxt-base` và `config` chưa tạo ngay |
 | Q8 | (a) Giữ Supabase Auth ở mọi kịch bản | NestJS (nếu có) chỉ xác minh JWT Supabase |
 
-Chưa trả lời: Q9 đến Q14 (hosting NestJS, nguồn sự thật tiền/kho, tách `packages/supabase` ngay, ports chỉ cho dịch vụ ngoài, OpenAPI, Vitest + dependency-cruiser). Chưa bắt đầu code. Giai đoạn 0b, 0c, 2 phụ thuộc Q11 và Q14, nên chờ grace chọn hoặc xác nhận theo khuyến nghị.
+Q9 đến Q14: grace chọn "theo khuyến nghị" (2026-10-16).
+
+| # | Chọn | Hệ quả |
+| --- | --- | --- |
+| Q9 | Chưa chọn hosting NestJS, quyết ở bước B0 khi có nhu cầu thật | Không làm gì bây giờ |
+| Q10 | SQL là nguồn sự thật cho tiền và kho | TS chỉ xem trước và chặn sớm; quy tắc trùng TS/SQL có test đối chiếu |
+| Q11 | Tách `packages/supabase` ngay ở giai đoạn 2 | `core` không có `supabase-js` |
+| Q12 | Ports chỉ cho dịch vụ ngoài (GHN, thanh toán, lưu file, thông báo) | Feature khác chỉ thêm interface khi sắp có backend thứ hai |
+| Q13 | Chưa sinh OpenAPI | Làm khi có HTTP thật |
+| Q14 | Thêm Vitest và dependency-cruiser vào CI | PR 0b, 0c, 0d dùng chúng |
+
+Trạng thái: mọi quyết định cho giai đoạn 0 đến 3 đã chốt. Việc code do thread riêng "Monorepo giai đoạn 0 đến 3" (Sonnet) thực hiện theo kế hoạch này.
