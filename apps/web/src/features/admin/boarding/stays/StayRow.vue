@@ -5,6 +5,9 @@
       <span class="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="STAY_TONE[stay.status]">
         {{ $t(`boarding.status.${stay.status}`) }}
       </span>
+      <span v-if="stay.kind === 'inpatient'" class="ml-1 mt-1 inline-block rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-semibold text-violet-800">
+        {{ $t("boarding.board.inpatient") }}
+      </span>
     </td>
     <td class="whitespace-nowrap px-4 py-3">
       <p>{{ dateTime(stay.plannedInAt) }}</p>
@@ -17,6 +20,7 @@
     <td class="px-4 py-3">
       <ul class="space-y-1">
         <li v-for="pet in stay.pets" :key="pet.id" :class="pet.status === 'cancelled' && 'text-muted-foreground line-through'">
+          <PetAvatar :name="pet.petName" :photo-url="pet.petPhotoUrl" class="mr-1 inline-flex size-5 align-middle text-[9px]" />
           <span class="font-medium">{{ pet.petName }}</span>
           <span class="text-xs text-muted-foreground">· {{ pet.kennelCode }} ({{ pet.kennelTypeName }})</span>
         </li>
@@ -36,6 +40,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { dateTime, money, STAY_TONE } from "../format";

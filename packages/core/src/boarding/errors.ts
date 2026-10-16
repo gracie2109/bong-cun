@@ -30,6 +30,7 @@ export const BOARDING_ERROR_HINTS = [
   "wrong_type",
   "same_kennel",
   "kennel_full",
+  "inpatient_stay",
 ] as const;
 export type BoardingErrorHint = (typeof BOARDING_ERROR_HINTS)[number];
 

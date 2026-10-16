@@ -8,6 +8,7 @@
 | [lich-hen-spa.md](lich-hen-spa.md) | Kế hoạch module lịch hẹn spa: bàn spa, chặn trùng giờ, check-in chốt giá, nối POS |
 | [khach-san-thu-cung.md](khach-san-thu-cung.md) | Kế hoạch module khách sạn thú cưng (lưu trú): loại chuồng và giá theo đêm, tự xếp chuồng, check-in/out, nhật ký chăm sóc, nối POS, khách xem |
 | [ho-so-benh-an.md](ho-so-benh-an.md) | Kế hoạch module Y tế: tiếp nhận và hàng chờ khám, bệnh án SOAP ký khóa, chỉ định và đơn thuốc trừ kho theo lô, sổ tiêm và nhắc lịch, nối POS, báo cáo, khách xem sổ sức khỏe, nội trú dùng chung chuồng |
+| [ke-hoach-y-te-phan-con-lai.md](ke-hoach-y-te-phan-con-lai.md) | Ba việc còn lại của Y tế: nhãn Nội trú trên bảng chuồng, sửa y lệnh có nhật ký và khóa khi đã ký, ghi thú đã mất kèm dọn lịch và phía khách |
 | [bao-cao-doanh-thu.md](bao-cao-doanh-thu.md) | Kế hoạch module báo cáo doanh thu: định nghĩa số liệu, RPC, màn hình, quyền, chia file |
 | [module-san-pham.md](module-san-pham.md) | Kế hoạch phần còn lại của module sản phẩm: danh mục, thương hiệu, bộ ảnh, giá theo cơ sở, đơn vị quy đổi, nhập/xuất Excel |
 | [checkout-shop.md](checkout-shop.md) | Kế hoạch checkout shop online: giỏ hàng thống nhất, địa chỉ, phí GHN, COD và nhận tại cửa hàng, đơn online dùng chung hóa đơn/kho, trang theo dõi đơn |
@@ -22,6 +23,7 @@
 | [ke-hoach-viec-con-lai-kien-truc.md](ke-hoach-viec-con-lai-kien-truc.md) | Ba việc còn lại của đợt sửa kiến trúc: kiểu cho RPC `jsonb` (đã làm cho luồng tiền), `pg_cron` và bảng tổng hợp báo cáo (chưa cần, có ngưỡng) |
 | [ke-hoach-monorepo.md](ke-hoach-monorepo.md) | Audit codebase và kế hoạch chuyển sang monorepo (apps web/cms/mobile, packages core, supabase, nuxt-base), feature-first; bản 2: backend thay được (Supabase, NestJS), nghiệp vụ trong SQL so với TS, hợp đồng use case, ports chỉ ở dịch vụ ngoài, lộ trình PR nhỏ có đường lui |
 | [ke-hoach-don-monorepo-con-lai.md](ke-hoach-don-monorepo-con-lai.md) | Kế hoạch phần còn lại của monorepo: hợp đồng zod và mã lỗi cho kho, spa, lưu trú, y tế; đưa queries/composables vào features có barrel và luật; bỏ vue-multiselect; thứ tự để tránh đụng thread y tế và ảnh thú cưng |
+| [anh-thu-cung.md](anh-thu-cung.md) | Kế hoạch ảnh thú cưng: bucket `pet-photos` công khai, policy theo quyền `pets`, thu nhỏ ảnh trên trình duyệt, RPC đổi/xoá ảnh, hiện ảnh ở admin, POS, spa, lưu trú, y tế và trang khách, sao lưu ảnh |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 

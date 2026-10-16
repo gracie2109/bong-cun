@@ -1,12 +1,6 @@
 import { format } from "date-fns";
 
-export const initials = (name: string): string =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join("");
+export { initialsOf as initials } from "@/lib/initials";
 
 /** Whole years and remaining months since a birth date, or null when unknown or in the future. */
 export const ageOf = (

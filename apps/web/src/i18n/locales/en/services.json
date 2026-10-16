@@ -266,7 +266,8 @@
       "no_service": "This service is no longer available.",
       "wrong_type": "Pick a kennel of the same type.",
       "same_kennel": "The pet is already in this kennel.",
-      "kennel_full": "This kennel already holds another pet of the same stay."
+      "kennel_full": "This kennel already holds another pet of the same stay.",
+      "inpatient_stay": "Inpatient stays are managed on the Inpatient screen, not with hotel actions."
     },
     "board": {
       "title": "Kennel board",
@@ -283,7 +284,8 @@
         "departing": "Departing",
         "occupied": "Staying",
         "overdue": "Overdue",
-        "free": "Free kennels"
+        "free": "Free kennels",
+        "inpatient": "Inpatient"
       },
       "state": {
         "free": "Free",
@@ -293,6 +295,11 @@
         "overdue": "Overdue",
         "cleaning": "Cleaning",
         "maintenance": "Maintenance"
+      },
+      "inpatient": "Inpatient",
+      "purpose": {
+        "medical": "Medical",
+        "isolation": "Isolation"
       }
     },
     "stays": {
@@ -389,7 +396,10 @@
       "tabExtras": "Extras",
       "tabMoney": "Money",
       "total": "Total",
-      "estimateNote": "This is an estimate. Nights and late fees are settled at check-out."
+      "estimateNote": "This is an estimate. Nights and late fees are settled at check-out.",
+      "inpatientNotice": "This is an inpatient stay, managed on the Inpatient screen.",
+      "openWard": "Open Inpatient screen",
+      "openVisit": "Open visit {code}"
     },
     "checkIn": {
       "title": "Check in: {code}",

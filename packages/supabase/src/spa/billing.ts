@@ -14,6 +14,7 @@ export type BillableTicket = {
   type: "service" | "combo";
   petId: string | null;
   petName: string | null;
+  petPhotoUrl: string | null;
   /** The price fixed at check-in. */
   unitPrice: number;
 };
@@ -29,6 +30,7 @@ export const listBillableTickets = async (client: Client, branchId: string, cust
       type: row.item_type === "combo" ? "combo" : "service",
       petId: strOrNull(row.pet_id),
       petName: strOrNull(row.pet_name),
+      petPhotoUrl: strOrNull(row.pet_photo_url),
       unitPrice: numOrNull(row.unit_price) ?? 0,
     };
   });

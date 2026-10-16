@@ -266,7 +266,8 @@
       "no_service": "Dịch vụ này không còn dùng.",
       "wrong_type": "Hãy chọn chuồng cùng loại.",
       "same_kennel": "Bé đang ở chuồng này rồi.",
-      "kennel_full": "Chuồng này đã có bé khác của cùng lượt."
+      "kennel_full": "Chuồng này đã có bé khác của cùng lượt.",
+      "inpatient_stay": "Lượt nội trú được quản lý ở màn Nội trú, không dùng thao tác lưu trú."
     },
     "board": {
       "title": "Sơ đồ chuồng",
@@ -283,7 +284,8 @@
         "departing": "Sắp trả",
         "occupied": "Đang ở",
         "overdue": "Quá giờ trả",
-        "free": "Chuồng trống"
+        "free": "Chuồng trống",
+        "inpatient": "Nội trú"
       },
       "state": {
         "free": "Trống",
@@ -293,6 +295,11 @@
         "overdue": "Quá giờ",
         "cleaning": "Dọn",
         "maintenance": "Bảo trì"
+      },
+      "inpatient": "Nội trú",
+      "purpose": {
+        "medical": "Y tế",
+        "isolation": "Cách ly"
       }
     },
     "stays": {
@@ -389,7 +396,10 @@
       "tabExtras": "Phát sinh",
       "tabMoney": "Tiền",
       "total": "Tổng cộng",
-      "estimateNote": "Đây là tạm tính. Số đêm và phụ thu trả muộn được chốt khi trả thú."
+      "estimateNote": "Đây là tạm tính. Số đêm và phụ thu trả muộn được chốt khi trả thú.",
+      "inpatientNotice": "Đây là lượt nội trú, quản lý ở màn Nội trú.",
+      "openWard": "Mở màn Nội trú",
+      "openVisit": "Mở lượt khám {code}"
     },
     "checkIn": {
       "title": "Nhận thú: {code}",

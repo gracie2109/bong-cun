@@ -1,6 +1,7 @@
 <template>
   <article class="flex flex-col gap-3 rounded-xl border bg-white p-4">
-    <div class="flex items-start justify-between gap-2">
+    <div class="flex items-start gap-3">
+      <PetAvatar :name="pet.name" :photo-url="pet.photoUrl" class="size-14 text-base" />
       <div class="min-w-0">
         <h3 class="truncate font-semibold">{{ pet.name }}</h3>
         <p class="truncate text-sm text-muted-foreground">
@@ -32,6 +33,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { HeartPulse } from "lucide-vue-next";

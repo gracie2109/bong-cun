@@ -8,7 +8,8 @@
     </div>
     <ul class="space-y-1">
       <li v-for="ticket in tickets" :key="ticket.id" class="flex items-center justify-between gap-2 text-xs">
-        <span class="min-w-0 truncate">
+        <span class="flex min-w-0 items-center gap-1.5 truncate">
+          <PetAvatar v-if="ticket.petName" :name="ticket.petName" :photo-url="ticket.petPhotoUrl" class="size-5 shrink-0 text-[9px]" />
           <span class="font-medium">{{ ticket.petName ?? "—" }}</span>
           · {{ ticket.name }}
           <span class="text-muted-foreground">· {{ ticket.code }}</span>
@@ -25,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { useBillableTickets } from "@/queries/spa";

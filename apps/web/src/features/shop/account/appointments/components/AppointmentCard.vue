@@ -20,7 +20,10 @@
         class="flex items-start justify-between gap-3 px-3 py-2"
         :class="item.status === 'cancelled' && 'text-muted-foreground line-through'"
       >
-        <span><span class="font-medium">{{ item.petName }}</span> · {{ item.name }}</span>
+        <span class="flex items-center gap-2">
+          <PetAvatar v-if="item.petName" :name="item.petName" :photo-url="item.petPhotoUrl" class="size-6 text-[10px]" />
+          <span><span class="font-medium">{{ item.petName }}</span> · {{ item.name }}</span>
+        </span>
         <span v-if="item.estPrice !== null" class="shrink-0">{{ formatPrice(item.estPrice) }}</span>
       </li>
     </ul>
@@ -42,6 +45,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";

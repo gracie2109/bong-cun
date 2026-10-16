@@ -1,5 +1,5 @@
 import type { KennelStatus } from "./kennels";
-import type { StayStatus } from "./stays";
+import type { StayKind, StayStatus } from "./stays";
 
 // ---------------------------------------------------------------- calendar
 /** The nights one pet holds a kennel, as the calendar draws them: [from, to) in yyyy-MM-dd. */
@@ -10,6 +10,8 @@ export type TimelineSegment = {
   stayPetId: string;
   petName: string;
   customerName: string;
+  kind: StayKind;
+  visitCode: string | null;
   from: string;
   to: string;
 };

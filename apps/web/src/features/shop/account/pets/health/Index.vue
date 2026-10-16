@@ -10,9 +10,12 @@
       <Button variant="outline" @click="query.refetch()">{{ $t("client.catalog.retry") }}</Button>
     </div>
     <template v-else>
-      <div>
-        <h2 class="text-lg font-semibold">{{ $t("client.health.title", { name: health.petName }) }}</h2>
-        <p class="text-sm text-muted-foreground">{{ $t("client.health.intro") }}</p>
+      <div class="flex items-center gap-3">
+        <PetAvatar :name="health.petName" :photo-url="health.petPhotoUrl" class="size-14 text-base" />
+        <div>
+          <h2 class="text-lg font-semibold">{{ $t("client.health.title", { name: health.petName }) }}</h2>
+          <p class="text-sm text-muted-foreground">{{ $t("client.health.intro") }}</p>
+        </div>
       </div>
 
       <Tabs default-value="vaccines">
@@ -33,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { ArrowLeft } from "lucide-vue-next";

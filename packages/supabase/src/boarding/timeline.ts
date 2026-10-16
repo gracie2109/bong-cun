@@ -16,6 +16,8 @@ const toSegment = (value: unknown): TimelineSegment => {
     stayPetId: str(row.stay_pet_id),
     petName: str(row.pet_name),
     customerName: str(row.customer_name),
+    kind: row.kind === "inpatient" ? "inpatient" : "boarding",
+    visitCode: strOrNull(row.visit_code),
     from: str(row.from),
     to: str(row.to),
   };

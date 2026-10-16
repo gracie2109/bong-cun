@@ -17,7 +17,10 @@
 
     <ul class="divide-y rounded-lg border text-sm">
       <li v-for="(pet, index) in stay.pets" :key="index" class="flex items-start justify-between gap-3 px-3 py-2" :class="pet.status === 'cancelled' && 'text-muted-foreground line-through'">
-        <span><span class="font-medium">{{ pet.petName }}</span> · {{ pet.kennelTypeName }}</span>
+        <span class="flex items-center gap-2">
+          <PetAvatar :name="pet.petName" :photo-url="pet.petPhotoUrl" class="size-6 text-[10px]" />
+          <span><span class="font-medium">{{ pet.petName }}</span> · {{ pet.kennelTypeName }}</span>
+        </span>
         <span class="shrink-0 text-muted-foreground">{{ $t("client.boarding.nights", { n: pet.chargedNights }) }}</span>
       </li>
     </ul>
@@ -35,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";

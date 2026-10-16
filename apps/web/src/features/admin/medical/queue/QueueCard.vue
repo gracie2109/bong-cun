@@ -6,7 +6,8 @@
   >
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
-        <p class="truncate font-semibold">
+        <p class="flex items-center gap-2 truncate font-semibold">
+          <PetAvatar :name="visit.petName" :photo-url="visit.petPhotoUrl" class="size-7 shrink-0 text-[10px]" />
           <span v-if="visit.queueNo" class="mr-1 text-primary">#{{ visit.queueNo }}</span>{{ visit.petName }}
           <span v-if="visit.speciesName" class="text-xs font-normal text-muted-foreground">· {{ visit.speciesName }}</span>
         </p>
@@ -37,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";

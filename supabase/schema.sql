@@ -44,6 +44,9 @@ begin
     raise exception 'not allowed' using errcode = '42501';
   end if;
   select status into v_status from public.boarding_stays where id = v_sp.stay_id;
+  if exists (select 1 from public.boarding_stays where id = v_sp.stay_id and kind = 'inpatient') then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
+  end if;
   if v_status <> 'checked_in' or v_sp.status <> 'active' then
     raise exception 'the pet is not in the hotel' using errcode = 'P0001', hint = 'not_editable';
   end if;
@@ -629,6 +632,7 @@ begin
       'item_type', i.item_type,
       'pet_id', i.pet_id,
       'pet_name', pt.name,
+      'pet_photo_url', pt.photo_url,
       'unit_price', i.unit_price
     ) order by a.start_at, i.line_no)
     from public.appointment_items i
@@ -678,6 +682,12 @@ begin
                  from public.boarding_stay_pets sp
                  join public.pets p on p.id = sp.pet_id
                  where sp.id = bc.stay_pet_id
+               ),
+               'pet_photo_url', (
+                 select p.photo_url
+                 from public.boarding_stay_pets sp
+                 join public.pets p on p.id = sp.pet_id
+                 where sp.id = bc.stay_pet_id
                )
              ) order by bc.created_at, bc.id) as charges
       from public.boarding_charges bc
@@ -709,6 +719,7 @@ begin
       'visit_id', v.id,
       'code', v.code,
       'pet_name', v.pet_name,
+      'pet_photo_url', (select p.photo_url from public.pets p where p.id = v.pet_id),
       'total', c.total,
       'items', c.items
     ) order by v.signed_at, v.code)
@@ -1077,6 +1088,7 @@ begin
     -- Every active pet that is in a kennel on v_date or arrives on it.
     select sp.kennel_id,
            s.id as stay_id, s.code as stay_code, s.status as stay_status, sp.id as stay_pet_id,
+           s.kind as stay_kind, s.visit_id, mv.code as visit_code,
            sp.pet_id, sp.pet_name, s.customer_name, s.planned_in_at, s.planned_out_at,
            -- In the kennel on v_date: checked in, started, and either still within its nights or (today and
            -- earlier) not yet collected. A later date does not count a pet that is planned to have left.
@@ -1091,24 +1103,28 @@ begin
              select 1 from public.pets pt
              where pt.id = sp.pet_id
                and (nullif(btrim(pt.behavior_notes), '') is not null or nullif(btrim(pt.allergies), '') is not null)
-           ) as has_notes
+           ) as has_notes,
+           (select pt.photo_url from public.pets pt where pt.id = sp.pet_id) as pet_photo_url
     from public.boarding_stay_pets sp
     join public.boarding_stays s on s.id = sp.stay_id
+    left join public.medical_visits mv on mv.id = s.visit_id
     where sp.branch_id = p_branch and sp.status = 'active'
       and s.status in ('booked', 'checked_in')
   ), per_kennel as (
-    select k.id, k.code, k.name, k.kennel_type_id, t.name as type_name, k.status, k.sort_order, t.sort_order as type_sort,
+    select k.id, k.code, k.name, k.kennel_type_id, t.name as type_name, t.purpose, k.status, k.sort_order, t.sort_order as type_sort,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
-             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
+             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name, 'pet_photo_url', p.pet_photo_url,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
-             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', p.overdue
+             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', p.overdue,
+             'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
            ) order by p.pet_name) filter (where p.in_kennel), '[]'::jsonb) as in_pets,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
-             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
+             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name, 'pet_photo_url', p.pet_photo_url,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
-             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', false
+             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', false,
+             'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
            ) order by p.pet_name) filter (where p.arrives), '[]'::jsonb) as arriving_pets,
            coalesce(bool_or(p.in_kennel and p.overdue), false) as has_overdue,
            coalesce(bool_or(p.in_kennel and p.leaves and not p.overdue), false) as has_leaving,
@@ -1134,7 +1150,7 @@ begin
   )
   select jsonb_agg(jsonb_build_object(
            'id', st.id, 'code', st.code, 'name', st.name,
-           'kennel_type_id', st.kennel_type_id, 'kennel_type_name', st.type_name,
+           'kennel_type_id', st.kennel_type_id, 'kennel_type_name', st.type_name, 'purpose', st.purpose,
            'status', st.status, 'state', st.state,
            'conflict', (st.has_overdue and st.has_arrival),
            'pets', st.in_pets, 'arriving', st.arriving_pets
@@ -1151,7 +1167,9 @@ begin
         'departing', count(*) filter (where k ->> 'state' = 'departing'),
         'occupied', count(*) filter (where k ->> 'state' in ('occupied', 'departing', 'overdue')),
         'overdue', count(*) filter (where k ->> 'state' = 'overdue'),
-        'free', count(*) filter (where k ->> 'state' = 'free')
+        'free', count(*) filter (where k ->> 'state' = 'free'),
+        'inpatient', count(*) filter (where exists (
+          select 1 from jsonb_array_elements(k -> 'pets') as p(pet) where p.pet ->> 'kind' = 'inpatient'))
       )
       from jsonb_array_elements(coalesce(v_kennels, '[]'::jsonb)) as t(k)
     )
@@ -1473,6 +1491,9 @@ CREATE OR REPLACE FUNCTION "public"."boarding_stay_json"("p_stay" "public"."boar
     'checked_in_at', p_stay.checked_in_at,
     'checked_out_at', p_stay.checked_out_at,
     'source', p_stay.source,
+    'kind', p_stay.kind,
+    'visit_id', p_stay.visit_id,
+    'visit_code', (select mv.code from public.medical_visits mv where mv.id = p_stay.visit_id),
     'emergency_phone', p_stay.emergency_phone,
     'note', p_stay.note,
     'cancel_reason', p_stay.cancel_reason,
@@ -1493,6 +1514,7 @@ CREATE OR REPLACE FUNCTION "public"."boarding_stay_json"("p_stay" "public"."boar
         'line_no', sp.line_no,
         'pet_id', sp.pet_id,
         'pet_name', sp.pet_name,
+        'pet_photo_url', (select pt.photo_url from public.pets pt where pt.id = sp.pet_id),
         'status', sp.status,
         'kennel_type_id', sp.kennel_type_id,
         'kennel_type_name', t.name,
@@ -1554,10 +1576,12 @@ begin
           select jsonb_agg(jsonb_build_object(
             'stay_id', s.id, 'stay_code', s.code, 'stay_status', s.status, 'stay_pet_id', sp.id,
             'pet_name', sp.pet_name, 'customer_name', s.customer_name,
+            'kind', s.kind, 'visit_code', mv.code,
             'from', lower(sp.nights), 'to', upper(sp.nights)
           ) order by lower(sp.nights), sp.line_no)
           from public.boarding_stay_pets sp
           join public.boarding_stays s on s.id = sp.stay_id
+          left join public.medical_visits mv on mv.id = s.visit_id
           where sp.kennel_id = k.id and sp.status = 'active'
             and s.status in ('booked', 'checked_in', 'checked_out', 'paid')
             and sp.nights && v_win
@@ -1759,6 +1783,19 @@ $$;
 
 
 ALTER FUNCTION "public"."can_boarding"("p_method" "text", "p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."can_edit_pet_photos"() RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  select coalesce((select public.is_admin()), false)
+      or coalesce((select public.has_permission('pets', 'UPDATE')), false)
+      or coalesce((select public.has_permission('pets', 'CREATE')), false);
+$$;
+
+
+ALTER FUNCTION "public"."can_edit_pet_photos"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS boolean
@@ -2556,6 +2593,9 @@ begin
   end if;
   if not public.can_boarding('UPDATE', v_stay.branch_id) then
     raise exception 'not allowed' using errcode = '42501';
+  end if;
+  if v_stay.kind = 'inpatient' then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
   end if;
   if v_stay.status <> 'checked_in' then
     raise exception 'only a stay that is in can be checked out' using errcode = 'P0001', hint = 'not_editable';
@@ -3547,6 +3587,9 @@ begin
   end if;
   if not public.can_boarding('UPDATE', v_stay.branch_id) then
     raise exception 'not allowed' using errcode = '42501';
+  end if;
+  if v_stay.kind = 'inpatient' then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
   end if;
   if v_stay.status <> 'checked_in' then
     raise exception 'only a stay that is in can be extended' using errcode = 'P0001', hint = 'not_editable';
@@ -5033,6 +5076,7 @@ begin
       'visit_code', v.code,
       'pet_id', sp.pet_id,
       'pet_name', sp.pet_name,
+      'pet_photo_url', pt.photo_url,
       'customer_name', s.customer_name,
       'customer_phone', s.customer_phone,
       'kennel_code', k.code,
@@ -5344,6 +5388,7 @@ begin
             'status', i.status,
             'pet_id', i.pet_id,
             'pet_name', pt.name,
+            'pet_photo_url', pt.photo_url,
             'staff_id', i.staff_id,
             'staff_name', case when i.staff_id is null then null else public.staff_display_name(i.staff_id) end,
             'resource_id', i.resource_id,
@@ -6526,6 +6571,7 @@ CREATE OR REPLACE FUNCTION "public"."medical_visit_json"("v" "public"."medical_v
     'created_at', v.created_at,
     'pet_id', v.pet_id,
     'pet_name', v.pet_name,
+    'pet_photo_url', (select p.photo_url from public.pets p where p.id = v.pet_id),
     'species_name', (select s.name from public.pets p join public.species s on s.id = p.species_id where p.id = v.pet_id),
     'customer_id', v.customer_id,
     'customer_name', v.customer_name,
@@ -6838,6 +6884,7 @@ begin
               jsonb_build_object(
                 'name', i.name,
                 'pet_name', pt.name,
+                'pet_photo_url', pt.photo_url,
                 'start_at', i.start_at,
                 'status', i.status,
                 'est_price', i.est_price
@@ -6937,6 +6984,7 @@ CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_json"("p_stay" "public"."b
     'pets', coalesce((
       select jsonb_agg(jsonb_build_object(
         'pet_name', sp.pet_name,
+        'pet_photo_url', (select pt.photo_url from public.pets pt where pt.id = sp.pet_id),
         'status', sp.status,
         'kennel_type_name', t.name,
         'nights_from', lower(sp.nights),
@@ -7064,6 +7112,7 @@ begin
   return jsonb_build_object(
     'pet_id', v_pet.id,
     'pet_name', v_pet.name,
+    'pet_photo_url', v_pet.photo_url,
     'phone', (
       select b.phone from public.branches b where b.is_active and b.phone is not null
       order by b.created_at limit 1
@@ -7153,6 +7202,7 @@ begin
                'species_id', p.species_id,
                'species_name', s.name,
                'breed', p.breed,
+               'photo_url', p.photo_url,
                'sex', p.sex,
                'neutered', p.neutered,
                'birth_date', p.birth_date,
@@ -11539,6 +11589,41 @@ $$;
 ALTER FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") RETURNS "text"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_old text;
+begin
+  if not public.can_edit_pet_photos() then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+  select photo_path into v_old from public.pets where id = p_pet for update;
+  if not found then
+    raise exception 'pet not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if p_path is null then
+    if p_url is not null then
+      raise exception 'url without a path' using errcode = '22023', hint = 'bad_input';
+    end if;
+  elsif left(p_path, length(p_pet::text) + 1) <> p_pet::text || '/'
+     or p_url is null
+     or right(p_url, length('/storage/v1/object/public/pet-photos/' || p_path))
+        <> '/storage/v1/object/public/pet-photos/' || p_path then
+    raise exception 'the photo does not belong to this pet' using errcode = '22023', hint = 'bad_input';
+  end if;
+  update public.pets
+  set photo_path = p_path, photo_url = p_url, updated_at = now()
+  where id = p_pet;
+  return v_old;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_product_branch_prices"("p_product" "uuid", "p_prices" "jsonb") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -12211,6 +12296,7 @@ begin
         'staff_id', i.staff_id,
         'resource_id', i.resource_id,
         'pet_name', pt.name,
+        'pet_photo_url', pt.photo_url,
         'customer_name', a.customer_name
       ) order by i.start_at, i.line_no), '[]'::jsonb)
       from public.appointment_items i
@@ -13816,6 +13902,7 @@ CREATE TABLE IF NOT EXISTS "public"."pets" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deceased_on" "date",
+    "photo_path" "text",
     CONSTRAINT "pets_name_check" CHECK (("length"("btrim"("name")) > 0)),
     CONSTRAINT "pets_sex_check" CHECK (("sex" = ANY (ARRAY['male'::"text", 'female'::"text", 'unknown'::"text"]))),
     CONSTRAINT "pets_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'deceased'::"text", 'archived'::"text"])))
@@ -18076,6 +18163,12 @@ GRANT ALL ON FUNCTION "public"."can_boarding"("p_method" "text", "p_branch" "uui
 
 
 
+REVOKE ALL ON FUNCTION "public"."can_edit_pet_photos"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_edit_pet_photos"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_edit_pet_photos"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") TO "service_role";
@@ -19192,6 +19285,12 @@ GRANT ALL ON FUNCTION "public"."set_kennel_status"("p_id" "uuid", "p_status" "te
 REVOKE ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") TO "service_role";
 
 
 

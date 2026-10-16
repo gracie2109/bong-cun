@@ -23,6 +23,7 @@ export type BoardTicket = {
   staffId: string | null;
   resourceId: string | null;
   petName: string | null;
+  petPhotoUrl: string | null;
   customerName: string;
 };
 
@@ -60,6 +61,7 @@ export const getDayBoard = async (client: Client, branchId: string, date: string
       staffId: strOrNull(item.staff_id),
       resourceId: strOrNull(item.resource_id),
       petName: strOrNull(item.pet_name),
+      petPhotoUrl: strOrNull(item.pet_photo_url),
       customerName: str(item.customer_name),
     })),
   };

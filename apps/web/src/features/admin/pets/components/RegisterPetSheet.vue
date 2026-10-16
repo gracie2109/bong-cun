@@ -19,6 +19,7 @@
         <RegisterPetSection
           v-model:pet="pet"
           v-model:weight="weight"
+          v-model:photo="photo"
           :species="species"
           :errors="errors"
           :weight-invalid="weightInvalid"
@@ -65,6 +66,7 @@ import {
   petFormErrors,
   type PetFormState,
 } from "../pet-form";
+import { useRegisterPhoto } from "../photo/useRegisterPhoto";
 import RegisterOwnerSection from "./RegisterOwnerSection.vue";
 import RegisterPetSection from "./RegisterPetSection.vue";
 import { useOwnerPicker } from "./useOwnerPicker";
@@ -80,6 +82,8 @@ const register = useRegisterPet();
 const owner = useOwnerPicker();
 const pet = ref<PetFormState>(emptyPetForm());
 const weight = ref("");
+const photo = ref<File | null>(null);
+const savePhoto = useRegisterPhoto();
 const submitted = ref(false);
 
 const errors = computed(() => petFormErrors(pet.value));
@@ -91,6 +95,7 @@ const { weightKg, weightInvalid, bracket, bracketText } = useWeightHint(
 const resetPet = () => {
   pet.value = emptyPetForm();
   weight.value = "";
+  photo.value = null;
   submitted.value = false;
 };
 
@@ -112,6 +117,7 @@ const submit = async (registerAnother: boolean) => {
       pet: formToPetInput(pet.value),
       weightKg: weightKg.value,
     });
+    if (photo.value) await savePhoto(petId, photo.value);
     emit("registered", petId);
     if (registerAnother) {
       resetPet();

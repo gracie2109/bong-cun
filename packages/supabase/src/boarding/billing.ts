@@ -22,6 +22,7 @@ export const listBillableBoarding = async (client: Client, branchId: string, cus
           id: str(charge.id),
           name: str(charge.name),
           petName: strOrNull(charge.pet_name),
+          petPhotoUrl: strOrNull(charge.pet_photo_url),
           qty: Number(charge.qty ?? 0),
           unitPrice: Number(charge.unit_price ?? 0),
           amount: Number(charge.amount ?? 0),

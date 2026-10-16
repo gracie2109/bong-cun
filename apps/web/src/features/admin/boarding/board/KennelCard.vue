@@ -14,12 +14,9 @@
     </div>
 
     <ul v-if="kennel.pets.length" class="space-y-0.5 text-sm">
-      <li v-for="pet in kennel.pets" :key="pet.stayPetId">
-        <span class="font-medium">{{ pet.petName }}</span>
-        <span v-if="pet.hasNotes" class="ml-1 text-amber-600" :title="$t('boarding.board.hasNotes')">⚠</span>
-        <span class="block text-xs text-muted-foreground">{{ pet.customerName }} · → {{ dateTime(pet.plannedOutAt) }}</span>
-      </li>
+      <KennelPetLine v-for="pet in kennel.pets" :key="pet.stayPetId" :pet="pet" />
     </ul>
+    <KennelPurposeChip v-else-if="isInpatientKennel && !kennel.arriving.length" :purpose="kennel.purpose as 'medical' | 'isolation'" class="self-start" />
 
     <ul v-if="kennel.arriving.length" class="space-y-0.5 border-t border-dashed pt-1.5 text-xs text-sky-800">
       <li v-for="pet in kennel.arriving" :key="pet.stayPetId">
@@ -39,14 +36,19 @@
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import type { BoardKennel } from "@bongcun/core/boarding";
-import { dateTime, KENNEL_STATE_DOT, KENNEL_STATE_TONE, timeOf } from "../format";
+import { KENNEL_STATE_DOT, KENNEL_STATE_TONE, timeOf } from "../format";
+import KennelPetLine from "./KennelPetLine.vue";
+import KennelPurposeChip from "./KennelPurposeChip.vue";
 
 const props = defineProps<{ kennel: BoardKennel; canCreate: boolean; canUpdate: boolean }>();
 const emit = defineEmits<{ open: []; clean: [] }>();
 
+/** A medical or isolation kennel: inpatients only, never a hotel room. */
+const isInpatientKennel = computed(() => props.kennel.purpose !== "boarding");
+
 const clickable = computed(
   () =>
-    (props.kennel.state === "free" && props.kennel.status === "ready" && props.canCreate) ||
+    (props.kennel.state === "free" && props.kennel.status === "ready" && props.canCreate && !isInpatientKennel.value) ||
     props.kennel.pets.length > 0 ||
     props.kennel.arriving.length > 0
 );
