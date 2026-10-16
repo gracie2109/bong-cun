@@ -196,3 +196,16 @@ tay ở mục 7.
 - Album nhiều ảnh cho một thú cưng, khung cắt ảnh, khách tự tải ảnh.
 - Ảnh thú cưng trên hoá đơn in.
 - Dọn file mồ côi tự động (cần Edge Function hoặc job có khoá service role).
+
+## 9. Tiến độ (2026-10-16)
+
+| Bước | PR | Ghi chú |
+| --- | --- | --- |
+| 1 | #161 | Migration `20261024010000`. Lỗi đã gặp: trong policy upload, `name` trần bị hiểu là cột `name` của bảng `pets` nên phải viết `objects.name`. |
+| 2 | #163 | `compressImage` đã chuyển sang `lib/images` (có tham số). `PetInput` không còn `photoUrl`. |
+| 3 | #164 | `PetAvatar`, `PetPhotoButton`, `PetPhotoField`, `usePetPhoto`, `useRegisterPhoto`. |
+| 4 | #165 | Migration `20261024020000`: chín hàm (`list_boarding_stays` và `list_medical_visits` nhận ảnh qua `boarding_stay_json`, `medical_visit_json`). Ảnh hiện ở kho/kennel, danh sách và chi tiết lưu trú, nội trú, hàng đợi và danh sách khám, vé spa, phiếu spa/khám trong POS. Chưa hiện ở khối lịch spa (ô nhỏ) và phiếu lưu trú trong POS (dữ liệu đã có `petPhotoUrl`, chưa vẽ). |
+| 5 | #167 | Migration `20261024030000`. Ảnh ở thẻ thú cưng, sổ sức khoẻ, lịch hẹn, lưu trú của khách. |
+| 6 | xem PR backup | Workflow backup tải thêm bucket `pet-photos` vào cùng file mã hoá. |
+
+Cả ba migration chạy tự động qua workflow "Supabase migrate". Phần giao diện mới chỉ qua typecheck và build, chưa bấm thử trên trình duyệt (xem mục 7).
