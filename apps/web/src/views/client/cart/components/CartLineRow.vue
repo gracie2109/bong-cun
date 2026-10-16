@@ -69,7 +69,7 @@ import PawMark from "@/components/shop/PawMark.vue";
 import { useQtyInput } from "@/composables/shop/useQtyInput";
 import { formatPrice } from "@/lib/utils";
 import type { CartLineView } from "@bongcun/core/shop";
-import { lineAmount, lineIssue } from "@/utils/shop/cart";
+import { lineAmount, lineIssue } from "@bongcun/core/shop";
 
 const props = defineProps<{ line: CartLineView }>();
 const emit = defineEmits<{ qty: [qty: number]; remove: [] }>();

@@ -6,4 +6,4 @@ export * from "./lots";
 export * from "./movements";
 export * from "./documents";
 export * from "./suppliers";
-export * from "./errors";
+export * from "@bongcun/core/inventory";

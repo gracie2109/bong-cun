@@ -9,7 +9,7 @@ import {
   orderWeightG,
   resolveShippingFee,
   type FeeSource,
-} from "@/utils/shop/shipping";
+} from "@bongcun/core/shop";
 
 const SETTLE_MS = 500;
 const FIVE_MINUTES = 5 * 60 * 1000;

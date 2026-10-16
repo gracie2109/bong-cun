@@ -5,7 +5,7 @@ import {
   combosForSpecies,
   servicesForSpecies,
   speciesWithOffers,
-} from "@/utils/spa/catalog";
+} from "@bongcun/core/spa";
 
 /** The public price list: pick a branch (when there are several) and a species, read its services and combos. */
 export const useSpaCatalog = () => {

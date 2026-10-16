@@ -3,7 +3,7 @@ import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import { cancelMyShopOrder, getMyShopOrder, listMyShopOrders, placeShopOrder } from "@bongcun/supabase/shop";
 import type { PlaceOrderInput, ShopOrderStatus } from "@bongcun/core/shop";
-import { isOpenOrder } from "@/utils/shop/order";
+import { isOpenOrder } from "@bongcun/core/shop";
 import { shopKeys } from "./keys";
 import { notifyFailure } from "./notify";
 

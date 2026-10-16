@@ -7,7 +7,7 @@ import {
   emptyAddressForm,
   formToInput,
   type AddressForm,
-} from "@/utils/shop/address";
+} from "@bongcun/core/shop";
 
 /**
  * The add / edit address dialog: its open state, form, validation and save.

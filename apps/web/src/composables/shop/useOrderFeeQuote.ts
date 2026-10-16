@@ -2,7 +2,7 @@ import { computed, ref, type Ref } from "vue";
 import { useShopSettings } from "@/queries/shop";
 import { quoteShippingFee, ShippingQuoteError } from "@/services/shipment.service";
 import type { AdminOrder } from "@bongcun/core/shop";
-import { clampQuote } from "@/utils/shop/shipping";
+import { clampQuote } from "@bongcun/core/shop";
 
 /** "Tính lại phí GHN" in the confirm dialog: asks GHN again with the order's real weight. */
 export const useOrderFeeQuote = (order: Ref<AdminOrder | null>, onQuoted: (fee: number) => void) => {

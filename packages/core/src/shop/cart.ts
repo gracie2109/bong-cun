@@ -24,7 +24,7 @@ export const addLine = (lines: readonly CartLine[], line: CartLine): { lines: Ca
     if (lines.length >= MAX_CART_LINES) return { lines: [...lines], result: "cart_full" };
     return { lines: [...lines, { ...line, qty: clampQty(line.qty) }], result: "added" };
   }
-  const wanted = lines[index].qty + clampQty(line.qty);
+  const wanted = (lines[index]?.qty ?? 0) + clampQty(line.qty);
   const next = lines.map((item, i) => (i === index ? { ...item, qty: clampQty(wanted) } : item));
   return { lines: next, result: wanted > MAX_LINE_QTY ? "capped" : "added" };
 };

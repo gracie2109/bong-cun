@@ -4,7 +4,7 @@ import type { Database } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";
 import { type Appointment, listAppointments } from "./appointments";
 import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
-import type { AppointmentStatus, TicketStatus } from "./rules";
+import type { AppointmentStatus, TicketStatus } from "@bongcun/core/spa";
 
 type Client = SupabaseClient<Database>;
 

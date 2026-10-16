@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { AdminOrder, AdminOrderLine } from "@bongcun/core/shop";
-import { shortLines, showStockCheck } from "@/utils/shop/orderAdmin";
+import { shortLines, showStockCheck } from "@bongcun/core/shop";
 import { money } from "@/views/admin/pos/format";
 
 const props = defineProps<{ order: AdminOrder }>();

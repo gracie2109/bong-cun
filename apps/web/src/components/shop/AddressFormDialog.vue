@@ -47,7 +47,7 @@ import GhnLocationPicker from "@/components/common/GhnLocationPicker.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { AddressErrors, AddressForm } from "@/utils/shop/address";
+import type { AddressErrors, AddressForm } from "@bongcun/core/shop";
 
 defineProps<{
   form: AddressForm;

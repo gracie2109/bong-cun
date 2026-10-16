@@ -59,7 +59,7 @@ import { Button } from "@/components/ui/button";
 import { useAddressBook } from "@/composables/shop/useAddressBook";
 import { useAddressForm } from "@/composables/shop/useAddressForm";
 import { MAX_ADDRESSES } from "@bongcun/core/shop";
-import { formatAddress } from "@/utils/shop/address";
+import { formatAddress } from "@bongcun/core/shop";
 
 const { addresses, atLimit, loading, toDelete, confirmDelete, makeDefault, busy } = useAddressBook();
 const form = useAddressForm();

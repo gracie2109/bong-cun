@@ -60,7 +60,7 @@
 import { computed } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import type { useOrderSheet } from "@/composables/shop/useOrderSheet";
-import { parseFee } from "@/utils/shop/orderAdmin";
+import { parseFee } from "@bongcun/core/shop";
 import { money } from "@/views/admin/pos/format";
 import ConfirmOrderDialog from "./ConfirmOrderDialog.vue";
 import PickupPayDialog from "./PickupPayDialog.vue";

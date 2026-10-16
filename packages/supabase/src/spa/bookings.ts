@@ -5,7 +5,7 @@ import type { Database } from "@bongcun/supabase/db";
 
 type Client = SupabaseClient<Database>;
 
-export type BookingInput = {
+export type BookingRequestInput = {
   name: string;
   email: string;
   phone_number: string;
@@ -19,7 +19,7 @@ export type BookingInput = {
  * here instead of being read back from the insert. `user_id` is not sent: the
  * database fills it from the caller's JWT (NULL when signed out).
  */
-export const createBooking = async (client: Client, input: BookingInput): Promise<string> => {
+export const createBooking = async (client: Client, input: BookingRequestInput): Promise<string> => {
   const id = globalThis.crypto.randomUUID();
   const { error } = await client.from("bookings").insert({
     id,

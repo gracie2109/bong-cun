@@ -5,6 +5,7 @@ export default defineNuxtConfig({
 
   // Workspace packages ship TypeScript source.
   build: { transpile: ["@bongcun/core", "@bongcun/supabase"] },
+  nitro: { externals: { inline: ["@bongcun/core"] } },
 
   modules: ["@pinia/nuxt", "@nuxtjs/supabase", "@nuxtjs/i18n", "@vueuse/nuxt"],
 

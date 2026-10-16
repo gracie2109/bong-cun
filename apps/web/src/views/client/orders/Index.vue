@@ -55,7 +55,7 @@ import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
 import { useOrderPage } from "@/composables/shop/useOrderPage";
-import { formatDateTime } from "@/utils/shop/order";
+import { formatDateTime } from "@bongcun/core/shop";
 import CancelOrderDialog from "./components/CancelOrderDialog.vue";
 import OrderInfo from "./components/OrderInfo.vue";
 import OrderLines from "./components/OrderLines.vue";

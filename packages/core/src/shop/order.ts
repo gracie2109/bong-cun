@@ -49,8 +49,6 @@ export const feeWentUp = (order: Pick<ShopOrderDetail, "shippingFee" | "shipping
 export const orderShippingFee = (order: Pick<ShopOrderDetail, "shippingFee" | "shippingFeeQuote">): number =>
   order.shippingFee ?? order.shippingFeeQuote;
 
-export const newClientRef = (): string => crypto.randomUUID();
-
 /** Pickup receiver as typed; empty parts are left for the database to fill from the account. */
 export const pickupReceiver = (name: string, phone: string): { name: string; phone: string } => ({
   name: name.trim(),

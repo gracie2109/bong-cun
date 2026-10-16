@@ -1,4 +1,4 @@
-import { businessDate } from "@/utils/spa/booking";
+import { businessDate } from "@bongcun/core/spa";
 
 export const STATUS_TONE: Record<string, string> = {
   booked: "bg-sky-100 text-sky-700",

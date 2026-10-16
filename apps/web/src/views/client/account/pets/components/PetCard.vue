@@ -37,7 +37,7 @@ import { useI18n } from "vue-i18n";
 import { HeartPulse } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import type { MyPet } from "@bongcun/core/account";
-import { petAge } from "@/utils/account/pet";
+import { petAge } from "@bongcun/core/account";
 import { formatDay } from "../health/format";
 
 const props = defineProps<{ pet: MyPet }>();

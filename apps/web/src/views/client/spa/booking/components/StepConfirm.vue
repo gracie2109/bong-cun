@@ -37,7 +37,7 @@ import { useDurationLabel } from "@/composables/spa/useDurationLabel";
 import { formatPrice } from "@/lib/utils";
 import type { MyPet } from "@bongcun/core/account";
 import type { WebQuote } from "@bongcun/core/spa";
-import { dayLabel, rangeLabel } from "@/utils/spa/booking";
+import { dayLabel, rangeLabel } from "@bongcun/core/spa";
 
 const props = defineProps<{ branchName: string; date: string; startAt: string; quote: WebQuote; pets: MyPet[] }>();
 const note = defineModel<string>("note", { required: true });

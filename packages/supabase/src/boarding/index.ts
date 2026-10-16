@@ -4,7 +4,7 @@ export * from "./billing";
 export * from "./board";
 export * from "./care";
 export * from "./checkInOut";
-export * from "./errors";
+export * from "@bongcun/core/boarding";
 export * from "./kennelTypes";
 export * from "./kennels";
 export * from "./publicCatalog";

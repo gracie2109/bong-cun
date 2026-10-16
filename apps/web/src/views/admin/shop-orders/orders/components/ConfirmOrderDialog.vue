@@ -39,8 +39,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useOrderFeeQuote } from "@/composables/shop/useOrderFeeQuote";
 import type { AdminOrder } from "@bongcun/core/shop";
-import { parseFee } from "@/utils/shop/orderAdmin";
-import { shouldWarnFeeChange } from "@/utils/shop/shipping";
+import { parseFee } from "@bongcun/core/shop";
+import { shouldWarnFeeChange } from "@bongcun/core/shop";
 import { money } from "@/views/admin/pos/format";
 
 const props = defineProps<{ order: AdminOrder; busy: boolean }>();

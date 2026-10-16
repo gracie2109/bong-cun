@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addLine, clampQty, lineKey, MAX_CART_LINES, MAX_LINE_QTY, sanitizeLines } from "@/utils/shop/cart";
+import { addLine, clampQty, lineKey, MAX_CART_LINES, MAX_LINE_QTY, sanitizeLines } from "@bongcun/core/shop";
 
 const line = (productId: string, qty = 1, unitId: string | null = null) => ({ productId, unitId, qty });
 

@@ -51,8 +51,8 @@
 import type { MyPet } from "@bongcun/core/account";
 import type { SpaCatalog } from "@bongcun/core/spa";
 import type { BookingPick } from "@bongcun/core/spa";
-import { hasPick, pickOfCombo, pickOfService, type PicksByPet } from "@/utils/spa/booking";
-import { combosForSpecies, servicesForSpecies } from "@/utils/spa/catalog";
+import { hasPick, pickOfCombo, pickOfService, type PicksByPet } from "@bongcun/core/spa";
+import { combosForSpecies, servicesForSpecies } from "@bongcun/core/spa";
 import OfferRow from "./OfferRow.vue";
 
 const props = defineProps<{ pets: MyPet[]; catalog: SpaCatalog | null; picks: PicksByPet }>();

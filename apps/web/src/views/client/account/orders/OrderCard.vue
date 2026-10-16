@@ -29,7 +29,7 @@
 import { Image as ImageIcon } from "lucide-vue-next";
 import { formatPrice } from "@/lib/utils";
 import type { ShopOrderSummary } from "@bongcun/core/shop";
-import { formatDateTime } from "@/utils/shop/order";
+import { formatDateTime } from "@bongcun/core/shop";
 import OrderStatusBadge from "@/components/common/OrderStatusBadge.vue";
 
 defineProps<{ order: ShopOrderSummary }>();
