@@ -12,7 +12,8 @@
     "deps:check": "depcruise src --config .dependency-cruiser.cjs --output-type err",
     "test": "vitest run",
     "postinstall": "nuxt prepare",
-    "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs"
+    "seed:test-accounts": "node --env-file=.env scripts/seed-test-accounts.mjs",
+    "test:db": "vitest run -c vitest.db.config.ts"
   },
   "dependencies": {
     "@bongcun/core": "*",
@@ -54,8 +55,10 @@
     "@iconify/vue": "^4.1.2",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.14.5",
+    "@types/pg": "^8.23.1",
     "autoprefixer": "^10.4.20",
     "dependency-cruiser": "^16.10.4",
+    "pg": "^8.23.1",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.9",
     "typescript": "~5.9",

@@ -9,7 +9,8 @@ import type {
   ShopOrderStatus,
   ShopOrderSummary,
 } from "@bongcun/core/shop";
-import { unwrap } from "@bongcun/supabase/shared";
+import { placedOrderResultSchema } from "@bongcun/core/shop";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 
@@ -110,7 +111,7 @@ export const toOrderDetail = (row: DetailJson): ShopOrderDetail => ({
 });
 
 export const placeShopOrder = async (client: Client, input: PlaceOrderInput): Promise<PlacedOrder> => {
-  const json = unwrap(
+  const raw = unwrap(
     await client.rpc("place_shop_order", {
       p: {
         client_ref: input.clientRef,
@@ -122,8 +123,9 @@ export const placeShopOrder = async (client: Client, input: PlaceOrderInput): Pr
         note: input.note.trim() || null,
       },
     })
-  ) as { id: string; code: string; total: number | string; replayed: boolean };
-  return { id: json.id, code: json.code, total: Number(json.total), replayed: json.replayed };
+  );
+  const json = parseRpc("place_shop_order", placedOrderResultSchema, raw);
+  return { id: json.id, code: json.code, total: json.total, replayed: json.replayed === true };
 };
 
 export const listMyShopOrders = async (

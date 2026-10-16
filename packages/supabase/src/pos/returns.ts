@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { z } from "zod";
+import { salesReturnResultSchema } from "@bongcun/core/pos";
 import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 
@@ -56,8 +56,6 @@ export type SalesReturnInput = {
   lines: { invoiceLineId: string; qty: number }[];
 };
 
-const returnResultSchema = z.object({ id: z.string(), code: z.string(), refund_amount: z.number() });
-
 /** Takes goods back and refunds them from the caller's open shift; the goods go back to their lots. */
 export const createSalesReturn = async (
   client: Client,
@@ -73,6 +71,6 @@ export const createSalesReturn = async (
       },
     })
   );
-  const parsed = parseRpc("create_sales_return", returnResultSchema, raw);
+  const parsed = parseRpc("create_sales_return", salesReturnResultSchema, raw);
   return { id: parsed.id, code: parsed.code, refundAmount: parsed.refund_amount };
 };
