@@ -11,3 +11,4 @@ export * from "./price";
 export * from "./settingsForm";
 export * from "./shipping";
 export * from "./shippingLimits";
+export * from "./contract";

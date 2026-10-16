@@ -17,6 +17,7 @@
     "db:start": "npx -y supabase@2.121.0 db start",
     "db:test": "npx -y supabase@2.121.0 test db",
     "db:schema": "npx -y supabase@2.121.0 db dump --local --schema public -f supabase/schema.sql",
-    "db:stop": "npx -y supabase@2.121.0 stop"
+    "db:stop": "npx -y supabase@2.121.0 stop",
+    "test:db": "npm run test:db -w @bongcun/web"
   }
 }

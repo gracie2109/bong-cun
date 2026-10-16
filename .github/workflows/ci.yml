@@ -39,6 +39,13 @@ jobs:
         run: supabase db start
       - name: SQL tests (supabase/tests)
         run: supabase test db
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Contract tests (the app's zod schemas against the real RPC results)
+        run: npm run test:db
       - name: supabase/schema.sql matches the migrations
         run: |
           supabase db dump --local --schema public -f supabase/schema.sql

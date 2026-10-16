@@ -699,3 +699,20 @@ Giai đoạn 3, có chủ ý khác kế hoạch gốc:
 
 - Chỉ chuyển thư mục màn hình (views) sang `features/`. Queries và composables theo module vẫn ở `src/queries`, `src/composables`: nhiều module dùng chung nên chuyển bây giờ phải đoán chủ sở hữu; làm dần khi chạm vào module.
 - Chưa có luật "feature chỉ import feature khác qua index.ts" vì các feature chưa có barrel; thêm khi tách queries/composables.
+
+## 25. Hợp đồng RPC và test đối chiếu (2026-10-16, sau khi grace bấm thử giai đoạn 3 và xác nhận ổn)
+
+Làm phần "chưa làm" ở mục 24 cho các luồng tiền. Không đổi migration, không chạy SQL lên database thật.
+
+| Việc | Ở đâu |
+| --- | --- |
+| Schema zod kết quả RPC của POS (`create_invoice`, `create_sales_return`, `cash_shift_summary`) chuyển từ repository về hợp đồng | `packages/core/src/pos/contract.ts`; `packages/supabase/src/pos/*` import lại |
+| Checkout `place_shop_order` giờ được parse bằng `parseRpc` (trước đó chỉ ép kiểu) | `packages/core/src/shop/contract.ts`, `packages/supabase/src/shop/orders.ts` |
+| Test chạy hàm thật trên DB của CI rồi parse bằng đúng các schema trên: POS (bán, trả hàng, tóm tắt ca) và checkout (đặt đơn, gửi lại cùng lần bấm) | `apps/web/tests/db/*.contract.test.ts` |
+| Đối chiếu TS và SQL: trần phí ship `MAX_QUOTE_FEE` (500.000) và ngưỡng nặng `MAX_DELIVERY_G` cộng 100 g bao bì khớp `place_shop_order` | `apps/web/tests/db/shop.contract.test.ts` |
+| Đối chiếu quyền: mọi mã trong `ADMIN_ROUTE_PERMISSIONS` phải có phương thức VIEW trong bảng `permissions` | `apps/web/tests/db/permissions.contract.test.ts` |
+| Chạy trong CI: job `db` cài Node, `npm ci`, `npm run test:db` sau `supabase test db`. Cục bộ: `npm run test:db` với `DATABASE_URL` trỏ tới DB đã áp mọi migration (mặc định cổng 54322 của `supabase start`) | `.github/workflows/ci.yml`, `apps/web/vitest.db.config.ts` |
+
+Cách chạy: mỗi test mở một giao dịch, nạp fixture dùng chung với pgTAP (`supabase/tests/_helpers/setup.psql`), đăng nhập bằng cùng claims như JWT thật, gọi RPC rồi `rollback`, nên không để lại dữ liệu. Đã thử đổi tên một khóa trong schema thì test đỏ.
+
+Vẫn chưa làm: mapper sang kiểu miền cho các feature khác, hợp đồng cho lưu trú và y tế, đưa queries và composables vào `features/`. Làm khi chạm tới từng module.
