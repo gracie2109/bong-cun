@@ -7,7 +7,7 @@ Pet-service management app: a public site (server-rendered) and an admin area
 
 ```sh
 npm install
-cp .env.example .env   # then fill it in, see docs/supabase-setup.md
+cp apps/web/.env.example apps/web/.env   # then fill it in, see docs/supabase-setup.md
 ```
 
 ## Scripts
@@ -17,12 +17,18 @@ npm run dev          # dev server on http://localhost:3004
 npm run build        # production build (.output/)
 npm run preview      # serve the production build
 npm run type-check   # nuxt typecheck (vue-tsc)
+npm test             # Vitest unit tests (apps/web/tests/unit)
+npm run deps:check   # dependency-cruiser layer rules
 npm run db:start     # local database with every migration applied (needs Docker)
 npm run db:test      # SQL tests in supabase/tests
 npm run db:schema    # regenerate supabase/schema.sql after adding a migration
 ```
 
 ## Layout
+
+npm workspaces: the Nuxt app is `apps/web/` (all paths below are relative to it),
+shared packages will live in `packages/`, and `supabase/` stays at the repo root.
+See docs/ke-hoach-monorepo.md.
 
 - `src/pages/` routes. Each page is a thin wrapper that sets `definePageMeta`
   (route name, layout, `titleKey`, access rules) and renders a view from `src/views/`.
