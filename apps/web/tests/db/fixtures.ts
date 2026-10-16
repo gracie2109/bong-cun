@@ -12,8 +12,8 @@ export const createUser = async (tx: Tx, accountType = "customer"): Promise<stri
   const email = `${next()}@test.local`;
   const [row] = await tx.q<{ id: string }>(
     `insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at)
-     values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', $1,
-             jsonb_build_object('full_name', split_part($1, '@', 1)), now(), now()) returning id`,
+     values (gen_random_uuid(), '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', $1::text,
+             jsonb_build_object('full_name', split_part($1::text, '@', 1)), now(), now()) returning id`,
     [email]
   );
   await tx.q("update public.users set role = $2 where id = $1", [row!.id, accountType]);
