@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "../shared";
-import { num } from "./helpers";
+import { z } from "zod";
+import { filterSafe, pageRange, parseRpc, unwrap, type Page, type PageParams } from "../shared";
 import {
   PAYMENT_METHODS,
   type InvoiceChannel,
@@ -197,6 +197,14 @@ const toCustomerPayload = (customer: SaleCustomer) => {
   return { full_name: customer.fullName, phone: customer.phone, email: customer.email ?? null };
 };
 
+const saleResultSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  total: z.number(),
+  change_amount: z.number(),
+  replayed: z.boolean().nullish(),
+});
+
 export const createInvoice = async (client: Client, input: SaleInput): Promise<SaleResult> => {
   const raw = unwrap(
     await client.rpc("create_invoice", {
@@ -221,13 +229,14 @@ export const createInvoice = async (client: Client, input: SaleInput): Promise<S
         })),
       },
     })
-  ) as Record<string, unknown>;
+  );
+  const sale = parseRpc("create_invoice", saleResultSchema, raw);
   return {
-    id: String(raw.id),
-    code: String(raw.code),
-    total: num(raw.total),
-    changeAmount: num(raw.change_amount),
-    replayed: raw.replayed === true,
+    id: sale.id,
+    code: sale.code,
+    total: sale.total,
+    changeAmount: sale.change_amount,
+    replayed: sale.replayed === true,
   };
 };
 

@@ -13,7 +13,7 @@ Các mục 4.1, 4.2, 4.8 và 5 đã được xử lý theo [ke-hoach-sua-kien-tr
 - Không còn file nào trong `src/` trên 300 dòng (PR #130).
 - Mục 4.3: rà lại cho thấy các chỗ gác bằng `is_staff()` là chủ ý (xem bên dưới); test quyền đã có cho POS.
 
-Còn để sau: 4.4 (kiểu `jsonb`), 4.6 (`pg_cron`), 4.7 (bảng tổng hợp báo cáo), (test SQL cho lưu trú và y tế đã có ở PR #132, `radix-vue` đã chuyển sang `reka-ui` ở PR sau đó).
+Còn để sau: 4.6 (`pg_cron`), 4.7 (bảng tổng hợp báo cáo), kiểu `jsonb` mới làm cho luồng tiền (xem [ke-hoach-viec-con-lai-kien-truc.md](ke-hoach-viec-con-lai-kien-truc.md)), (test SQL cho lưu trú và y tế đã có ở PR #132, `radix-vue` đã chuyển sang `reka-ui` ở PR sau đó).
 
 ## 1. Trả lời ngắn
 
