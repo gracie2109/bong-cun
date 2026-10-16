@@ -60,6 +60,7 @@ const toRow = (raw: unknown): WardRow => {
     visitCode: str(row.visit_code),
     petId: str(row.pet_id),
     petName: str(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     customerName: str(row.customer_name),
     customerPhone: str(row.customer_phone),
     kennelCode: str(row.kennel_code),

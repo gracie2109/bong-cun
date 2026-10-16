@@ -22,6 +22,7 @@ export type MedicalVisit = {
   createdAt: string;
   petId: string;
   petName: string;
+  petPhotoUrl: string | null;
   speciesName: string | null;
   customerId: string;
   customerName: string;
@@ -220,6 +221,7 @@ export type BillableVisit = {
   visitId: string;
   code: string;
   petName: string;
+  petPhotoUrl: string | null;
   total: number;
   items: BillableVisitItem[];
 };

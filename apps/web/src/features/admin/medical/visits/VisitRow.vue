@@ -8,7 +8,10 @@
     </td>
     <td class="whitespace-nowrap px-4 py-3">{{ dateTime(visit.checkedInAt ?? visit.scheduledAt ?? visit.createdAt) }}</td>
     <td class="px-4 py-3">
-      <p class="font-medium">{{ visit.petName }}</p>
+      <p class="flex items-center gap-2 font-medium">
+        <PetAvatar :name="visit.petName" :photo-url="visit.petPhotoUrl" class="size-8 text-xs" />
+        {{ visit.petName }}
+      </p>
       <p class="text-xs text-muted-foreground">{{ visit.speciesName }}</p>
     </td>
     <td class="px-4 py-3">
@@ -30,6 +33,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import type { MedicalVisit } from "@bongcun/core/medical";
 import { dateTime, money, VISIT_TONE } from "../format";

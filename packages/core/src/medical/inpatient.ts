@@ -32,6 +32,7 @@ export type WardRow = {
   visitCode: string;
   petId: string;
   petName: string;
+  petPhotoUrl: string | null;
   customerName: string;
   customerPhone: string;
   kennelCode: string;

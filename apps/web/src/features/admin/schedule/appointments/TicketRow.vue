@@ -1,7 +1,8 @@
 <template>
   <li class="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5 text-sm">
     <div :class="ticket.status === 'cancelled' && 'text-muted-foreground line-through'">
-      <p>
+      <p class="flex items-center gap-2">
+        <PetAvatar v-if="ticket.petName" :name="ticket.petName" :photo-url="ticket.petPhotoUrl" class="size-6 text-[10px]" />
         <span class="font-medium">{{ ticket.petName ?? "—" }}</span>
         · {{ ticket.name }}
       </p>
@@ -45,6 +46,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Check, Play, Undo2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import type { AppointmentTicket, TicketStatus } from "@bongcun/supabase/spa";

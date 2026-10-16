@@ -26,6 +26,7 @@ const toStayPet = (value: unknown): StayPet => {
     lineNo: Number(row.line_no ?? 0),
     petId: str(row.pet_id),
     petName: str(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     status: row.status === "cancelled" ? "cancelled" : "active",
     kennelTypeId: str(row.kennel_type_id),
     kennelTypeName: str(row.kennel_type_name),

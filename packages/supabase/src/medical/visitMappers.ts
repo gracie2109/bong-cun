@@ -25,6 +25,7 @@ export const toMedicalVisit = (value: unknown): MedicalVisit => {
     createdAt: str(row.created_at),
     petId: str(row.pet_id),
     petName: str(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     speciesName: strOrNull(row.species_name),
     customerId: str(row.customer_id),
     customerName: str(row.customer_name),

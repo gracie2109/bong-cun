@@ -12,6 +12,7 @@ export type BoardPet = {
   stayPetId: string;
   petId: string;
   petName: string;
+  petPhotoUrl: string | null;
   customerName: string;
   plannedInAt: string;
   plannedOutAt: string;

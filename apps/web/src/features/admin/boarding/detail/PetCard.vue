@@ -1,7 +1,8 @@
 <template>
   <article class="space-y-2 rounded-xl border bg-white p-4" :class="pet.status === 'cancelled' && 'opacity-60'">
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <h3 class="font-semibold">
+      <h3 class="flex items-center gap-2 font-semibold">
+        <PetAvatar :name="pet.petName" :photo-url="pet.petPhotoUrl" class="size-9 text-xs" />
         {{ pet.petName }}
         <span v-if="pet.hasNotes" class="ml-1 text-amber-600" :title="$t('boarding.board.hasNotes')">⚠ {{ $t("boarding.detail.hasNotes") }}</span>
       </h3>
@@ -51,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { ArrowRightLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import type { StayPet } from "@bongcun/core/boarding";

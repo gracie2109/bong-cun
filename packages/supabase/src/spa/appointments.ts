@@ -17,6 +17,7 @@ export type AppointmentTicket = {
   status: TicketStatus;
   petId: string | null;
   petName: string | null;
+  petPhotoUrl: string | null;
   staffId: string | null;
   staffName: string | null;
   resourceId: string | null;
@@ -61,6 +62,7 @@ const toTicket = (raw: unknown): AppointmentTicket => {
     status: str(row.status) as TicketStatus,
     petId: strOrNull(row.pet_id),
     petName: strOrNull(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     staffId: strOrNull(row.staff_id),
     staffName: strOrNull(row.staff_name),
     resourceId: strOrNull(row.resource_id),
