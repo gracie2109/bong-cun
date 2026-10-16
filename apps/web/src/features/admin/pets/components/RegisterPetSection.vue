@@ -3,6 +3,7 @@
     <h3 class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
       {{ $t("petCare.pets.registerSheet.petSection") }}
     </h3>
+    <PetPhotoField v-model="photo" :name="pet.name" :species-icon="speciesIcon" />
     <PetFields
       v-model="pet"
       :species="species"
@@ -31,13 +32,15 @@
 <script lang="ts" setup>
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { computed } from "vue";
 import type { Species } from "@bongcun/supabase/pets";
 import type { PetFormState } from "../pet-form";
+import PetPhotoField from "../photo/PetPhotoField.vue";
 import PetFields from "./PetFields.vue";
 
 const NO_ERRORS = { name: false, speciesId: false };
 
-defineProps<{
+const props = defineProps<{
   species: Species[];
   errors: { name: boolean; speciesId: boolean };
   weightInvalid: boolean;
@@ -50,4 +53,7 @@ defineProps<{
 
 const pet = defineModel<PetFormState>("pet", { required: true });
 const weight = defineModel<string>("weight", { required: true });
+const photo = defineModel<File | null>("photo", { required: true });
+
+const speciesIcon = computed(() => props.species.find((item) => item.id === pet.value.speciesId)?.icon ?? null);
 </script>

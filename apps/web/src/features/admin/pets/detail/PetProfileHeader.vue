@@ -1,11 +1,12 @@
 <template>
   <div class="flex flex-wrap items-center gap-5 rounded-xl border bg-white p-5">
-    <Avatar class="size-24">
-      <AvatarImage v-if="pet.photoUrl" :src="pet.photoUrl" />
-      <AvatarFallback class="bg-primary/15 text-2xl font-semibold text-primary">
-        {{ initials(pet.name) }}
-      </AvatarFallback>
-    </Avatar>
+    <PetPhotoButton
+      :pet-id="pet.id"
+      :name="pet.name"
+      :photo-url="pet.photoUrl"
+      :species-icon="pet.speciesIcon"
+      :can-update="canUpdate"
+    />
 
     <div class="min-w-0 flex-1 space-y-2">
       <div class="flex flex-wrap items-center gap-2">
@@ -75,7 +76,6 @@
 import { useI18n } from "vue-i18n";
 import { Icon } from "@iconify/vue";
 import { Banknote, EllipsisVertical, Pencil } from "lucide-vue-next";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -84,7 +84,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { PetProfile, PetStatus } from "@bongcun/supabase/pets";
-import { formatAge, formatDate, initials } from "../format";
+import { formatAge, formatDate } from "../format";
+import PetPhotoButton from "../photo/PetPhotoButton.vue";
 
 defineProps<{
   pet: PetProfile;

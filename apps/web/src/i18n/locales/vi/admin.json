@@ -66,6 +66,16 @@
       "ageYearsMonths": "{y} tuổi {m} tháng",
       "ageMonths": "{m} tháng",
       "ageUnknown": "Chưa rõ",
+      "photo": {
+        "add": "Thêm ảnh",
+        "change": "Đổi ảnh",
+        "remove": "Xoá ảnh",
+        "uploading": "Đang tải ảnh",
+        "hint": "Không bắt buộc. Ảnh được tự thu nhỏ, tối đa 2 MB.",
+        "tooBig": "Ảnh tối đa 2 MB",
+        "badType": "Định dạng ảnh không hỗ trợ",
+        "createdWithoutPhoto": "Đã tạo thú cưng nhưng chưa lưu được ảnh"
+      },
       "registerSheet": {
         "title": "Đăng ký thú cưng",
         "subtitle": "Nhập nhanh tại quầy: chủ nuôi trước, thú cưng sau",
