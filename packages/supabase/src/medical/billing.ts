@@ -16,6 +16,7 @@ export const listBillableMedical = async (client: Client, branchId: string, cust
       visitId: str(row.visit_id),
       code: str(row.code),
       petName: str(row.pet_name),
+      petPhotoUrl: strOrNull(row.pet_photo_url),
       total: Number(row.total ?? 0),
       items: items.map((itemRaw) => {
         const item = asRecord(itemRaw);

@@ -3,7 +3,8 @@
     <p class="text-xs font-semibold text-primary">{{ $t("pos.medicalVisits.title", { count: visits.length }) }}</p>
     <ul class="space-y-1">
       <li v-for="visit in visits" :key="visit.visitId" class="flex items-center justify-between gap-2 text-xs">
-        <span class="min-w-0 truncate">
+        <span class="flex min-w-0 items-center gap-1.5 truncate">
+          <PetAvatar :name="visit.petName" :photo-url="visit.petPhotoUrl" class="size-5 shrink-0 text-[9px]" />
           <span class="font-medium">{{ visit.code }}</span>
           <span class="text-muted-foreground">· {{ visit.petName }} · {{ $t("pos.medicalVisits.lines", { count: visit.items.length }) }}</span>
         </span>
@@ -19,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { useBillableMedical } from "@/queries/medicalBilling";

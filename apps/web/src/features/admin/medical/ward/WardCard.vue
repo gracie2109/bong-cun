@@ -3,6 +3,7 @@
     <div class="flex flex-wrap items-start justify-between gap-2">
       <div>
         <p class="flex flex-wrap items-center gap-2 font-semibold">
+          <PetAvatar :name="row.petName" :photo-url="row.petPhotoUrl" class="size-9 text-xs" />
           {{ row.petName }}
           <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold" :class="row.purpose === 'isolation' ? 'bg-red-100 text-red-800' : 'bg-sky-100 text-sky-800'">
             {{ $t(`medical.ward.purpose.${row.purpose}`) }} · {{ row.kennelCode }}
@@ -67,6 +68,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Activity, Ban, Check, LogOut, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import type { WardDose, WardRow } from "@bongcun/core/medical";

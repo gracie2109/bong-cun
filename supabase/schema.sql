@@ -632,6 +632,7 @@ begin
       'item_type', i.item_type,
       'pet_id', i.pet_id,
       'pet_name', pt.name,
+      'pet_photo_url', pt.photo_url,
       'unit_price', i.unit_price
     ) order by a.start_at, i.line_no)
     from public.appointment_items i
@@ -681,6 +682,12 @@ begin
                  from public.boarding_stay_pets sp
                  join public.pets p on p.id = sp.pet_id
                  where sp.id = bc.stay_pet_id
+               ),
+               'pet_photo_url', (
+                 select p.photo_url
+                 from public.boarding_stay_pets sp
+                 join public.pets p on p.id = sp.pet_id
+                 where sp.id = bc.stay_pet_id
                )
              ) order by bc.created_at, bc.id) as charges
       from public.boarding_charges bc
@@ -712,6 +719,7 @@ begin
       'visit_id', v.id,
       'code', v.code,
       'pet_name', v.pet_name,
+      'pet_photo_url', (select p.photo_url from public.pets p where p.id = v.pet_id),
       'total', c.total,
       'items', c.items
     ) order by v.signed_at, v.code)
@@ -1095,7 +1103,8 @@ begin
              select 1 from public.pets pt
              where pt.id = sp.pet_id
                and (nullif(btrim(pt.behavior_notes), '') is not null or nullif(btrim(pt.allergies), '') is not null)
-           ) as has_notes
+           ) as has_notes,
+           (select pt.photo_url from public.pets pt where pt.id = sp.pet_id) as pet_photo_url
     from public.boarding_stay_pets sp
     join public.boarding_stays s on s.id = sp.stay_id
     left join public.medical_visits mv on mv.id = s.visit_id
@@ -1105,14 +1114,14 @@ begin
     select k.id, k.code, k.name, k.kennel_type_id, t.name as type_name, t.purpose, k.status, k.sort_order, t.sort_order as type_sort,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
-             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
+             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name, 'pet_photo_url', p.pet_photo_url,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
              'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', p.overdue,
              'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
            ) order by p.pet_name) filter (where p.in_kennel), '[]'::jsonb) as in_pets,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
-             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
+             'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name, 'pet_photo_url', p.pet_photo_url,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
              'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', false,
              'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
@@ -1505,6 +1514,7 @@ CREATE OR REPLACE FUNCTION "public"."boarding_stay_json"("p_stay" "public"."boar
         'line_no', sp.line_no,
         'pet_id', sp.pet_id,
         'pet_name', sp.pet_name,
+        'pet_photo_url', (select pt.photo_url from public.pets pt where pt.id = sp.pet_id),
         'status', sp.status,
         'kennel_type_id', sp.kennel_type_id,
         'kennel_type_name', t.name,
@@ -5066,6 +5076,7 @@ begin
       'visit_code', v.code,
       'pet_id', sp.pet_id,
       'pet_name', sp.pet_name,
+      'pet_photo_url', pt.photo_url,
       'customer_name', s.customer_name,
       'customer_phone', s.customer_phone,
       'kennel_code', k.code,
@@ -5377,6 +5388,7 @@ begin
             'status', i.status,
             'pet_id', i.pet_id,
             'pet_name', pt.name,
+            'pet_photo_url', pt.photo_url,
             'staff_id', i.staff_id,
             'staff_name', case when i.staff_id is null then null else public.staff_display_name(i.staff_id) end,
             'resource_id', i.resource_id,
@@ -6559,6 +6571,7 @@ CREATE OR REPLACE FUNCTION "public"."medical_visit_json"("v" "public"."medical_v
     'created_at', v.created_at,
     'pet_id', v.pet_id,
     'pet_name', v.pet_name,
+    'pet_photo_url', (select p.photo_url from public.pets p where p.id = v.pet_id),
     'species_name', (select s.name from public.pets p join public.species s on s.id = p.species_id where p.id = v.pet_id),
     'customer_id', v.customer_id,
     'customer_name', v.customer_name,
@@ -12279,6 +12292,7 @@ begin
         'staff_id', i.staff_id,
         'resource_id', i.resource_id,
         'pet_name', pt.name,
+        'pet_photo_url', pt.photo_url,
         'customer_name', a.customer_name
       ) order by i.start_at, i.line_no), '[]'::jsonb)
       from public.appointment_items i

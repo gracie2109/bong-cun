@@ -14,6 +14,7 @@ export type StayPet = {
   lineNo: number;
   petId: string;
   petName: string;
+  petPhotoUrl: string | null;
   status: "active" | "cancelled";
   kennelTypeId: string;
   kennelTypeName: string;

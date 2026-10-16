@@ -16,6 +16,7 @@ const toBoardPet = (value: unknown): BoardPet => {
     stayPetId: str(row.stay_pet_id),
     petId: str(row.pet_id),
     petName: str(row.pet_name),
+    petPhotoUrl: strOrNull(row.pet_photo_url),
     customerName: str(row.customer_name),
     plannedInAt: str(row.planned_in_at),
     plannedOutAt: str(row.planned_out_at),

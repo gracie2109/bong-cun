@@ -10,7 +10,8 @@
           {{ $t("medical.priority.urgent") }}
         </span>
       </div>
-      <p class="text-sm">
+      <p class="flex items-center gap-2 text-sm">
+        <PetAvatar :name="visit.petName" :photo-url="visit.petPhotoUrl" class="size-9 text-xs" />
         <span class="font-medium">{{ visit.petName }}</span>
         <span class="text-muted-foreground"> · {{ visit.customerName }} · {{ visit.customerPhone }}</span>
       </p>
@@ -43,6 +44,7 @@
 </template>
 
 <script lang="ts" setup>
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import type { MedicalVisitDetail, VisitStatus } from "@bongcun/core/medical";
 import { dateTime, VISIT_TONE } from "../format";
