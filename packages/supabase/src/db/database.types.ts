@@ -2656,6 +2656,10 @@ export type Database = {
         Args: { p_branch: string; p_min: number | null; p_product: string }
         Returns: undefined
       }
+      set_pet_photo: {
+        Args: { p_path: string | null; p_pet: string; p_url: string | null }
+        Returns: string | null
+      }
       stock_alert_counts: { Args: { p_branch: string; p_expiry_days?: number }; Returns: Json }
       stock_summary: {
         Args: {
