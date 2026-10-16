@@ -4,17 +4,14 @@
       <h3 class="font-semibold">{{ $t("pageFields.customers.form.groupsTitle") }}</h3>
       <p class="text-sm text-muted-foreground">{{ $t("pageFields.customers.form.groupsDesc") }}</p>
     </div>
-    <Multiselect
-      v-model="groups"
-      :options="groupOptions"
-      :multiple="true"
-      :close-on-select="false"
-      :clear-on-select="false"
-      :preserve-search="true"
+    <CustomCombobox
+      :options="options"
+      :value="selectedIds"
       :placeholder="$t('pageFields.customers.form.groupsPlaceholder')"
-      label="name"
-      track-by="name"
-      @update:model-value="onChange"
+      is-multi
+      search-label
+      show-clear
+      @select-option="onChange"
     />
     <p
       v-if="!groupOptions.length"
@@ -26,17 +23,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed } from "vue";
 import type { FormContext } from "vee-validate";
-import Multiselect from "vue-multiselect";
 import type { IUser } from "@bongcun/core/users";
+import { CustomCombobox } from "@/components/common";
+import { pickGroups, toGroupOptions } from "./customerGroupOptions";
 
 const props = defineProps<{ form: FormContext<IUser>; groupOptions: any[] }>();
 
-const groups = ref([]);
+const options = computed(() => toGroupOptions(props.groupOptions));
+const selectedIds = computed<string[]>(() => props.form.values.groupIds ?? []);
 
-const onChange = (value: any[] | null) => {
-  props.form.setFieldValue("groupIds", value?.map((i) => i.id) ?? null);
-  props.form.setFieldValue("groupProfile", value ?? []);
+const onChange = (ids: string[]) => {
+  props.form.setFieldValue("groupIds", ids.length ? ids : null);
+  props.form.setFieldValue("groupProfile", pickGroups(props.groupOptions, ids));
 };
 </script>

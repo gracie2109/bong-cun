@@ -21,7 +21,6 @@ export default defineNuxtConfig({
   css: [
     "~/assets/index.css",
     "~/assets/shop.css",
-    "vue-multiselect/dist/vue-multiselect.min.css",
   ],
 
   postcss: {
