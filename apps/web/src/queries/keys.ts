@@ -16,10 +16,10 @@ import type {
   TopItemFilter,
 } from "@/repositories/reports";
 import type { AppointmentFilter } from "@/repositories/spa";
-import type { KennelFilter, KennelTypeFilter, StayFilter } from "@/types/boarding";
-import type { DiagnosisTermFilter, VaccineTypeFilter } from "@/types/medical";
-import type { VisitFilter } from "@/types/medicalVisit";
-import type { ReminderFilter } from "@/types/vaccination";
+import type { KennelFilter, KennelTypeFilter, StayFilter } from "@bongcun/core/boarding";
+import type { DiagnosisTermFilter, VaccineTypeFilter } from "@bongcun/core/medical";
+import type { VisitFilter } from "@bongcun/core/medical";
+import type { ReminderFilter } from "@bongcun/core/medical";
 import type { UserListFilter } from "@/repositories/users";
 
 export const speciesKeys = {

@@ -10,7 +10,7 @@ import type {
   ReminderFilter,
   VaccineBookEntry,
   VaccineLot,
-} from "@/types/vaccination";
+} from "@bongcun/core/medical";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

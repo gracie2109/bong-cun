@@ -19,7 +19,7 @@ import { computed, ref } from "vue";
 import { BedDouble } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useInpatientWard } from "@/queries/inpatient";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { todayKey } from "../../../boarding/format";
 import AdmitDialog from "./AdmitDialog.vue";
 

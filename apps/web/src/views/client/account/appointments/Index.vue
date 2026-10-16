@@ -72,7 +72,7 @@ import { DialogConfirm } from "@/components/common";
 import TablePager from "@/components/common/TablePager.vue";
 import { Button } from "@/components/ui/button";
 import { useMyAppointments } from "@/composables/account/useMyAppointments";
-import { APPOINTMENT_SCOPES } from "@/types/account";
+import { APPOINTMENT_SCOPES } from "@bongcun/core/account";
 import AppointmentCard from "./components/AppointmentCard.vue";
 
 const page = useMyAppointments();

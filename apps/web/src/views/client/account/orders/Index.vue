@@ -38,7 +38,7 @@
 import TablePager from "@/components/common/TablePager.vue";
 import { Button } from "@/components/ui/button";
 import { useMyOrders } from "@/composables/shop/useMyOrders";
-import type { ShopOrderStatus } from "@/types/shopOrder";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
 import OrderCard from "./OrderCard.vue";
 
 const FILTERS: (ShopOrderStatus | null)[] = [null, "pending", "confirmed", "packed", "shipping", "completed", "cancelled"];

@@ -1,5 +1,5 @@
 // Row shapes the admin data import/export screens exchange with the import_* / export_products functions.
-import type { ImportRowResult } from "@/lib/data-io/types";
+import type { ImportRowResult } from "./types";
 
 /** A conversion unit row as the import function reads it. */
 export type ImportUnit = {

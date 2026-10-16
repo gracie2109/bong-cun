@@ -41,7 +41,7 @@ import EmptyState from "@/components/shop/EmptyState.vue";
 import ProductCard from "@/components/shop/ProductCard.vue";
 import ProductCardSkeleton from "@/components/shop/ProductCardSkeleton.vue";
 import { Button } from "@/components/ui/button";
-import type { ShopGroup } from "@/types/catalog";
+import type { ShopGroup } from "@bongcun/core/shop";
 import { revealIndex } from "@/utils/shop/motion";
 import CatalogLoadMore from "./CatalogLoadMore.vue";
 

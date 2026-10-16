@@ -1,7 +1,7 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { useCustomerPets } from "@/queries/pos";
 import { useCheckInVisit, useMedicalVets, useScheduleVisit } from "@/queries/medicalVisits";
-import type { MedicalVisit } from "@/types/medicalVisit";
+import type { MedicalVisit } from "@bongcun/core/medical";
 import type { Buyer } from "@/views/admin/pos/components/CustomerPanel.vue";
 import {
   draftFromVisit,

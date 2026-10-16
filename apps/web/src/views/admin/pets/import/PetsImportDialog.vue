@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import ImportDialog from "@/components/common/data-io/ImportDialog.vue";
-import type { ImportReport } from "@/lib/data-io/types";
+import type { ImportReport } from "@bongcun/core/data-io";
 import { downloadPetsTemplate } from "./downloadPetsTemplate";
 import { PETS_PREVIEW_COLUMNS } from "./petsPreviewColumns";
 import { usePetsImport } from "./usePetsImport";

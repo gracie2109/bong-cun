@@ -2,7 +2,7 @@ import { computed, ref, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useBoardingBoard as useBoardQuery, useSetKennelStatus } from "@/queries/boarding";
 import { useAuthStore } from "@/stores";
-import type { BoardKennel } from "@/types/boarding";
+import type { BoardKennel } from "@bongcun/core/boarding";
 import { todayKey } from "../format";
 import type { StayPrefill } from "../stay-dialog/stayDraft";
 

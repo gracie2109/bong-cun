@@ -1,7 +1,7 @@
 // Care log and extra charges of a stay that is in the hotel.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { CareKind, CareLog, CareLogInput, ChargeKind, MealEaten, StayCharge } from "@/types/boarding";
+import type { CareKind, CareLog, CareLogInput, ChargeKind, MealEaten, StayCharge } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

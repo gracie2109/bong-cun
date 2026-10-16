@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import { dateTime, money, STAY_TONE } from "../format";
 
 defineProps<{ stay: BoardingStay; canEdit: boolean; canNoShow: boolean }>();

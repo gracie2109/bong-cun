@@ -69,7 +69,7 @@
 <script lang="ts" setup>
 import { Activity, Ban, Check, LogOut, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { WardDose, WardRow } from "@/types/inpatient";
+import type { WardDose, WardRow } from "@bongcun/core/medical";
 import { timeOf } from "@/views/admin/schedule/format";
 import { dateTime } from "../format";
 

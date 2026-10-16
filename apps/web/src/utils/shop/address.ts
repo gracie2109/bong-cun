@@ -1,6 +1,6 @@
 // Pure helpers for delivery addresses: no Vue, Pinia or network.
-import type { Address, AddressInput, GhnLocation } from "@/types/shop";
-import { emptyGhnLocation } from "@/types/shop";
+import type { Address, AddressInput, GhnLocation } from "@bongcun/core/shop";
+import { emptyGhnLocation } from "@bongcun/core/shop";
 
 /** What the address form edits: text fields plus the GHN place. */
 export type AddressForm = {

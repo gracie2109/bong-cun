@@ -52,7 +52,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useSaveDiagnosisTerm } from "@/queries/medical";
 import { useSpeciesOptions } from "@/queries/species";
-import type { DiagnosisTerm } from "@/types/medical";
+import type { DiagnosisTerm } from "@bongcun/core/medical";
 import { diagnosisTermInputFromDraft, draftFromDiagnosisTerm, emptyDiagnosisTermDraft } from "./diagnosisTermDraft";
 
 const props = defineProps<{ open: boolean; term: DiagnosisTerm | null }>();

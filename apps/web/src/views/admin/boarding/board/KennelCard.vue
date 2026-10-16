@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
-import type { BoardKennel } from "@/types/boarding";
+import type { BoardKennel } from "@bongcun/core/boarding";
 import { dateTime, KENNEL_STATE_DOT, KENNEL_STATE_TONE, timeOf } from "../format";
 
 const props = defineProps<{ kennel: BoardKennel; canCreate: boolean; canUpdate: boolean }>();

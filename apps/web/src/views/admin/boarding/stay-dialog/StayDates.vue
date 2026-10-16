@@ -25,7 +25,7 @@
 import { computed } from "vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { BoardingRules } from "@/types/boarding";
+import type { BoardingRules } from "@bongcun/core/boarding";
 import { nightsBetween, todayKey } from "../format";
 import type { StayDraft } from "./stayDraft";
 

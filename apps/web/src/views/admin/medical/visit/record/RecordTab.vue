@@ -42,7 +42,7 @@
 import { toRef } from "vue";
 import { FileSignature, Loader2, Lock, Save } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { dateTime } from "../../format";
 import AddendaList from "./AddendaList.vue";
 import DiagnosisPicker from "./DiagnosisPicker.vue";

@@ -50,7 +50,7 @@ import { computed, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Label } from "@/components/ui/label";
-import type { MedicalVisit } from "@/types/medicalVisit";
+import type { MedicalVisit } from "@bongcun/core/medical";
 import CustomerPanel from "@/views/admin/pos/components/CustomerPanel.vue";
 import CheckInFields from "./CheckInFields.vue";
 import type { CheckInMode } from "./checkInDraft";

@@ -78,7 +78,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
 import type { PetService } from "@/repositories/petServices";
-import type { ServiceCategory } from "@/types/medical";
+import type { ServiceCategory } from "@bongcun/core/medical";
 
 defineProps<{ service: PetService; canUpdate: boolean }>();
 

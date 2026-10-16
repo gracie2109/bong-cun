@@ -22,7 +22,7 @@ import {
   updateMedicalItem,
 } from "@/repositories/medical";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
-import type { CheckInInput, ItemDirections, ItemInput, RecordInput, ScheduleInput, VisitFilter } from "@/types/medicalVisit";
+import type { CheckInInput, ItemDirections, ItemInput, RecordInput, ScheduleInput, VisitFilter } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";

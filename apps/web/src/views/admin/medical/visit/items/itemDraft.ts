@@ -1,4 +1,4 @@
-import type { ItemDirections, ItemInput } from "@/types/medicalVisit";
+import type { ItemDirections, ItemInput } from "@bongcun/core/medical";
 
 /** What the vet fills in to add a medicine (from stock or bought elsewhere). */
 export type DrugDraft = ItemDirections & {

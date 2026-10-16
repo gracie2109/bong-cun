@@ -1,4 +1,4 @@
-import type { ServiceCategory } from "@/types/medical";
+import type { ServiceCategory } from "@bongcun/core/medical";
 
 export type ServicePricing = "by_weight" | "all";
 

@@ -10,7 +10,7 @@ import {
   type BookingKind,
   type SpaSlot,
   type WebQuote,
-} from "@/types/spaWeb";
+} from "@bongcun/core/spa";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
-import type { VisitFilter, VisitStatus } from "@/types/medicalVisit";
+import type { VisitFilter, VisitStatus } from "@bongcun/core/medical";
 
 const PAGE_SIZE = 20;
 

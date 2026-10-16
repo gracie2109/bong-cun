@@ -65,7 +65,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { CustomerPet } from "@/repositories/pos";
-import type { Vet } from "@/types/medicalVisit";
+import type { Vet } from "@bongcun/core/medical";
 import { NO_VET, type CheckInDraft } from "./checkInDraft";
 
 defineProps<{ pets: CustomerPet[]; vets: Vet[]; petLocked: boolean; petName?: string }>();

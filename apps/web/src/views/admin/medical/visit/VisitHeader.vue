@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { MedicalVisitDetail, VisitStatus } from "@/types/medicalVisit";
+import type { MedicalVisitDetail, VisitStatus } from "@bongcun/core/medical";
 import { dateTime, VISIT_TONE } from "../format";
 
 const CANCELLABLE: VisitStatus[] = ["scheduled", "waiting", "in_progress"];

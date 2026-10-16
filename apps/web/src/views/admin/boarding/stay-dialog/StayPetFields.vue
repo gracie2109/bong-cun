@@ -82,7 +82,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useKennels } from "@/queries/boarding";
 import type { CustomerPet } from "@/repositories/pos";
-import type { KennelType, TypeAvailability } from "@/types/boarding";
+import type { KennelType, TypeAvailability } from "@bongcun/core/boarding";
 import { AUTO, NONE, typesForPet, type PetDraft } from "./stayDraft";
 
 const FIRST_PAGE = { pageIndex: 1, pageSize: 100 };

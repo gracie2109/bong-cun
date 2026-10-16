@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { useBoardingRules, useSaveBoardingRules } from "@/queries/boarding";
-import type { BoardingRules } from "@/types/boarding";
+import type { BoardingRules } from "@bongcun/core/boarding";
 
 /** The nights a same-day stay can be charged as. */
 export const DAY_STAY_OPTIONS = [0.5, 1] as const;

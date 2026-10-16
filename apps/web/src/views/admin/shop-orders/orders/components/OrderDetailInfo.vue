@@ -63,7 +63,7 @@ import { computed } from "vue";
 import { Copy } from "lucide-vue-next";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
-import type { AdminOrder } from "@/types/shopOrderAdmin";
+import type { AdminOrder } from "@bongcun/core/shop";
 import { formatAddress } from "@/utils/shop/address";
 import { copyableAddress, trackingUrl } from "@/utils/shop/orderAdmin";
 import { money } from "@/views/admin/pos/format";

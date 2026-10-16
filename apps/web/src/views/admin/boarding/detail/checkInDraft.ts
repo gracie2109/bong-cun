@@ -1,4 +1,4 @@
-import type { CheckInPetInput, KennelType, StayPet } from "@/types/boarding";
+import type { CheckInPetInput, KennelType, StayPet } from "@bongcun/core/boarding";
 
 /** One pet of the check-in form; the weight is typed text until it is sent. */
 export type CheckInPetDraft = {

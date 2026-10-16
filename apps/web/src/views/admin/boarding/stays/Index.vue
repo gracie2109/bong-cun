@@ -78,7 +78,7 @@ import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
 import { useBoardingStays, useMarkBoardingNoShow } from "@/queries/boarding";
 import { useAuthStore } from "@/stores";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import BoardingNav from "../BoardingNav.vue";

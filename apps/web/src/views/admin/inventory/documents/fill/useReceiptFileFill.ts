@@ -1,6 +1,6 @@
 import { useTableImport } from "@/composables/useTableImport";
 import { supabaseClient } from "@/lib/supabase";
-import { emptyReport } from "@/lib/data-io/types";
+import { emptyReport } from "@bongcun/core/data-io";
 import { findProductsBySku, type SkuProduct } from "@/repositories/dataImports";
 import { notifyFailure } from "@/queries/notify";
 import type { EditLine } from "../documentLines";

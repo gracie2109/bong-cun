@@ -19,7 +19,7 @@
 import AppDialog from "@/components/common/AppDialog.vue";
 import AddressCard from "@/components/shop/AddressCard.vue";
 import { Button } from "@/components/ui/button";
-import type { Address } from "@/types/shop";
+import type { Address } from "@bongcun/core/shop";
 
 const open = defineModel<boolean>("open", { required: true });
 defineProps<{ addresses: Address[]; selectedId: string | null }>();

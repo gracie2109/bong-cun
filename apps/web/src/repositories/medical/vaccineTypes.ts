@@ -1,7 +1,7 @@
 // The vaccine / deworming catalog shared by every branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { VaccineKind, VaccineType, VaccineTypeFilter, VaccineTypeInput } from "@/types/medical";
+import type { VaccineKind, VaccineType, VaccineTypeFilter, VaccineTypeInput } from "@bongcun/core/medical";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 

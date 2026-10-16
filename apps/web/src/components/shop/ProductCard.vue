@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from "vue";
 import { Plus } from "lucide-vue-next";
-import type { ShopGroup } from "@/types/catalog";
+import type { ShopGroup } from "@bongcun/core/shop";
 import { groupCover, groupOptionHint, groupHasPriceRange } from "@/utils/shop/catalog";
 import PawMark from "./PawMark.vue";
 import PriceDisplay from "./PriceDisplay.vue";

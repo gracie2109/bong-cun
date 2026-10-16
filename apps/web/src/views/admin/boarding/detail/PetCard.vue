@@ -53,7 +53,7 @@
 <script lang="ts" setup>
 import { ArrowRightLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { StayPet } from "@/types/boarding";
+import type { StayPet } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 defineProps<{ pet: StayPet; checkedIn: boolean; canMove?: boolean }>();

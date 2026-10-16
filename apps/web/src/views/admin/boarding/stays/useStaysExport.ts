@@ -2,7 +2,7 @@ import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { listBoardingStays } from "@/repositories/boarding";
-import type { StayFilter } from "@/types/boarding";
+import type { StayFilter } from "@bongcun/core/boarding";
 import { staysExportColumns } from "./staysExportColumns";
 
 // list_boarding_stays serves 100 rows per page at most.

@@ -1,4 +1,4 @@
-import type { KennelState, KennelStatus, StayStatus } from "@/types/boarding";
+import type { KennelState, KennelStatus, StayStatus } from "@bongcun/core/boarding";
 
 export { dateTime, money } from "@/views/admin/pos/format";
 export { addDays, dateKeyOf, timeOf, todayKey, toIso } from "@/views/admin/schedule/format";

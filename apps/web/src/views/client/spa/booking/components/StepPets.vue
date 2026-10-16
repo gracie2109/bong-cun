@@ -48,9 +48,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { MyPet } from "@/types/account";
-import type { SpaCatalog } from "@/types/spaCatalog";
-import type { BookingPick } from "@/types/spaWeb";
+import type { MyPet } from "@bongcun/core/account";
+import type { SpaCatalog } from "@bongcun/core/spa";
+import type { BookingPick } from "@bongcun/core/spa";
 import { hasPick, pickOfCombo, pickOfService, type PicksByPet } from "@/utils/spa/booking";
 import { combosForSpecies, servicesForSpecies } from "@/utils/spa/catalog";
 import OfferRow from "./OfferRow.vue";

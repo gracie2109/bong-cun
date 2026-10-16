@@ -32,7 +32,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { Kennel, KennelStatus } from "@/types/boarding";
+import type { Kennel, KennelStatus } from "@bongcun/core/boarding";
 import { KENNEL_STATUS_TONE } from "../format";
 
 defineProps<{ kennel: Kennel; canEdit: boolean; canUpdate: boolean }>();

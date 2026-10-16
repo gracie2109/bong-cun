@@ -1,6 +1,6 @@
 // Pure helpers for staff handling online orders: no Vue, Pinia or network.
-import type { ShopOrderStatus } from "@/types/shopOrder";
-import type { AdminOrder, AdminOrderLine, OrderTab } from "@/types/shopOrderAdmin";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
+import type { AdminOrder, AdminOrderLine, OrderTab } from "@bongcun/core/shop";
 import { formatAddress } from "./address";
 
 /** A step staff can take on an order. */

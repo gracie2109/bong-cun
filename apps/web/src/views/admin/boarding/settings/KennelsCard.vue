@@ -63,7 +63,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { FILTER_ALL } from "@/lib/listing";
 import { useKennels, useSetKennelStatus } from "@/queries/boarding";
-import type { Kennel, KennelFilter } from "@/types/boarding";
+import type { Kennel, KennelFilter } from "@bongcun/core/boarding";
 import KennelDialog from "./KennelDialog.vue";
 import KennelRow from "./KennelRow.vue";
 import { useKennelTypeOptions } from "../useKennelTypeOptions";

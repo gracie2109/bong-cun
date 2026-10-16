@@ -1,5 +1,5 @@
-import type { SpaCombo, SpaService } from "@/types/spaCatalog";
-import type { BookingItem, BookingPick, BookingStep, SpaSlot } from "@/types/spaWeb";
+import type { SpaCombo, SpaService } from "@bongcun/core/spa";
+import type { BookingItem, BookingPick, BookingStep, SpaSlot } from "@bongcun/core/spa";
 
 const TZ = "Asia/Ho_Chi_Minh";
 

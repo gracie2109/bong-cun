@@ -1,6 +1,6 @@
-import type { VaccineKind } from "@/types/medical";
-import type { VisitStatus } from "@/types/medicalVisit";
-import type { BookState } from "@/types/vaccination";
+import type { VaccineKind } from "@bongcun/core/medical";
+import type { VisitStatus } from "@bongcun/core/medical";
+import type { BookState } from "@bongcun/core/medical";
 
 export { dateTime, money } from "@/views/admin/pos/format";
 export { addDays, dateKeyOf, timeOf, todayKey, toIso } from "@/views/admin/schedule/format";

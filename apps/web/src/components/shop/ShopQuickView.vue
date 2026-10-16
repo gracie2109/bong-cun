@@ -65,7 +65,7 @@ import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
 import VariantOptions from "@/components/VariantOptions.vue";
 import { useAddToCart } from "@/composables/shop/useAddToCart";
 import { useVariantChoice } from "@/composables/useVariantChoice";
-import type { ShopGroup } from "@/types/catalog";
+import type { ShopGroup } from "@bongcun/core/shop";
 import { groupCover, groupGallery, groupHasPriceRange } from "@/utils/shop/catalog";
 import PriceDisplay from "./PriceDisplay.vue";
 import QuantityStepper from "./QuantityStepper.vue";

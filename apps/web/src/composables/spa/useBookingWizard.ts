@@ -3,7 +3,7 @@ import { useMyPets, useMyProfile } from "@/queries/account";
 import { useBranches } from "@/queries/branches";
 import { useBookAppointment, useSpaWebQuote, useSpaWebRules, useSpaWebSlots } from "@/queries/spaWeb";
 import { useSpaPublicCatalog } from "@/queries/spaCatalog";
-import type { BookingPick, BookingResult, BookingStep } from "@/types/spaWeb";
+import type { BookingPick, BookingResult, BookingStep } from "@bongcun/core/spa";
 import {
   bookingSteps,
   businessDate,

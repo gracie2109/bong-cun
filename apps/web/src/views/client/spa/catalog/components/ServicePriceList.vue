@@ -25,7 +25,7 @@
 import { Clock } from "lucide-vue-next";
 import { useDurationLabel } from "@/composables/spa/useDurationLabel";
 import { formatPrice } from "@/lib/utils";
-import type { SpaService, SpaSpecies } from "@/types/spaCatalog";
+import type { SpaService, SpaSpecies } from "@bongcun/core/spa";
 import { priceLines } from "@/utils/spa/catalog";
 
 const props = defineProps<{ services: SpaService[]; species: SpaSpecies }>();

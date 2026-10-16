@@ -1,5 +1,5 @@
 import type { LinkProp } from "@/types";
-import type { AccountNavItem } from "@/types/account";
+import type { AccountNavItem } from "@bongcun/core/account";
 
 export type AdminNavSection = { title: string; items: LinkProp[] };
 

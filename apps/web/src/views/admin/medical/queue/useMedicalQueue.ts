@@ -2,7 +2,7 @@ import { computed, ref, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useMedicalQueue as useQueueQuery, useMarkNoShow, useStartVisit } from "@/queries/medicalVisits";
 import { useAuthStore } from "@/stores";
-import type { MedicalVisit } from "@/types/medicalVisit";
+import type { MedicalVisit } from "@bongcun/core/medical";
 import { todayKey } from "../format";
 
 /** Day queue of one branch: the date, the three columns, and what a click on a card does. */

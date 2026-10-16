@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import PawMark from "@/components/shop/PawMark.vue";
 import { formatPrice } from "@/lib/utils";
-import type { CartLineView } from "@/types/shop";
+import type { CartLineView } from "@bongcun/core/shop";
 import { lineAmount, lineKey } from "@/utils/shop/cart";
 import CheckoutSection from "./CheckoutSection.vue";
 

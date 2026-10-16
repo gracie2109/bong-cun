@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { X } from "lucide-vue-next";
-import type { FilterChip } from "@/types/catalog";
+import type { FilterChip } from "@bongcun/core/shop";
 
 defineProps<{ chips: FilterChip[] }>();
 const emit = defineEmits<{ clear: [] }>();

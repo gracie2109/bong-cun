@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { AdminOrderEvent } from "@/types/shopOrderAdmin";
+import type { AdminOrderEvent } from "@bongcun/core/shop";
 import { dateTime } from "@/views/admin/pos/format";
 
 defineProps<{ events: AdminOrderEvent[] }>();

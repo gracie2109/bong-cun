@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { VaccineType } from "@/types/medical";
+import type { VaccineType } from "@bongcun/core/medical";
 import { VACCINE_KIND_TONE } from "../format";
 
 defineProps<{ type: VaccineType; canEdit: boolean }>();

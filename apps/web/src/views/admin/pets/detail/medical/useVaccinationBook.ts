@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import { usePetBook, useVoidVaccine } from "@/queries/vaccinations";
 import { useAuthStore } from "@/stores";
-import type { VaccineDose } from "@/types/vaccination";
+import type { VaccineDose } from "@bongcun/core/medical";
 
 /** A pet's e-book with what the signed-in staff may do to it. */
 export const useVaccinationBook = (petId: Ref<string>) => {

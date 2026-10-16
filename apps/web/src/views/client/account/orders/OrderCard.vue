@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { Image as ImageIcon } from "lucide-vue-next";
 import { formatPrice } from "@/lib/utils";
-import type { ShopOrderSummary } from "@/types/shopOrder";
+import type { ShopOrderSummary } from "@bongcun/core/shop";
 import { formatDateTime } from "@/utils/shop/order";
 import OrderStatusBadge from "@/components/common/OrderStatusBadge.vue";
 

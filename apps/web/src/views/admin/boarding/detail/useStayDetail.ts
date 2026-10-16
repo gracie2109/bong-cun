@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useBoardingStay, useMarkBoardingNoShow } from "@/queries/boarding";
 import { useAuthStore } from "@/stores";
-import type { StayPet } from "@/types/boarding";
+import type { StayPet } from "@bongcun/core/boarding";
 
 /** The stay of the route with what the signed-in staff may do to it, and which dialog is open. */
 export const useStayDetail = () => {

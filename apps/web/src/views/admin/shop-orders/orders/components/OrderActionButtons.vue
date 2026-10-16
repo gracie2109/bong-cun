@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { AdminOrder } from "@/types/shopOrderAdmin";
+import type { AdminOrder } from "@bongcun/core/shop";
 import type { OrderAction } from "@/utils/shop/orderAdmin";
 
 const props = defineProps<{ order: AdminOrder; actions: OrderAction[] }>();

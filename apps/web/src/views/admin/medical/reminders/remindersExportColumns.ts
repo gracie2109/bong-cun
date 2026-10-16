@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { Reminder } from "@/types/vaccination";
+import type { Reminder } from "@bongcun/core/medical";
 
 /** Columns of the call list export: one row per pet and shot (or re-check). */
 export const remindersExportColumns = (): ExportColumn<Reminder>[] => [

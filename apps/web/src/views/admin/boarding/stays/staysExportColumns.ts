@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 
 const STATUS_TEXT: Record<string, string> = {
   booked: "Đã đặt",

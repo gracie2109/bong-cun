@@ -21,7 +21,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { Reminder } from "@/types/vaccination";
+import type { Reminder } from "@bongcun/core/medical";
 
 const props = defineProps<{ open: boolean; reminder: Reminder | null; busy: boolean }>();
 const emit = defineEmits<{ "update:open": [value: boolean]; confirm: [note: string] }>();

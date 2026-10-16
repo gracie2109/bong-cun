@@ -8,7 +8,7 @@ import type {
   Prescription,
   Vet,
   VisitFilter,
-} from "@/types/medicalVisit";
+} from "@bongcun/core/medical";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 import { rowsOf, toDetail, toMedicalVisit } from "./visitMappers";

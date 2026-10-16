@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import ProductCard from "@/components/shop/ProductCard.vue";
 import SectionHeading from "@/components/shop/SectionHeading.vue";
-import type { ShopGroup } from "@/types/catalog";
+import type { ShopGroup } from "@bongcun/core/shop";
 
 defineProps<{ groups: ShopGroup[] }>();
 </script>

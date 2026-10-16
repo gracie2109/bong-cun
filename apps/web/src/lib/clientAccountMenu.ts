@@ -1,4 +1,4 @@
-import type { AccountNavItem } from "@/types/account";
+import type { AccountNavItem } from "@bongcun/core/account";
 import { ACCOUNT_NAV } from "./navigations";
 
 /** Entries of the account dropdown in the public header: the account area's own menu. */

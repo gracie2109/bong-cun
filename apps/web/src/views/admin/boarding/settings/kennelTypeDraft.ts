@@ -1,4 +1,4 @@
-import type { BranchKennelPrice, KennelType, KennelTypeInput } from "@/types/boarding";
+import type { BranchKennelPrice, KennelType, KennelTypeInput } from "@bongcun/core/boarding";
 
 /** What the user typed for one branch's own price; numbers stay text while they are edited. */
 export type BranchPriceDraft = { enabled: boolean; nightPrice: string; extraPetNightPrice: string };

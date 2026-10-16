@@ -40,7 +40,7 @@ import { computed } from "vue";
 import { Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { VisitItem } from "@/types/medicalVisit";
+import type { VisitItem } from "@bongcun/core/medical";
 import { dateTime, money } from "../../format";
 
 const props = defineProps<{ item: VisitItem; canEdit: boolean }>();

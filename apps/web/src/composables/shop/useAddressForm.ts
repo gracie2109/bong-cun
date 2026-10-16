@@ -1,6 +1,6 @@
 import { computed, reactive, ref } from "vue";
 import { useSaveAddress } from "@/queries/shopAddresses";
-import type { Address } from "@/types/shop";
+import type { Address } from "@bongcun/core/shop";
 import {
   addressErrors,
   addressToForm,

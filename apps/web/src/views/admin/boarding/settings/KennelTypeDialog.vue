@@ -22,7 +22,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { useSaveKennelType } from "@/queries/boarding";
 import { useSpeciesOptions } from "@/queries/species";
 import type { Branch } from "@/repositories/branches";
-import type { KennelType } from "@/types/boarding";
+import type { KennelType } from "@bongcun/core/boarding";
 import BranchPriceFields from "./BranchPriceFields.vue";
 import KennelTypeFields from "./KennelTypeFields.vue";
 import {

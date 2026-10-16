@@ -35,7 +35,7 @@ import { useI18n } from "vue-i18n";
 import { Wallet } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { money } from "../../format";
 
 const props = defineProps<{ visit: MedicalVisitDetail }>();

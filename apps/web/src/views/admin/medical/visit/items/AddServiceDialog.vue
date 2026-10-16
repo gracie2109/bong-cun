@@ -36,7 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAllPetServices } from "@/queries/petServices";
-import type { ItemInput } from "@/types/medicalVisit";
+import type { ItemInput } from "@bongcun/core/medical";
 
 const props = defineProps<{ open: boolean; saving: boolean; add: (input: ItemInput) => Promise<boolean> }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();

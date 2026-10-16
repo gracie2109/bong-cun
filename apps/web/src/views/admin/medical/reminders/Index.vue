@@ -71,7 +71,7 @@ import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { REMINDER_SCOPES } from "@/types/vaccination";
+import { REMINDER_SCOPES } from "@bongcun/core/medical";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import MedicalNav from "../MedicalNav.vue";

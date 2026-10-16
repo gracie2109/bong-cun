@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { VaccineBookEntry, VaccineDose } from "@/types/vaccination";
+import type { VaccineBookEntry, VaccineDose } from "@bongcun/core/medical";
 import { BOOK_STATE_TONE } from "../format";
 
 defineProps<{ entries: VaccineBookEntry[]; canVoid: (dose: VaccineDose) => boolean }>();

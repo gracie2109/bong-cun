@@ -3,7 +3,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL, SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useSpeciesOptions } from "@/queries/species";
 import type { PetServiceFilter } from "@/repositories/petServices";
-import type { ServiceCategory } from "@/types/medical";
+import type { ServiceCategory } from "@bongcun/core/medical";
 
 const PAGE_SIZE = 10;
 

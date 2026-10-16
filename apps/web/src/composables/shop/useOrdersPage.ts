@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { useShopOrderList } from "@/queries/shopOrdersAdmin";
-import type { OrderListFilter, OrderTab } from "@/types/shopOrderAdmin";
+import type { OrderListFilter, OrderTab } from "@bongcun/core/shop";
 
 const PAGE_SIZE = 20;
 

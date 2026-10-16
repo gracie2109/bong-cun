@@ -1,4 +1,4 @@
-import type { VaccineType } from "@/types/medical";
+import type { VaccineType } from "@bongcun/core/medical";
 import { addDays } from "./format";
 
 /**

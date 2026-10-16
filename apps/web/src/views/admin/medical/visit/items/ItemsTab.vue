@@ -63,7 +63,7 @@
 import { toRef } from "vue";
 import { Pill, Plus, Printer } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { money } from "../../format";
 import AddDrugDialog from "./AddDrugDialog.vue";
 import AddServiceDialog from "./AddServiceDialog.vue";

@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import PawMark from "@/components/shop/PawMark.vue";
 import { formatPrice } from "@/lib/utils";
-import type { ShopOrderLine } from "@/types/shopOrder";
+import type { ShopOrderLine } from "@bongcun/core/shop";
 
 defineProps<{ lines: ShopOrderLine[] }>();
 </script>

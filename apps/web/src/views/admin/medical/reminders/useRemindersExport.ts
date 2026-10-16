@@ -2,7 +2,7 @@ import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { listMedicalReminders } from "@/repositories/medical";
-import type { ReminderFilter } from "@/types/vaccination";
+import type { ReminderFilter } from "@bongcun/core/medical";
 import { remindersExportColumns } from "./remindersExportColumns";
 
 // medical_reminders serves 100 rows per page at most.

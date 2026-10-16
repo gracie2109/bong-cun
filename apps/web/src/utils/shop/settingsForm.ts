@@ -1,6 +1,6 @@
 // Turns shop settings into what the settings form edits (text fields) and back.
-import type { GhnLocation, ShopSettings } from "@/types/shop";
-import { emptyGhnLocation } from "@/types/shop";
+import type { GhnLocation, ShopSettings } from "@bongcun/core/shop";
+import { emptyGhnLocation } from "@bongcun/core/shop";
 
 export type SettingsForm = {
   onlineBranchId: string;

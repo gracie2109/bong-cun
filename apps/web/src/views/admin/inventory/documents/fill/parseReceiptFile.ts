@@ -1,6 +1,6 @@
 import { readSheet, type CellValue } from "@/lib/data-io/importSchema";
 import type { SheetTable } from "@/lib/data-io/readTable";
-import { addProblem, type ParsedImport } from "@/lib/data-io/types";
+import { addProblem, type ParsedImport } from "@bongcun/core/data-io";
 import type { ReceiptFileRow } from "./receiptFileRow";
 import { RECEIPT_COLUMNS } from "./receiptFileSchema";
 

@@ -51,7 +51,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAddExternalVaccine } from "@/queries/vaccinations";
-import type { VaccineBookEntry } from "@/types/vaccination";
+import type { VaccineBookEntry } from "@bongcun/core/medical";
 import VaccineTypeSelect from "@/views/admin/medical/book/VaccineTypeSelect.vue";
 import { useVaccineTypeOptions } from "@/views/admin/medical/book/useVaccineTypeOptions";
 import { todayKey } from "@/views/admin/medical/format";

@@ -18,7 +18,7 @@ import type {
   KennelStatus,
   KennelTypeFilter,
   KennelTypeInput,
-} from "@/types/boarding";
+} from "@bongcun/core/boarding";
 import { boardingKeys } from "../keys";
 import { notifySuccess } from "../notify";
 import { notifyBoardingFailure } from "./failure";

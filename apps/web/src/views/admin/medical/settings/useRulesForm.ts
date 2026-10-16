@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { useMedicalRules, useSaveMedicalRules } from "@/queries/medical";
-import type { MedicalRules } from "@/types/medical";
+import type { MedicalRules } from "@bongcun/core/medical";
 
 /** Form state of the medical rules: starts from the database, tracks changes, saves. */
 export const useRulesForm = (branchId: Ref<string | undefined>) => {

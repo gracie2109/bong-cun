@@ -4,7 +4,7 @@ import { supabaseClient } from "@/lib/supabase";
 import { shopKeys } from "@/queries/keys";
 import { fetchCartLines } from "@/repositories/shop";
 import { useCart } from "@/stores";
-import type { CartLineView } from "@/types/shop";
+import type { CartLineView } from "@bongcun/core/shop";
 import { cartSubtotal, cartWeightG, hasCartIssue, hasInStoreOnly, lineKey } from "@/utils/shop/cart";
 
 /**

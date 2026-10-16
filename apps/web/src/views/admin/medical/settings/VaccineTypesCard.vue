@@ -64,7 +64,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { FILTER_ALL } from "@/lib/listing";
 import { useVaccineTypes } from "@/queries/medical";
-import { VACCINE_KINDS, type VaccineKind, type VaccineType, type VaccineTypeFilter } from "@/types/medical";
+import { VACCINE_KINDS, type VaccineKind, type VaccineType, type VaccineTypeFilter } from "@bongcun/core/medical";
 import VaccineTypeDialog from "./VaccineTypeDialog.vue";
 import VaccineTypeRow from "./VaccineTypeRow.vue";
 

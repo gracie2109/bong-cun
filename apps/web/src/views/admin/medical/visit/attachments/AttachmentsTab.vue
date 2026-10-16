@@ -48,7 +48,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { openAttachment, useAddAttachment, useMedicalAttachments, useRemoveAttachment } from "@/queries/medicalAttachments";
 import { validateAttachment } from "@/repositories/medical";
-import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalVisitDetail } from "@/types/medicalVisit";
+import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalVisitDetail } from "@bongcun/core/medical";
 import { dateTime } from "../../format";
 
 const props = defineProps<{ visit: MedicalVisitDetail; canUpdate: boolean }>();

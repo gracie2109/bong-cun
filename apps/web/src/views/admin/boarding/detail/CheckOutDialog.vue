@@ -44,7 +44,7 @@ import { computed, ref, toRef, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCheckOutBoarding, useCheckoutPreview } from "@/queries/boarding";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 const props = defineProps<{ open: boolean; stay: BoardingStay }>();

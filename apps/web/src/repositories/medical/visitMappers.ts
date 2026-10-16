@@ -6,7 +6,7 @@ import type {
   VisitPriority,
   VisitSource,
   VisitStatus,
-} from "@/types/medicalVisit";
+} from "@bongcun/core/medical";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 
 export const toMedicalVisit = (value: unknown): MedicalVisit => {

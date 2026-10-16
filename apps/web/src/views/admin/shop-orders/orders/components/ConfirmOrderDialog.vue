@@ -38,7 +38,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useOrderFeeQuote } from "@/composables/shop/useOrderFeeQuote";
-import type { AdminOrder } from "@/types/shopOrderAdmin";
+import type { AdminOrder } from "@bongcun/core/shop";
 import { parseFee } from "@/utils/shop/orderAdmin";
 import { shouldWarnFeeChange } from "@/utils/shop/shipping";
 import { money } from "@/views/admin/pos/format";

@@ -9,7 +9,7 @@ import type {
   ScheduleInput,
   SignResult,
   VisitStatus,
-} from "@/types/medicalVisit";
+} from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

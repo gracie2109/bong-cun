@@ -1,7 +1,7 @@
 // "My appointments": the customer's spa visits, listed and cancelled through RPCs (docs 3.6).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { AppointmentScope, MyAppointment } from "@/types/account";
+import type { AppointmentScope, MyAppointment } from "@bongcun/core/account";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

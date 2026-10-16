@@ -9,7 +9,7 @@ import {
   profileErrorHint,
   saveMyProfile,
 } from "@/repositories/account";
-import type { ProfileInput } from "@/types/account";
+import type { ProfileInput } from "@bongcun/core/account";
 import { accountKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

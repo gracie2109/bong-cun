@@ -1,4 +1,4 @@
-import type { SpaCatalog, SpaCombo, SpaService, SpaSpecies } from "@/types/spaCatalog";
+import type { SpaCatalog, SpaCombo, SpaService, SpaSpecies } from "@bongcun/core/spa";
 
 /** One price line of a service for a species: a weight bracket (or "all weights") and its price. */
 export type PriceLine = { key: string; label: string | null; price: number };

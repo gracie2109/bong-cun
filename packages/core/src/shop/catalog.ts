@@ -1,4 +1,4 @@
-import type { ProductGroup } from "@/repositories/products/types";
+import type { ProductGroup } from "../products/types";
 
 /** Orders the shop catalog offers; the first is the default. */
 export const CATALOG_SORTS = ["newest", "price_asc", "price_desc", "name"] as const;

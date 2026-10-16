@@ -58,7 +58,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddBoardingExtra, useRemoveBoardingExtra } from "@/queries/boarding";
 import { useAllPetServices } from "@/queries/petServices";
-import type { StayCharge, StayPet } from "@/types/boarding";
+import type { StayCharge, StayPet } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 const props = defineProps<{ charges: StayCharge[]; pets: StayPet[]; canAdd: boolean; canRemove: boolean }>();

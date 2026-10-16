@@ -21,7 +21,7 @@ import type {
   MedicalRules,
   VaccineTypeFilter,
   VaccineTypeInput,
-} from "@/types/medical";
+} from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

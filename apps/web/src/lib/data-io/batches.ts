@@ -1,4 +1,4 @@
-import { IMPORT_BATCH_SIZE, IMPORT_CALL_LIMIT } from "./types";
+import { IMPORT_BATCH_SIZE, IMPORT_CALL_LIMIT } from "@bongcun/core/data-io";
 
 /**
  * Splits rows into calls of about `size` rows. Rows with the same `keyOf` value always travel

@@ -44,7 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { useDiagnosisTerms } from "@/queries/medical";
-import type { DiagnosisTerm } from "@/types/medical";
+import type { DiagnosisTerm } from "@bongcun/core/medical";
 import type { RecordDraft } from "./recordDraft";
 
 defineProps<{ readonly: boolean }>();

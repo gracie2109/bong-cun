@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { BoardCounts } from "@/types/boarding";
+import type { BoardCounts } from "@bongcun/core/boarding";
 
 const props = defineProps<{ counts: BoardCounts }>();
 

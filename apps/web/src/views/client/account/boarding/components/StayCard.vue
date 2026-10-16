@@ -38,7 +38,7 @@
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { MyBoardingStay } from "@/types/account";
+import type { MyBoardingStay } from "@bongcun/core/account";
 import { dayLabel } from "@/utils/spa/booking";
 import { dayOf, STATUS_TONE } from "../format";
 

@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { DiagnosisTerm } from "@/types/medical";
+import type { DiagnosisTerm } from "@bongcun/core/medical";
 
 defineProps<{ term: DiagnosisTerm; canEdit: boolean }>();
 const emit = defineEmits<{ edit: [] }>();

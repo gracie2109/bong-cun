@@ -51,7 +51,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { useKennelTypes } from "@/queries/boarding";
 import type { Branch } from "@/repositories/branches";
-import type { KennelType, KennelTypeFilter } from "@/types/boarding";
+import type { KennelType, KennelTypeFilter } from "@bongcun/core/boarding";
 import KennelTypeDialog from "./KennelTypeDialog.vue";
 import KennelTypeRow from "./KennelTypeRow.vue";
 

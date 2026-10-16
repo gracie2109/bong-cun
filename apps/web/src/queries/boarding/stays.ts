@@ -12,7 +12,7 @@ import {
   saveBoardingStay,
 } from "@/repositories/boarding";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
-import type { StayFilter, StayInput } from "@/types/boarding";
+import type { StayFilter, StayInput } from "@bongcun/core/boarding";
 import { boardingKeys } from "../keys";
 import { notifySuccess } from "../notify";
 import { notifyBoardingFailure } from "./failure";

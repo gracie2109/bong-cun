@@ -2,7 +2,7 @@ import { refDebounced } from "@vueuse/core";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type Ref } from "vue";
 import { quoteLeadtime, quoteShippingFee, type ShippingPlaces } from "@/services/shipment.service";
-import type { Address, ShopPublicSettings } from "@/types/shop";
+import type { Address, ShopPublicSettings } from "@bongcun/core/shop";
 import {
   canDeliver,
   isFreeShip,

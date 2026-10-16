@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { CategoryNode } from "@/types/catalog";
+import type { CategoryNode } from "@bongcun/core/shop";
 import BrandFilter from "./BrandFilter.vue";
 import CategoryTree from "./CategoryTree.vue";
 

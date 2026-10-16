@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Prescription } from "@/types/medicalVisit";
+import type { Prescription } from "@bongcun/core/medical";
 
 defineProps<{ rx: Prescription }>();
 </script>

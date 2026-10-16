@@ -1,13 +1,13 @@
 // Online orders for staff: the list, one order, and the steps that move an order along.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { ShopOrderStatus } from "@/types/shopOrder";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
 import type {
   AdminOrder,
   AdminOrderPage,
   AdminOrderRow,
   OrderListFilter,
-} from "@/types/shopOrderAdmin";
+} from "@bongcun/core/shop";
 import { unwrap, type PageParams } from "@bongcun/supabase/shared";
 import type { PaymentMethod } from "../pos";
 

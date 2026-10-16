@@ -2,7 +2,7 @@ import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { listShopOrders } from "@/repositories/shop/ordersAdmin";
-import type { OrderListFilter } from "@/types/shopOrderAdmin";
+import type { OrderListFilter } from "@bongcun/core/shop";
 import { ordersExportColumns } from "./ordersExportColumns";
 
 // list_shop_orders serves 100 rows per page at most.

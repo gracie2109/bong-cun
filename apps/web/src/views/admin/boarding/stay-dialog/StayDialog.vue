@@ -97,7 +97,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthStore } from "@/stores";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import CustomerPanel from "@/views/admin/pos/components/CustomerPanel.vue";
 import StayDates from "./StayDates.vue";
 import StayPetFields from "./StayPetFields.vue";

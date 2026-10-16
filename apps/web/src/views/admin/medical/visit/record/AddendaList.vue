@@ -20,7 +20,7 @@ import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddAddendum } from "@/queries/medicalVisits";
-import type { VisitAddendum } from "@/types/medicalVisit";
+import type { VisitAddendum } from "@bongcun/core/medical";
 import { dateTime } from "../../format";
 
 const props = defineProps<{ visitId: string; addenda: VisitAddendum[]; canAdd: boolean }>();

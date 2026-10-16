@@ -11,7 +11,7 @@ import {
   voidVaccination,
 } from "@/repositories/medical";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
-import type { ExternalVaccineInput, GiveVaccineInput, ReminderFilter } from "@/types/vaccination";
+import type { ExternalVaccineInput, GiveVaccineInput, ReminderFilter } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";

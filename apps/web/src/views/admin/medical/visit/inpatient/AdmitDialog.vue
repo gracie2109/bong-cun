@@ -52,7 +52,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdmitInpatient, useInpatientKennels } from "@/queries/inpatient";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { toIso } from "@/views/admin/schedule/format";
 
 const props = defineProps<{ open: boolean; visit: MedicalVisitDetail }>();
