@@ -68,7 +68,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ProductGroup } from "@/repositories/products";
+import type { ProductGroup } from "@bongcun/supabase/products";
 import { money } from "@/views/admin/pos/format";
 import ProductThumb from "./ProductThumb.vue";
 

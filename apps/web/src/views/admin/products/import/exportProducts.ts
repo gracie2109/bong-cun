@@ -1,6 +1,6 @@
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { exportProducts } from "@/repositories/productImport";
+import { exportProducts } from "@bongcun/supabase/data-io";
 import { exportSheets } from "./exportSheets";
 import type { ExportRow } from "@bongcun/core/data-io";
 import { TEMPLATE_FILE_NAME, templateSheets } from "./importTemplate";

@@ -3,10 +3,10 @@
 import type { PetListFilter } from "@/repositories/pets";
 import type { PageParams } from "@bongcun/supabase/shared";
 import type { PetServiceFilter } from "@/repositories/petServices";
-import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
+import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@bongcun/supabase/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";
-import type { CatalogFilter } from "@/repositories/productCategories";
-import type { ProductFilter } from "@/repositories/products";
+import type { CatalogFilter } from "@bongcun/supabase/products";
+import type { ProductFilter } from "@bongcun/supabase/products";
 import type {
   AdjustmentFilter,
   Bucket,

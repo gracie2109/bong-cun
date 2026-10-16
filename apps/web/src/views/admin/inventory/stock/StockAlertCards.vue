@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { AlarmClock, PackageX, TrendingDown, TriangleAlert } from "lucide-vue-next";
-import type { StockAlertCounts, StockStatus } from "@/repositories/inventory";
+import type { StockAlertCounts, StockStatus } from "@bongcun/supabase/inventory";
 
 /** Alerts shown as cards; clicking one filters the list to it. */
 const ALERTS = [

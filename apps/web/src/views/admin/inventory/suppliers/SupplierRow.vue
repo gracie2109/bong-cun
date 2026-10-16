@@ -37,7 +37,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Supplier } from "@/repositories/inventory";
+import type { Supplier } from "@bongcun/supabase/inventory";
 
 defineProps<{ supplier: Supplier; canUpdate: boolean }>();
 

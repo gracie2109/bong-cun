@@ -2,7 +2,7 @@ import { computed, ref, watch, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
-import { sellableUnits, type ProductVariant } from "@/repositories/products";
+import { sellableUnits, type ProductVariant } from "@bongcun/supabase/products";
 import { useCart } from "@/stores";
 
 export type UnitOption = { id: string | null; label: string; price: number };

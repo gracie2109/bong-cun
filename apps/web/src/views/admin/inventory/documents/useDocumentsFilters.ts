@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
-import type { DocStatus, DocType, StockDocumentFilter } from "@/repositories/inventory";
+import type { DocStatus, DocType, StockDocumentFilter } from "@bongcun/supabase/inventory";
 
 const PAGE_SIZE = 20;
 

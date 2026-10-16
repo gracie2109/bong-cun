@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { businessDate, isExpired } from "@/repositories/inventory/lots";
+import { businessDate, isExpired } from "@bongcun/supabase/inventory";
 
 describe("isExpired", () => {
   it("has no expiry when the lot has no date", () => {

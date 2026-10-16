@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import { useFetchProductLots } from "@/queries/inventory";
-import { isExpired, type DocType, type StockDocumentDetail } from "@/repositories/inventory";
-import type { Product, ProductUnit } from "@/repositories/products";
+import { isExpired, type DocType, type StockDocumentDetail } from "@bongcun/supabase/inventory";
+import type { Product, ProductUnit } from "@bongcun/supabase/products";
 import { blankLine, draftTotal, pickLot, toInput, validLine, type EditLine } from "./documentLines";
 
 /** The editable lines of a stock document, loaded from a saved one or built by picking products. */

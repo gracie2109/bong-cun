@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import { ArrowUpRight } from "lucide-vue-next";
 import PawMark from "@/components/shop/PawMark.vue";
-import type { ProductCategory } from "@/repositories/productCategories";
+import type { ProductCategory } from "@bongcun/supabase/products";
 
 defineProps<{ category: Pick<ProductCategory, "id" | "name" | "imageUrl" | "productCount"> }>();
 </script>

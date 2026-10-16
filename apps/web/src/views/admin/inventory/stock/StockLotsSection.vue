@@ -55,7 +55,7 @@ import { computed, ref } from "vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useProductLots } from "@/queries/inventory";
-import { isExpired } from "@/repositories/inventory";
+import { isExpired } from "@bongcun/supabase/inventory";
 import { money } from "@/views/admin/pos/format";
 import { day, daysUntil, qty } from "../format";
 

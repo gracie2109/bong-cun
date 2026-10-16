@@ -1,4 +1,4 @@
-import type { DocStatus } from "@/repositories/inventory";
+import type { DocStatus } from "@bongcun/supabase/inventory";
 
 /** Badge colors of a stock document's status. */
 export const DOC_STATUS_TONE: Record<DocStatus, string> = {

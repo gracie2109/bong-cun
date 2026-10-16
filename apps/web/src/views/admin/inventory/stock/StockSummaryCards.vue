@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { StockRow } from "@/repositories/inventory";
+import type { StockRow } from "@bongcun/supabase/inventory";
 import { money } from "@/views/admin/pos/format";
 import { qty } from "../format";
 

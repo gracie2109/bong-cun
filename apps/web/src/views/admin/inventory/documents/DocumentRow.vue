@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { StockDocument } from "@/repositories/inventory";
+import type { StockDocument } from "@bongcun/supabase/inventory";
 import { dateTime, money } from "@/views/admin/pos/format";
 import { DOC_STATUS_TONE } from "./documentStatus";
 

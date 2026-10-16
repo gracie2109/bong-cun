@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePermission } from "@/composables/usePermission";
 import { useSetMinStock } from "@/queries/inventory";
-import type { StockRow } from "@/repositories/inventory";
+import type { StockRow } from "@bongcun/supabase/inventory";
 import { parseQty } from "../format";
 
 const props = defineProps<{ row: StockRow; branchId: string | undefined }>();

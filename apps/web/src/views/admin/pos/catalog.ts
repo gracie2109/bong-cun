@@ -1,6 +1,6 @@
 import { Layers2, Package, Scissors } from "lucide-vue-next";
 import type { LineType } from "@/repositories/pos";
-import { sellableUnits, type ProductUnit, type ProductVariant, type SellableProduct } from "@/repositories/products";
+import { sellableUnits, type ProductUnit, type ProductVariant, type SellableProduct } from "@bongcun/supabase/products";
 import type { Priced } from "./branchPricing";
 
 /** One tile; `price` is null for a by-weight service (priced once a pet is picked). */

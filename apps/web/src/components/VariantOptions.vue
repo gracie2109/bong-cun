@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductAttribute } from "@/repositories/products";
+import type { ProductAttribute } from "@bongcun/supabase/products";
 
 defineProps<{
   attributes: ProductAttribute[];

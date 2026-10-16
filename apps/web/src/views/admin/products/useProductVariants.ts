@@ -1,5 +1,5 @@
 import { computed, reactive, ref, watch } from "vue";
-import type { ProductGroup } from "@/repositories/products";
+import type { ProductGroup } from "@bongcun/supabase/products";
 import { comboKey, newAttribute, type AttributeForm, type VariantRow } from "./productVariantForm";
 import { toUnitRow } from "./units/productUnitForm";
 

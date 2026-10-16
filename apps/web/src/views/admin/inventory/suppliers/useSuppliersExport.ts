@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listSuppliers, type SupplierFilter } from "@/repositories/inventory";
+import { listSuppliers, type SupplierFilter } from "@bongcun/supabase/inventory";
 import { suppliersExportColumns } from "./suppliersExportColumns";
 
 /** Export of the suppliers under the filter the list is showing (Excel and CSV only). */

@@ -79,7 +79,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
 import { useSaveSupplier, useSuppliersList } from "@/queries/inventory";
-import type { Supplier, SupplierFilter } from "@/repositories/inventory";
+import type { Supplier, SupplierFilter } from "@bongcun/supabase/inventory";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import InventoryNav from "../InventoryNav.vue";

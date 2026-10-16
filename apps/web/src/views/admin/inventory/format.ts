@@ -1,4 +1,4 @@
-import { businessDate } from "@/repositories/inventory";
+import { businessDate } from "@bongcun/supabase/inventory";
 
 /** A stock quantity: up to two decimals, Vietnamese grouping. */
 export const qty = (value: number | null | undefined): string =>

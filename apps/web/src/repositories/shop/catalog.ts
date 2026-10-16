@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import type { CatalogFilters, ShopGroup } from "@bongcun/core/shop";
-import { toGroup, type GroupJson } from "../products/mappers";
+import { toGroup, type GroupJson } from "@bongcun/supabase/products";
 import { fetchCartLines } from "./cart";
 import { pageRange, type Page, type PageParams } from "@bongcun/supabase/shared";
 

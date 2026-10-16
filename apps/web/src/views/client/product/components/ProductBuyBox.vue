@@ -75,7 +75,7 @@ import StockBadge from "@/components/shop/StockBadge.vue";
 import { Button } from "@/components/ui/button";
 import VariantOptions from "@/components/VariantOptions.vue";
 import type { useProductPage } from "@/composables/shop/useProductPage";
-import type { ProductGroup } from "@/repositories/products";
+import type { ProductGroup } from "@bongcun/supabase/products";
 import DeliveryInfo from "./DeliveryInfo.vue";
 
 type Page = ReturnType<typeof useProductPage>;

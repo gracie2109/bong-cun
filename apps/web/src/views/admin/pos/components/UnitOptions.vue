@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { ProductUnit } from "@/repositories/products";
+import type { ProductUnit } from "@bongcun/supabase/products";
 import { qty } from "@/views/admin/inventory/format";
 import { money } from "../format";
 import { unitPrice, wholeUnits } from "../unitPricing";

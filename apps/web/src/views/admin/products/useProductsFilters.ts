@@ -1,7 +1,7 @@
 import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useListFilters } from "@/composables/useListFilters";
-import type { ProductFilter } from "@/repositories/products";
+import type { ProductFilter } from "@bongcun/supabase/products";
 
 const PAGE_SIZE = 20;
 

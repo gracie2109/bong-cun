@@ -1,6 +1,6 @@
 import { CATALOG_SORTS, type CatalogFilters, type CatalogSort, type CategoryNode, type ShopGroup } from "@bongcun/core/shop";
-import type { ProductGroup } from "@/repositories/products";
-import type { ProductCategory } from "@/repositories/productCategories";
+import type { ProductGroup } from "@bongcun/supabase/products";
+import type { ProductCategory } from "@bongcun/supabase/products";
 import { formatPrice } from "@/lib/utils";
 
 export const DEFAULT_SORT: CatalogSort = "newest";

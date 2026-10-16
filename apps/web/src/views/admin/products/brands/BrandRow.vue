@@ -41,7 +41,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ProductBrand } from "@/repositories/productCategories";
+import type { ProductBrand } from "@bongcun/supabase/products";
 import ProductThumb from "../ProductThumb.vue";
 
 defineProps<{ brand: ProductBrand; canUpdate: boolean; canDelete: boolean }>();

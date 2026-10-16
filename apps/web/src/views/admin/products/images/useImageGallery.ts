@@ -1,8 +1,8 @@
 import { ref, type Ref } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import type { ProductImage } from "@/repositories/products";
-import { MAX_GROUP_IMAGES } from "@/repositories/products";
-import { uploadCatalogImage, validateImage } from "@/repositories/storage";
+import type { ProductImage } from "@bongcun/supabase/products";
+import { MAX_GROUP_IMAGES } from "@bongcun/supabase/products";
+import { uploadCatalogImage, validateImage } from "@bongcun/supabase/storage";
 import { compressImage } from "./compressImage";
 
 export type GalleryImage = { key: string; url: string; storagePath: string | null };

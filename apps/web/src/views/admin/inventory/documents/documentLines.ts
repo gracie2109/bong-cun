@@ -1,5 +1,5 @@
-import type { DocType, StockLot, StockDocumentLineInput } from "@/repositories/inventory";
-import { purchasableUnits, type ProductUnit } from "@/repositories/products";
+import type { DocType, StockLot, StockDocumentLineInput } from "@bongcun/supabase/inventory";
+import { purchasableUnits, type ProductUnit } from "@bongcun/supabase/products";
 import { parseAmount } from "@/views/admin/pos/format";
 import { parseQty } from "../format";
 

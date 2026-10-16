@@ -56,7 +56,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ProductCategory } from "@/repositories/productCategories";
+import type { ProductCategory } from "@bongcun/supabase/products";
 import ProductThumb from "../ProductThumb.vue";
 
 const props = defineProps<{

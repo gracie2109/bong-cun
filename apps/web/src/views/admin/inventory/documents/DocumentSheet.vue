@@ -145,7 +145,7 @@ import {
   useStockDocument,
   useSupplierOptions,
 } from "@/queries/inventory";
-import type { DocType, StockDocumentDetail } from "@/repositories/inventory";
+import type { DocType, StockDocumentDetail } from "@bongcun/supabase/inventory";
 import { dateTime, money } from "@/views/admin/pos/format";
 import { diffTone } from "./documentLines";
 import { DOC_STATUS_TONE } from "./documentStatus";
