@@ -65,6 +65,8 @@ export const getMyPetHealth = async (client: Client, petId: string): Promise<Pet
     petId: str(row.pet_id),
     petName: str(row.pet_name),
     petPhotoUrl: strOrNull(row.pet_photo_url),
+    status: row.status === "deceased" ? "deceased" : "active",
+    deceasedOn: strOrNull(row.deceased_on),
     phone: str(row.phone),
     vaccines: listOf(row.vaccines).map(toVaccine),
     visits: listOf(row.visits).map(toVisit),

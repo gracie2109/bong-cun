@@ -1,11 +1,14 @@
 <template>
-  <article class="flex flex-col gap-3 rounded-xl border bg-white p-4">
+  <article class="flex flex-col gap-3 rounded-xl border bg-white p-4" :class="deceased && 'bg-muted/40 text-muted-foreground'">
     <div class="flex items-start gap-3">
-      <PetAvatar :name="pet.name" :photo-url="pet.photoUrl" class="size-14 text-base" />
+      <PetAvatar :name="pet.name" :photo-url="pet.photoUrl" class="size-14 text-base" :class="deceased && 'opacity-60 grayscale'" />
       <div class="min-w-0">
         <h3 class="truncate font-semibold">{{ pet.name }}</h3>
         <p class="truncate text-sm text-muted-foreground">
           {{ [pet.speciesName, pet.breed].filter(Boolean).join(" · ") }}
+        </p>
+        <p v-if="deceased" class="text-xs font-medium">
+          {{ pet.deceasedOn ? $t("client.pets.deceasedOn", { date: formatDay(pet.deceasedOn) }) : $t("client.pets.deceased") }}
         </p>
       </div>
     </div>
@@ -19,7 +22,7 @@
       <dd>{{ pet.weightKg === null ? "—" : $t("petCare.common.kg", { n: pet.weightKg }) }}</dd>
     </dl>
 
-    <p v-if="pet.nextVaccine" class="text-xs text-muted-foreground">
+    <p v-if="pet.nextVaccine && !deceased" class="text-xs text-muted-foreground">
       {{ $t("client.pets.nextVaccine", { name: pet.nextVaccine.name, date: formatDay(pet.nextVaccine.dueOn) }) }}
     </p>
 
@@ -43,6 +46,8 @@ import { petAge } from "@bongcun/core/account";
 import { formatDay } from "../health/format";
 
 const props = defineProps<{ pet: MyPet }>();
+
+const deceased = computed(() => props.pet.status === "deceased");
 
 const { t } = useI18n();
 const ageLabel = computed(() => {

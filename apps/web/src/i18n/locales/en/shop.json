@@ -582,7 +582,9 @@
       "weight": "Weight",
       "allergies": "Allergies",
       "nextVaccine": "Next vaccine: {name} – {date}",
-      "healthBook": "Health book"
+      "healthBook": "Health book",
+      "deceased": "Passed away",
+      "deceasedOn": "Passed away on {date}"
     },
     "spa": {
       "title": "Pet spa services",
