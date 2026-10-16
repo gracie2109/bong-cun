@@ -683,12 +683,19 @@ Làm theo Q1 (a): giai đoạn 0 đến 3. Mỗi dòng là một PR đã squash 
 | 0c | #143 | Vitest và test đầu tiên, chạy trong CI |
 | 1 | #144 | App vào `apps/web`, npm workspaces; `supabase/` ở gốc |
 | 2 | #145 đến #151 | `packages/core` (kiểu miền, quy tắc thuần, mã lỗi) và `packages/supabase` (toàn bộ repository, kiểu DB, `unwrap`/`parseRpc`/dịch lỗi). Không còn `apps/web/src/repositories` |
+| 3a | #153 | `src/views` thành `src/features/{admin,shop,auth,home}` (client đổi tên shop); thêm luật features không import pages/layouts |
+| 3b | #154 | Không file nào trong app import `supabase-js` (kiểu `AuthSession`/`DbClient` re-export từ `@bongcun/supabase/shared`); quyền admin tách ra `auth-parts/adminGrants.ts`; i18n tách theo vùng `locales/<locale>/{common,shop,services,admin}.json` |
 
 Khác với kế hoạch gốc, có chủ ý:
 
 - Chuyển repository bằng script (`git mv` và viết lại import) theo cụm feature thay vì mapper từng feature. Repository vẫn trả kiểu như trước; mapper sang kiểu miền và `contract.ts` (zod vào/ra) làm dần khi có lý do.
 - `packages/supabase` có lib DOM vì `storage.ts` và đính kèm y tế còn nhận `File`; sẽ thành port lưu file khi làm mobile. `core` không có DOM.
 - Barrel `export *` theo feature (`@bongcun/core/shop`, `@bongcun/supabase/pos`...) thay vì khai `exports` từng đường con.
-- Luật dependency-cruiser: `core` không import framework hay `supabase-js`; `supabase` chỉ import `core`; trong `apps/web` chỉ store `auth` còn import `supabase-js` (sẽ tách ở giai đoạn 3).
+- Luật dependency-cruiser: `core` không import framework hay `supabase-js`; `supabase` chỉ import `core`; trong `apps/web` không file nào import `supabase-js`.
 - Hợp đồng zod, mapper, test hình dạng RPC trên DB CI và test đối chiếu quyền (mục 17.5) chưa làm; cần DB trong test.
 - Nitro inline `@bongcun/core` để bundle server (proxy GHN) không import TypeScript ngoài.
+
+Giai đoạn 3, có chủ ý khác kế hoạch gốc:
+
+- Chỉ chuyển thư mục màn hình (views) sang `features/`. Queries và composables theo module vẫn ở `src/queries`, `src/composables`: nhiều module dùng chung nên chuyển bây giờ phải đoán chủ sở hữu; làm dần khi chạm vào module.
+- Chưa có luật "feature chỉ import feature khác qua index.ts" vì các feature chưa có barrel; thêm khi tách queries/composables.
