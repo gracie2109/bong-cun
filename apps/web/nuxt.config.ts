@@ -1,4 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// Messages are split by area (src/i18n/locales/<locale>/<area>.json) and merged per locale.
+const i18nFiles = (locale: string) =>
+  ["common", "shop", "services", "admin"].map((area) => `${locale}/${area}.json`);
+
 export default defineNuxtConfig({
   compatibilityDate: "2026-10-01",
   srcDir: "src/",
@@ -85,8 +90,8 @@ export default defineNuxtConfig({
     strategy: "no_prefix",
     defaultLocale: "vi",
     locales: [
-      { code: "vi", language: "vi-VN", file: "vi.json" },
-      { code: "en", language: "en-US", file: "en.json" },
+      { code: "vi", language: "vi-VN", files: i18nFiles("vi") },
+      { code: "en", language: "en-US", files: i18nFiles("en") },
     ],
     detectBrowserLanguage: {
       useCookie: true,

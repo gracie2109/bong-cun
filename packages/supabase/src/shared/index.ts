@@ -2,7 +2,12 @@
 export { toPage, type Page, type PageParams } from "@bongcun/core/shared";
 export * from "./errors";
 export * from "./parse";
-import type { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError, Session, SupabaseClient } from "@supabase/supabase-js";
+
+/** Auth session and client types, re-exported so the app never imports supabase-js. */
+export type AuthSession = Session;
+export type DbClient = SupabaseClient;
+
 import type { ZodType } from "zod";
 import type { PageParams } from "@bongcun/core/shared";
 

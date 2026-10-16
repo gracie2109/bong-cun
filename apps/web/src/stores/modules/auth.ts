@@ -1,6 +1,6 @@
 import { computed, ref, shallowRef, type Ref } from "vue";
 import { defineStore } from "pinia";
-import type { Session } from "@supabase/supabase-js";
+import type { AuthSession } from "@bongcun/supabase/shared";
 import { toast } from "vue-sonner";
 import { useRoute, useRouter } from "vue-router";
 import { supabaseClient } from "@/lib/supabase";
@@ -9,11 +9,11 @@ import {
   isDisplayNameAvailable,
   toCurrentUser,
 } from "@bongcun/supabase/users";
-import { canUse, isAdminRole, isStaffRole, SUPER_ADMIN_ROLE, type AdminGrants } from "@bongcun/core/auth";
-import { listMyPermissions } from "@bongcun/supabase/users";
+import { isAdminRole, isStaffRole } from "@bongcun/core/auth";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";
 import type { IUser, ILoginPayload, IRegisterPayload } from "@bongcun/core/users";
+import { createAdminGrants } from "./auth-parts/adminGrants";
 import { createRecoveryFlow } from "./auth-parts/recovery";
 import { createVerificationFlow } from "./auth-parts/verification";
 
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore("auth", () => {
   const supabase = supabaseClient();
   const users: Ref<IUser[]> = ref([]);
   const currentUser = ref<IUser | null>(null);
-  const session = shallowRef<Session | null>(null);
+  const session = shallowRef<AuthSession | null>(null);
   // Role comes from the signed JWT claim `user_role` (set by the Custom Access
   // Token Hook), the same value Row Level Security policies read.
   const role = ref<string | null>(null);
@@ -39,43 +39,12 @@ export const useAuthStore = defineStore("auth", () => {
   const isAdmin = computed(() => isAdminRole(role.value));
   const isStaff = computed(() => isStaffRole(role.value));
 
-  // What the signed-in staff member may do in /admin, from my_permissions(). Loaded on
-  // demand by the route middleware and reloaded when the access token changes.
-  const adminGrants = ref<AdminGrants | null>(null);
-  let grantsToken: string | null | undefined;
-  let grantsPromise: Promise<void> = Promise.resolve();
-
-  function loadAdminGrants() {
-    const token = session.value?.access_token ?? null;
-    if (token === grantsToken) return grantsPromise;
-    grantsToken = token;
-    grantsPromise = (async () => {
-      await applyPromise; // the role for this token must be loaded first
-      if (role.value === SUPER_ADMIN_ROLE) {
-        adminGrants.value = "all";
-        return;
-      }
-      if (!isStaffRole(role.value)) {
-        adminGrants.value = {};
-        return;
-      }
-      try {
-        const grants = await listMyPermissions(supabase);
-        // An admin account with no role at any branch yet keeps the full menu it had before
-        // branch roles existed (is_admin() still lets it through RLS).
-        const legacyAdmin = isAdminRole(role.value) && Object.keys(grants).length === 0;
-        if (grantsToken === token) adminGrants.value = legacyAdmin ? "all" : grants;
-      } catch (error) {
-        console.error("Failed to load permissions", error);
-        if (grantsToken === token) adminGrants.value = {};
-        grantsToken = undefined; // retry on the next navigation
-      }
-    })();
-    return grantsPromise;
-  }
-
-  const can = (permission: string, method = "VIEW"): boolean =>
-    !!adminGrants.value && canUse(adminGrants.value, permission, method);
+  const { adminGrants, loadAdminGrants, can } = createAdminGrants({
+    supabase,
+    session,
+    role,
+    whenSessionApplied: () => applyPromise,
+  });
 
   // ---------------------------------------------------------------- session
   // `undefined` = never applied. Applying the same access token twice returns
@@ -84,7 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
   let appliedToken: string | null | undefined;
   let applyPromise: Promise<void> = Promise.resolve();
 
-  async function loadUser(next: Session | null, token: string | null) {
+  async function loadUser(next: AuthSession | null, token: string | null) {
     if (!next) {
       role.value = null;
       currentUser.value = null;
@@ -104,7 +73,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  function applySession(next: Session | null) {
+  function applySession(next: AuthSession | null) {
     const token = next?.access_token ?? null;
     session.value = next;
     if (token === appliedToken) return applyPromise;

@@ -7,9 +7,9 @@ module.exports = {
   forbidden: [
     {
       name: "supabase-js-only-in-package",
-      comment: "Data access lives in @bongcun/supabase. The auth store is the one leftover (session handling moves to core/auth later).",
+      comment: "Data access lives in @bongcun/supabase, which re-exports the few supabase-js types the app needs.",
       severity: "error",
-      from: { path: "^src", pathNot: "^src/stores/modules/auth(-parts/|\\.ts$)" },
+      from: { path: "^src" },
       to: { path: "node_modules/@supabase/" },
     },
     {
