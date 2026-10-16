@@ -80,8 +80,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useBranches } from "@/queries/branches";
 import { useStaffList } from "@/queries/staff";
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { initials } from "@/views/admin/pets/format";
 import { grantedCount, SUPER_ADMIN_ROLE } from "../rbac";
 

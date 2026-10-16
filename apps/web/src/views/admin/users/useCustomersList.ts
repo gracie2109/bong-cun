@@ -4,7 +4,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useOrdersByUsers } from "@/queries/orders";
 import { useUsersCount, useUsersList } from "@/queries/users";
-import { USER_SORT, type UserListFilter, type UserSort } from "@/repositories/users";
+import { USER_SORT, type UserListFilter, type UserSort } from "@bongcun/supabase/users";
 import { CUSTOMER_ROLE } from "../settings/rbac";
 import { buildCustomerStats, newCustomerSince } from "./customer-stats";
 

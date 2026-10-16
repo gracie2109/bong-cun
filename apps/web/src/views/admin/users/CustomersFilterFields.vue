@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { FilterField } from "@/components/common/search-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { USER_SORT, type UserSort } from "@/repositories/users";
+import { USER_SORT, type UserSort } from "@bongcun/supabase/users";
 
 const SORT_OPTIONS = Object.values(USER_SORT);
 

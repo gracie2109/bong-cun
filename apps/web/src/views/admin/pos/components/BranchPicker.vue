@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { Store } from "lucide-vue-next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 
 defineProps<{ modelValue: string | undefined; branches: Branch[] }>();
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();

@@ -1,5 +1,5 @@
-import type { IROLE } from ".";
-import type { IAddress } from "./location.type";
+import type { IROLE } from "../auth";
+import type { IAddress } from "./location";
 
 interface BasicInfo {
   phoneNumber?: string;
@@ -7,13 +7,6 @@ interface BasicInfo {
   email: string;
   displayName: string;
 }
-
-export const initAddress: IAddress = {
-  address: "",
-  ward: { WardName: "", WardCode: 0 },
-  district: { DistrictName: "", DistrictID: 0 },
-  province: { ProvinceName: "", ProvinceID: 0 },
-};
 
 interface IShipping {
   available_id: string | null;

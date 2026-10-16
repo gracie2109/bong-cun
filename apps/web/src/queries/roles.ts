@@ -6,7 +6,7 @@ import {
   listRoles,
   updateRole,
   type RoleInput,
-} from "@/repositories/roles";
+} from "@bongcun/supabase/users";
 import { roleKeys } from "./keys";
 import { invalidateAccess } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

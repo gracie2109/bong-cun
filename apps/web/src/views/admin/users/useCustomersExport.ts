@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listUsers, type UserListFilter } from "@/repositories/users";
+import { listUsers, type UserListFilter } from "@bongcun/supabase/users";
 import { customersExportColumns } from "./customersExportColumns";
 
 /** Export of the customer accounts under the filter the list is showing. */

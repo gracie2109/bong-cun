@@ -29,7 +29,7 @@
 import { ref } from "vue";
 import type { FormContext } from "vee-validate";
 import Multiselect from "vue-multiselect";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 
 const props = defineProps<{ form: FormContext<IUser>; groupOptions: any[] }>();
 

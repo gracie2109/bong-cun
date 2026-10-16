@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { METHODS, methodsOf, type Method } from "../rbac";
 import { groupGranted, grantsOf, sameMethods, type Grants } from "./roleGrants";
 

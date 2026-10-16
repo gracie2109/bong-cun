@@ -71,8 +71,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { METHOD_ICONS, methodsOf, moduleIcon } from "../rbac";
 
 defineProps<{

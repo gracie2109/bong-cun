@@ -87,7 +87,7 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreatePermission, useUpdatePermission } from "@/queries/permissions";
-import type { Permission } from "@/repositories/permissions";
+import type { Permission } from "@bongcun/supabase/users";
 import { METHOD_ICONS, METHODS, methodsOf, PERMISSION_CODE_PATTERN, type Method } from "../rbac";
 
 const props = defineProps<{

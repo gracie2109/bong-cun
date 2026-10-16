@@ -7,7 +7,7 @@ import type {
   VisitSource,
   VisitStatus,
 } from "@bongcun/core/medical";
-import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
+import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
 
 export const toMedicalVisit = (value: unknown): MedicalVisit => {
   const row = asRecord(value);

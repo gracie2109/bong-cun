@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 
 const TOP_MODULE_CHIPS = 3;
 

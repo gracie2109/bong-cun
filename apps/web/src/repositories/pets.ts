@@ -2,7 +2,7 @@
 // The species catalog (Chó, Mèo...) is in species.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { toCustomer, type Customer } from "./customers";
+import { toCustomer, type Customer } from "@bongcun/supabase/customers";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

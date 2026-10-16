@@ -29,7 +29,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import type { BranchPriceDraft } from "./kennelTypeDraft";
 
 defineProps<{ branches: Branch[] }>();

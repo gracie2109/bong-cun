@@ -20,7 +20,7 @@ import type { KennelFilter, KennelTypeFilter, StayFilter } from "@bongcun/core/b
 import type { DiagnosisTermFilter, VaccineTypeFilter } from "@bongcun/core/medical";
 import type { VisitFilter } from "@bongcun/core/medical";
 import type { ReminderFilter } from "@bongcun/core/medical";
-import type { UserListFilter } from "@/repositories/users";
+import type { UserListFilter } from "@bongcun/supabase/users";
 
 export const speciesKeys = {
   all: ["species"] as const,

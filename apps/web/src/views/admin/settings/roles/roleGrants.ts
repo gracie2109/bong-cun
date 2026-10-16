@@ -1,5 +1,5 @@
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { grantedMethods, methodsOf, type Method } from "../rbac";
 
 /** Granted methods per permission id; permissions with none are left out. */

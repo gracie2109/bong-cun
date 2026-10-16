@@ -1,10 +1,10 @@
 // Pure data access for the `users` table. Takes a client, imports nothing from
 // Vue/Pinia/router/env, so it runs unchanged in Nuxt (client or server).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { IROLE } from "@/types";
+import type { IROLE } from "@bongcun/core/auth";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import type { IAddress } from "@/types/location.type";
-import { initAddress, type IUser } from "@/types/user.type";
+import type { IAddress } from "@bongcun/core/users";
+import { initAddress, type IUser } from "@bongcun/core/users";
 import { pageRange, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
@@ -166,7 +166,7 @@ export const createUserAsAdmin = async (
   if (error) {
     // Duck-typed instead of `instanceof FunctionsHttpError`: that check breaks when
     // two copies of the library are loaded (bundlers, SSR). `context` is the Response.
-    const response = (error as { context?: Response }).context;
+    const response = (error as { context?: { json?: () => Promise<unknown> } }).context;
     if (error.name === "FunctionsHttpError" && typeof response?.json === "function") {
       const body = (await response.json().catch(() => null)) as {
         error?: { code?: string; message?: string };

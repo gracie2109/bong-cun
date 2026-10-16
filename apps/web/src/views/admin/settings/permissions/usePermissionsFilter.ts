@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { fold, methodsOf, type Method } from "../rbac";
 import { FILTER_ALL } from "@/lib/listing";
 

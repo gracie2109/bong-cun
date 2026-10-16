@@ -103,7 +103,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePermission } from "@/composables/usePermission";
 import { useCancelInvoice, useInvoice, useInvoiceReturns } from "@/queries/pos";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import { dateTime } from "../format";
 import { printReceipt } from "../receipt";
 import InvoiceCancelForm from "./InvoiceCancelForm.vue";

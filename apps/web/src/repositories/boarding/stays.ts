@@ -15,7 +15,7 @@ import type {
 } from "@bongcun/core/boarding";
 import { toCareLog, toCharge } from "./care";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
-import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
+import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

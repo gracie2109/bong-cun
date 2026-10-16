@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { searchCustomers } from "@/repositories/customers";
+import { searchCustomers } from "@bongcun/supabase/customers";
 import { customerKeys } from "./keys";
 
 /** Customers matching the typed phone, name or email; empty until two characters are typed. */

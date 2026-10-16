@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { useCreateInvoice } from "@/queries/pos";
 import { getInvoice, type SaleCustomer, type SaleResult } from "@/repositories/pos";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import type { Buyer } from "./components/CustomerPanel.vue";
 import type { PaymentEntry } from "./usePaymentSplit";
 import type { CartLine } from "./usePosCart";

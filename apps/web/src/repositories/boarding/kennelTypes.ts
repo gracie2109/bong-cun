@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import type { BranchKennelPrice, KennelPurpose, KennelType, KennelTypeFilter, KennelTypeInput } from "@bongcun/core/boarding";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
-import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
+import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

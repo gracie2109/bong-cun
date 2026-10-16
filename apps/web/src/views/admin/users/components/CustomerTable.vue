@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 import { statsOf, type CustomerStats } from "../customer-stats";
 import CustomerRow from "./CustomerRow.vue";
 

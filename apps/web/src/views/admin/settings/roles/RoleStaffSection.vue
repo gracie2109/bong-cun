@@ -54,9 +54,9 @@ import { UserPlus } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useSaveStaffAssignments } from "@/queries/staff";
-import type { Branch } from "@/repositories/branches";
-import type { Role } from "@/repositories/roles";
-import type { StaffMember } from "@/repositories/staff";
+import type { Branch } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
+import type { StaffMember } from "@bongcun/supabase/users";
 import { initials } from "@/views/admin/pets/format";
 import AssignStaffSheet from "./AssignStaffSheet.vue";
 

@@ -101,7 +101,7 @@ import { useBranches } from "@/queries/branches";
 import { usePermissionsList } from "@/queries/permissions";
 import { useDeleteRole, useRolesList } from "@/queries/roles";
 import { useStaffList } from "@/queries/staff";
-import type { Role } from "@/repositories/roles";
+import type { Role } from "@bongcun/supabase/users";
 import RbacLayout from "../RbacLayout.vue";
 import { fold, grantedCount } from "../rbac";
 import RoleEditor from "./RoleEditor.vue";

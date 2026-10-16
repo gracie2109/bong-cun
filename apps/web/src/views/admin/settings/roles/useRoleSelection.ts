@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import type { Role } from "@/repositories/roles";
+import type { Role } from "@bongcun/supabase/users";
 
 /**
  * Which role is open, kept in the URL (?role=cashier) so the matrix can link straight to it,

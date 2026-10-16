@@ -21,7 +21,7 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { useSaveKennelType } from "@/queries/boarding";
 import { useSpeciesOptions } from "@/queries/species";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import type { KennelType } from "@bongcun/core/boarding";
 import BranchPriceFields from "./BranchPriceFields.vue";
 import KennelTypeFields from "./KennelTypeFields.vue";

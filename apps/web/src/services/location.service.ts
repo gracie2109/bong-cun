@@ -1,4 +1,4 @@
-import type { GHNDistrict, GHNProvince, GHNWard } from "@/types/location.type";
+import type { GHNDistrict, GHNProvince, GHNWard } from "@bongcun/core/users";
 
 // GHN is called through our server routes (server/api/ghn), which hold the token.
 type GhnResponse<T> = { code?: number; message?: string; data?: T };

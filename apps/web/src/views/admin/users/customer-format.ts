@@ -1,6 +1,6 @@
 // Display helpers for the customers screen.
 import { format } from "date-fns";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 
 const VISIT_DATE_FORMAT = "dd/MM/yyyy";
 const INITIALS_LENGTH = 2;

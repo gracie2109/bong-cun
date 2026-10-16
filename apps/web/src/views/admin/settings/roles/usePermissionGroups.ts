@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import type { Permission } from "@/repositories/permissions";
+import type { Permission } from "@bongcun/supabase/users";
 import { fold, groupByModule, type PermissionGroup } from "../rbac";
 
 export type KeyedPermissionGroup = PermissionGroup & { key: string };

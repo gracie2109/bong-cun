@@ -88,7 +88,7 @@ import { UploadFields } from "@/components/common/";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { BASE_GENDER } from "@/lib/constants";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 import { useCustomerRules } from "./customerFormRules";
 import CustomerPasswordSection from "./CustomerPasswordSection.vue";
 

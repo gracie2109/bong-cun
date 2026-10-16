@@ -99,7 +99,7 @@ import { Button } from "@/components/ui/button";
 import { useCanManageRbac } from "@/composables/usePermission";
 import { useDeletePermission, usePermissionsList } from "@/queries/permissions";
 import { useRolesList } from "@/queries/roles";
-import type { Permission } from "@/repositories/permissions";
+import type { Permission } from "@bongcun/supabase/users";
 import RbacLayout from "../RbacLayout.vue";
 import { exportPermissionsCsv } from "./exportPermissionsCsv";
 import PermissionFilters from "./PermissionFilters.vue";

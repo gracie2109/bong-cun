@@ -72,7 +72,7 @@ import { Search, UserPlus, UserRound } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCustomerSearch } from "@/queries/customers";
-import { digitsOf, matchKey, type CustomerMatch } from "@/repositories/customers";
+import { digitsOf, matchKey, type CustomerMatch } from "@bongcun/supabase/customers";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
 /** The buyer picked at the counter; null = anonymous walk-in. */

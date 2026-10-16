@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import type { FormContext } from "vee-validate";
 import { MapPin, User, Users } from "lucide-vue-next";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 
 export const STEP = { INFO: "info", GROUPS: "groups", ADDRESS: "address" } as const;
 export type Step = (typeof STEP)[keyof typeof STEP];

@@ -45,12 +45,7 @@ export const PAGE_THEME = {
   SYSTEM: "system",
 } as const;
 
-export const DEFAULT_ROLE = {
-  CUSTOMER: "customer",
-  ADMIN: "admin",
-  SUPER_ADMIN: "superAdmin",
-  CASHIER: "cashier",
-} as const;
+export { DEFAULT_ROLE } from "@bongcun/core/auth";
 
 export const LOCAL_STORAGE_KEY = {
   LAYOUT: "layout",

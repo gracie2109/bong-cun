@@ -59,7 +59,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 import { customerName, formatVisit, initials } from "../customer-format";
 import { isNewCustomer, type CustomerStats } from "../customer-stats";
 

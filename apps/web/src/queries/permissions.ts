@@ -6,7 +6,7 @@ import {
   listPermissions,
   updatePermission,
   type PermissionInput,
-} from "@/repositories/permissions";
+} from "@bongcun/supabase/users";
 import { permissionKeys } from "./keys";
 import { invalidateAccess } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

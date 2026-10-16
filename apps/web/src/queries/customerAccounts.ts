@@ -3,7 +3,7 @@ import { computed, unref, type MaybeRef } from "vue";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
-import { linkCustomerAccount, linkErrorHint, searchUnlinkedAccounts } from "@/repositories/customerAccounts";
+import { linkCustomerAccount, linkErrorHint, searchUnlinkedAccounts } from "@bongcun/supabase/customers";
 import { petProfileKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

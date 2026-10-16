@@ -1,7 +1,7 @@
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
 import { toAppError } from "@bongcun/supabase/shared";
-import { UserFunctionError } from "@/repositories/users";
+import { UserFunctionError } from "@bongcun/supabase/users";
 import type { RestfullMethod } from "@/types";
 
 /** Failure toast for a mutation, turning database error codes into readable messages. */

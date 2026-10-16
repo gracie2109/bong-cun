@@ -1,6 +1,6 @@
 // Shared helpers for the role and permission screens.
-import type { Permission } from "@/repositories/permissions";
-import type { RolePermissionGrant } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { RolePermissionGrant } from "@bongcun/supabase/users";
 
 /** The methods a role can be granted, in the column order of every grid. */
 export const METHODS = ["VIEW", "CREATE", "UPDATE", "DELETE", "IMPORT", "EXPORT", "SETTING"] as const;
