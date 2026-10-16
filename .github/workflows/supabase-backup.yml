@@ -1,7 +1,8 @@
 name: Supabase backup
 
-# Weekly backup of the hosted database. The Free plan keeps no downloadable backups.
-# Read-only: it dumps roles, schema and data (auth users included) and never writes to the database.
+# Weekly backup of the hosted database and the pet photos. The Free plan keeps no downloadable backups.
+# Read-only: it dumps roles, schema and data (auth users included), copies the pet-photos bucket
+# and never writes to the database or to Storage.
 # The repository is public and anyone signed in to GitHub can download its artifacts, so the
 # dump is encrypted with the database password (whoever can decrypt it can already reach the
 # database). Restore steps: docs/sao-luu-du-lieu.md.
@@ -31,10 +32,18 @@ jobs:
           supabase db dump --linked -f backup/schema.sql
           supabase db dump --linked -f backup/data.sql --use-copy --data-only
           ls -la backup
+      # Customers' pet photos cannot be recreated, so they travel in the same encrypted file. If the
+      # copy fails the database backup is still made; the step shows a warning instead of failing the run.
+      - name: Download pet photos
+        continue-on-error: true
+        run: |
+          mkdir -p backup/pet-photos
+          supabase storage cp -r ss:///pet-photos backup/pet-photos --linked
+          echo "pet photos: $(find backup/pet-photos -type f | wc -l) files"
       - name: Encrypt
         run: |
           name="bongcun-$(date -u +%Y%m%d)"
-          tar czf "$name.tar.gz" -C backup roles.sql schema.sql data.sql
+          tar czf "$name.tar.gz" -C backup roles.sql schema.sql data.sql $(test -d backup/pet-photos && echo pet-photos)
           printf '%s' "$SUPABASE_DB_PASSWORD" | gpg --batch --yes --pinentry-mode loopback \
             --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$name.tar.gz.gpg" "$name.tar.gz"
           rm -rf backup "$name.tar.gz"

@@ -5,7 +5,7 @@ Supabase gói Free không có bản backup tải về được. Workflow `Supaba
 ## Workflow làm gì
 
 - Chạy 03:00 sáng Chủ nhật (giờ Việt Nam), hoặc bấm tay: GitHub > Actions > **Supabase backup** > **Run workflow**.
-- Chỉ đọc: `supabase db dump` ba phần `roles.sql`, `schema.sql`, `data.sql` (gồm cả tài khoản trong schema `auth`). Không ghi gì vào database.
+- Chỉ đọc: `supabase db dump` ba phần `roles.sql`, `schema.sql`, `data.sql` (gồm cả tài khoản trong schema `auth`), và chép bucket ảnh thú cưng `pet-photos` vào thư mục `pet-photos/`. Không ghi gì vào database hay Storage.
 - Nén và **mã hóa AES256 bằng mật khẩu database** (secret `SUPABASE_DB_PASSWORD`), vì repo công khai và ai đăng nhập GitHub cũng tải được artifact. Ai giải mã được thì vốn đã có mật khẩu database.
 - Lưu thành artifact `bongcun-YYYYMMDD` trong 90 ngày (tối đa của GitHub), tức khoảng 13 bản gần nhất.
 - Dùng 3 secret đã có (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`, `SUPABASE_PROJECT_REF`), không cần thêm gì.
@@ -31,10 +31,19 @@ Lưu ý: nếu đổi mật khẩu database, các bản cũ vẫn cần **mật 
      --dbname "postgresql://postgres:[MẬT_KHẨU]@db.[REF_MỚI].supabase.co:5432/postgres"
    ```
 
-4. Ở project mới: bật lại Custom Access Token Hook (`public.custom_access_token_hook`, xem `docs/supabase-setup.md`), tải lại ảnh trong Storage nếu cần (bản dump chỉ có thông tin file, không có nội dung ảnh), đổi `SUPABASE_URL`/key trên Vercel và `SUPABASE_PROJECT_REF` trong secret của repo.
+4. Ở project mới: bật lại Custom Access Token Hook (`public.custom_access_token_hook`, xem `docs/supabase-setup.md`), tải lại ảnh trong Storage (bản dump chỉ có thông tin file, không có nội dung ảnh; ảnh thú cưng có trong bản backup, xem bước 5; ảnh sản phẩm và đính kèm bệnh án thì không), đổi `SUPABASE_URL`/key trên Vercel và `SUPABASE_PROJECT_REF` trong secret của repo.
+
+5. Ảnh thú cưng nằm trong thư mục `pet-photos/` của bản giải nén. Sau khi project mới đã có bucket `pet-photos` (migration `20261024010000` tạo bucket), tải lại bằng CLI đã đăng nhập và `link` tới project mới:
+
+   ```sh
+   supabase storage cp -r pet-photos ss:///pet-photos --linked
+   ```
+
+   Database giữ `pets.photo_path` và `photo_url`; nếu `photo_url` trỏ tới project cũ thì sửa phần địa chỉ gốc cho khớp project mới.
 
 Các bước 3 và 4 là thủ tục chuẩn của Supabase cho bản dump bằng CLI. Việc dump, mã hóa và giải mã đã được thử trên database cục bộ; chưa thử khôi phục toàn bộ vào một project thật.
 
 ## Không có trong backup
 
-- File trong Storage (ảnh sản phẩm, đính kèm bệnh án): chỉ có bảng metadata. Muốn sao lưu cả file thì cần một bước tải bucket riêng, chưa làm.
+- File trong Storage ngoài ảnh thú cưng (ảnh sản phẩm, đính kèm bệnh án): chỉ có bảng metadata. Muốn sao lưu cả file thì thêm một bước tải bucket tương tự `pet-photos`, chưa làm.
+- Nếu bước "Download pet photos" báo lỗi (có dấu cảnh báo vàng trong lần chạy), bản backup vẫn có database nhưng không có ảnh.
