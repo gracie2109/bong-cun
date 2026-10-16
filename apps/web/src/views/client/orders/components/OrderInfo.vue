@@ -43,8 +43,8 @@
 <script lang="ts" setup>
 import { formatPrice } from "@/lib/utils";
 import type { ShopOrderDetail } from "@bongcun/core/shop";
-import { formatAddress } from "@/utils/shop/address";
-import { orderShippingFee } from "@/utils/shop/order";
+import { formatAddress } from "@bongcun/core/shop";
+import { orderShippingFee } from "@bongcun/core/shop";
 
 defineProps<{ order: ShopOrderDetail; feeWentUp: boolean }>();
 </script>

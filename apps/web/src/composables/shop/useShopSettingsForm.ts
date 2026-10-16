@@ -1,7 +1,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import { useSaveShopSettings, useShopSettings } from "@/queries/shop";
 import { useAuthStore } from "@/stores";
-import { settingsErrors, toForm, toSettings, type SettingsForm } from "@/utils/shop/settingsForm";
+import { settingsErrors, toForm, toSettings, type SettingsForm } from "@bongcun/core/shop";
 import { emptyGhnLocation } from "@bongcun/core/shop";
 
 const blankForm = (): SettingsForm => ({

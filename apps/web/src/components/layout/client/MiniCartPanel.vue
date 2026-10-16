@@ -47,7 +47,7 @@ import { Button } from "@/components/ui/button";
 import { useCartView } from "@/composables/shop/useCartView";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/stores";
-import { lineKey } from "@/utils/shop/cart";
+import { lineKey } from "@bongcun/core/shop";
 
 const MINI_LINES = 5;
 

@@ -43,7 +43,7 @@
 import GhnLocationPicker from "@/components/common/GhnLocationPicker.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { SettingsForm } from "@/utils/shop/settingsForm";
+import type { SettingsForm } from "@bongcun/core/shop";
 import ShippingTest from "./ShippingTest.vue";
 
 defineProps<{ form: SettingsForm; errors: string[]; disabled: boolean }>();

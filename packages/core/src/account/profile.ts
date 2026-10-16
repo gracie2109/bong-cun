@@ -1,5 +1,5 @@
 import type { MyProfile, ProfileInput } from "@bongcun/core/account";
-import { phoneDigits } from "@/utils/shop/address";
+import { phoneDigits } from "../shop/address";
 
 export type ProfileForm = ProfileInput;
 export type ProfileErrors = Partial<Record<"fullName" | "phone" | "birthDate", true>>;

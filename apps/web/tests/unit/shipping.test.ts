@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_DELIVERY_G } from "@/utils/shop/shippingLimits";
+import { MAX_DELIVERY_G } from "@bongcun/core/shop";
 import {
   canDeliver,
   clampQuote,
@@ -9,7 +9,7 @@ import {
   PACKAGING_G,
   resolveShippingFee,
   shouldWarnFeeChange,
-} from "@/utils/shop/shipping";
+} from "@bongcun/core/shop";
 import { serviceTypeForWeight } from "../../server/utils/ghnQuote";
 
 describe("shipping limits", () => {

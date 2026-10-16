@@ -21,7 +21,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { CalendarClock } from "lucide-vue-next";
 import type { MyAppointment } from "@bongcun/core/account";
-import { businessDate, dayLabel, slotTimeLabel } from "@/utils/spa/booking";
+import { businessDate, dayLabel, slotTimeLabel } from "@bongcun/core/spa";
 
 const props = defineProps<{ appointment: MyAppointment | null }>();
 

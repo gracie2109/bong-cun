@@ -64,8 +64,8 @@ import { Copy } from "lucide-vue-next";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
 import type { AdminOrder } from "@bongcun/core/shop";
-import { formatAddress } from "@/utils/shop/address";
-import { copyableAddress, trackingUrl } from "@/utils/shop/orderAdmin";
+import { formatAddress } from "@bongcun/core/shop";
+import { copyableAddress, trackingUrl } from "@bongcun/core/shop";
 import { money } from "@/views/admin/pos/format";
 
 const props = defineProps<{ order: AdminOrder }>();

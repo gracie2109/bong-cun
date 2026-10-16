@@ -47,7 +47,7 @@ import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import type { MyAppointment } from "@bongcun/core/account";
-import { businessDate, dayLabel, rangeLabel } from "@/utils/spa/booking";
+import { businessDate, dayLabel, rangeLabel } from "@bongcun/core/spa";
 
 const STATUS_TONE: Record<string, string> = {
   booked: "bg-sky-100 text-sky-700",

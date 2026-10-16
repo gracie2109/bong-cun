@@ -1,5 +1,5 @@
 import { useI18n } from "vue-i18n";
-import { splitDuration } from "@/utils/spa/catalog";
+import { splitDuration } from "@bongcun/core/spa";
 
 /** Returns a function turning minutes into "1 giờ 30 phút" (empty when unknown). */
 export const useDurationLabel = () => {

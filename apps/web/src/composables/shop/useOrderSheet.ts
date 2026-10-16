@@ -4,7 +4,7 @@ import i18n from "@/i18n";
 import { useOrderStep, useShopOrderDetail } from "@/queries/shopOrdersAdmin";
 import { stepErrorHint } from "@bongcun/supabase/shop";
 import type { OrderStepCall } from "@bongcun/supabase/shop";
-import { codAmount, orderActions, type OrderAction } from "@/utils/shop/orderAdmin";
+import { codAmount, orderActions, type OrderAction } from "@bongcun/core/shop";
 
 /** Steps that ask for something first; the others (pack) only ask "are you sure". */
 type Dialog = OrderAction | null;

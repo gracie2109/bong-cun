@@ -29,7 +29,7 @@
 import PawMark from "@/components/shop/PawMark.vue";
 import { formatPrice } from "@/lib/utils";
 import type { CartLineView } from "@bongcun/core/shop";
-import { lineAmount, lineKey } from "@/utils/shop/cart";
+import { lineAmount, lineKey } from "@bongcun/core/shop";
 import CheckoutSection from "./CheckoutSection.vue";
 
 defineProps<{ lines: CartLineView[] }>();

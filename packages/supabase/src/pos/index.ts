@@ -5,4 +5,4 @@ export * from "./shifts";
 export * from "./invoices";
 export * from "./returns";
 export * from "./catalog";
-export * from "./errors";
+export * from "@bongcun/core/pos";

@@ -5,7 +5,7 @@ import { shopKeys } from "@/queries/keys";
 import { fetchCartLines } from "@bongcun/supabase/shop";
 import { useCart } from "@/stores";
 import type { CartLineView } from "@bongcun/core/shop";
-import { cartSubtotal, cartWeightG, hasCartIssue, hasInStoreOnly, lineKey } from "@/utils/shop/cart";
+import { cartSubtotal, cartWeightG, hasCartIssue, hasInStoreOnly, lineKey } from "@bongcun/core/shop";
 
 /**
  * The cart with live data. Only the set of (product, unit) pairs decides when the database is

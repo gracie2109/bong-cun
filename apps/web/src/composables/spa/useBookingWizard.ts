@@ -10,7 +10,7 @@ import {
   togglePick,
   toBookingItems,
   type PicksByPet,
-} from "@/utils/spa/booking";
+} from "@bongcun/core/spa";
 
 /** State and rules of the four-step booking wizard: branch, pets and services, time, confirm. */
 export const useBookingWizard = () => {

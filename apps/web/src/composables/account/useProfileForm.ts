@@ -1,6 +1,6 @@
 import { computed, reactive, ref, watch } from "vue";
 import { useMyProfile, useSaveMyProfile } from "@/queries/account";
-import { emptyProfileForm, isProfileChanged, profileErrors, profileToForm } from "@/utils/account/profile";
+import { emptyProfileForm, isProfileChanged, profileErrors, profileToForm } from "@bongcun/core/account";
 
 /** The profile form: loads the saved profile, validates, saves. */
 export const useProfileForm = () => {

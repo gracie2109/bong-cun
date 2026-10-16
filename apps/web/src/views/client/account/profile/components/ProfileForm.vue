@@ -36,7 +36,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProfileErrors, ProfileForm } from "@/utils/account/profile";
+import type { ProfileErrors, ProfileForm } from "@bongcun/core/account";
 
 const props = defineProps<{
   form: ProfileForm;

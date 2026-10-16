@@ -1,6 +1,6 @@
 import { useDebounceFn } from "@vueuse/core";
 import { ref, watch, type Ref } from "vue";
-import { clampQty } from "@/utils/shop/cart";
+import { clampQty } from "@bongcun/core/shop";
 
 /**
  * A quantity box that follows the cart: typing updates the box at once and the cart 500 ms after

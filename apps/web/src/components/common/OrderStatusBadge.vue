@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import type { ShopOrderStatus } from "@bongcun/core/shop";
-import { STATUS_TONE } from "@/utils/shop/order";
+import { STATUS_TONE } from "@bongcun/core/shop";
 
 defineProps<{ status: ShopOrderStatus }>();
 </script>

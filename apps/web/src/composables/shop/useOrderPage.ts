@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useCancelShopOrder, useMyShopOrder } from "@/queries/shopOrders";
 import { orderErrorHint } from "@bongcun/supabase/shop";
-import { canCancelOrder, feeWentUp, orderSteps } from "@/utils/shop/order";
+import { canCancelOrder, feeWentUp, orderSteps } from "@bongcun/core/shop";
 
 /** State and actions of /orders/:code: the order, its progress line and the customer cancel. */
 export const useOrderPage = () => {

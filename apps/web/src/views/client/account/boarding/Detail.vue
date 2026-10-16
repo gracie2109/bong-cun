@@ -68,7 +68,7 @@ import { ArrowLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { useMyBoardingStay } from "@/queries/accountBoarding";
-import { dayLabel } from "@/utils/spa/booking";
+import { dayLabel } from "@bongcun/core/spa";
 import CareTimeline from "./components/CareTimeline.vue";
 import { dayOf, STATUS_TONE } from "./format";
 

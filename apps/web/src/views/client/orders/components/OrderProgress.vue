@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { Check } from "lucide-vue-next";
 import type { ShopOrderDetail } from "@bongcun/core/shop";
-import { formatDateTime, type OrderStep } from "@/utils/shop/order";
+import { formatDateTime, type OrderStep } from "@bongcun/core/shop";
 
 defineProps<{ order: ShopOrderDetail; steps: OrderStep[] }>();
 </script>

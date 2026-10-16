@@ -44,7 +44,7 @@ import { Store } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ShopPublicSettings } from "@bongcun/core/shop";
-import type { CheckoutErrors } from "@/utils/shop/order";
+import type { CheckoutErrors } from "@bongcun/core/shop";
 import CheckoutSection from "./CheckoutSection.vue";
 
 const name = defineModel<string>("name", { required: true });

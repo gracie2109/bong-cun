@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { formatPrice } from "@/lib/utils";
-import { salePercent } from "@/utils/shop/price";
+import { salePercent } from "@bongcun/core/shop";
 
 /** A price in the shop's style; with `compareAt` above it, shows the old price struck out and the saving. */
 const props = withDefaults(

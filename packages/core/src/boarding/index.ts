@@ -5,3 +5,4 @@ export * from "./board";
 export * from "./care";
 export * from "./timeline";
 export * from "./web";
+export * from "./errors";

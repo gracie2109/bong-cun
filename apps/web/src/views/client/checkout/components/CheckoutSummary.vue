@@ -67,7 +67,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { useShippingQuote } from "@/composables/shop/useShippingQuote";
 import { formatPrice } from "@/lib/utils";
 import type { DeliveryMethod } from "@bongcun/core/shop";
-import { formatDate } from "@/utils/shop/order";
+import { formatDate } from "@bongcun/core/shop";
 
 const note = defineModel<string>("note", { required: true });
 const props = defineProps<{

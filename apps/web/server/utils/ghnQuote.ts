@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MAX_DELIVERY_G } from "../../src/utils/shop/shippingLimits";
+import { MAX_DELIVERY_G } from "@bongcun/core/shop";
 
 // Rules for pricing a parcel with GHN, kept free of Nuxt so they can be tested alone.
 
