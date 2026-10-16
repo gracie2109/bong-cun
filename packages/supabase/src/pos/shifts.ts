@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { z } from "zod";
+import { shiftSummaryResult as shiftSummarySchema } from "@bongcun/core/pos";
 import { pageRange, parseRpc, searchOr, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 import type { ShiftStatus } from "./types";
@@ -57,22 +57,6 @@ export const toCashShift = (row: Tables<"cash_shifts">): CashShift => ({
   closeNote: row.close_note,
 });
 
-
-const shiftSummarySchema = z.object({
-  opening_cash: z.number(),
-  invoice_count: z.number(),
-  cancelled_count: z.number(),
-  sales_total: z.number(),
-  discount_total: z.number(),
-  change_total: z.number(),
-  cash_in: z.number(),
-  transfer_in: z.number(),
-  card_in: z.number(),
-  return_count: z.number(),
-  refund_cash: z.number(),
-  refund_transfer: z.number(),
-  expected_cash: z.number(),
-});
 
 const toShiftSummary = (raw: unknown): ShiftSummary => {
   const row = parseRpc("cash_shift_summary", shiftSummarySchema, raw);

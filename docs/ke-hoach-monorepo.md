@@ -692,10 +692,17 @@ Khác với kế hoạch gốc, có chủ ý:
 - `packages/supabase` có lib DOM vì `storage.ts` và đính kèm y tế còn nhận `File`; sẽ thành port lưu file khi làm mobile. `core` không có DOM.
 - Barrel `export *` theo feature (`@bongcun/core/shop`, `@bongcun/supabase/pos`...) thay vì khai `exports` từng đường con.
 - Luật dependency-cruiser: `core` không import framework hay `supabase-js`; `supabase` chỉ import `core`; trong `apps/web` không file nào import `supabase-js`.
-- Hợp đồng zod, mapper, test hình dạng RPC trên DB CI và test đối chiếu quyền (mục 17.5) chưa làm; cần DB trong test.
+- Mapper sang kiểu miền chưa làm. Hợp đồng zod cho luồng tiền, test hình dạng RPC và test đối chiếu quyền (mục 17.5) đã làm, xem mục "Giai đoạn 3b: hợp đồng và test trên DB" bên dưới.
 - Nitro inline `@bongcun/core` để bundle server (proxy GHN) không import TypeScript ngoài.
 
 Giai đoạn 3, có chủ ý khác kế hoạch gốc:
 
 - Chỉ chuyển thư mục màn hình (views) sang `features/`. Queries và composables theo module vẫn ở `src/queries`, `src/composables`: nhiều module dùng chung nên chuyển bây giờ phải đoán chủ sở hữu; làm dần khi chạm vào module.
 - Chưa có luật "feature chỉ import feature khác qua index.ts" vì các feature chưa có barrel; thêm khi tách queries/composables.
+
+### Giai đoạn 3b: hợp đồng và test trên DB (luồng tiền)
+
+- `packages/core/src/pos/contract.ts` và `shop/contract.ts`: zod vào (camelCase) và ra (đúng `jsonb` của hàm SQL) cho bán hàng tại quầy (`create_invoice`), trả hàng, ca thu ngân, đặt đơn online (`place_shop_order`), các bước nhân viên và thu tiền nhận tại quầy. Repository trong `packages/supabase` dùng đúng các schema này qua `parseRpc`. `core` thêm phụ thuộc `zod`.
+- Mã lỗi: `AppError` nhận thêm mã nghiệp vụ là `hint` của hàm SQL (`POS_ERROR_HINTS`, `SHOP_ERROR_HINTS`); `toAppError` đọc mã Postgres trước, rồi mới đến `hint`. Test đơn vị đọc `supabase/schema.sql` để bảo đảm mọi `hint` mà hàm tiền ném ra đều có tên trong `core` và không có tên nào thừa.
+- `apps/web/tests/db` (`npm run test:db`, cần `DATABASE_URL`): gọi thật từng RPC tiền trên DB đã chạy hết migration, `parse` bằng schema của `core`; so `ADMIN_ROUTE_PERMISSIONS` với bảng `permissions`; so `canUse` (menu) với `has_permission` (DB) cho mọi vai trò × quyền × phương thức; kiểm tra phạm vi chi nhánh và RLS hóa đơn theo vai trò. Mỗi test chạy trong giao dịch rồi rollback. CI chạy bước này trong job `db` ngay sau `supabase test db`.
+- Chưa làm: hợp đồng cho kho, y tế, lưu trú, spa; mapper sang kiểu miền; chạy cùng bộ test với adapter HTTP.

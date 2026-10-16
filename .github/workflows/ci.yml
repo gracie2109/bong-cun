@@ -39,6 +39,15 @@ jobs:
         run: supabase db start
       - name: SQL tests (supabase/tests)
         run: supabase test db
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Contract tests (RPC shapes and permissions) against the migrated database
+        run: npm run test:db
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       - name: supabase/schema.sql matches the migrations
         run: |
           supabase db dump --local --schema public -f supabase/schema.sql

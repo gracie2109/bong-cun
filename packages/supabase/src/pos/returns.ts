@@ -1,14 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { z } from "zod";
+import { REFUND_METHODS, salesReturnResult as returnResultSchema, type RefundMethod } from "@bongcun/core/pos";
 import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
 
 type Client = SupabaseClient<Database>;
 
 // ------------------------------------------------------------------ returns
-export type RefundMethod = "cash" | "transfer";
-export const REFUND_METHODS: readonly RefundMethod[] = ["cash", "transfer"];
+export { REFUND_METHODS, type RefundMethod };
 
 export type SalesReturn = {
   id: string;
@@ -55,8 +54,6 @@ export type SalesReturnInput = {
   refundMethod: RefundMethod;
   lines: { invoiceLineId: string; qty: number }[];
 };
-
-const returnResultSchema = z.object({ id: z.string(), code: z.string(), refund_amount: z.number() });
 
 /** Takes goods back and refunds them from the caller's open shift; the goods go back to their lots. */
 export const createSalesReturn = async (

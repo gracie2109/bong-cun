@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { z } from "zod";
+import { saleResult as saleResultSchema } from "@bongcun/core/pos";
 import { filterSafe, pageRange, parseRpc, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import {
   PAYMENT_METHODS,
@@ -196,14 +196,6 @@ const toCustomerPayload = (customer: SaleCustomer) => {
   if ("userId" in customer) return { user_id: customer.userId };
   return { full_name: customer.fullName, phone: customer.phone, email: customer.email ?? null };
 };
-
-const saleResultSchema = z.object({
-  id: z.string(),
-  code: z.string(),
-  total: z.number(),
-  change_amount: z.number(),
-  replayed: z.boolean().nullish(),
-});
 
 export const createInvoice = async (client: Client, input: SaleInput): Promise<SaleResult> => {
   const raw = unwrap(
