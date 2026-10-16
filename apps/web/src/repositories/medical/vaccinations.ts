@@ -12,7 +12,7 @@ import type {
   VaccineLot,
 } from "@bongcun/core/medical";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
-import { asRecord, str, strOrNull } from "../spa/parse";
+import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

@@ -64,7 +64,7 @@ import type { FormContext } from "vee-validate";
 import { Eye, EyeOff, Info, LockKeyhole, RefreshCw } from "lucide-vue-next";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 import { generatePassword, passwordStrength, useCustomerRules } from "./customerFormRules";
 
 const STRENGTH_LEVELS = [1, 2, 3, 4];

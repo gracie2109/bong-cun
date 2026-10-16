@@ -1,6 +1,7 @@
 // Helpers shared by every repository. Pure TS: no Vue, Pinia, router or env.
 export { toPage, type Page, type PageParams } from "@bongcun/core/shared";
 export * from "./errors";
+export * from "./parse";
 import type { PostgrestError } from "@supabase/supabase-js";
 import type { ZodType } from "zod";
 import type { PageParams } from "@bongcun/core/shared";

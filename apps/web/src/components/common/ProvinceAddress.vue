@@ -128,7 +128,7 @@ import type {
   GHNProvince,
   GHNWard,
   IAddress,
-} from "@/types/location.type";
+} from "@bongcun/core/users";
 import { getDistrict, getProvince, getWard } from "@/services/location.service";
 import type { FormContext } from "vee-validate";
 

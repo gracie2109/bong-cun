@@ -83,7 +83,7 @@ import { Icon } from "@iconify/vue";
 import { ChevronDown } from "lucide-vue-next";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import type { Permission } from "@/repositories/permissions";
+import type { Permission } from "@bongcun/supabase/users";
 import { METHOD_ICONS, methodsOf, moduleIcon, type Method } from "../rbac";
 import { groupGranted, groupState, rowState, type Grants } from "./roleGrants";
 import type { KeyedPermissionGroup } from "./usePermissionGroups";

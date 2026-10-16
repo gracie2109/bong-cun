@@ -8,7 +8,7 @@ import {
   listMyPets,
   profileErrorHint,
   saveMyProfile,
-} from "@/repositories/account";
+} from "@bongcun/supabase/account";
 import type { ProfileInput } from "@bongcun/core/account";
 import { accountKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

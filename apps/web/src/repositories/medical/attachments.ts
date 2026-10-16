@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalAttachment } from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, str, strOrNull } from "../spa/parse";
+import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

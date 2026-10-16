@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 
 defineProps<{ branches: Branch[]; selected: string | null }>();
 const emit = defineEmits<{ pick: [id: string] }>();

@@ -10,7 +10,7 @@ import type {
   VisitFilter,
 } from "@bongcun/core/medical";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
-import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
+import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
 import { rowsOf, toDetail, toMedicalVisit } from "./visitMappers";
 
 export { toMedicalVisit };

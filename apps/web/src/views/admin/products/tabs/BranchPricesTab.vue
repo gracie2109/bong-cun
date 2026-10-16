@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import { Input } from "@/components/ui/input";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import { money, parseAmount } from "@/views/admin/pos/format";
 import type { VariantRow } from "../productVariantForm";
 import { cellKey } from "../prices/priceGrid";

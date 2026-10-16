@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { Store } from "lucide-vue-next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Branch } from "@/repositories/branches";
+import type { Branch } from "@bongcun/supabase/users";
 import { ALL_BRANCHES } from "./useReportFilters";
 
 defineProps<{ modelValue: string | undefined; options: Branch[]; canPickAll: boolean }>();

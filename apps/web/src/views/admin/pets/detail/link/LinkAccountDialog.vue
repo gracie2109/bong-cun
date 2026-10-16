@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
-import type { Customer } from "@/repositories/customers";
+import type { Customer } from "@bongcun/supabase/customers";
 import { useLinkAccount } from "./useLinkAccount";
 
 const props = defineProps<{ customer: Customer }>();

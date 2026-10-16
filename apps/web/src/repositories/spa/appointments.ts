@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { unwrap, type Page } from "@bongcun/supabase/shared";
-import { asRecord, numOrNull, str, strOrNull } from "./parse";
+import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
 import type { AppointmentStatus, TicketStatus } from "./rules";
 
 type Client = SupabaseClient<Database>;

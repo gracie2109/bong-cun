@@ -108,7 +108,7 @@ import { onMounted, ref } from "vue";
 import { useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import LoadingIndicator from "@/components/common/LoadingIndicator.vue";
-import type { IRegisterPayload } from "@/types/user.type";
+import type { IRegisterPayload } from "@bongcun/core/users";
 import { InputPassword, VerifyEmailCode } from "@/components/common";
 import { useRoute, useRouter } from "vue-router";
 import useValidation from "@/composables/useValidation";

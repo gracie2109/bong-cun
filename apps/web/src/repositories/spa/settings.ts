@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";
-import { str } from "./parse";
+import { str } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

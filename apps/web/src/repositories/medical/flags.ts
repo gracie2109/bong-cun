@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import type { PetHealthFlags } from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, strOrNull } from "../spa/parse";
+import { asRecord, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

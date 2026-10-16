@@ -62,9 +62,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useSaveStaffAssignments } from "@/queries/staff";
-import type { Branch } from "@/repositories/branches";
-import type { Role } from "@/repositories/roles";
-import type { StaffMember } from "@/repositories/staff";
+import type { Branch } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
+import type { StaffMember } from "@bongcun/supabase/users";
 
 const props = defineProps<{
   open: boolean;

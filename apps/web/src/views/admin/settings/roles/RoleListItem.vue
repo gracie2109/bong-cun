@@ -75,8 +75,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Role } from "@/repositories/roles";
-import type { StaffMember } from "@/repositories/staff";
+import type { Role } from "@bongcun/supabase/users";
+import type { StaffMember } from "@bongcun/supabase/users";
 import { initials } from "@/views/admin/pets/format";
 import { CUSTOMER_ROLE, SUPER_ADMIN_ROLE } from "../rbac";
 

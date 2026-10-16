@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { supabaseClient } from "@/lib/supabase";
-import { listStaff, saveStaffAssignments, type StaffAssignment } from "@/repositories/staff";
+import { listStaff, saveStaffAssignments, type StaffAssignment } from "@bongcun/supabase/users";
 import { invalidateAccess } from "./invalidate";
 import { staffKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

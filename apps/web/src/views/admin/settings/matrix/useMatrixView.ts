@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import type { Permission } from "@/repositories/permissions";
+import type { Permission } from "@bongcun/supabase/users";
 import { fold, groupByModule, type PermissionGroup } from "../rbac";
 import { FILTER_ALL } from "@/lib/listing";
 

@@ -1,5 +1,5 @@
-import type { Permission } from "@/repositories/permissions";
-import type { Role } from "@/repositories/roles";
+import type { Permission } from "@bongcun/supabase/users";
+import type { Role } from "@bongcun/supabase/users";
 import { CUSTOMER_ROLE, methodsOf, roleMethods } from "../rbac";
 
 const CSV_FILE_NAME = "permissions.csv";

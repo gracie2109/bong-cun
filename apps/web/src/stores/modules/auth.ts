@@ -8,12 +8,12 @@ import {
   getUserById,
   isDisplayNameAvailable,
   toCurrentUser,
-} from "@/repositories/users";
+} from "@bongcun/supabase/users";
 import { canUse, isAdminRole, isStaffRole, SUPER_ADMIN_ROLE, type AdminGrants } from "@bongcun/core/auth";
-import { listMyPermissions } from "@/repositories/permissions";
+import { listMyPermissions } from "@bongcun/supabase/users";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";
-import type { IUser, ILoginPayload, IRegisterPayload } from "@/types/user.type";
+import type { IUser, ILoginPayload, IRegisterPayload } from "@bongcun/core/users";
 import { createRecoveryFlow } from "./auth-parts/recovery";
 import { createVerificationFlow } from "./auth-parts/verification";
 

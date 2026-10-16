@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { IUser } from "@/types/user.type";
+import type { IUser } from "@bongcun/core/users";
 
 /** Columns of the web-account customer export. */
 export const customersExportColumns = (): ExportColumn<IUser>[] => [

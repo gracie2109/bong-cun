@@ -3,7 +3,7 @@ import { computed, unref, type MaybeRef } from "vue";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
-import { cancelErrorHint, cancelMyAppointment, listMyAppointments } from "@/repositories/account";
+import { cancelErrorHint, cancelMyAppointment, listMyAppointments } from "@bongcun/supabase/account";
 import type { AppointmentScope } from "@bongcun/core/account";
 import { accountKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
