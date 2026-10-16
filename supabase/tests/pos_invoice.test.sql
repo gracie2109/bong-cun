@@ -2,7 +2,7 @@
 -- the same sale, cancelling puts stock back, returns cannot exceed what was sold.
 begin;
 \ir _helpers/setup.psql
-select plan(16);
+select plan(17);
 
 create temp table ctx as
 select b as branch, tests.create_product('Pate', 25000) as product
@@ -30,6 +30,11 @@ update ctx set invoice = public.create_invoice(jsonb_build_object(
 
 select is((select (invoice ->> 'total')::numeric from ctx), 125000::numeric, 'total uses the server price, not the one sent');
 select is((select (invoice ->> 'change_amount')::numeric from ctx), 5000::numeric, 'change is paid minus total');
+-- src/repositories/pos/invoices.ts parses this result with zod: keep the keys in step.
+select ok(
+  (select invoice ?& array['id', 'code', 'total', 'change_amount', 'replayed'] from ctx),
+  'create_invoice returns the keys the app reads'
+);
 
 reset role;
 select is((select tests.lot_qty(lot_early) from ctx), 0::numeric, 'the lot expiring first is used up first');

@@ -1,5 +1,6 @@
 // Helpers shared by every repository. Pure TS: no Vue, Pinia, router or env.
 import type { PostgrestError } from "@supabase/supabase-js";
+import type { ZodType } from "zod";
 
 export type Page<T> = { rows: T[]; total: number };
 
@@ -33,6 +34,17 @@ export const searchOr = (columns: string[], text: string): string | null => {
 export const unwrap = <T>(result: { data: T | null; error: PostgrestError | null }): T => {
   if (result.error) throw result.error;
   return result.data as T;
+};
+
+/**
+ * Checks the `jsonb` an RPC returned against the shape the code expects. A renamed or missing key
+ * then fails here, naming the RPC and the key, instead of showing `undefined` on a screen.
+ */
+export const parseRpc = <T>(rpc: string, schema: ZodType<T>, data: unknown): T => {
+  const result = schema.safeParse(data);
+  if (result.success) return result.data;
+  const issue = result.error.issues[0];
+  throw new Error(`${rpc} returned an unexpected shape at "${issue?.path.join(".") ?? ""}": ${issue?.message ?? "invalid"}`);
 };
 
 // Postgres error codes surfaced by PostgREST.

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/types/database.types";
-import { pageRange, searchOr, unwrap, type Page, type PageParams } from "../shared";
+import { z } from "zod";
+import { pageRange, parseRpc, searchOr, unwrap, type Page, type PageParams } from "../shared";
 import { num } from "./helpers";
 import type { ShiftStatus } from "./types";
 
@@ -57,22 +58,38 @@ export const toCashShift = (row: Tables<"cash_shifts">): CashShift => ({
 });
 
 
+const shiftSummarySchema = z.object({
+  opening_cash: z.number(),
+  invoice_count: z.number(),
+  cancelled_count: z.number(),
+  sales_total: z.number(),
+  discount_total: z.number(),
+  change_total: z.number(),
+  cash_in: z.number(),
+  transfer_in: z.number(),
+  card_in: z.number(),
+  return_count: z.number(),
+  refund_cash: z.number(),
+  refund_transfer: z.number(),
+  expected_cash: z.number(),
+});
+
 const toShiftSummary = (raw: unknown): ShiftSummary => {
-  const row = (raw ?? {}) as Record<string, unknown>;
+  const row = parseRpc("cash_shift_summary", shiftSummarySchema, raw);
   return {
-    openingCash: num(row.opening_cash),
-    invoiceCount: num(row.invoice_count),
-    cancelledCount: num(row.cancelled_count),
-    salesTotal: num(row.sales_total),
-    discountTotal: num(row.discount_total),
-    changeTotal: num(row.change_total),
-    cashIn: num(row.cash_in),
-    transferIn: num(row.transfer_in),
-    cardIn: num(row.card_in),
-    returnCount: num(row.return_count),
-    refundCash: num(row.refund_cash),
-    refundTransfer: num(row.refund_transfer),
-    expectedCash: num(row.expected_cash),
+    openingCash: row.opening_cash,
+    invoiceCount: row.invoice_count,
+    cancelledCount: row.cancelled_count,
+    salesTotal: row.sales_total,
+    discountTotal: row.discount_total,
+    changeTotal: row.change_total,
+    cashIn: row.cash_in,
+    transferIn: row.transfer_in,
+    cardIn: row.card_in,
+    returnCount: row.return_count,
+    refundCash: row.refund_cash,
+    refundTransfer: row.refund_transfer,
+    expectedCash: row.expected_cash,
   };
 };
 
