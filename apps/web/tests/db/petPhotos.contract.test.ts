@@ -24,6 +24,7 @@ describe("set_pet_photo agrees with has_permission on pets", () => {
           .then(() => "ok")
           .catch((error: { code?: string }) => error.code ?? "error");
         await db.rows("rollback to savepoint photo");
+        await db.signOut();
         if ((code === "ok") !== mayEdit) disagreements.push(`${role}: has_permission ${mayEdit}, set_pet_photo ${code}`);
       }
       expect(disagreements).toEqual([]);
