@@ -59,7 +59,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import type { LineType } from "@/repositories/pos";
-import type { ProductVariant } from "@/repositories/products";
+import type { ProductVariant } from "@bongcun/supabase/products";
 import { type Priced } from "../branchPricing";
 import { CATALOG_TABS as TABS, toProductItem, type CatalogItem } from "../catalog";
 import { itemForBarcode, searchedItems } from "../scanItems";

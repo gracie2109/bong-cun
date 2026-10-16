@@ -1,6 +1,6 @@
 import { reactive, ref, watch, type Ref } from "vue";
 import { useSaveProductBrand } from "@/queries/productCategories";
-import type { ProductBrand } from "@/repositories/productCategories";
+import type { ProductBrand } from "@bongcun/supabase/products";
 
 /** The add/edit form of a brand: filled when the dialog opens, saved with the shared mutation. */
 export const useBrandForm = (open: Ref<boolean>, brand: Ref<ProductBrand | null>, close: () => void) => {

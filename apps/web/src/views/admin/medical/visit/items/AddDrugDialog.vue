@@ -61,7 +61,7 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { SellableProduct } from "@/repositories/products";
+import type { SellableProduct } from "@bongcun/supabase/products";
 import type { ItemInput } from "@bongcun/core/medical";
 import ProductPicker from "@/views/admin/inventory/documents/ProductPicker.vue";
 import DrugFields from "./DrugFields.vue";

@@ -1,5 +1,5 @@
 import { computed, ref, watch, type Ref } from "vue";
-import type { ProductGroup, ProductVariant } from "@/repositories/products";
+import type { ProductGroup, ProductVariant } from "@bongcun/supabase/products";
 
 /**
  * Picking one variant of a group by its attribute values (Vị: Gà, Khối lượng: 85g...).

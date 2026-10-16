@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
-import type { StockFilter, StockStatus } from "@/repositories/inventory";
+import type { StockFilter, StockStatus } from "@bongcun/supabase/inventory";
 
 const PAGE_SIZE = 20;
 const DEFAULT_EXPIRY_DAYS = 60;

@@ -89,7 +89,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
 import { useDeleteProductBrand, useProductBrands, useSaveProductBrand } from "@/queries/productCategories";
-import type { CatalogFilter, ProductBrand } from "@/repositories/productCategories";
+import type { CatalogFilter, ProductBrand } from "@bongcun/supabase/products";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ProductsNav from "../ProductsNav.vue";
 import BrandDialog from "./BrandDialog.vue";

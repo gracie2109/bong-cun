@@ -92,7 +92,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePermission } from "@/composables/usePermission";
 import { useStockDocuments } from "@/queries/inventory";
-import { DOC_TYPES, type DocType } from "@/repositories/inventory";
+import { DOC_TYPES, type DocType } from "@bongcun/supabase/inventory";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";
 import InventoryNav from "../InventoryNav.vue";

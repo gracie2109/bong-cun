@@ -1,4 +1,4 @@
-import type { ProductUnit, ProductUnitInput } from "@/repositories/products";
+import type { ProductUnit, ProductUnitInput } from "@bongcun/supabase/products";
 import { parseAmount } from "@/views/admin/pos/format";
 
 /** One conversion unit of a variant being edited; numbers stay text while typed. */

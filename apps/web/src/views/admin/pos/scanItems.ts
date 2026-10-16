@@ -1,6 +1,6 @@
 import { supabaseClient } from "@/lib/supabase";
 import { getBranchPrices } from "@/repositories/branchPrices";
-import { findByBarcode, getSellableProduct, searchSellableProducts } from "@/repositories/products";
+import { findByBarcode, getSellableProduct, searchSellableProducts } from "@bongcun/supabase/products";
 import { priceAtBranch } from "./branchPricing";
 import { toProductItem, type CatalogItem } from "./catalog";
 import { itemInUnit } from "./unitPricing";

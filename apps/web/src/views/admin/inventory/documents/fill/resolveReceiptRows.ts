@@ -1,4 +1,4 @@
-import type { SkuProduct } from "@/repositories/dataImports";
+import type { SkuProduct } from "@bongcun/supabase/data-io";
 import type { ImportRowResult } from "@bongcun/core/data-io";
 import { blankLine, type EditLine } from "../documentLines";
 import type { ReceiptFileRow } from "./receiptFileRow";

@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import type { StockRow } from "@/repositories/inventory";
+import type { StockRow } from "@bongcun/supabase/inventory";
 import MinStockForm from "./MinStockForm.vue";
 import StockLotsSection from "./StockLotsSection.vue";
 import StockMovementsSection from "./StockMovementsSection.vue";

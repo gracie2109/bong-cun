@@ -15,7 +15,7 @@ import { computed } from "vue";
 import { ShoppingBag } from "lucide-vue-next";
 import PriceDisplay from "@/components/shop/PriceDisplay.vue";
 import { Button } from "@/components/ui/button";
-import type { ProductGroup } from "@/repositories/products";
+import type { ProductGroup } from "@bongcun/supabase/products";
 
 /** Phones: price and "add to cart" stay at the bottom of the screen while reading the page. */
 const props = defineProps<{ price: number | null; group: ProductGroup; picked: boolean; canAdd: boolean }>();

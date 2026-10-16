@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { DocStatus, DocType, StockDocument } from "@/repositories/inventory";
+import type { DocStatus, DocType, StockDocument } from "@bongcun/supabase/inventory";
 
 const TYPE_TEXT: Record<DocType, string> = { receipt: "Phiếu nhập kho", writeoff: "Phiếu xuất hủy", count: "Phiếu kiểm kê" };
 const STATUS_TEXT: Record<DocStatus, string> = { draft: "Nháp", posted: "Đã ghi sổ", cancelled: "Đã hủy" };

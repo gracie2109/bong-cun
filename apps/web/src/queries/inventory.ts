@@ -26,7 +26,7 @@ import {
   type StockFilter,
   type SupplierFilter,
   type SupplierInput,
-} from "@/repositories/inventory";
+} from "@bongcun/supabase/inventory";
 import { errorDetail } from "@/repositories/pos";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";

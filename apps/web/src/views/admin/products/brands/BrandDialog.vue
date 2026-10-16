@@ -34,7 +34,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import UploadFields from "@/components/common/UploadFields.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProductBrand } from "@/repositories/productCategories";
+import type { ProductBrand } from "@bongcun/supabase/products";
 import { useBrandForm } from "./useBrandForm";
 
 const props = defineProps<{ brand: ProductBrand | null }>();

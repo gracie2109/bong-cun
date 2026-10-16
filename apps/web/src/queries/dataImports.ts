@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { supabaseClient } from "@/lib/supabase";
-import { importPets, importSuppliers } from "@/repositories/dataImports";
+import { importPets, importSuppliers } from "@bongcun/supabase/data-io";
 import type { PetImportRow, SupplierImportRow } from "@bongcun/core/data-io";
 import { customerKeys, petProfileKeys, supplierKeys } from "./keys";
 import { notifyFailure } from "./notify";

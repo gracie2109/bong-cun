@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { supabaseClient } from "@/lib/supabase";
-import { exportProducts, importProducts } from "@/repositories/productImport";
+import { exportProducts, importProducts } from "@bongcun/supabase/data-io";
 import type { ImportRow } from "@bongcun/core/data-io";
 import { productBrandKeys, productCategoryKeys, productKeys } from "./keys";
 import { notifyFailure } from "./notify";

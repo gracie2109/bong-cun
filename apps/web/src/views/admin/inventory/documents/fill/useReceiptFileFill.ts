@@ -1,7 +1,7 @@
 import { useTableImport } from "@/composables/useTableImport";
 import { supabaseClient } from "@/lib/supabase";
 import { emptyReport } from "@bongcun/core/data-io";
-import { findProductsBySku, type SkuProduct } from "@/repositories/dataImports";
+import { findProductsBySku, type SkuProduct } from "@bongcun/supabase/data-io";
 import { notifyFailure } from "@/queries/notify";
 import type { EditLine } from "../documentLines";
 import { parseReceiptFile } from "./parseReceiptFile";

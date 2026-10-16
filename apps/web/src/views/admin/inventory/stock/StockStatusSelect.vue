@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { STOCK_STATUSES, type StockStatus } from "@/repositories/inventory";
+import { STOCK_STATUSES, type StockStatus } from "@bongcun/supabase/inventory";
 
 const status = defineModel<StockStatus>({ required: true });
 </script>

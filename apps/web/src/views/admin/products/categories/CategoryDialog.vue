@@ -48,7 +48,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import UploadFields from "@/components/common/UploadFields.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProductCategory } from "@/repositories/productCategories";
+import type { ProductCategory } from "@bongcun/supabase/products";
 import CategorySelect from "../pickers/CategorySelect.vue";
 import { useCategoryForm } from "./useCategoryForm";
 

@@ -98,7 +98,7 @@ import {
   useProductCategories,
   useSaveProductCategory,
 } from "@/queries/productCategories";
-import type { CatalogFilter, ProductCategory } from "@/repositories/productCategories";
+import type { CatalogFilter, ProductCategory } from "@bongcun/supabase/products";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ProductsNav from "../ProductsNav.vue";
 import CategoryDialog from "./CategoryDialog.vue";

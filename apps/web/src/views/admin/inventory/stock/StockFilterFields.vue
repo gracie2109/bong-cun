@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { FilterField } from "@/components/common/search-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { EXPIRY_WINDOWS } from "@/repositories/inventory";
+import { EXPIRY_WINDOWS } from "@bongcun/supabase/inventory";
 
 /** Days ahead that count as "expiring", as text for the select. */
 const expiryWindow = defineModel<string>({ required: true });

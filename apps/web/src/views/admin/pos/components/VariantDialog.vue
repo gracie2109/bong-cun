@@ -64,7 +64,7 @@ import { useVariantChoice } from "@/composables/useVariantChoice";
 import { useBranchPrices } from "@/queries/branchPrices";
 import { useSellableStock } from "@/queries/inventory";
 import { useSellableGroup } from "@/queries/products";
-import { sellableUnits, type ProductGroup, type ProductUnit, type ProductVariant } from "@/repositories/products";
+import { sellableUnits, type ProductGroup, type ProductUnit, type ProductVariant } from "@bongcun/supabase/products";
 import { qty } from "@/views/admin/inventory/format";
 import ProductThumb from "@/views/admin/products/ProductThumb.vue";
 import { priceAtBranch, type Priced } from "../branchPricing";

@@ -50,7 +50,7 @@ import { Input } from "@/components/ui/input";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { supabaseClient } from "@/lib/supabase";
 import { useSellableProductsPaged } from "@/queries/products";
-import { searchSellableProducts, type SellableProduct } from "@/repositories/products";
+import { searchSellableProducts, type SellableProduct } from "@bongcun/supabase/products";
 
 const BLUR_CLOSE_MS = 150;
 

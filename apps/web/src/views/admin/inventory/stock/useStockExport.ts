@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { getStockSummary, type StockFilter } from "@/repositories/inventory";
+import { getStockSummary, type StockFilter } from "@bongcun/supabase/inventory";
 import { stockCountSheetColumns, stockExportColumns } from "./stockExportColumns";
 
 /** Export of the stock list under its filter; the PDF is a count sheet to fill in by hand. */

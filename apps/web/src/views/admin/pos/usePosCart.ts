@@ -6,7 +6,7 @@ import { DISCOUNT_LIMIT } from "@/repositories/pos";
 import type { BillableTicket } from "@/repositories/spa";
 import type { BillableBoardingStay } from "@bongcun/core/boarding";
 import type { BillableVisit } from "@bongcun/core/medical";
-import type { ProductUnit } from "@/repositories/products";
+import type { ProductUnit } from "@bongcun/supabase/products";
 import type { CatalogItem } from "./catalog";
 import type { Buyer } from "./components/CustomerPanel.vue";
 import { parseAmount } from "./format";

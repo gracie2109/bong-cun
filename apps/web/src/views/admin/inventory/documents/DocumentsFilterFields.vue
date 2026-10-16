@@ -23,7 +23,7 @@
 import { FilterField } from "@/components/common/search-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FILTER_ALL } from "@/lib/listing";
-import { DOC_STATUSES, DOC_TYPES } from "@/repositories/inventory";
+import { DOC_STATUSES, DOC_TYPES } from "@bongcun/supabase/inventory";
 
 const docType = defineModel<string>("docType", { required: true });
 const status = defineModel<string>("status", { required: true });

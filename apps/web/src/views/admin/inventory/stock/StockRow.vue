@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { StockRow } from "@/repositories/inventory";
+import type { StockRow } from "@bongcun/supabase/inventory";
 import { money } from "@/views/admin/pos/format";
 import { day, daysUntil, qty } from "../format";
 

@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { StockRow } from "@/repositories/inventory";
+import type { StockRow } from "@bongcun/supabase/inventory";
 
 /** Columns of the stock export (Excel and CSV). */
 export const stockExportColumns = (): ExportColumn<StockRow>[] => [

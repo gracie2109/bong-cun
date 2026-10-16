@@ -5,7 +5,7 @@ import { computed, ref, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { supabaseClient } from "@/lib/supabase";
 import { useAuthStore } from "@/stores";
-import { deleteImage, pathFromPublicUrl, uploadCatalogImage, uploadImage, validateImage } from "@/repositories/storage";
+import { deleteImage, pathFromPublicUrl, uploadCatalogImage, uploadImage, validateImage } from "@bongcun/supabase/storage";
 import { DialogConfirm, LoadingSpin } from "@/components/common";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-icons/vue";

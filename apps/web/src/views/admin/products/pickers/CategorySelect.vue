@@ -20,7 +20,7 @@
 import { computed, ref } from "vue";
 import InfiniteSelect from "@/components/common/InfiniteSelect.vue";
 import { useProductCategoryOptions } from "@/queries/productCategories";
-import { categoryLabel } from "@/repositories/productCategories";
+import { categoryLabel } from "@bongcun/supabase/products";
 
 /** Searchable category choice; "" means no category. */
 const props = defineProps<{

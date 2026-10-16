@@ -71,7 +71,7 @@ import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { useProductGroups, useSetProductGroupActive } from "@/queries/products";
-import type { ProductGroup } from "@/repositories/products";
+import type { ProductGroup } from "@bongcun/supabase/products";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ProductGroupSheet from "./ProductGroupSheet.vue";
 import ProductRow from "./ProductRow.vue";

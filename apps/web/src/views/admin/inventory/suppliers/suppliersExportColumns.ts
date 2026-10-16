@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { Supplier } from "@/repositories/inventory";
+import type { Supplier } from "@bongcun/supabase/inventory";
 
 /** Columns of the supplier export; the headers match the supplier import template. */
 export const suppliersExportColumns = (): ExportColumn<Supplier>[] => [

@@ -1,4 +1,4 @@
-import type { ProductUnit } from "@/repositories/products";
+import type { ProductUnit } from "@bongcun/supabase/products";
 import type { CatalogItem } from "./catalog";
 
 /** What the database charges for a unit: its own price, else the base price times the factor. */

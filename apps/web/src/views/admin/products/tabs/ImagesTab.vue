@@ -55,7 +55,7 @@ import { ref, watch } from "vue";
 import { useFileDialog } from "@vueuse/core";
 import { ImagePlus, Loader2, Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { MAX_GROUP_IMAGES as MAX } from "@/repositories/products";
+import { MAX_GROUP_IMAGES as MAX } from "@bongcun/supabase/products";
 import ProductThumb from "../ProductThumb.vue";
 import type { GalleryImage } from "../images/useImageGallery";
 

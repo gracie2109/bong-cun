@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listStockDocuments, type StockDocumentFilter } from "@/repositories/inventory";
+import { listStockDocuments, type StockDocumentFilter } from "@bongcun/supabase/inventory";
 import { documentsExportColumns } from "./documentsExportColumns";
 
 /** Export of the stock documents under the filter the list is showing (Excel and CSV only). */

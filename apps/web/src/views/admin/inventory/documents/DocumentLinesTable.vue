@@ -125,7 +125,7 @@ import { X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isExpired, type DocType } from "@/repositories/inventory";
+import { isExpired, type DocType } from "@bongcun/supabase/inventory";
 import { money } from "@/views/admin/pos/format";
 import { day, qty } from "../format";
 import {

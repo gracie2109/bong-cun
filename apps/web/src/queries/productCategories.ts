@@ -16,7 +16,7 @@ import {
   type CatalogFilter,
   type ProductBrandInput,
   type ProductCategoryInput,
-} from "@/repositories/productCategories";
+} from "@bongcun/supabase/products";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { productBrandKeys, productCategoryKeys, productKeys } from "./keys";

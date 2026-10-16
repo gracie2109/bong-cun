@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { ProductGroup, ProductVariant } from "@/repositories/products";
+import type { ProductGroup, ProductVariant } from "@bongcun/supabase/products";
 
 const props = defineProps<{ group: ProductGroup; variant: ProductVariant | undefined }>();
 const { t } = useI18n();

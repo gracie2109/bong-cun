@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductAttribute } from "@/repositories/products";
+import type { ProductAttribute } from "@bongcun/supabase/products";
 import type { GalleryImage } from "../images/useImageGallery";
 import ProductAttributesEditor from "../ProductAttributesEditor.vue";
 import type { AttributeForm, VariantRow } from "../productVariantForm";

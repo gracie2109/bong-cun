@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { getClinicOnly, setClinicOnly } from "@/repositories/products";
+import { getClinicOnly, setClinicOnly } from "@bongcun/supabase/products";
 import { productKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

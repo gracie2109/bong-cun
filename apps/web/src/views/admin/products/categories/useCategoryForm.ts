@@ -1,6 +1,6 @@
 import { reactive, ref, watch, type Ref } from "vue";
 import { useSaveProductCategory } from "@/queries/productCategories";
-import type { ProductCategory } from "@/repositories/productCategories";
+import type { ProductCategory } from "@bongcun/supabase/products";
 
 /** The add/edit form of a category: filled when the dialog opens, saved with the shared mutation. */
 export const useCategoryForm = (open: Ref<boolean>, category: Ref<ProductCategory | null>, close: () => void) => {
