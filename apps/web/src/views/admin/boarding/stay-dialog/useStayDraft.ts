@@ -8,7 +8,7 @@ import {
   useTypeAvailability,
 } from "@/queries/boarding";
 import { useCustomerPets } from "@/queries/pos";
-import { boardingErrorDetail, boardingErrorHint } from "@/repositories/boarding";
+import { boardingErrorDetail, boardingErrorHint } from "@bongcun/supabase/boarding";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import type { Buyer } from "@/views/admin/pos/components/CustomerPanel.vue";
 import { useKennelTypeOptions } from "../useKennelTypeOptions";

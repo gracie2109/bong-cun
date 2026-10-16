@@ -11,7 +11,7 @@ import {
   getCheckoutPreview,
   listBillableBoarding,
   removeBoardingExtra,
-} from "@/repositories/boarding";
+} from "@bongcun/supabase/boarding";
 import type { CareLogInput, CheckInPetInput } from "@bongcun/core/boarding";
 import { boardingKeys } from "../keys";
 import { useBoardingAction } from "./action";

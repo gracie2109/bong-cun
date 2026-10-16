@@ -4,7 +4,7 @@ import { toast } from "vue-sonner";
 import i18n from "@/i18n";
 import { usePlaceShopOrder } from "@/queries/shopOrders";
 import { useShopPublicSettings } from "@/queries/shop";
-import { orderErrorDetail, orderErrorHint } from "@/repositories/shop";
+import { orderErrorDetail, orderErrorHint } from "@bongcun/supabase/shop";
 import { useAuthStore, useCart } from "@/stores";
 import type { DeliveryMethod } from "@bongcun/core/shop";
 import { lineKey } from "@/utils/shop/cart";

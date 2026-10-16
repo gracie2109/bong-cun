@@ -1,6 +1,6 @@
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
-import { boardingErrorDetail, boardingErrorHint } from "@/repositories/boarding";
+import { boardingErrorDetail, boardingErrorHint } from "@bongcun/supabase/boarding";
 import type { RestfullMethod } from "@/types";
 import { notifyFailure } from "../notify";
 

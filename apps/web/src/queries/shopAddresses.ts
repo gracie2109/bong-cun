@@ -9,7 +9,7 @@ import {
   listMyAddresses,
   saveMyAddress,
   setDefaultMyAddress,
-} from "@/repositories/shop";
+} from "@bongcun/supabase/shop";
 import type { AddressInput } from "@bongcun/core/shop";
 import { shopKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

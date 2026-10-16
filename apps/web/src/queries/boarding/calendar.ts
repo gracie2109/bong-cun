@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { getBoardingTimeline, moveBoardingPet } from "@/repositories/boarding";
+import { getBoardingTimeline, moveBoardingPet } from "@bongcun/supabase/boarding";
 import { boardingKeys } from "../keys";
 import { useBoardingAction } from "./action";
 

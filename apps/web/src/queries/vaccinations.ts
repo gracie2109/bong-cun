@@ -9,7 +9,7 @@ import {
   markReminded,
   petVaccinations,
   voidVaccination,
-} from "@/repositories/medical";
+} from "@bongcun/supabase/medical";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { ExternalVaccineInput, GiveVaccineInput, ReminderFilter } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";

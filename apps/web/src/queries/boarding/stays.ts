@@ -10,7 +10,7 @@ import {
   markBoardingNoShow,
   quoteBoardingStay,
   saveBoardingStay,
-} from "@/repositories/boarding";
+} from "@bongcun/supabase/boarding";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { StayFilter, StayInput } from "@bongcun/core/boarding";
 import { boardingKeys } from "../keys";

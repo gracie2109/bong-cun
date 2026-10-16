@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listBoardingStays } from "@/repositories/boarding";
+import { listBoardingStays } from "@bongcun/supabase/boarding";
 import type { StayFilter } from "@bongcun/core/boarding";
 import { staysExportColumns } from "./staysExportColumns";
 

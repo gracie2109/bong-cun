@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import { shopKeys } from "@/queries/keys";
-import { fetchCartLines } from "@/repositories/shop";
+import { fetchCartLines } from "@bongcun/supabase/shop";
 import { useCart } from "@/stores";
 import type { CartLineView } from "@bongcun/core/shop";
 import { cartSubtotal, cartWeightG, hasCartIssue, hasInStoreOnly, lineKey } from "@/utils/shop/cart";

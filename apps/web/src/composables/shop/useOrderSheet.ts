@@ -2,8 +2,8 @@ import { computed, reactive, ref, type Ref } from "vue";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
 import { useOrderStep, useShopOrderDetail } from "@/queries/shopOrdersAdmin";
-import { stepErrorHint } from "@/repositories/shop";
-import type { OrderStepCall } from "@/repositories/shop";
+import { stepErrorHint } from "@bongcun/supabase/shop";
+import type { OrderStepCall } from "@bongcun/supabase/shop";
 import { codAmount, orderActions, type OrderAction } from "@/utils/shop/orderAdmin";
 
 /** Steps that ask for something first; the others (pack) only ask "are you sure". */
