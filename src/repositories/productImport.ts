@@ -1,8 +1,7 @@
 // Excel import and export of products: the database checks and saves a group at a time.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
-import type { ExportRow } from "@/views/admin/products/import/exportSheets";
-import type { ImportRow, ProductImportReport } from "@/views/admin/products/import/importTypes";
+import type { ExportRow, ImportRow, ProductImportReport } from "@/types/dataImport";
 import { unwrap } from "./shared";
 
 type Client = SupabaseClient<Database>;

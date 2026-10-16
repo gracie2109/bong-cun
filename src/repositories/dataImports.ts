@@ -3,8 +3,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ImportReport } from "@/lib/data-io/types";
 import type { Database } from "@/types/database.types";
-import type { SupplierImportRow } from "@/views/admin/inventory/suppliers/import/suppliersImportRow";
-import type { PetImportRow } from "@/views/admin/pets/import/petsImportRow";
+import type { PetImportRow, SupplierImportRow } from "@/types/dataImport";
 import { unwrap } from "./shared";
 
 type Client = SupabaseClient<Database>;

@@ -1,22 +1,6 @@
 import type { SheetData } from "write-excel-file/browser";
+import type { ExportRow } from "@/types/dataImport";
 import { IMAGE_SEPARATOR, MAX_ATTRIBUTES, NO, PRODUCT_HEADERS, PRODUCT_SHEET, UNIT_HEADERS, UNIT_SHEET, YES } from "./importTemplate";
-
-/** One variant as `export_products` returns it. */
-export type ExportRow = {
-  group: string;
-  category: string | null;
-  brand: string | null;
-  description: string | null;
-  images: string[];
-  attrs: { name: string; value: string }[];
-  sku: string | null;
-  barcode: string | null;
-  unit: string;
-  price: number;
-  track_stock: boolean;
-  is_active: boolean;
-  units: { name: string; factor: number; barcode: string | null; price: number | null; for_sale: boolean; for_purchase: boolean }[];
-};
 
 const flag = (value: boolean) => (value ? YES : NO);
 const header = (text: string) => ({ value: text, fontWeight: "bold" as const });

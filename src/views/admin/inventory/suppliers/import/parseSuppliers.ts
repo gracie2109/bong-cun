@@ -1,7 +1,7 @@
 import { flagRepeats, readSheet, type CellValue } from "@/lib/data-io/importSchema";
 import type { SheetTable } from "@/lib/data-io/readTable";
 import type { ParsedImport } from "@/lib/data-io/types";
-import type { SupplierImportRow } from "./suppliersImportRow";
+import type { SupplierImportRow } from "@/types/dataImport";
 import { SUPPLIER_COLUMNS } from "./suppliersImportSchema";
 
 const str = (value: CellValue | undefined): string => (value === null || value === undefined ? "" : String(value));

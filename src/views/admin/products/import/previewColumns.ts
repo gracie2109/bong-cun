@@ -1,5 +1,5 @@
 import type { PreviewColumn } from "@/composables/useTableImport";
-import type { ImportRow } from "./importTypes";
+import type { ImportRow } from "@/types/dataImport";
 
 /** Columns of the preview table of the product import. */
 export const PREVIEW_COLUMNS: PreviewColumn<ImportRow>[] = [
