@@ -4,18 +4,18 @@
 --
 -- Only 'pending' orders without an invoice are touched: once staff confirm an order it stays theirs.
 
-create or replace function public.auto_cancel_stale_shop_orders(p_days integer default 7)
+create or replace function public.auto_cancel_stale_shop_orders(p_hours integer default 48)
 returns integer
 language plpgsql
 security definer
 set search_path = ''
 as $$
 declare
-  v_reason text := format('Tự hủy: quá %s ngày chưa được xác nhận', p_days);
+  v_reason text := format('Tự hủy: quá %s giờ chưa được xác nhận', p_hours);
   v_count  integer;
 begin
-  if p_days is null or p_days < 1 then
-    raise exception 'p_days must be at least 1' using errcode = '22023', hint = 'bad_days';
+  if p_hours is null or p_hours < 1 then
+    raise exception 'p_hours must be at least 1' using errcode = '22023', hint = 'bad_hours';
   end if;
 
   with stale as (
@@ -23,7 +23,7 @@ begin
     set status = 'cancelled', cancelled_at = now(), cancel_reason = v_reason
     where status = 'pending'
       and invoice_id is null
-      and placed_at < now() - make_interval(days => p_days)
+      and placed_at < now() - make_interval(hours => p_hours)
     returning id
   ), logged as (
     insert into public.shop_order_events (order_id, status, note, actor_name)
@@ -49,7 +49,7 @@ begin
   perform cron.schedule(
     'auto-cancel-stale-shop-orders',
     '0 19 * * *',
-    'select public.auto_cancel_stale_shop_orders(7)'
+    'select public.auto_cancel_stale_shop_orders(48)'
   );
 end;
 $$;

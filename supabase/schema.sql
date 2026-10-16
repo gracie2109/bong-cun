@@ -578,16 +578,16 @@ $$;
 ALTER FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."auto_cancel_stale_shop_orders"("p_days" integer DEFAULT 7) RETURNS integer
+CREATE OR REPLACE FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer DEFAULT 48) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
 declare
-  v_reason text := format('Tự hủy: quá %s ngày chưa được xác nhận', p_days);
+  v_reason text := format('Tự hủy: quá %s giờ chưa được xác nhận', p_hours);
   v_count  integer;
 begin
-  if p_days is null or p_days < 1 then
-    raise exception 'p_days must be at least 1' using errcode = '22023', hint = 'bad_days';
+  if p_hours is null or p_hours < 1 then
+    raise exception 'p_hours must be at least 1' using errcode = '22023', hint = 'bad_hours';
   end if;
 
   with stale as (
@@ -595,7 +595,7 @@ begin
     set status = 'cancelled', cancelled_at = now(), cancel_reason = v_reason
     where status = 'pending'
       and invoice_id is null
-      and placed_at < now() - make_interval(days => p_days)
+      and placed_at < now() - make_interval(hours => p_hours)
     returning id
   ), logged as (
     insert into public.shop_order_events (order_id, status, note, actor_name)
@@ -609,7 +609,7 @@ end;
 $$;
 
 
-ALTER FUNCTION "public"."auto_cancel_stale_shop_orders"("p_days" integer) OWNER TO "postgres";
+ALTER FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."billable_appointment_items"("p_branch" "uuid", "p_customer" "uuid") RETURNS "jsonb"
@@ -17950,8 +17950,8 @@ GRANT ALL ON FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid
 
 
 
-REVOKE ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_days" integer) FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_days" integer) TO "service_role";
+REVOKE ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) TO "service_role";
 
 
 

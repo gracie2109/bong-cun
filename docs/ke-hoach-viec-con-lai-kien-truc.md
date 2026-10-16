@@ -7,7 +7,7 @@ Ngày: 2026-10-16. Nguồn: mục 4.4, 4.6, 4.7 của [danh-gia-kien-truc.md](da
 | Việc | Quyết định | Lý do |
 | --- | --- | --- |
 | 4.4 Kiểu cho RPC `jsonb` | **Làm ngay** cho luồng tiền, mở rộng dần | Đổi tên một khóa trong SQL hiện `String(undefined)` trên màn hình mà không ai báo. |
-| 4.6 `pg_cron` | **Đã làm một job**: tự hủy đơn online pending quá hạn | Đơn bị bỏ quên khóa tồn kho mãi. Chờ grace chọn số ngày trước khi merge. |
+| 4.6 `pg_cron` | **Đã làm một job**: tự hủy đơn online pending quá hạn | Đơn bị bỏ quên khóa tồn kho mãi. grace chọn 48 giờ. |
 | 4.7 Bảng tổng hợp báo cáo | **Đã đo, không làm** | 300.000 hóa đơn: báo cáo 30 ngày 0,2 giây, cả năm 1,8 giây. Bảng tổng hợp thêm rủi ro sai số mà chưa có lợi ích. |
 
 ## 4.4 Parse `jsonb` bằng zod
@@ -21,9 +21,9 @@ Ngày: 2026-10-16. Nguồn: mục 4.4, 4.6, 4.7 của [danh-gia-kien-truc.md](da
 
 Việc thật đầu tiên cần chạy nền: đơn online `pending` giữ hàng (trừ vào tồn bán được) nên đơn không ai xác nhận khóa tồn kho mãi, và đơn chỉ có COD hoặc nhận tại cửa hàng nên không có bước thanh toán nào tự dọn.
 
-- Migration `20261022010000_auto_cancel_stale_shop_orders.sql`: hàm `auto_cancel_stale_shop_orders(p_days)` (mặc định 7) hủy đơn còn `pending`, chưa có hóa đơn, đặt quá `p_days` ngày; ghi lý do "Tự hủy: quá N ngày chưa được xác nhận" và một dòng nhật ký đơn do "Hệ thống". Đơn đã xác nhận không bị đụng. Hàm chỉ cấp cho `service_role` (đã có test: người đăng nhập gọi bị 42501). Job `auto-cancel-stale-shop-orders` chạy 02:00 giờ Việt Nam mỗi đêm.
+- Migration `20261022010000_auto_cancel_stale_shop_orders.sql`: hàm `auto_cancel_stale_shop_orders(p_hours)` (mặc định 48) hủy đơn còn `pending`, chưa có hóa đơn, đặt quá `p_hours` giờ; ghi lý do "Tự hủy: quá N giờ chưa được xác nhận" và một dòng nhật ký đơn do "Hệ thống". Đơn đã xác nhận không bị đụng. Hàm chỉ cấp cho `service_role` (đã có test: người đăng nhập gọi bị 42501). Job `auto-cancel-stale-shop-orders` chạy 02:00 giờ Việt Nam mỗi đêm.
 - Test: `shop_order_auto_cancel.test.sql` (8 ca: hủy đơn cũ, giữ đơn mới, không đụng đơn đã xác nhận, ghi nhật ký, chạy lại không đổi gì, không ai ngoài `service_role` gọi được).
-- Số ngày 7 là mặc định em chọn; đổi bằng cách sửa lệnh trong `cron.schedule` ở một migration mới. Migration chỉ merge sau khi grace chọn số ngày, vì job hủy đơn của khách thật.
+- grace chọn 48 giờ (2026-10-16), giống mức 1 đến 2 ngày người bán trên sàn phải xử lý đơn COD. Muốn đổi, sửa lệnh trong `cron.schedule` ở một migration mới.
 - Việc chạy nền khác (nhắc lịch tiêm, cảnh báo lô sắp hết hạn) chưa làm: hiện đã có danh sách gọi điện trên màn hình, chỉ cần job khi có kênh gửi tin.
 
 ## 4.7 Bảng tổng hợp báo cáo (đã đo, chưa cần)

@@ -21,11 +21,11 @@ language sql as $$
 $$;
 
 update ctx set
-  old_pending   = pg_temp.make_order('SO-OLD-P', 'pending', interval '8 days'),
-  new_pending   = pg_temp.make_order('SO-NEW-P', 'pending', interval '2 days'),
+  old_pending   = pg_temp.make_order('SO-OLD-P', 'pending', interval '3 days'),
+  new_pending   = pg_temp.make_order('SO-NEW-P', 'pending', interval '1 day'),
   old_confirmed = pg_temp.make_order('SO-OLD-C', 'confirmed', interval '30 days');
 
-select is(public.auto_cancel_stale_shop_orders(7), 1, 'one stale pending order is cancelled');
+select is(public.auto_cancel_stale_shop_orders(48), 1, 'one stale pending order is cancelled');
 select is((select status from public.shop_orders where id = (select old_pending from ctx)), 'cancelled', 'the stale order is cancelled');
 select ok((select cancel_reason like 'Tự hủy%' and cancelled_at is not null
            from public.shop_orders where id = (select old_pending from ctx)), 'it carries a reason and a time');
@@ -34,11 +34,11 @@ select is((select status from public.shop_orders where id = (select old_confirme
 select is((select count(*)::int from public.shop_order_events
            where order_id = (select old_pending from ctx) and status = 'cancelled' and actor_name = 'Hệ thống'),
           1, 'the order log records the system cancel');
-select is(public.auto_cancel_stale_shop_orders(7), 0, 'running again changes nothing');
+select is(public.auto_cancel_stale_shop_orders(48), 0, 'running again changes nothing');
 
 select tests.login(shopper) from ctx;
 set local role authenticated;
-select throws_ok('select public.auto_cancel_stale_shop_orders(7)', '42501', null, 'signed-in users cannot run the clean-up');
+select throws_ok('select public.auto_cancel_stale_shop_orders(48)', '42501', null, 'signed-in users cannot run the clean-up');
 reset role;
 
 select * from finish();
