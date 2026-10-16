@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_DELIVERY_G } from "../../src/utils/shop/shippingLimits";
 
 // Rules for pricing a parcel with GHN, kept free of Nuxt so they can be tested alone.
 
@@ -7,8 +8,6 @@ export const GHN_LIGHT_SERVICE_TYPE = 2;
 export const GHN_HEAVY_SERVICE_TYPE = 5;
 /** From this weight a parcel goes as heavy goods. */
 export const HEAVY_FROM_G = 20_000;
-/** The shop does not deliver anything heavier: customers collect it in store. */
-export const MAX_DELIVERY_G = 30_000;
 /** GHN's insurance ceiling. */
 export const MAX_INSURANCE_VALUE = 5_000_000;
 /** Box size sent with every quote (cm); GHN prices light goods by the larger of weight and volume. */
