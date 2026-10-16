@@ -6,7 +6,7 @@ import {
   saveServicePrices,
   type ServicePrice,
   type ServicePriceInput,
-} from "@/repositories/servicePrices";
+} from "@bongcun/supabase/spa";
 import { servicePriceKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

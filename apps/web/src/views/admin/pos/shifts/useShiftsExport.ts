@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
-import { listShifts } from "@/repositories/pos";
+import { listShifts } from "@bongcun/supabase/pos";
 import { shiftsExportColumns } from "./shiftsExportColumns";
 
 /** Export of the cashier shifts of one branch. */

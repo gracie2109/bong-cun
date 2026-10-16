@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { useReportOverview, useRevenueSeries } from "@/queries/reports";
-import { getRevenueSeries, type Bucket, type SeriesPoint } from "@/repositories/reports";
+import { getRevenueSeries, type Bucket, type SeriesPoint } from "@bongcun/supabase/reports";
 import { useReportExport } from "../shared/useReportExport";
 import { useReportFilters } from "../shared/useReportFilters";
 import { seriesCsvColumns } from "./seriesCsv";

@@ -80,7 +80,7 @@
 import { Minus, PawPrint, Plus, X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CustomerPet } from "@/repositories/pos";
+import type { CustomerPet } from "@bongcun/supabase/pos";
 import type { ProductUnit } from "@bongcun/supabase/products";
 import { money } from "../format";
 import type { CartLine } from "../usePosCart";

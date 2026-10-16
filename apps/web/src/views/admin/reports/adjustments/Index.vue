@@ -85,7 +85,7 @@ import { Input } from "@/components/ui/input";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
 import { useAdjustments } from "@/queries/reports";
-import { EXPORT_LIMIT, listAdjustments, type AdjustmentKind } from "@/repositories/reports";
+import { EXPORT_LIMIT, listAdjustments, type AdjustmentKind } from "@bongcun/supabase/reports";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import InvoiceSheet from "@/views/admin/pos/invoices/InvoiceSheet.vue";

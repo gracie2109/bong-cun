@@ -69,7 +69,7 @@ import { Button } from "@/components/ui/button";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
 import { useAppointmentsList } from "@/queries/spa";
-import { isEditable, type Appointment } from "@/repositories/spa";
+import { isEditable, type Appointment } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "@/views/admin/pos/components/BranchPicker.vue";

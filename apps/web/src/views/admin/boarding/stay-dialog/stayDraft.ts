@@ -1,4 +1,4 @@
-import type { CustomerPet } from "@/repositories/pos";
+import type { CustomerPet } from "@bongcun/supabase/pos";
 import type { BoardingRules, BoardingStay, KennelType, StayInput } from "@bongcun/core/boarding";
 import { addDays, dateKeyOf, timeOf, toIso, todayKey } from "../format";
 

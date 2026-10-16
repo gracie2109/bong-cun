@@ -58,7 +58,7 @@ import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { INITIAL_PAGE_INDEX } from "@/lib/constants";
 import { useShiftsList } from "@/queries/pos";
-import type { CashShift } from "@/repositories/pos";
+import type { CashShift } from "@bongcun/supabase/pos";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/views/admin/components";
 import BranchPicker from "../components/BranchPicker.vue";

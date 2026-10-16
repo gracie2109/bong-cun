@@ -1,5 +1,5 @@
 import type { CsvColumn } from "@/lib/csv";
-import type { Adjustment } from "@/repositories/reports";
+import type { Adjustment } from "@bongcun/supabase/reports";
 
 /** Columns of the returns-and-cancellations export; `t` turns an i18n key into the header text. */
 export const adjustmentsCsvColumns = (t: (key: string) => string): CsvColumn<Adjustment>[] => [

@@ -103,7 +103,7 @@ import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { usePetServicesList, useSetPetServiceActive } from "@/queries/petServices";
-import type { PetService } from "@/repositories/petServices";
+import type { PetService } from "@bongcun/supabase/spa";
 import { ContentWrap, Header } from "@/views/admin/components";
 import PetsNav from "../PetsNav.vue";
 import ServiceFormSheet from "./ServiceFormSheet.vue";

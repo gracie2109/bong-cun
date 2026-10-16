@@ -1,4 +1,4 @@
-import type { PetCombo } from "@/repositories/petCombos";
+import type { PetCombo } from "@bongcun/supabase/spa";
 
 /** Values of `status` stored on a combo. */
 export const STATUS_SELLING = 1;

@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { ReportOverview } from "@/repositories/reports";
+import type { ReportOverview } from "@bongcun/supabase/reports";
 import MixRow from "./MixRow.vue";
 
 const props = defineProps<{ data: ReportOverview }>();

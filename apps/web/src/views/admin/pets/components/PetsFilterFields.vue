@@ -33,7 +33,7 @@
 import { FilterField } from "@/components/common/search-view";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FILTER_ALL } from "@/lib/listing";
-import type { PetStatus } from "@/repositories/pets";
+import type { PetStatus } from "@bongcun/supabase/pets";
 import { PET_STATUSES } from "../usePetsFilters";
 
 defineProps<{

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 import { supabaseClient } from "@/lib/supabase";
-import { createBooking, type BookingInput } from "@/repositories/bookings";
+import { createBooking, type BookingInput } from "@bongcun/supabase/spa";
 
 export const useCreateBooking = () =>
   useMutation({

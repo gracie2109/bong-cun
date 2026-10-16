@@ -77,7 +77,7 @@ import { Input } from "@/components/ui/input";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
 import { useShiftRecon } from "@/queries/reports";
-import { EXPORT_LIMIT, listShiftRecon, type ShiftStatusFilter } from "@/repositories/reports";
+import { EXPORT_LIMIT, listShiftRecon, type ShiftStatusFilter } from "@bongcun/supabase/reports";
 import { ContentWrap, Header } from "@/views/admin/components";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";

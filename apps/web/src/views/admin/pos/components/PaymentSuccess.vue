@@ -30,7 +30,7 @@
 import { CircleCheck, Printer } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { SaleResult } from "@/repositories/pos";
+import type { SaleResult } from "@bongcun/supabase/pos";
 import { money } from "../format";
 
 defineProps<{ result: SaleResult; printing: boolean }>();

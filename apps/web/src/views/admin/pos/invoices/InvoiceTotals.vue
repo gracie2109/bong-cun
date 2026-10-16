@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InvoiceDetail } from "@/repositories/pos";
+import type { InvoiceDetail } from "@bongcun/supabase/pos";
 import { money } from "../format";
 
 defineProps<{ invoice: InvoiceDetail }>();

@@ -1,5 +1,5 @@
 import { Layers2, Package, Scissors } from "lucide-vue-next";
-import type { LineType } from "@/repositories/pos";
+import type { LineType } from "@bongcun/supabase/pos";
 import { sellableUnits, type ProductUnit, type ProductVariant, type SellableProduct } from "@bongcun/supabase/products";
 import type { Priced } from "./branchPricing";
 

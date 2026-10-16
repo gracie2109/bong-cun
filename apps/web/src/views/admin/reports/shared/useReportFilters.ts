@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import type { ReportFilter } from "@/repositories/reports";
+import type { ReportFilter } from "@bongcun/supabase/reports";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import {
   DEFAULT_PRESET,

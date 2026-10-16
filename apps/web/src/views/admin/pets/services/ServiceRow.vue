@@ -77,7 +77,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "@/lib/utils";
-import type { PetService } from "@/repositories/petServices";
+import type { PetService } from "@bongcun/supabase/spa";
 import type { ServiceCategory } from "@bongcun/core/medical";
 
 defineProps<{ service: PetService; canUpdate: boolean }>();

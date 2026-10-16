@@ -1,4 +1,4 @@
-import { SLOT_MINUTES, type AppointmentStatus, type TicketStatus } from "@/repositories/spa";
+import { SLOT_MINUTES, type AppointmentStatus, type TicketStatus } from "@bongcun/supabase/spa";
 
 // The salon works on Vietnam time whatever the device clock says, and Vietnam has no daylight
 // saving, so a fixed +07:00 offset converts a local date and time to an instant.

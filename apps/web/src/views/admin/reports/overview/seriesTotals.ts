@@ -1,4 +1,4 @@
-import type { SeriesPoint } from "@/repositories/reports";
+import type { SeriesPoint } from "@bongcun/supabase/reports";
 
 export type SeriesTotals = Omit<SeriesPoint, "bucket">;
 

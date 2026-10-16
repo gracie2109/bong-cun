@@ -1,10 +1,10 @@
 // Every query key lives here so invalidation never needs to import a hook
 // module (avoids import cycles) and keys stay consistent.
-import type { PetListFilter } from "@/repositories/pets";
+import type { PetListFilter } from "@bongcun/supabase/pets";
 import type { PageParams } from "@bongcun/supabase/shared";
-import type { PetServiceFilter } from "@/repositories/petServices";
+import type { PetServiceFilter } from "@bongcun/supabase/spa";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@bongcun/supabase/inventory";
-import type { InvoiceFilter } from "@/repositories/pos";
+import type { InvoiceFilter } from "@bongcun/supabase/pos";
 import type { CatalogFilter } from "@bongcun/supabase/products";
 import type { ProductFilter } from "@bongcun/supabase/products";
 import type {
@@ -14,8 +14,8 @@ import type {
   ShiftReconFilter,
   StaffFilter,
   TopItemFilter,
-} from "@/repositories/reports";
-import type { AppointmentFilter } from "@/repositories/spa";
+} from "@bongcun/supabase/reports";
+import type { AppointmentFilter } from "@bongcun/supabase/spa";
 import type { KennelFilter, KennelTypeFilter, StayFilter } from "@bongcun/core/boarding";
 import type { DiagnosisTermFilter, VaccineTypeFilter } from "@bongcun/core/medical";
 import type { VisitFilter } from "@bongcun/core/medical";

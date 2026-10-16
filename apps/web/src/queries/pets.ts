@@ -12,7 +12,7 @@ import {
   type PetListFilter,
   type PetStatus,
   type RegisterPetInput,
-} from "@/repositories/pets";
+} from "@bongcun/supabase/pets";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petProfileKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";

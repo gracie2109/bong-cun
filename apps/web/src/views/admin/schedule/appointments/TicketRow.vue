@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { Check, Play, Undo2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { AppointmentTicket, TicketStatus } from "@/repositories/spa";
+import type { AppointmentTicket, TicketStatus } from "@bongcun/supabase/spa";
 import { money } from "@/views/admin/pos/format";
 import { timeOf } from "../format";
 

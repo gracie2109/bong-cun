@@ -1,4 +1,4 @@
-import type { PetInput, PetProfile, PetSex } from "@/repositories/pets";
+import type { PetInput, PetProfile, PetSex } from "@bongcun/supabase/pets";
 
 /** The editable fields of a pet as the forms hold them (everything is a string or boolean). */
 export type PetFormState = {

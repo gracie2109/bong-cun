@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { MAX_REPORT_DAYS } from "@/repositories/reports";
+import { MAX_REPORT_DAYS } from "@bongcun/supabase/reports";
 import DatePresetChips from "./DatePresetChips.vue";
 import ReportBranchPicker from "./ReportBranchPicker.vue";
 import { useReportFilters } from "./useReportFilters";

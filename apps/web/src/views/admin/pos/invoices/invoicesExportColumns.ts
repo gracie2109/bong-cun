@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { Invoice, InvoiceStatus } from "@/repositories/pos";
+import type { Invoice, InvoiceStatus } from "@bongcun/supabase/pos";
 
 const STATUS_TEXT: Record<InvoiceStatus, string> = { paid: "Đã thanh toán", unpaid: "Chờ thu", cancelled: "Đã hủy" };
 

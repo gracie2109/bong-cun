@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ShiftRecon } from "@/repositories/reports";
+import type { ShiftRecon } from "@bongcun/supabase/reports";
 import { dateTime } from "@/views/admin/pos/format";
 import { money } from "../shared/format";
 import { differenceClass } from "./differenceClass";

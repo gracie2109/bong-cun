@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Invoice } from "@/repositories/pos";
+import type { Invoice } from "@bongcun/supabase/pos";
 import { dateTime, money } from "../format";
 import InvoiceStatusPill from "./InvoiceStatusPill.vue";
 

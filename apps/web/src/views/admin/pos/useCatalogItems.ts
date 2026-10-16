@@ -5,7 +5,7 @@ import { useBranchPrices } from "@/queries/branchPrices";
 import { useSellableStock } from "@/queries/inventory";
 import { useSellableCombos } from "@/queries/pos";
 import { useSellableProducts } from "@/queries/products";
-import type { LineType } from "@/repositories/pos";
+import type { LineType } from "@bongcun/supabase/pos";
 import { fold } from "@/views/admin/settings/rbac";
 import { priceAtBranch } from "./branchPricing";
 import { groupProductItems, type CatalogItem } from "./catalog";

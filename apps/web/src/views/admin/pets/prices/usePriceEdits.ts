@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { useSaveServicePrices } from "@/queries/servicePrices";
-import type { WeightBracket } from "@/repositories/weightBrackets";
+import type { WeightBracket } from "@bongcun/supabase/pets";
 import { SHARED } from "./usePriceCatalog";
 
 const cellKey = (serviceId: string, bracketId: string) => `${serviceId}:${bracketId}`;

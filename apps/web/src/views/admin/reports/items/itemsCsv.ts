@@ -1,5 +1,5 @@
 import type { CsvColumn } from "@/lib/csv";
-import type { TopItem } from "@/repositories/reports";
+import type { TopItem } from "@bongcun/supabase/reports";
 
 /** Columns of the top-items export; `t` turns an i18n key into the header text. */
 export const itemsCsvColumns = (t: (key: string) => string): CsvColumn<TopItem>[] => [

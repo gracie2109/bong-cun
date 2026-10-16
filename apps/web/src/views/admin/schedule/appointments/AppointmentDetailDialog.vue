@@ -101,7 +101,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { Appointment } from "@/repositories/spa";
+import type { Appointment } from "@bongcun/supabase/spa";
 import { money } from "@/views/admin/pos/format";
 import PetHealthFlagsBanner from "@/views/admin/medical/flags/PetHealthFlagsBanner.vue";
 import { APPOINTMENT_TONE, dateTime, timeOf } from "../format";

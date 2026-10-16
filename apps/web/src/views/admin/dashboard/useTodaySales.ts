@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useReportOverview } from "@/queries/reports";
-import type { ReportFilter } from "@/repositories/reports";
+import type { ReportFilter } from "@bongcun/supabase/reports";
 import { useAuthStore } from "@/stores";
 import { todayInVietnam } from "../reports/shared/dateRange";
 import { useReportBranches } from "../reports/shared/useReportBranches";

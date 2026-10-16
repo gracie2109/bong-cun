@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ItemKind } from "@/repositories/reports";
+import type { ItemKind } from "@bongcun/supabase/reports";
 
 const kind = defineModel<ItemKind>({ required: true });
 

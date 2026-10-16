@@ -1,4 +1,4 @@
-import type { BoardTicket } from "@/repositories/spa";
+import type { BoardTicket } from "@bongcun/supabase/spa";
 import { minutesOfTime, timeOf } from "../format";
 
 /** Pixels per slot of the day grid. */

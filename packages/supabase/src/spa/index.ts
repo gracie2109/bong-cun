@@ -8,3 +8,8 @@ export * from "./rules";
 export * from "./settings";
 export * from "./publicCatalog";
 export * from "./webBooking";
+export * from "./bookings";
+export * from "./petServices";
+export * from "./petCombos";
+export * from "./servicePrices";
+export * from "./branchPrices";

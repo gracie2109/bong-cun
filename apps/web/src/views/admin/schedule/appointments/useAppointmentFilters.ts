@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
-import type { AppointmentFilter, AppointmentStatus } from "@/repositories/spa";
+import type { AppointmentFilter, AppointmentStatus } from "@bongcun/supabase/spa";
 
 const PAGE_SIZE = 20;
 

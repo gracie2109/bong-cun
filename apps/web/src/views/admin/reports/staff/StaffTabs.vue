@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { StaffRole } from "@/repositories/reports";
+import type { StaffRole } from "@bongcun/supabase/reports";
 
 const role = defineModel<StaffRole>("role", { required: true });
 const ROLES: StaffRole[] = ["cashier", "spa"];

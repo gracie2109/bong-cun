@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { PetWeightLog } from "@/repositories/pets";
+import type { PetWeightLog } from "@bongcun/supabase/pets";
 
 const WIDTH = 300;
 const HEIGHT = 96;

@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { Appointment } from "@/repositories/spa";
+import type { Appointment } from "@bongcun/supabase/spa";
 import { APPOINTMENT_TONE, dateTime, timeOf } from "../format";
 
 defineProps<{ appointment: Appointment; canEdit: boolean }>();

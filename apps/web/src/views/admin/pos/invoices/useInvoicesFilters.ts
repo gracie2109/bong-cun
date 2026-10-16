@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
-import type { InvoiceFilter, InvoiceStatus } from "@/repositories/pos";
+import type { InvoiceFilter, InvoiceStatus } from "@bongcun/supabase/pos";
 
 export const PERIODS = ["today", "week", "month", "all"] as const;
 export type Period = (typeof PERIODS)[number];

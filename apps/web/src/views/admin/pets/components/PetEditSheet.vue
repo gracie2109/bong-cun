@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/sheet";
 import { useUpdatePet } from "@/queries/pets";
 import { useSpeciesOptions } from "@/queries/species";
-import type { PetProfile } from "@/repositories/pets";
+import type { PetProfile } from "@bongcun/supabase/pets";
 import {
   formToPetInput,
   hasPetFormErrors,

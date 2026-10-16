@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import type { PaymentMethod } from "@/repositories/pos";
+import type { PaymentMethod } from "@bongcun/supabase/pos";
 import { cashSuggestions, parseAmount } from "./format";
 
 export type PaymentEntry = { method: PaymentMethod; amount: number; bankRef?: string | null };

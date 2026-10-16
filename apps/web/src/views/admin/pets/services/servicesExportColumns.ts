@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { PetService } from "@/repositories/petServices";
+import type { PetService } from "@bongcun/supabase/spa";
 
 const CATEGORY_LABEL = { spa: "Spa", medical: "Y tế", other: "Khác" } as const;
 

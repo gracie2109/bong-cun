@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
-import type { Bucket, SeriesPoint } from "@/repositories/reports";
+import type { Bucket, SeriesPoint } from "@bongcun/supabase/reports";
 import { bucketLabel, formatDay } from "../shared/dateRange";
 import { money } from "../shared/format";
 import type { SeriesTotals } from "./seriesTotals";

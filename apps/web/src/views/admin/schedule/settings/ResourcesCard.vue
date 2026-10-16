@@ -58,7 +58,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useSaveSpaResource, useSpaResources } from "@/queries/spa";
-import type { SpaResource } from "@/repositories/spa";
+import type { SpaResource } from "@bongcun/supabase/spa";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean }>();
 

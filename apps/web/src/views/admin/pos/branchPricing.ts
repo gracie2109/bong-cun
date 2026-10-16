@@ -1,4 +1,4 @@
-import type { BranchPriceMap } from "@/repositories/branchPrices";
+import type { BranchPriceMap } from "@bongcun/supabase/spa";
 
 /** A product whose price may be the branch price; `generalPrice` is kept only when the two differ. */
 export type Priced<T> = T & { generalPrice?: number };

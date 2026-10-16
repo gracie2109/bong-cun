@@ -1,7 +1,7 @@
 // Service combos. The species and services of a combo come from two join tables and are rebuilt on read.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { toSpecies, type Species, type SpeciesRow } from "./species";
+import { toSpecies, type Species, type SpeciesRow } from "../pets/species";
 import { toPetService, type PetService } from "./petServices";
 import { pageRange, searchOr, type Page, type PageParams } from "@bongcun/supabase/shared";
 

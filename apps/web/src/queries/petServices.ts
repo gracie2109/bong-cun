@@ -12,7 +12,7 @@ import {
   updatePetService,
   type PetServiceFilter,
   type PetServiceInput,
-} from "@/repositories/petServices";
+} from "@bongcun/supabase/spa";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { ServiceCategory } from "@bongcun/core/medical";
 import { petServiceKeys } from "./keys";

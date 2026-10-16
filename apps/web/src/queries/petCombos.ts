@@ -7,7 +7,7 @@ import {
   setPetComboActive,
   updatePetCombo,
   type PetComboInput,
-} from "@/repositories/petCombos";
+} from "@bongcun/supabase/spa";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petComboKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";

@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { PawPrint } from "lucide-vue-next";
-import type { SpeciesSummary } from "@/repositories/species";
+import type { SpeciesSummary } from "@bongcun/supabase/pets";
 
 defineProps<{ species: SpeciesSummary; selected: boolean }>();
 </script>

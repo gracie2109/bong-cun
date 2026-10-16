@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Species } from "@/repositories/species";
+import type { Species } from "@bongcun/supabase/pets";
 import type { PetFormState } from "../pet-form";
 import PetFields from "./PetFields.vue";
 

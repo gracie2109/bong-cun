@@ -83,7 +83,7 @@ import { useI18n } from "vue-i18n";
 import { Mail, MapPin, Phone } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatPrice } from "@/lib/utils";
-import type { CustomerOrder } from "@/repositories/orders";
+import type { CustomerOrder } from "@bongcun/supabase/customers";
 import type { IUser } from "@bongcun/core/users";
 import {
   customerCode,

@@ -62,7 +62,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { Species } from "@/repositories/species";
+import type { Species } from "@bongcun/supabase/pets";
 import type { KennelTypeDraft } from "./kennelTypeDraft";
 
 defineProps<{ species: Species[] }>();

@@ -65,8 +65,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAddPetWeight } from "@/queries/pets";
 import { useWeightBrackets } from "@/queries/weightBrackets";
-import type { PetWeightLog } from "@/repositories/pets";
-import { findBracket } from "@/repositories/weightBrackets";
+import type { PetWeightLog } from "@bongcun/supabase/pets";
+import { findBracket } from "@bongcun/supabase/pets";
 import { formatDate } from "../format";
 import WeightSparkline from "./WeightSparkline.vue";
 

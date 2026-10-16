@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InvoiceLine } from "@/repositories/pos";
+import type { InvoiceLine } from "@bongcun/supabase/pos";
 import { money } from "../format";
 
 defineProps<{

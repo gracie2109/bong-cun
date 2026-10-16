@@ -1,4 +1,4 @@
-import type { CashShift } from "@/repositories/pos";
+import type { CashShift } from "@bongcun/supabase/pos";
 
 /** Counted minus expected: positive = over, negative = short; null until the shift is counted. */
 export const cashDifference = (shift: CashShift): number | null =>

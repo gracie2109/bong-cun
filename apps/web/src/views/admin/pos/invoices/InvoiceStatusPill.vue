@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Invoice, InvoiceStatus } from "@/repositories/pos";
+import type { Invoice, InvoiceStatus } from "@bongcun/supabase/pos";
 
 defineProps<{ invoice: Pick<Invoice, "status" | "channel"> }>();
 

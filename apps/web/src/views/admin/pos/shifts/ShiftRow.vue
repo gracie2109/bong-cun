@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { CashShift } from "@/repositories/pos";
+import type { CashShift } from "@bongcun/supabase/pos";
 import { dateTime, money } from "../format";
 import { cashDifference, cashDifferenceClass } from "./shiftCash";
 

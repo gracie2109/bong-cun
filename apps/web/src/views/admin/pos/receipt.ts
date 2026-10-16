@@ -1,7 +1,7 @@
 // Prints an 80 mm retail receipt through a hidden iframe, so the admin page itself is untouched.
 import { escapeHtml, printHtml } from "@/lib/print";
 import type { Branch } from "@bongcun/supabase/users";
-import type { InvoiceDetail } from "@/repositories/pos";
+import type { InvoiceDetail } from "@bongcun/supabase/pos";
 import { dateTime, money } from "./format";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;

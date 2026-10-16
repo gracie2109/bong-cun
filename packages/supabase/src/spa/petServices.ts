@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
 import type { ServiceCategory } from "@bongcun/core/medical";
-import { toSpecies, type Species, type SpeciesRow } from "./species";
+import { toSpecies, type Species, type SpeciesRow } from "../pets/species";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
