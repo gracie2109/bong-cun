@@ -25,6 +25,7 @@ export type MyPet = {
   speciesId: string;
   speciesName: string;
   breed: string;
+  photoUrl: string | null;
   sex: PetSex;
   neutered: boolean;
   /** yyyy-mm-dd, or empty when unknown. */
@@ -58,7 +59,7 @@ export type HealthVisit = {
   branchName: string;
   takeHome: HealthTakeHome[];
 };
-export type PetHealth = { petId: string; petName: string; phone: string; vaccines: HealthVaccine[]; visits: HealthVisit[] };
+export type PetHealth = { petId: string; petName: string; petPhotoUrl: string | null; phone: string; vaccines: HealthVaccine[]; visits: HealthVisit[] };
 
 /** A web account without a customer record, as staff see it when linking. */
 export type UnlinkedAccount = { userId: string; fullName: string; phone: string; email: string };
@@ -69,6 +70,7 @@ export type AppointmentScope = (typeof APPOINTMENT_SCOPES)[number];
 export type MyAppointmentItem = {
   name: string;
   petName: string;
+  petPhotoUrl: string | null;
   startAt: string;
   /** waiting | in_progress | done | cancelled */
   status: string;
@@ -98,6 +100,7 @@ export type BoardingScope = (typeof BOARDING_SCOPES)[number];
 
 export type MyBoardingPet = {
   petName: string;
+  petPhotoUrl: string | null;
   /** active | cancelled */
   status: string;
   kennelTypeName: string;

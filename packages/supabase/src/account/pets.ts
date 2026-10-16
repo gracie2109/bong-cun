@@ -12,6 +12,7 @@ type PetJson = {
   species_id: string;
   species_name: string;
   breed: string | null;
+  photo_url: string | null;
   sex: string;
   neutered: boolean;
   birth_date: string | null;
@@ -29,6 +30,7 @@ const toPet = (row: PetJson): MyPet => ({
   speciesId: row.species_id,
   speciesName: row.species_name,
   breed: row.breed ?? "",
+  photoUrl: row.photo_url,
   sex: toSex(row.sex),
   neutered: row.neutered,
   birthDate: row.birth_date ?? "",

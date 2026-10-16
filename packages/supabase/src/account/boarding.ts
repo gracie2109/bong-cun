@@ -8,6 +8,7 @@ type Client = SupabaseClient<Database>;
 
 type PetJson = {
   pet_name: string | null;
+  pet_photo_url: string | null;
   status: string;
   kennel_type_name: string;
   nights_from: string;
@@ -39,6 +40,7 @@ type DetailJson = StayJson & {
 
 const toPet = (row: PetJson): MyBoardingPet => ({
   petName: row.pet_name ?? "",
+  petPhotoUrl: row.pet_photo_url,
   status: row.status,
   kennelTypeName: row.kennel_type_name,
   nightsFrom: row.nights_from,

@@ -18,7 +18,7 @@ type AppointmentJson = {
   can_cancel: boolean;
   est_total: number;
   has_unpriced: boolean;
-  items: { name: string; pet_name: string | null; start_at: string; status: string; est_price: number | null }[];
+  items: { name: string; pet_name: string | null; pet_photo_url: string | null; start_at: string; status: string; est_price: number | null }[];
 };
 
 const toAppointment = (row: AppointmentJson): MyAppointment => ({
@@ -36,6 +36,7 @@ const toAppointment = (row: AppointmentJson): MyAppointment => ({
   items: row.items.map((item) => ({
     name: item.name,
     petName: item.pet_name ?? "",
+    petPhotoUrl: item.pet_photo_url,
     startAt: item.start_at,
     status: item.status,
     estPrice: item.est_price === null ? null : Number(item.est_price),
