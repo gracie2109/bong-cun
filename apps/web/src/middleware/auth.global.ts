@@ -1,4 +1,4 @@
-import { canAccess, canOpenAdminRoute } from "@/lib/access";
+import { canAccess, canOpenAdminRoute } from "@bongcun/core/auth";
 import { useAuthStore } from "@/stores";
 
 /** Pages a signed-in user should not see, matched against `meta.titleKey`. */

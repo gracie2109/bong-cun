@@ -1,6 +1,6 @@
 // Stays: booking, listing, quoting and cancelling.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type {
   BoardingStay,
   QuoteItem,
@@ -14,7 +14,7 @@ import type {
   TypeAvailability,
 } from "@/types/boarding";
 import { toCareLog, toCharge } from "./care";
-import { unwrap, type Page, type PageParams } from "../shared";
+import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

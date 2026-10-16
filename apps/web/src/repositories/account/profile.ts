@@ -1,8 +1,8 @@
 // The signed-in customer's profile: account name, phone and birth date, kept on the customer record.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { MyProfile, ProfileInput } from "@/types/account";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

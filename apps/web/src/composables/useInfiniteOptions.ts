@@ -1,6 +1,6 @@
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
-import type { Page, PageParams } from "@/repositories/shared";
+import type { Page, PageParams } from "@bongcun/supabase/shared";
 
 /** Rows fetched per request by a select or picker that loads more as it scrolls. */
 export const OPTIONS_PAGE_SIZE = 20;

@@ -9,7 +9,7 @@ import {
   isDisplayNameAvailable,
   toCurrentUser,
 } from "@/repositories/users";
-import { canUse, isAdminRole, isStaffRole, SUPER_ADMIN_ROLE, type AdminGrants } from "@/lib/access";
+import { canUse, isAdminRole, isStaffRole, SUPER_ADMIN_ROLE, type AdminGrants } from "@bongcun/core/auth";
 import { listMyPermissions } from "@/repositories/permissions";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";

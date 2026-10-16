@@ -1,5 +1,5 @@
 import { useSupabaseClient } from "#imports";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 
 // Resolves the Supabase client of the current Nuxt app (cookie-based session,
 // see @nuxtjs/supabase). On the client it can be called anywhere, including

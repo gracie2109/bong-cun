@@ -27,7 +27,9 @@ npm run db:schema    # regenerate supabase/schema.sql after adding a migration
 ## Layout
 
 npm workspaces: the Nuxt app is `apps/web/` (all paths below are relative to it),
-shared packages will live in `packages/`, and `supabase/` stays at the repo root.
+`packages/core` is framework-free TypeScript (errors, page types, access rules),
+`packages/supabase` is the only place that imports supabase-js (generated DB types, RPC helpers),
+and `supabase/` stays at the repo root.
 See docs/ke-hoach-monorepo.md.
 
 - `src/pages/` routes. Each page is a thin wrapper that sets `definePageMeta`

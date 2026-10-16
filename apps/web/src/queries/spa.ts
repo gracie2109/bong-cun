@@ -3,7 +3,7 @@ import { computed, unref, type MaybeRef } from "vue";
 import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import {
   cancelAppointment,
   checkInAppointment,

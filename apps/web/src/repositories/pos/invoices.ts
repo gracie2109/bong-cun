@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
+import type { Database, Tables } from "@bongcun/supabase/db";
 import { z } from "zod";
-import { filterSafe, pageRange, parseRpc, unwrap, type Page, type PageParams } from "../shared";
+import { filterSafe, pageRange, parseRpc, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import {
   PAYMENT_METHODS,
   type InvoiceChannel,

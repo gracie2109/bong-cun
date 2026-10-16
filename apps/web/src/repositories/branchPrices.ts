@@ -1,7 +1,7 @@
 // Per-branch product prices: a row overrides products.price at one branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

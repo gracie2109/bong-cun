@@ -1,8 +1,8 @@
 // Permissions are keyed by `name` in the database; the admin screens expect an
 // `id`, so `id` is the name.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database, Tables } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

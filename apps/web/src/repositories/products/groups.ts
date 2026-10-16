@@ -1,8 +1,8 @@
 // Reading and saving product groups and their variants. One group is a card in the admin list;
 // each variant is a products row (one SKU).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { pageRange, unwrap, type Page, type PageParams } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { toGroup, type GroupJson } from "./mappers";
 import type { ProductAttribute, ProductFilter, ProductGroup, ProductGroupInput } from "./types";
 

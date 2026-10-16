@@ -13,7 +13,7 @@ import {
   type PetStatus,
   type RegisterPetInput,
 } from "@/repositories/pets";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petProfileKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
 import { notifyFailure, notifySuccess } from "./notify";

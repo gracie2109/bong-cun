@@ -2,9 +2,9 @@
 // batch (dry run) or saves it, and answers per row.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ImportReport } from "@/lib/data-io/types";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { PetImportRow, SupplierImportRow } from "@/types/dataImport";
-import { unwrap } from "./shared";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

@@ -24,7 +24,7 @@ import {
   type SaleInput,
   type SalesReturnInput,
 } from "@/repositories/pos";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { boardingKeys, customerKeys, inventoryKeys, posKeys, reportKeys, spaKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

@@ -1,7 +1,7 @@
 // Every query key lives here so invalidation never needs to import a hook
 // module (avoids import cycles) and keys stay consistent.
 import type { PetListFilter } from "@/repositories/pets";
-import type { PageParams } from "@/repositories/shared";
+import type { PageParams } from "@bongcun/supabase/shared";
 import type { PetServiceFilter } from "@/repositories/petServices";
 import type { StockDocumentFilter, StockFilter, SupplierFilter } from "@/repositories/inventory";
 import type { InvoiceFilter } from "@/repositories/pos";

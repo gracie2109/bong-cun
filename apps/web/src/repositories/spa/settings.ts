@@ -1,7 +1,7 @@
 // Spa tables, opening hours and which staff do services (branch settings).
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
-import { unwrap } from "../shared";
+import type { Database, Tables } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 import { str } from "./parse";
 
 type Client = SupabaseClient<Database>;

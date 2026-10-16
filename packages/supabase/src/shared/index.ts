@@ -1,19 +1,9 @@
 // Helpers shared by every repository. Pure TS: no Vue, Pinia, router or env.
+export { toPage, type Page, type PageParams } from "@bongcun/core/shared";
+export * from "./errors";
 import type { PostgrestError } from "@supabase/supabase-js";
 import type { ZodType } from "zod";
-
-export type Page<T> = { rows: T[]; total: number };
-
-export type PageParams = { pageIndex: number; pageSize: number };
-
-/**
- * Copies the two page fields. Callers pass a reactive object that a table
- * component mutates in place; reading each field here is what lets Vue track it.
- */
-export const toPage = (page: PageParams): PageParams => ({
-  pageIndex: page.pageIndex,
-  pageSize: page.pageSize,
-});
+import type { PageParams } from "@bongcun/core/shared";
 
 /** PostgREST range() bounds for a 1-based page index. */
 export const pageRange = ({ pageIndex, pageSize }: PageParams) => ({

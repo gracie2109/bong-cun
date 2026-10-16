@@ -1,9 +1,9 @@
 // Pet profiles: one row per animal, with owners and weight history.
 // The species catalog (Chó, Mèo...) is in species.ts.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
+import type { Database, Tables } from "@bongcun/supabase/db";
 import { toCustomer, type Customer } from "./customers";
-import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "./shared";
+import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

@@ -14,7 +14,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Nav from "@/components/layout/admin/Nav.vue";
-import { canOpenAdminRoute } from "@/lib/access";
+import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useShopOrderBadge } from "@/queries/shopOrdersAdmin";
 import { useAppStore, useAuthStore } from "@/stores";

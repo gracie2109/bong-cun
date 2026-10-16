@@ -1,5 +1,5 @@
 import { computed, type Ref } from "vue";
-import type { Page } from "@/repositories/shared";
+import type { Page } from "@bongcun/supabase/shared";
 
 /** Rows, total and page count of a paginated query, with empty values until it has data. */
 export const usePagedList = <T>(query: { data: Ref<Page<T> | undefined> }, page: { pageSize: number }) => {

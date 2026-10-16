@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { AppError, toAppError } from "@/repositories/errors";
+import { AppError } from "@bongcun/core/shared";
+import { toAppError } from "@bongcun/supabase/shared";
 
 describe("toAppError", () => {
   it("maps the shared Postgres codes", () => {

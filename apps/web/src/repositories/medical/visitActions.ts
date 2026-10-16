@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type {
   CheckInInput,
   ItemInput,
@@ -10,7 +10,7 @@ import type {
   SignResult,
   VisitStatus,
 } from "@/types/medicalVisit";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

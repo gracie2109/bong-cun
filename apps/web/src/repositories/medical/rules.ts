@@ -1,8 +1,8 @@
 // Medical rules of a branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { MedicalRules } from "@/types/medical";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, strOrNull } from "../spa/parse";
 
 type Client = SupabaseClient<Database>;

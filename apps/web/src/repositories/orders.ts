@@ -1,8 +1,8 @@
 // Legacy orders (read-only). Booking now lives in appointments (see repositories/spa);
 // only the per-customer history/stats on the customers screen still reads this table.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@/types/database.types";
-import { unwrap } from "./shared";
+import type { Database, Tables } from "@bongcun/supabase/db";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 type OrderRow = Tables<"orders"> & { order_items: Tables<"order_items">[] };

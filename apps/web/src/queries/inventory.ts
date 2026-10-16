@@ -28,7 +28,7 @@ import {
   type SupplierInput,
 } from "@/repositories/inventory";
 import { errorDetail } from "@/repositories/pos";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import { inventoryKeys, supplierKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";

@@ -1,7 +1,7 @@
 // Appointments: booking, listing, check-in and ticket progress.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
-import { unwrap, type Page } from "../shared";
+import type { Database } from "@bongcun/supabase/db";
+import { unwrap, type Page } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "./parse";
 import type { AppointmentStatus, TicketStatus } from "./rules";
 

@@ -13,7 +13,7 @@ import {
   saveMedicalRules,
   saveVaccineType,
 } from "@/repositories/medical";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { RestfullMethod } from "@/types";
 import type {
   DiagnosisTermFilter,

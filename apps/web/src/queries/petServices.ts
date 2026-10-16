@@ -13,7 +13,7 @@ import {
   type PetServiceFilter,
   type PetServiceInput,
 } from "@/repositories/petServices";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type { ServiceCategory } from "@/types/medical";
 import { petServiceKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";

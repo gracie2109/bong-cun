@@ -1,8 +1,8 @@
 // The shop cart as the database sees it: live name, price, weight and stock for each line.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type { CartLine, CartLineReason, CartLineView, ShipPolicy } from "@/types/shop";
-import { unwrap } from "../shared";
+import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 

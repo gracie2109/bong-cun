@@ -1,6 +1,6 @@
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
-import { toAppError } from "@/repositories/errors";
+import { toAppError } from "@bongcun/supabase/shared";
 import { UserFunctionError } from "@/repositories/users";
 import type { RestfullMethod } from "@/types";
 

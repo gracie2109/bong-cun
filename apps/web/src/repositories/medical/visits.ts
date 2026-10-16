@@ -1,6 +1,6 @@
 // Medical visits: queue, list, one visit, check-in, booking, the record and its signature.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@bongcun/supabase/db";
 import type {
   MedicalQueue,
   MedicalVisit,
@@ -9,7 +9,7 @@ import type {
   Vet,
   VisitFilter,
 } from "@/types/medicalVisit";
-import { unwrap, type Page, type PageParams } from "../shared";
+import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 import { rowsOf, toDetail, toMedicalVisit } from "./visitMappers";
 

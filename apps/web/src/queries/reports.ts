@@ -16,7 +16,7 @@ import {
   type StaffFilter,
   type TopItemFilter,
 } from "@/repositories/reports";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { reportKeys } from "./keys";
 
 /** The filter is null until a branch and a valid range are known, which keeps the query off. */

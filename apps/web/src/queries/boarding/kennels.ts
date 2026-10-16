@@ -10,7 +10,7 @@ import {
   saveKennelType,
   setKennelStatus,
 } from "@/repositories/boarding";
-import { toPage, type PageParams } from "@/repositories/shared";
+import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import type {
   BoardingRules,
   KennelFilter,
