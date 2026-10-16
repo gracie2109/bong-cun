@@ -1761,6 +1761,19 @@ $$;
 ALTER FUNCTION "public"."can_boarding"("p_method" "text", "p_branch" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."can_edit_pet_photos"() RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  select coalesce((select public.is_admin()), false)
+      or coalesce((select public.has_permission('pets', 'UPDATE')), false)
+      or coalesce((select public.has_permission('pets', 'CREATE')), false);
+$$;
+
+
+ALTER FUNCTION "public"."can_edit_pet_photos"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS boolean
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
@@ -11539,6 +11552,41 @@ $$;
 ALTER FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") RETURNS "text"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_old text;
+begin
+  if not public.can_edit_pet_photos() then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+  select photo_path into v_old from public.pets where id = p_pet for update;
+  if not found then
+    raise exception 'pet not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if p_path is null then
+    if p_url is not null then
+      raise exception 'url without a path' using errcode = '22023', hint = 'bad_input';
+    end if;
+  elsif left(p_path, length(p_pet::text) + 1) <> p_pet::text || '/'
+     or p_url is null
+     or right(p_url, length('/storage/v1/object/public/pet-photos/' || p_path))
+        <> '/storage/v1/object/public/pet-photos/' || p_path then
+    raise exception 'the photo does not belong to this pet' using errcode = '22023', hint = 'bad_input';
+  end if;
+  update public.pets
+  set photo_path = p_path, photo_url = p_url, updated_at = now()
+  where id = p_pet;
+  return v_old;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_product_branch_prices"("p_product" "uuid", "p_prices" "jsonb") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -13816,6 +13864,7 @@ CREATE TABLE IF NOT EXISTS "public"."pets" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deceased_on" "date",
+    "photo_path" "text",
     CONSTRAINT "pets_name_check" CHECK (("length"("btrim"("name")) > 0)),
     CONSTRAINT "pets_sex_check" CHECK (("sex" = ANY (ARRAY['male'::"text", 'female'::"text", 'unknown'::"text"]))),
     CONSTRAINT "pets_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'deceased'::"text", 'archived'::"text"])))
@@ -18076,6 +18125,12 @@ GRANT ALL ON FUNCTION "public"."can_boarding"("p_method" "text", "p_branch" "uui
 
 
 
+REVOKE ALL ON FUNCTION "public"."can_edit_pet_photos"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_edit_pet_photos"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."can_edit_pet_photos"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_inventory"("p_method" "text", "p_branch" "uuid") TO "service_role";
@@ -19192,6 +19247,12 @@ GRANT ALL ON FUNCTION "public"."set_kennel_status"("p_id" "uuid", "p_status" "te
 REVOKE ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_min_stock"("p_branch" "uuid", "p_product" "uuid", "p_min" numeric) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_pet_photo"("p_pet" "uuid", "p_path" "text", "p_url" "text") TO "service_role";
 
 
 
