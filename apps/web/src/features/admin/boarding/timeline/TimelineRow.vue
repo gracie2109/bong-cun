@@ -20,11 +20,11 @@
         :key="item.segment.stayPetId"
         :to="{ name: 'boardingStayDetail', params: { stayId: item.segment.stayId } }"
         class="relative z-[1] mx-0.5 truncate rounded-md px-2 text-xs font-medium leading-7"
-        :class="[STAY_TONE[item.segment.stayStatus], item.cutLeft && 'rounded-l-none', item.cutRight && 'rounded-r-none']"
+        :class="[STAY_TONE[item.segment.stayStatus], item.segment.kind === 'inpatient' && 'ring-2 ring-inset ring-violet-500', item.cutLeft && 'rounded-l-none', item.cutRight && 'rounded-r-none']"
         :style="{ gridColumn: `${item.start} / ${item.end}`, gridRow: item.lane }"
         :title="`${item.segment.petName} · ${item.segment.customerName} · ${item.segment.stayCode}`"
       >
-        {{ item.segment.petName }}
+        {{ item.segment.petName }}<template v-if="item.segment.kind === 'inpatient'"> · {{ $t("boarding.board.inpatient") }}</template>
       </router-link>
     </div>
   </div>

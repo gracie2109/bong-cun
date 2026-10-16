@@ -1,6 +1,8 @@
 import type { CareLog, StayCharge } from "./care";
 
 // ------------------------------------------------------------------ stays
+/** A hotel stay, or the stay of an inpatient pet (tied to a medical visit). */
+export type StayKind = "boarding" | "inpatient";
 export type StayStatus = "booked" | "checked_in" | "checked_out" | "paid" | "cancelled" | "no_show";
 export const STAY_STATUSES: readonly StayStatus[] = ["booked", "checked_in", "checked_out", "paid", "cancelled", "no_show"];
 
@@ -49,6 +51,9 @@ export type BoardingStay = {
   checkedInAt: string | null;
   checkedOutAt: string | null;
   source: StaySource;
+  kind: StayKind;
+  visitId: string | null;
+  visitCode: string | null;
   emergencyPhone: string | null;
   note: string | null;
   cancelReason: string | null;

@@ -1,5 +1,7 @@
 # Y tế: ba việc còn lại
 
+**Tiến độ:** bước 1 xong (nhãn Nội trú trên bảng chuồng, chặn trả chuồng, gia hạn, dịch vụ thêm với lượt nội trú; migration `20261023010000`).
+
 Kế hoạch cho ba việc còn thiếu sau khi module Y tế (`docs/ho-so-benh-an.md`, 8 bước, migration `20261021*`) đã xong:
 
 1. Nhãn **Nội trú** trên bảng chuồng lưu trú.
