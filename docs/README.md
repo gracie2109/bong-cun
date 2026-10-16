@@ -21,6 +21,7 @@
 | [ke-hoach-sua-kien-truc.md](ke-hoach-sua-kien-truc.md) | Kế hoạch sửa nợ kỹ thuật theo bài đánh giá kiến trúc: sửa typecheck, CI trên PR, bản chụp schema, test SQL pgTAP, backup hằng tuần, tách file lớn |
 | [ke-hoach-viec-con-lai-kien-truc.md](ke-hoach-viec-con-lai-kien-truc.md) | Ba việc còn lại của đợt sửa kiến trúc: kiểu cho RPC `jsonb` (đã làm cho luồng tiền), `pg_cron` và bảng tổng hợp báo cáo (chưa cần, có ngưỡng) |
 | [ke-hoach-monorepo.md](ke-hoach-monorepo.md) | Audit codebase và kế hoạch chuyển sang monorepo (apps web/cms/mobile, packages core, supabase, nuxt-base), feature-first; bản 2: backend thay được (Supabase, NestJS), nghiệp vụ trong SQL so với TS, hợp đồng use case, ports chỉ ở dịch vụ ngoài, lộ trình PR nhỏ có đường lui |
+| [anh-thu-cung.md](anh-thu-cung.md) | Kế hoạch ảnh thú cưng: bucket `pet-photos` công khai, policy theo quyền `pets`, thu nhỏ ảnh trên trình duyệt, RPC đổi/xoá ảnh, hiện ảnh ở admin, POS, spa, lưu trú, y tế và trang khách, sao lưu ảnh |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
