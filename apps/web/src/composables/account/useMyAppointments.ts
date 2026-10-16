@@ -1,7 +1,7 @@
 import { computed, ref, watch } from "vue";
 import { useCancelMyAppointment, useMyAppointments as useMyAppointmentsQuery } from "@/queries/accountAppointments";
 import { useMyProfile } from "@/queries/account";
-import type { AppointmentScope, MyAppointment } from "@/types/account";
+import type { AppointmentScope, MyAppointment } from "@bongcun/core/account";
 
 const PAGE_SIZE = 10;
 

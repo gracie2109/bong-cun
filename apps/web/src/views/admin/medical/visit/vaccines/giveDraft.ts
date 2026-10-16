@@ -1,4 +1,4 @@
-import type { GiveVaccineInput } from "@/types/vaccination";
+import type { GiveVaccineInput } from "@bongcun/core/medical";
 
 export type GiveDraft = {
   typeId: string;

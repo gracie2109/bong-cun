@@ -2,7 +2,7 @@ import type { Ref } from "vue";
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { listMedicalVisits } from "@/repositories/medical";
-import type { VisitFilter } from "@/types/medicalVisit";
+import type { VisitFilter } from "@bongcun/core/medical";
 import { visitsExportColumns } from "./visitsExportColumns";
 
 // list_medical_visits serves 100 rows per page at most.

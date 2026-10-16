@@ -97,7 +97,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSaveOrder } from "@/queries/inpatient";
 import { useAllPetServices } from "@/queries/petServices";
 import type { SellableProduct } from "@/repositories/products";
-import type { OrderKind, WardRow } from "@/types/inpatient";
+import type { OrderKind, WardRow } from "@bongcun/core/medical";
 import ProductPicker from "@/views/admin/inventory/documents/ProductPicker.vue";
 import { emptyOrderDraft, HOUR_PRESETS, isOrderDraftComplete, toOrderInput, type OrderDraft } from "./orderDraft";
 

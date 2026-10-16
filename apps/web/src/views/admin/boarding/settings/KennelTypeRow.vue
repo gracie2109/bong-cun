@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { KennelType } from "@/types/boarding";
+import type { KennelType } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 defineProps<{ type: KennelType; canEdit: boolean }>();

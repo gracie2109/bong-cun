@@ -12,7 +12,7 @@ import type {
   StaySource,
   StayStatus,
   TypeAvailability,
-} from "@/types/boarding";
+} from "@bongcun/core/boarding";
 import { toCareLog, toCharge } from "./care";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";

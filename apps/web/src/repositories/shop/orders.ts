@@ -8,7 +8,7 @@ import type {
   ShopOrderPage,
   ShopOrderStatus,
   ShopOrderSummary,
-} from "@/types/shopOrder";
+} from "@bongcun/core/shop";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

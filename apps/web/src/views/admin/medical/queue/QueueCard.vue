@@ -40,7 +40,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
-import type { MedicalVisit } from "@/types/medicalVisit";
+import type { MedicalVisit } from "@bongcun/core/medical";
 import { minutesSince, timeOf } from "../format";
 
 const props = defineProps<{ visit: MedicalVisit; canStart: boolean; canCheckIn: boolean; canNoShow: boolean }>();

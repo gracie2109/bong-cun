@@ -22,7 +22,7 @@
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { useBillableBoarding } from "@/queries/boarding";
-import type { BillableBoardingStay } from "@/types/boarding";
+import type { BillableBoardingStay } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 const props = defineProps<{

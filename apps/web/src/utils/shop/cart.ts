@@ -1,5 +1,5 @@
 // Pure rules of the shop cart: no Vue, Pinia or network.
-import type { CartLine, CartLineIssue, CartLineView } from "@/types/shop";
+import type { CartLine, CartLineIssue, CartLineView } from "@bongcun/core/shop";
 
 export const CART_STORAGE_KEY = "bc_cart_v1";
 export const MAX_CART_LINES = 30;

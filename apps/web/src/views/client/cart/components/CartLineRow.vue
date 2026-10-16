@@ -68,7 +68,7 @@ import { Minus, Plus, Trash2 } from "lucide-vue-next";
 import PawMark from "@/components/shop/PawMark.vue";
 import { useQtyInput } from "@/composables/shop/useQtyInput";
 import { formatPrice } from "@/lib/utils";
-import type { CartLineView } from "@/types/shop";
+import type { CartLineView } from "@bongcun/core/shop";
 import { lineAmount, lineIssue } from "@/utils/shop/cart";
 
 const props = defineProps<{ line: CartLineView }>();

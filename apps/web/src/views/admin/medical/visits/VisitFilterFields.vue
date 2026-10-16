@@ -30,7 +30,7 @@ import { FilterField } from "@/components/common/search-view";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FILTER_ALL } from "@/lib/listing";
-import { VISIT_STATUSES, type Vet } from "@/types/medicalVisit";
+import { VISIT_STATUSES, type Vet } from "@bongcun/core/medical";
 
 defineProps<{ vets: Vet[] }>();
 const from = defineModel<string>("from", { required: true });

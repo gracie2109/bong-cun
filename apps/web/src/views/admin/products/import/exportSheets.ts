@@ -1,5 +1,5 @@
 import type { SheetData } from "write-excel-file/browser";
-import type { ExportRow } from "@/types/dataImport";
+import type { ExportRow } from "@bongcun/core/data-io";
 import { IMAGE_SEPARATOR, MAX_ATTRIBUTES, NO, PRODUCT_HEADERS, PRODUCT_SHEET, UNIT_HEADERS, UNIT_SHEET, YES } from "./importTemplate";
 
 const flag = (value: boolean) => (value ? YES : NO);

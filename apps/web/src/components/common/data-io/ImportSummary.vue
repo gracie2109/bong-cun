@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { ImportReport } from "@/lib/data-io/types";
+import type { ImportReport } from "@bongcun/core/data-io";
 
 const props = defineProps<{ report: ImportReport; errorCount: number }>();
 

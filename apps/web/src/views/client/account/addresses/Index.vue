@@ -58,7 +58,7 @@ import AddressFormDialog from "@/components/shop/AddressFormDialog.vue";
 import { Button } from "@/components/ui/button";
 import { useAddressBook } from "@/composables/shop/useAddressBook";
 import { useAddressForm } from "@/composables/shop/useAddressForm";
-import { MAX_ADDRESSES } from "@/types/shop";
+import { MAX_ADDRESSES } from "@bongcun/core/shop";
 import { formatAddress } from "@/utils/shop/address";
 
 const { addresses, atLimit, loading, toDelete, confirmDelete, makeDefault, busy } = useAddressBook();

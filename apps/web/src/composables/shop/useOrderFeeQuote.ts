@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import { useShopSettings } from "@/queries/shop";
 import { quoteShippingFee, ShippingQuoteError } from "@/services/shipment.service";
-import type { AdminOrder } from "@/types/shopOrderAdmin";
+import type { AdminOrder } from "@bongcun/core/shop";
 import { clampQuote } from "@/utils/shop/shipping";
 
 /** "Tính lại phí GHN" in the confirm dialog: asks GHN again with the order's real weight. */

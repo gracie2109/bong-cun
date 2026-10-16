@@ -18,7 +18,7 @@ import { toRef } from "vue";
 import { Loader2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useShippingTest } from "@/composables/shop/useShippingTest";
-import type { GhnLocation } from "@/types/shop";
+import type { GhnLocation } from "@bongcun/core/shop";
 
 const props = defineProps<{ from: GhnLocation }>();
 const { state, ready, run } = useShippingTest(toRef(props, "from"));

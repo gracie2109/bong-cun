@@ -21,7 +21,7 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { useSaveVaccineType } from "@/queries/medical";
 import { useSpeciesOptions } from "@/queries/species";
-import type { VaccineType } from "@/types/medical";
+import type { VaccineType } from "@bongcun/core/medical";
 import VaccineTypeFields from "./VaccineTypeFields.vue";
 import {
   draftFromVaccineType,

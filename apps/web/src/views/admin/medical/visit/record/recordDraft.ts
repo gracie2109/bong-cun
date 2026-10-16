@@ -1,4 +1,4 @@
-import type { MedicalVisitDetail, RecordInput, VisitOutcome } from "@/types/medicalVisit";
+import type { MedicalVisitDetail, RecordInput, VisitOutcome } from "@bongcun/core/medical";
 
 /** The record as the form holds it: numbers stay text until saved. */
 export type RecordDraft = {

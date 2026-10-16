@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import type { HealthTakeHome, HealthVisit } from "@/types/account";
+import type { HealthTakeHome, HealthVisit } from "@bongcun/core/account";
 import { formatDay } from "./format";
 
 defineProps<{ visits: HealthVisit[] }>();

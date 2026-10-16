@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ShopOrderSummary } from "@/types/shopOrder";
+import type { ShopOrderSummary } from "@bongcun/core/shop";
 import OrderCard from "../../orders/OrderCard.vue";
 
 defineProps<{ orders: ShopOrderSummary[]; loading: boolean }>();

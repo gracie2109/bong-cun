@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { ArrowUpDown } from "lucide-vue-next";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CATALOG_SORTS, type CatalogSort } from "@/types/catalog";
+import { CATALOG_SORTS, type CatalogSort } from "@bongcun/core/shop";
 
 defineProps<{ modelValue: CatalogSort }>();
 const emit = defineEmits<{ "update:modelValue": [value: CatalogSort] }>();

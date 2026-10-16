@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { VaccineType } from "@/types/medical";
+import type { VaccineType } from "@bongcun/core/medical";
 
 defineProps<{ types: VaccineType[] }>();
 const model = defineModel<string>({ required: true });

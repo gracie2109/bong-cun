@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { useMyShopOrders } from "@/queries/shopOrders";
-import type { ShopOrderStatus } from "@/types/shopOrder";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
 
 const PAGE_SIZE = 10;
 

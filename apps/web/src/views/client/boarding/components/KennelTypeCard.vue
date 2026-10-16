@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { formatPrice } from "@/lib/utils";
-import type { BoardingWebKennelType } from "@/types/boardingWeb";
+import type { BoardingWebKennelType } from "@bongcun/core/boarding";
 
 defineProps<{ type: BoardingWebKennelType }>();
 </script>

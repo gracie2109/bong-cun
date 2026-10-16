@@ -16,7 +16,7 @@
 import { Clock } from "lucide-vue-next";
 import PriceDisplay from "@/components/shop/PriceDisplay.vue";
 import { useDurationLabel } from "@/composables/spa/useDurationLabel";
-import type { SpaService, SpaSpecies } from "@/types/spaCatalog";
+import type { SpaService, SpaSpecies } from "@bongcun/core/spa";
 import { lowestPrice, priceLines } from "@/utils/spa/catalog";
 
 /** A short price list of spa services on the home page: name, time, and the lowest price. */

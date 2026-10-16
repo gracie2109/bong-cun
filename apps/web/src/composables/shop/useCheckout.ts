@@ -6,7 +6,7 @@ import { usePlaceShopOrder } from "@/queries/shopOrders";
 import { useShopPublicSettings } from "@/queries/shop";
 import { orderErrorDetail, orderErrorHint } from "@/repositories/shop";
 import { useAuthStore, useCart } from "@/stores";
-import type { DeliveryMethod } from "@/types/shopOrder";
+import type { DeliveryMethod } from "@bongcun/core/shop";
 import { lineKey } from "@/utils/shop/cart";
 import { checkoutErrors, newClientRef, pickupReceiver, toCartInput } from "@/utils/shop/order";
 import { useCartView } from "./useCartView";

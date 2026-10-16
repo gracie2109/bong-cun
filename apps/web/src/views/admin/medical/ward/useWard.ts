@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useDischarge, useGiveDose, useInpatientWard, useStopOrder } from "@/queries/inpatient";
 import { useAuthStore } from "@/stores";
-import type { WardDose, WardRow } from "@/types/inpatient";
+import type { WardDose, WardRow } from "@bongcun/core/medical";
 import { todayKey } from "../../boarding/format";
 
 /** The ward of today: who is in, the doses to give, and the actions on a pet. */

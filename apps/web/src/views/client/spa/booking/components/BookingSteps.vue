@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { Check } from "lucide-vue-next";
-import type { BookingStep } from "@/types/spaWeb";
+import type { BookingStep } from "@bongcun/core/spa";
 
 defineProps<{ steps: BookingStep[]; current: number }>();
 </script>

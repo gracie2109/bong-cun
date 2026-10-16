@@ -1,7 +1,7 @@
 // What the public shop reads about the catalog: one page of sellable groups and related groups.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { CatalogFilters, ShopGroup } from "@/types/catalog";
+import type { CatalogFilters, ShopGroup } from "@bongcun/core/shop";
 import { toGroup, type GroupJson } from "../products/mappers";
 import { fetchCartLines } from "./cart";
 import { pageRange, type Page, type PageParams } from "@bongcun/supabase/shared";

@@ -1,7 +1,7 @@
 import { flagRepeats, readSheet, type CellValue } from "@/lib/data-io/importSchema";
 import type { SheetTable } from "@/lib/data-io/readTable";
-import { addProblem, type ParsedImport } from "@/lib/data-io/types";
-import type { PetImportRow } from "@/types/dataImport";
+import { addProblem, type ParsedImport } from "@bongcun/core/data-io";
+import type { PetImportRow } from "@bongcun/core/data-io";
 import { PET_COLUMNS } from "./petsImportSchema";
 
 const str = (value: CellValue | undefined): string => (value === null || value === undefined ? "" : String(value));

@@ -1,7 +1,7 @@
 // Kennels of one branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { Kennel, KennelFilter, KennelInput, KennelStatus } from "@/types/boarding";
+import type { Kennel, KennelFilter, KennelInput, KennelStatus } from "@bongcun/core/boarding";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { MedicalVisit } from "@/types/medicalVisit";
+import type { MedicalVisit } from "@bongcun/core/medical";
 import { dateTime, money, VISIT_TONE } from "../format";
 
 defineProps<{ visit: MedicalVisit }>();

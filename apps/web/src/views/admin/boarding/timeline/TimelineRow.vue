@@ -32,7 +32,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { TimelineKennel } from "@/types/boarding";
+import type { TimelineKennel } from "@bongcun/core/boarding";
 import { STAY_TONE } from "../format";
 import { LABEL_WIDTH, laneCount, placeSegments } from "./timelineLayout";
 

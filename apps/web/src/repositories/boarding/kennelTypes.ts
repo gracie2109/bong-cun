@@ -1,7 +1,7 @@
 // Kennel types: the catalog shared by every branch, with a shared price and optional branch prices.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BranchKennelPrice, KennelPurpose, KennelType, KennelTypeFilter, KennelTypeInput } from "@/types/boarding";
+import type { BranchKennelPrice, KennelPurpose, KennelType, KennelTypeFilter, KennelTypeInput } from "@bongcun/core/boarding";
 import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { asRecord, numOrNull, str, strOrNull } from "../spa/parse";
 

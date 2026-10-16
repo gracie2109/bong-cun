@@ -1,7 +1,7 @@
 // Checked-out stays that can be paid in the POS (see 20261020040000_boarding_billing.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BillableBoardingStay } from "@/types/boarding";
+import type { BillableBoardingStay } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

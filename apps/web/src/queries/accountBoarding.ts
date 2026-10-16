@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import { getMyBoardingStay, listMyBoardingStays } from "@/repositories/account";
-import type { BoardingScope } from "@/types/account";
+import type { BoardingScope } from "@bongcun/core/account";
 import { accountKeys } from "./keys";
 
 /** One page of the customer's boarding stays; pass `false` for `enabled` while there is no customer record. */

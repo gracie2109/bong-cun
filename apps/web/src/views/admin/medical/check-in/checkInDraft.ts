@@ -1,4 +1,4 @@
-import type { CheckInInput, MedicalVisit, ScheduleInput } from "@/types/medicalVisit";
+import type { CheckInInput, MedicalVisit, ScheduleInput } from "@bongcun/core/medical";
 import { addDays, toIso, todayKey } from "../format";
 
 /** Select value for "no vet yet". */

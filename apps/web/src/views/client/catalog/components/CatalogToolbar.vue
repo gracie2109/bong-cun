@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { Search, SlidersHorizontal, X } from "lucide-vue-next";
-import type { CatalogSort as Sort } from "@/types/catalog";
+import type { CatalogSort as Sort } from "@bongcun/core/shop";
 import CatalogSort from "./CatalogSort.vue";
 
 defineProps<{ sort: Sort; filterCount: number; refreshing: boolean }>();

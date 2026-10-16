@@ -1,6 +1,6 @@
 import type { Tables } from "@bongcun/supabase/db";
-import type { ShipPolicy } from "@/types/shop";
-import type { Product, ProductAttribute, ProductGroup, ProductUnit } from "./types";
+import type { ShipPolicy } from "@bongcun/core/shop";
+import type { Product, ProductAttribute, ProductGroup, ProductUnit } from "@bongcun/core/products";
 
 export const toProduct = (row: Tables<"products">): Product => ({
   id: row.id,

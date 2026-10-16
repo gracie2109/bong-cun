@@ -2,7 +2,7 @@ import { refDebounced } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
-import type { CatalogFilters } from "@/types/catalog";
+import type { CatalogFilters } from "@bongcun/core/shop";
 import { filtersFromQuery, filtersToQuery, hasActiveFilters } from "@/utils/shop/catalog";
 
 /**

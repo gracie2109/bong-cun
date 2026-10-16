@@ -2,7 +2,7 @@ import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { exportProducts } from "@/repositories/productImport";
 import { exportSheets } from "./exportSheets";
-import type { ExportRow } from "@/types/dataImport";
+import type { ExportRow } from "@bongcun/core/data-io";
 import { TEMPLATE_FILE_NAME, templateSheets } from "./importTemplate";
 import { productCsvColumns, productPriceListColumns } from "./productExportColumns";
 

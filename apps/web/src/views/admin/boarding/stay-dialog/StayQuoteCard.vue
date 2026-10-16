@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import type { BoardingErrorHint } from "@/repositories/boarding";
-import type { StayQuote } from "@/types/boarding";
+import type { StayQuote } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 defineProps<{

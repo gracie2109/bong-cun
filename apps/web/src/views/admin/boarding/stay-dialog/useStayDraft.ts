@@ -9,7 +9,7 @@ import {
 } from "@/queries/boarding";
 import { useCustomerPets } from "@/queries/pos";
 import { boardingErrorDetail, boardingErrorHint } from "@/repositories/boarding";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import type { Buyer } from "@/views/admin/pos/components/CustomerPanel.vue";
 import { useKennelTypeOptions } from "../useKennelTypeOptions";
 import {

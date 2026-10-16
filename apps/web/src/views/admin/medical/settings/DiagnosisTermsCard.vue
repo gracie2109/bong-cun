@@ -47,7 +47,7 @@ import { Button } from "@/components/ui/button";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { useDiagnosisTerms } from "@/queries/medical";
-import type { DiagnosisTerm, DiagnosisTermFilter } from "@/types/medical";
+import type { DiagnosisTerm, DiagnosisTermFilter } from "@bongcun/core/medical";
 import DiagnosisTermDialog from "./DiagnosisTermDialog.vue";
 import DiagnosisTermRow from "./DiagnosisTermRow.vue";
 

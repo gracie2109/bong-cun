@@ -1,6 +1,6 @@
 import { useLocalStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
-import type { CartLine } from "@/types/shop";
+import type { CartLine } from "@bongcun/core/shop";
 import { addLine, CART_STORAGE_KEY, clampQty, lineKey, sanitizeLines, type AddResult } from "@/utils/shop/cart";
 
 /**

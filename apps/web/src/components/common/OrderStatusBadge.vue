@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ShopOrderStatus } from "@/types/shopOrder";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
 import { STATUS_TONE } from "@/utils/shop/order";
 
 defineProps<{ status: ShopOrderStatus }>();

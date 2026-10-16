@@ -1,6 +1,6 @@
 // Pure helpers for the shop's orders: no Vue, Pinia or network.
-import type { Address, CartLine } from "@/types/shop";
-import type { DeliveryMethod, ShopOrderDetail, ShopOrderEvent, ShopOrderStatus } from "@/types/shopOrder";
+import type { Address, CartLine } from "@bongcun/core/shop";
+import type { DeliveryMethod, ShopOrderDetail, ShopOrderEvent, ShopOrderStatus } from "@bongcun/core/shop";
 
 /** A customer may cancel until staff have packed the parcel. */
 export const canCancelOrder = (status: ShopOrderStatus): boolean => status === "pending" || status === "confirmed";

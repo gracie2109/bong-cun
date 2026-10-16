@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { Reminder } from "@/types/vaccination";
+import type { Reminder } from "@bongcun/core/medical";
 import { dateTime } from "../format";
 
 defineProps<{ reminder: Reminder; canMark: boolean }>();

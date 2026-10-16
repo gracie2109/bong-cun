@@ -1,7 +1,7 @@
 // Online shop settings: the public subset for the checkout and the staff view / editor.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { ShopPublicSettings, ShopSettings } from "@/types/shop";
+import type { ShopPublicSettings, ShopSettings } from "@bongcun/core/shop";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

@@ -46,7 +46,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { MyAppointment } from "@/types/account";
+import type { MyAppointment } from "@bongcun/core/account";
 import { businessDate, dayLabel, rangeLabel } from "@/utils/spa/booking";
 
 const STATUS_TONE: Record<string, string> = {

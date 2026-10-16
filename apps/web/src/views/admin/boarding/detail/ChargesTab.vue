@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { BoardingStay } from "@/types/boarding";
+import type { BoardingStay } from "@bongcun/core/boarding";
 import { money } from "../format";
 
 const props = defineProps<{ stay: BoardingStay }>();

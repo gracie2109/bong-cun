@@ -1,7 +1,7 @@
 // Files attached to a visit, kept in the private "medical" bucket (see 20261021070300_medical_attachments.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalAttachment } from "@/types/medicalVisit";
+import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalAttachment } from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

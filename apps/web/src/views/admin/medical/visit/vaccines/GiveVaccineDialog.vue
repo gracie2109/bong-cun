@@ -52,7 +52,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { VaccineBookEntry } from "@/types/vaccination";
+import type { VaccineBookEntry } from "@bongcun/core/medical";
 import VaccineTypeSelect from "../../book/VaccineTypeSelect.vue";
 import { useGiveVaccine } from "./useGiveVaccine";
 

@@ -14,7 +14,7 @@ import {
   skipInpatientDose,
   stopInpatientOrder,
 } from "@/repositories/medical";
-import type { AdmitInput, LogKind, OrderInput } from "@/types/inpatient";
+import type { AdmitInput, LogKind, OrderInput } from "@bongcun/core/medical";
 import { medicalKeys } from "./keys";
 import { notifyMedicalFailure } from "./medical";
 import { notifySuccess } from "./notify";

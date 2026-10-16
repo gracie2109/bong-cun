@@ -12,7 +12,7 @@ import {
   listBillableBoarding,
   removeBoardingExtra,
 } from "@/repositories/boarding";
-import type { CareLogInput, CheckInPetInput } from "@/types/boarding";
+import type { CareLogInput, CheckInPetInput } from "@bongcun/core/boarding";
 import { boardingKeys } from "../keys";
 import { useBoardingAction } from "./action";
 

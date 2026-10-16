@@ -2,7 +2,7 @@ import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/vue-quer
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
 import { fetchVariantAvailability, listRelatedGroups, listShopGroups } from "@/repositories/shop";
-import type { CatalogFilters } from "@/types/catalog";
+import type { CatalogFilters } from "@bongcun/core/shop";
 import { shopCatalogKeys } from "./keys";
 
 /** Groups per request of the shop list; "Xem thêm" fetches the next page. */

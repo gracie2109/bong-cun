@@ -1,4 +1,4 @@
-import type { ShipPolicy } from "@/types/shop";
+import type { ShipPolicy } from "@bongcun/core/shop";
 import type { UnitRow } from "./units/productUnitForm";
 
 /** An attribute being edited: `draft` is the value still being typed. */

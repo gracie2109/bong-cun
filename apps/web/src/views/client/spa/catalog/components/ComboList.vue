@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import ComboCard from "@/components/shop/spa/ComboCard.vue";
-import type { SpaCombo } from "@/types/spaCatalog";
+import type { SpaCombo } from "@bongcun/core/spa";
 import { revealIndex } from "@/utils/shop/motion";
 
 defineProps<{ combos: SpaCombo[] }>();

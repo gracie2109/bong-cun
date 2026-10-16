@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { toGroup, type GroupJson } from "./mappers";
-import type { ProductAttribute, ProductFilter, ProductGroup, ProductGroupInput } from "./types";
+import type { ProductAttribute, ProductFilter, ProductGroup, ProductGroupInput } from "@bongcun/core/products";
 
 type Client = SupabaseClient<Database>;
 

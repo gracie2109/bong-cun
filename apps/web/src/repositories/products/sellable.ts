@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { toProduct, toUnit } from "./mappers";
-import type { SellableProduct } from "./types";
+import type { SellableProduct } from "@bongcun/core/products";
 
 type Client = SupabaseClient<Database>;
 

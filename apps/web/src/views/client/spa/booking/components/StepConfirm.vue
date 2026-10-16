@@ -35,8 +35,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useDurationLabel } from "@/composables/spa/useDurationLabel";
 import { formatPrice } from "@/lib/utils";
-import type { MyPet } from "@/types/account";
-import type { WebQuote } from "@/types/spaWeb";
+import type { MyPet } from "@bongcun/core/account";
+import type { WebQuote } from "@bongcun/core/spa";
 import { dayLabel, rangeLabel } from "@/utils/spa/booking";
 
 const props = defineProps<{ branchName: string; date: string; startAt: string; quote: WebQuote; pets: MyPet[] }>();

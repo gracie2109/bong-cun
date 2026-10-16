@@ -1,4 +1,4 @@
-import type { VaccineKind, VaccineType, VaccineTypeInput } from "@/types/medical";
+import type { VaccineKind, VaccineType, VaccineTypeInput } from "@bongcun/core/medical";
 
 /** The stock item picked for a vaccine type. */
 export type PickedProduct = { id: string; name: string; unit: string | null };

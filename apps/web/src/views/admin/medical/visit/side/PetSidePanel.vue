@@ -29,7 +29,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores";
-import type { VisitPet } from "@/types/medicalVisit";
+import type { VisitPet } from "@bongcun/core/medical";
 import HistoryList from "./HistoryList.vue";
 
 const props = defineProps<{ pet: VisitPet; currentVisitId: string }>();

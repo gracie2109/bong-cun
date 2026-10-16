@@ -1,5 +1,5 @@
 import type { PreviewColumn } from "@/composables/useTableImport";
-import type { PetImportRow } from "@/types/dataImport";
+import type { PetImportRow } from "@bongcun/core/data-io";
 
 /** Columns of the preview table of the pet import. */
 export const PETS_PREVIEW_COLUMNS: PreviewColumn<PetImportRow>[] = [

@@ -1,5 +1,5 @@
 import { addDays, todayKey } from "@/views/admin/schedule/format";
-import type { OrderInput, OrderKind } from "@/types/inpatient";
+import type { OrderInput, OrderKind } from "@bongcun/core/medical";
 
 export const HOUR_PRESETS = ["06:00", "08:00", "12:00", "14:00", "18:00", "20:00", "22:00"];
 

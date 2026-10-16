@@ -1,9 +1,9 @@
 // Import functions of the shared file import (docs/nhap-xuat-du-lieu.md): the database checks a
 // batch (dry run) or saves it, and answers per row.
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { ImportReport } from "@/lib/data-io/types";
+import type { ImportReport } from "@bongcun/core/data-io";
 import type { Database } from "@bongcun/supabase/db";
-import type { PetImportRow, SupplierImportRow } from "@/types/dataImport";
+import type { PetImportRow, SupplierImportRow } from "@bongcun/core/data-io";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

@@ -43,7 +43,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDurationLabel } from "@/composables/spa/useDurationLabel";
-import type { BookingRules, SpaSlot } from "@/types/spaWeb";
+import type { BookingRules, SpaSlot } from "@bongcun/core/spa";
 import { businessDate, dayLabel, slotTimeLabel } from "@/utils/spa/booking";
 
 const props = defineProps<{

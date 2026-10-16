@@ -1,7 +1,7 @@
 // The public spa price list (spa_public_catalog): readable without signing in.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { SpaCatalog } from "@/types/spaCatalog";
+import type { SpaCatalog } from "@bongcun/core/spa";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

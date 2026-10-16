@@ -1,7 +1,7 @@
 // The public pet hotel page (boarding_public_catalog): readable without signing in.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardingWebCatalog } from "@/types/boardingWeb";
+import type { BoardingWebCatalog } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

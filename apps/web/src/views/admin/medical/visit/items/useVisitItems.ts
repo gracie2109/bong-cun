@@ -2,7 +2,7 @@ import { computed, ref, type Ref } from "vue";
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
 import { useAddItem, useRemoveItem, useUpdateItem } from "@/queries/medicalVisits";
-import type { ItemInput, MedicalVisitDetail } from "@/types/medicalVisit";
+import type { ItemInput, MedicalVisitDetail } from "@bongcun/core/medical";
 
 /** The lines of one visit: who may change them, the dialogs, and the actions on a line. */
 export const useVisitItems = (visit: Ref<MedicalVisitDetail>, canUpdate: Ref<boolean>) => {

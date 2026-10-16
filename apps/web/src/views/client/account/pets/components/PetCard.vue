@@ -36,7 +36,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { HeartPulse } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import type { MyPet } from "@/types/account";
+import type { MyPet } from "@bongcun/core/account";
 import { petAge } from "@/utils/account/pet";
 import { formatDay } from "../health/format";
 

@@ -1,7 +1,7 @@
 import { computed, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
 import { FILTER_ALL } from "@/lib/listing";
-import type { StayFilter, StayStatus } from "@/types/boarding";
+import type { StayFilter, StayStatus } from "@bongcun/core/boarding";
 
 const PAGE_SIZE = 20;
 

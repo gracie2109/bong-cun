@@ -1,7 +1,7 @@
 import { useTableImport } from "@/composables/useTableImport";
-import type { ImportReport } from "@/lib/data-io/types";
+import type { ImportReport } from "@bongcun/core/data-io";
 import { useImportProducts } from "@/queries/productImport";
-import type { ImportRow, ProductImportReport } from "@/types/dataImport";
+import type { ImportRow, ProductImportReport } from "@bongcun/core/data-io";
 import { parseProductSheets } from "./parseProductSheets";
 
 /** The shared report shape, with the product-only figures kept in `extra`. */

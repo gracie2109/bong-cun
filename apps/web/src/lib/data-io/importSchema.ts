@@ -2,7 +2,7 @@
 // so a file whose columns were moved, or that has extra columns, still imports. Pure TS.
 
 import { isBlankRow, normalizeHeader, text, toDate, toFlag, toNumber, type Cell } from "./cells";
-import { addProblem, MAX_IMPORT_ROWS } from "./types";
+import { addProblem, MAX_IMPORT_ROWS } from "@bongcun/core/data-io";
 
 export type ImportKind = "text" | "number" | "flag" | "date";
 

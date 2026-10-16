@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import type { Address } from "@/types/shop";
+import type { Address } from "@bongcun/core/shop";
 import { formatAddress } from "@/utils/shop/address";
 
 defineProps<{ address: Address; selected?: boolean; hideActions?: boolean; busy?: boolean }>();

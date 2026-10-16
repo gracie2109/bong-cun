@@ -1,7 +1,7 @@
 // Warning flags for the spa and pet hotel counters (see 20261021070100_pet_health_flags.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { PetHealthFlags } from "@/types/medicalVisit";
+import type { PetHealthFlags } from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, strOrNull } from "../spa/parse";
 

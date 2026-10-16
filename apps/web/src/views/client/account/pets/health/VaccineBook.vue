@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { HealthVaccine } from "@/types/account";
+import type { HealthVaccine } from "@bongcun/core/account";
 import { formatDay } from "./format";
 
 defineProps<{ vaccines: HealthVaccine[] }>();

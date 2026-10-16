@@ -1,7 +1,7 @@
 import { computed, ref, watch } from "vue";
 import { useMyProfile } from "@/queries/account";
 import { useMyBoardingStays } from "@/queries/accountBoarding";
-import type { BoardingScope } from "@/types/account";
+import type { BoardingScope } from "@bongcun/core/account";
 
 const PAGE_SIZE = 10;
 

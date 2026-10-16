@@ -1,4 +1,4 @@
-import type { TimelineSegment } from "@/types/boarding";
+import type { TimelineSegment } from "@bongcun/core/boarding";
 import { addDays } from "../format";
 
 /** Width of the kennel column, shared by the header and the rows. */

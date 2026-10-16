@@ -3,7 +3,7 @@ import { toast } from "vue-sonner";
 import { batchRows } from "@/lib/data-io/batches";
 import { downloadErrorFile } from "@/lib/data-io/errorFile";
 import { readTable, type SheetTable } from "@/lib/data-io/readTable";
-import { emptyReport, mergeReports, type ImportReport, type ParsedImport } from "@/lib/data-io/types";
+import { emptyReport, mergeReports, type ImportReport, type ParsedImport } from "@bongcun/core/data-io";
 
 export type ImportPhase = "idle" | "reading" | "checking" | "checked" | "importing" | "done";
 

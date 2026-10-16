@@ -1,7 +1,7 @@
 // The day board of kennels.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardCounts, BoardKennel, BoardPet, DayBoard, KennelState, KennelStatus, StayStatus } from "@/types/boarding";
+import type { BoardCounts, BoardKennel, BoardPet, DayBoard, KennelState, KennelStatus, StayStatus } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "../spa/parse";
 

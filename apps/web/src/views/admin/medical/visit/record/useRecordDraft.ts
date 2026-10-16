@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { useSaveRecord, useSignVisit } from "@/queries/medicalVisits";
-import type { MedicalVisitDetail } from "@/types/medicalVisit";
+import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { canSignDraft, draftFromVisit, toRecordInput, type RecordDraft } from "./recordDraft";
 
 /** The record form of one visit: its draft, saving, and the signature that locks it. */

@@ -1,7 +1,7 @@
 // Pet services. The species a service is offered for come from a join table and are rebuilt on read.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import type { ServiceCategory } from "@/types/medical";
+import type { ServiceCategory } from "@bongcun/core/medical";
 import { toSpecies, type Species, type SpeciesRow } from "./species";
 import { filterSafe, pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 

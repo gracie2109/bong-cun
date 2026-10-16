@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { CategoryNode } from "@/types/catalog";
+import type { CategoryNode } from "@bongcun/core/shop";
 import FilterOption from "./FilterOption.vue";
 
 const props = defineProps<{ tree: CategoryNode[]; selected: string | null }>();

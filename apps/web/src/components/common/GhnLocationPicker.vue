@@ -42,7 +42,7 @@
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGhnLocationPicker } from "@/composables/shop/useGhnLocationPicker";
-import type { GhnLocation } from "@/types/shop";
+import type { GhnLocation } from "@bongcun/core/shop";
 
 defineProps<{ disabled?: boolean }>();
 

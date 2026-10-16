@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { AdminOrder, AdminOrderLine } from "@/types/shopOrderAdmin";
+import type { AdminOrder, AdminOrderLine } from "@bongcun/core/shop";
 import { shortLines, showStockCheck } from "@/utils/shop/orderAdmin";
 import { money } from "@/views/admin/pos/format";
 

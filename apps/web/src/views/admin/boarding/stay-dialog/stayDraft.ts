@@ -1,5 +1,5 @@
 import type { CustomerPet } from "@/repositories/pos";
-import type { BoardingRules, BoardingStay, KennelType, StayInput } from "@/types/boarding";
+import type { BoardingRules, BoardingStay, KennelType, StayInput } from "@bongcun/core/boarding";
 import { addDays, dateKeyOf, timeOf, toIso, todayKey } from "../format";
 
 /** Choice values of the selects that also have a "none" entry. */

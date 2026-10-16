@@ -2,7 +2,7 @@ import { computed, ref, watch, type Ref } from "vue";
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
 import { useGiveVaccine as useGiveMutation, useVaccineLots } from "@/queries/vaccinations";
-import type { VaccineBookEntry } from "@/types/vaccination";
+import type { VaccineBookEntry } from "@bongcun/core/medical";
 import { useVaccineTypeOptions } from "../../book/useVaccineTypeOptions";
 import { todayKey } from "../../format";
 import { nextDue, suggestedDoseNo } from "../../nextDue";

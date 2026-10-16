@@ -1,6 +1,6 @@
 import { computed, type Ref } from "vue";
 import { useGhnDistricts, useGhnProvinces, useGhnWards } from "@/queries/ghnLocations";
-import type { GhnLocation } from "@/types/shop";
+import type { GhnLocation } from "@bongcun/core/shop";
 
 /**
  * Province -> district -> ward choice for GHN. Picking a higher level clears the lower ones;

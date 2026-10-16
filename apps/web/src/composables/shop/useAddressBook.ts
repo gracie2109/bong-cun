@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { useDeleteAddress, useMyAddresses, useSetDefaultAddress } from "@/queries/shopAddresses";
 import { useAuthStore } from "@/stores";
-import { MAX_ADDRESSES, type Address } from "@/types/shop";
+import { MAX_ADDRESSES, type Address } from "@bongcun/core/shop";
 
 /** The shopper's address list with delete and make-default; adding and editing is `useAddressForm`. */
 export const useAddressBook = () => {

@@ -1,7 +1,7 @@
 // Check-in / check-out rules of a branch.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardingRules } from "@/types/boarding";
+import type { BoardingRules } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str } from "../spa/parse";
 

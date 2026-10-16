@@ -1,6 +1,6 @@
 // Shapes of the product catalog as the screens use them. Reading and writing is in the
 // other files of this folder; "@/repositories/products" re-exports everything.
-import type { ShipPolicy } from "@/types/shop";
+import type { ShipPolicy } from "../shop/shop";
 
 export type Product = {
   id: string;

@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { CheckCircle2, Store, Truck } from "lucide-vue-next";
-import type { DeliveryMethod } from "@/types/shopOrder";
+import type { DeliveryMethod } from "@bongcun/core/shop";
 import CheckoutSection from "./CheckoutSection.vue";
 
 defineProps<{ methods: DeliveryMethod[]; method: DeliveryMethod }>();

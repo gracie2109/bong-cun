@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { BedDouble } from "lucide-vue-next";
-import type { MyBoardingStay } from "@/types/account";
+import type { MyBoardingStay } from "@bongcun/core/account";
 
 defineProps<{ stay: MyBoardingStay | null }>();
 </script>

@@ -66,7 +66,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { useShippingQuote } from "@/composables/shop/useShippingQuote";
 import { formatPrice } from "@/lib/utils";
-import type { DeliveryMethod } from "@/types/shopOrder";
+import type { DeliveryMethod } from "@bongcun/core/shop";
 import { formatDate } from "@/utils/shop/order";
 
 const note = defineModel<string>("note", { required: true });

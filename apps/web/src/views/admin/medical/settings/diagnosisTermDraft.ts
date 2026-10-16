@@ -1,4 +1,4 @@
-import type { DiagnosisTerm, DiagnosisTermInput } from "@/types/medical";
+import type { DiagnosisTerm, DiagnosisTermInput } from "@bongcun/core/medical";
 
 /** What the user typed for a diagnosis; the sort order stays text while it is edited. */
 export type DiagnosisTermDraft = {

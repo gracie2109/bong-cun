@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { MyBoardingLog } from "@/types/account";
+import type { MyBoardingLog } from "@bongcun/core/account";
 import { logTime } from "../format";
 
 defineProps<{ logs: MyBoardingLog[] }>();

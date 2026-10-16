@@ -21,8 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { ShopOrderStatus } from "@/types/shopOrder";
-import { ORDER_TABS, type OrderTab } from "@/types/shopOrderAdmin";
+import type { ShopOrderStatus } from "@bongcun/core/shop";
+import { ORDER_TABS, type OrderTab } from "@bongcun/core/shop";
 
 const props = defineProps<{ counts: Partial<Record<ShopOrderStatus, number>> }>();
 const tab = defineModel<OrderTab>("tab", { required: true });

@@ -4,7 +4,7 @@ import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
 import { bookMyAppointment, bookingErrorHint, getSpaWebRules, listSpaWebSlots, quoteSpaWeb } from "@/repositories/spa";
-import { DEFAULT_BOOKING_RULES, type BookingInput, type BookingItem } from "@/types/spaWeb";
+import { DEFAULT_BOOKING_RULES, type BookingInput, type BookingItem } from "@bongcun/core/spa";
 import { accountKeys, spaKeys } from "./keys";
 import { notifyFailure } from "./notify";
 

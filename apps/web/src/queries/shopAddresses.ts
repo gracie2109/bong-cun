@@ -10,7 +10,7 @@ import {
   saveMyAddress,
   setDefaultMyAddress,
 } from "@/repositories/shop";
-import type { AddressInput } from "@/types/shop";
+import type { AddressInput } from "@bongcun/core/shop";
 import { shopKeys } from "./keys";
 import { notifyFailure, notifySuccess } from "./notify";
 

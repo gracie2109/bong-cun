@@ -21,7 +21,7 @@ import { FilterField } from "@/components/common/search-view";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FILTER_ALL } from "@/lib/listing";
-import { STAY_STATUSES } from "@/types/boarding";
+import { STAY_STATUSES } from "@bongcun/core/boarding";
 
 const from = defineModel<string>("from", { required: true });
 const to = defineModel<string>("to", { required: true });

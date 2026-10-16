@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDurationLabel } from "@/composables/spa/useDurationLabel";
-import type { BookingPick } from "@/types/spaWeb";
+import type { BookingPick } from "@bongcun/core/spa";
 
 defineProps<{ pick: BookingPick; checked: boolean; detail?: string }>();
 const emit = defineEmits<{ toggle: [pick: BookingPick] }>();

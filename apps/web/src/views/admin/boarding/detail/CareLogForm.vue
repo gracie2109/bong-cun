@@ -53,7 +53,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddCareLog } from "@/queries/boarding";
-import { CARE_KINDS, MEAL_EATEN, type CareKind, type MealEaten, type StayPet } from "@/types/boarding";
+import { CARE_KINDS, MEAL_EATEN, type CareKind, type MealEaten, type StayPet } from "@bongcun/core/boarding";
 
 const props = defineProps<{ pets: StayPet[] }>();
 

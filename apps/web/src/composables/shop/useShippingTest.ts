@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { quoteLeadtime, quoteShippingFee, ShippingQuoteError } from "@/services/shipment.service";
-import type { GhnLocation } from "@/types/shop";
+import type { GhnLocation } from "@bongcun/core/shop";
 import { formatPrice } from "@/lib/utils";
 
 /** A fixed address to price against (Ha Dong, Ha Noi): it only proves GHN answers for this warehouse. */

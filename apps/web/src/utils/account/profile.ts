@@ -1,4 +1,4 @@
-import type { MyProfile, ProfileInput } from "@/types/account";
+import type { MyProfile, ProfileInput } from "@bongcun/core/account";
 import { phoneDigits } from "@/utils/shop/address";
 
 export type ProfileForm = ProfileInput;

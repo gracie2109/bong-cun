@@ -75,7 +75,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { VACCINE_KINDS } from "@/types/medical";
+import { VACCINE_KINDS } from "@bongcun/core/medical";
 import ProductPicker from "@/views/admin/inventory/documents/ProductPicker.vue";
 import type { VaccineTypeDraft } from "./vaccineTypeDraft";
 

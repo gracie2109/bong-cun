@@ -1,7 +1,7 @@
 // "My boarding stays": the customer's pet hotel stays, read through RPCs (docs/khach-san-thu-cung.md, 7).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardingScope, MyBoardingCharge, MyBoardingDetail, MyBoardingLog, MyBoardingPet, MyBoardingStay } from "@/types/account";
+import type { BoardingScope, MyBoardingCharge, MyBoardingDetail, MyBoardingLog, MyBoardingPet, MyBoardingStay } from "@bongcun/core/account";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

@@ -3,7 +3,7 @@ import { useListFilters } from "@/composables/useListFilters";
 import { useMarkReminded, useMedicalReminders } from "@/queries/vaccinations";
 import { usePagedList } from "@/composables/usePagedList";
 import { useAuthStore } from "@/stores";
-import type { Reminder, ReminderFilter, ReminderScope } from "@/types/vaccination";
+import type { Reminder, ReminderFilter, ReminderScope } from "@bongcun/core/medical";
 
 const PAGE_SIZE = 20;
 

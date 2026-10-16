@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { CategoryNode } from "@/types/catalog";
+import type { CategoryNode } from "@bongcun/core/shop";
 
 const props = defineProps<{ roots: CategoryNode[]; selected: string | null }>();
 const emit = defineEmits<{ select: [id: string | null] }>();

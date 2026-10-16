@@ -22,7 +22,7 @@
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { useBillableMedical } from "@/queries/medicalBilling";
-import type { BillableVisit } from "@/types/medicalVisit";
+import type { BillableVisit } from "@bongcun/core/medical";
 import { money } from "../format";
 
 const props = defineProps<{

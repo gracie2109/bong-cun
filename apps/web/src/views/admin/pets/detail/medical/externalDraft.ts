@@ -1,4 +1,4 @@
-import type { ExternalVaccineInput } from "@/types/vaccination";
+import type { ExternalVaccineInput } from "@bongcun/core/medical";
 import { todayKey } from "@/views/admin/medical/format";
 
 export type ExternalDraft = {

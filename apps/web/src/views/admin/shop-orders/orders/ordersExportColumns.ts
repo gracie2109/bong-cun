@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { AdminOrderRow } from "@/types/shopOrderAdmin";
+import type { AdminOrderRow } from "@bongcun/core/shop";
 
 const STATUS_TEXT: Record<string, string> = {
   pending: "Chờ xác nhận",

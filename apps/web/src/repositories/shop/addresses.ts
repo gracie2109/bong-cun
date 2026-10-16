@@ -1,7 +1,7 @@
 // The signed-in shopper's delivery addresses.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { Address, AddressInput } from "@/types/shop";
+import type { Address, AddressInput } from "@bongcun/core/shop";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;

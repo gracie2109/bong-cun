@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import type { FilterChip } from "@/types/catalog";
+import type { FilterChip } from "@bongcun/core/shop";
 import type { useCatalog } from "./useCatalog";
 
 /** The removable "filtering by" pills and the props the filter panel needs, derived from the catalog state. */

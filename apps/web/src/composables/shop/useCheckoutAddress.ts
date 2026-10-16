@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { useMyAddresses } from "@/queries/shopAddresses";
 import { useAuthStore } from "@/stores";
-import type { Address } from "@/types/shop";
+import type { Address } from "@bongcun/core/shop";
 import { useAddressForm } from "./useAddressForm";
 
 /**
