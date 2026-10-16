@@ -7,8 +7,8 @@ Ngày: 2026-10-16. Nguồn: mục 4.4, 4.6, 4.7 của [danh-gia-kien-truc.md](da
 | Việc | Quyết định | Lý do |
 | --- | --- | --- |
 | 4.4 Kiểu cho RPC `jsonb` | **Làm ngay** cho luồng tiền, mở rộng dần | Đổi tên một khóa trong SQL hiện `String(undefined)` trên màn hình mà không ai báo. |
-| 4.6 `pg_cron` | **Chưa làm**, ghi sẵn thiết kế | Trong DB chưa có việc nào cần chạy nền: không có cột hạn giữ đơn, không có hàm nhả đơn hay dọn dữ liệu. Tạo job rỗng chỉ thêm chỗ để hỏng. |
-| 4.7 Bảng tổng hợp báo cáo | **Chưa làm**, ghi sẵn ngưỡng | Báo cáo tính trực tiếp trên bảng giao dịch, đủ nhanh ở quy mô hiện tại; bảng tổng hợp thêm một nguồn sự thật phải giữ đồng bộ. |
+| 4.6 `pg_cron` | **Đã làm một job**: tự hủy đơn online pending quá hạn | Đơn bị bỏ quên khóa tồn kho mãi. grace chọn 48 giờ. |
+| 4.7 Bảng tổng hợp báo cáo | **Đã đo, không làm** | 300.000 hóa đơn: báo cáo 30 ngày 0,2 giây, cả năm 1,8 giây. Bảng tổng hợp thêm rủi ro sai số mà chưa có lợi ích. |
 
 ## 4.4 Parse `jsonb` bằng zod
 
@@ -17,19 +17,30 @@ Ngày: 2026-10-16. Nguồn: mục 4.4, 4.6, 4.7 của [danh-gia-kien-truc.md](da
 - Test SQL `pos_invoice.test.sql` kiểm `create_invoice` trả đủ khóa mà app đọc, nên đổi khóa trong SQL sẽ đỏ ở CI trước khi tới màn hình.
 - Làm tiếp khi đụng tới: lưu trú (`save_boarding_stay`, `check_in_boarding`), y tế (`check_in_medical_visit`, `sign_medical_visit`). Quy ước: hàm mới ưu tiên `returns table`, chỉ dùng `jsonb` khi kết quả lồng nhau, và nếu dùng `jsonb` thì kèm schema zod và một ca test khóa.
 
-## 4.6 `pg_cron` (khi nào và làm thế nào)
+## 4.6 `pg_cron`: tự hủy đơn online bị bỏ quên
 
-Chưa làm vì chưa có việc. Khi có đủ một trong các điều kiện sau thì làm:
+Việc thật đầu tiên cần chạy nền: đơn online `pending` giữ hàng (trừ vào tồn bán được) nên đơn không ai xác nhận khóa tồn kho mãi, và đơn chỉ có COD hoặc nhận tại cửa hàng nên không có bước thanh toán nào tự dọn.
 
-- Đơn online chưa thanh toán cần tự hủy và nhả hàng: cần cột hạn giữ đơn trước, rồi một hàm `release_expired_orders()`.
-- Nhắc lịch tiêm, cảnh báo lô sắp hết hạn: hiện đã có danh sách gọi điện xem trên màn hình; chỉ cần job khi có kênh gửi tin.
+- Migration `20261022010000_auto_cancel_stale_shop_orders.sql`: hàm `auto_cancel_stale_shop_orders(p_hours)` (mặc định 48) hủy đơn còn `pending`, chưa có hóa đơn, đặt quá `p_hours` giờ; ghi lý do "Tự hủy: quá N giờ chưa được xác nhận" và một dòng nhật ký đơn do "Hệ thống". Đơn đã xác nhận không bị đụng. Hàm chỉ cấp cho `service_role` (đã có test: người đăng nhập gọi bị 42501). Job `auto-cancel-stale-shop-orders` chạy 02:00 giờ Việt Nam mỗi đêm.
+- Test: `shop_order_auto_cancel.test.sql` (8 ca: hủy đơn cũ, giữ đơn mới, không đụng đơn đã xác nhận, ghi nhật ký, chạy lại không đổi gì, không ai ngoài `service_role` gọi được).
+- grace chọn 48 giờ (2026-10-16), giống mức 1 đến 2 ngày người bán trên sàn phải xử lý đơn COD. Muốn đổi, sửa lệnh trong `cron.schedule` ở một migration mới.
+- Việc chạy nền khác (nhắc lịch tiêm, cảnh báo lô sắp hết hạn) chưa làm: hiện đã có danh sách gọi điện trên màn hình, chỉ cần job khi có kênh gửi tin.
 
-Cách làm: một migration bật `pg_cron` (Free có sẵn), `cron.schedule` gọi đúng một hàm `security definer` đã có test; mỗi job một hàm, idempotent, ghi số dòng đã xử lý. Job ghi dữ liệu thật, nên cần grace duyệt hàm cụ thể trước khi migration chạy tự động lên DB thật.
+## 4.7 Bảng tổng hợp báo cáo (đã đo, chưa cần)
 
-## 4.7 Bảng tổng hợp báo cáo (ngưỡng)
+Đo ngày 2026-10-16 trên Postgres cục bộ: 300.000 hóa đơn (mỗi hóa đơn 1 dòng hàng và 1 thanh toán, trải 400 ngày, tức khoảng 750 hóa đơn mỗi ngày, gấp nhiều lần một cửa hàng thú cưng), 1/50 bị hủy.
 
-Chưa làm. Làm khi một trong hai điều xảy ra: `report_overview` trên dữ liệu thật quá khoảng 1 giây, hoặc hóa đơn lên hàng trăm nghìn dòng. Cách làm khi đó: bảng `daily_sales(branch_id, day, ...)` cập nhật bằng trigger trên `invoices` và `sales_returns`, kèm test SQL so tổng bảng tổng hợp với tổng tính trực tiếp.
+| Khoảng báo cáo | Số hóa đơn trong khoảng | `report_overview_core` |
+| --- | --- | --- |
+| 30 ngày | 21.332 | 0,15 đến 0,20 giây |
+| 366 ngày | 268.078 | 1,8 giây |
+
+`report_overview` gọi hàm này hai lần (kỳ này và kỳ trước), nên 30 ngày vẫn dưới nửa giây. Vì vậy chưa làm bảng tổng hợp.
+
+Lý do không làm sớm: báo cáo dựa vào nhiều bảng (hóa đơn, thanh toán, dòng hàng theo nhóm dịch vụ, phiếu trả hàng, giá vốn từ kho) và một hóa đơn bị hủy hay trả hàng muộn làm đổi số của ngày cũ. Bảng tổng hợp phải cập nhật khi hủy và trả hàng; sai một chỗ thì báo cáo doanh thu sai mà không ai thấy, trong khi chưa có lợi ích tốc độ nào để đổi lại.
+
+Làm khi: báo cáo 30 ngày trên dữ liệu thật quá khoảng 1 giây. Cách làm khi đó: bảng `daily_sales(branch_id, day, ...)` tính lại cho các ngày bị đụng tới (hóa đơn tạo, hủy, trả hàng) bằng chính `report_overview_core` cho từng ngày, kèm test SQL so tổng bảng tổng hợp với tổng tính trực tiếp.
 
 ## Kiểm
 
-Typecheck 0 lỗi, build chạy, 53 test SQL qua (thêm 1 ca khóa `create_invoice`).
+Typecheck 0 lỗi, build chạy, 61 test SQL qua, 122 migration chạy sạch trên DB rỗng.
