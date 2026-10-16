@@ -44,6 +44,9 @@ begin
     raise exception 'not allowed' using errcode = '42501';
   end if;
   select status into v_status from public.boarding_stays where id = v_sp.stay_id;
+  if exists (select 1 from public.boarding_stays where id = v_sp.stay_id and kind = 'inpatient') then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
+  end if;
   if v_status <> 'checked_in' or v_sp.status <> 'active' then
     raise exception 'the pet is not in the hotel' using errcode = 'P0001', hint = 'not_editable';
   end if;
@@ -1077,6 +1080,7 @@ begin
     -- Every active pet that is in a kennel on v_date or arrives on it.
     select sp.kennel_id,
            s.id as stay_id, s.code as stay_code, s.status as stay_status, sp.id as stay_pet_id,
+           s.kind as stay_kind, s.visit_id, mv.code as visit_code,
            sp.pet_id, sp.pet_name, s.customer_name, s.planned_in_at, s.planned_out_at,
            -- In the kennel on v_date: checked in, started, and either still within its nights or (today and
            -- earlier) not yet collected. A later date does not count a pet that is planned to have left.
@@ -1094,21 +1098,24 @@ begin
            ) as has_notes
     from public.boarding_stay_pets sp
     join public.boarding_stays s on s.id = sp.stay_id
+    left join public.medical_visits mv on mv.id = s.visit_id
     where sp.branch_id = p_branch and sp.status = 'active'
       and s.status in ('booked', 'checked_in')
   ), per_kennel as (
-    select k.id, k.code, k.name, k.kennel_type_id, t.name as type_name, k.status, k.sort_order, t.sort_order as type_sort,
+    select k.id, k.code, k.name, k.kennel_type_id, t.name as type_name, t.purpose, k.status, k.sort_order, t.sort_order as type_sort,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
              'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
-             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', p.overdue
+             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', p.overdue,
+             'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
            ) order by p.pet_name) filter (where p.in_kennel), '[]'::jsonb) as in_pets,
            coalesce(jsonb_agg(jsonb_build_object(
              'stay_id', p.stay_id, 'stay_code', p.stay_code, 'stay_status', p.stay_status,
              'stay_pet_id', p.stay_pet_id, 'pet_id', p.pet_id, 'pet_name', p.pet_name,
              'customer_name', p.customer_name, 'planned_in_at', p.planned_in_at,
-             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', false
+             'planned_out_at', p.planned_out_at, 'has_notes', p.has_notes, 'overdue', false,
+             'kind', p.stay_kind, 'visit_id', p.visit_id, 'visit_code', p.visit_code
            ) order by p.pet_name) filter (where p.arrives), '[]'::jsonb) as arriving_pets,
            coalesce(bool_or(p.in_kennel and p.overdue), false) as has_overdue,
            coalesce(bool_or(p.in_kennel and p.leaves and not p.overdue), false) as has_leaving,
@@ -1134,7 +1141,7 @@ begin
   )
   select jsonb_agg(jsonb_build_object(
            'id', st.id, 'code', st.code, 'name', st.name,
-           'kennel_type_id', st.kennel_type_id, 'kennel_type_name', st.type_name,
+           'kennel_type_id', st.kennel_type_id, 'kennel_type_name', st.type_name, 'purpose', st.purpose,
            'status', st.status, 'state', st.state,
            'conflict', (st.has_overdue and st.has_arrival),
            'pets', st.in_pets, 'arriving', st.arriving_pets
@@ -1151,7 +1158,9 @@ begin
         'departing', count(*) filter (where k ->> 'state' = 'departing'),
         'occupied', count(*) filter (where k ->> 'state' in ('occupied', 'departing', 'overdue')),
         'overdue', count(*) filter (where k ->> 'state' = 'overdue'),
-        'free', count(*) filter (where k ->> 'state' = 'free')
+        'free', count(*) filter (where k ->> 'state' = 'free'),
+        'inpatient', count(*) filter (where exists (
+          select 1 from jsonb_array_elements(k -> 'pets') as p(pet) where p.pet ->> 'kind' = 'inpatient'))
       )
       from jsonb_array_elements(coalesce(v_kennels, '[]'::jsonb)) as t(k)
     )
@@ -1473,6 +1482,9 @@ CREATE OR REPLACE FUNCTION "public"."boarding_stay_json"("p_stay" "public"."boar
     'checked_in_at', p_stay.checked_in_at,
     'checked_out_at', p_stay.checked_out_at,
     'source', p_stay.source,
+    'kind', p_stay.kind,
+    'visit_id', p_stay.visit_id,
+    'visit_code', (select mv.code from public.medical_visits mv where mv.id = p_stay.visit_id),
     'emergency_phone', p_stay.emergency_phone,
     'note', p_stay.note,
     'cancel_reason', p_stay.cancel_reason,
@@ -1554,10 +1566,12 @@ begin
           select jsonb_agg(jsonb_build_object(
             'stay_id', s.id, 'stay_code', s.code, 'stay_status', s.status, 'stay_pet_id', sp.id,
             'pet_name', sp.pet_name, 'customer_name', s.customer_name,
+            'kind', s.kind, 'visit_code', mv.code,
             'from', lower(sp.nights), 'to', upper(sp.nights)
           ) order by lower(sp.nights), sp.line_no)
           from public.boarding_stay_pets sp
           join public.boarding_stays s on s.id = sp.stay_id
+          left join public.medical_visits mv on mv.id = s.visit_id
           where sp.kennel_id = k.id and sp.status = 'active'
             and s.status in ('booked', 'checked_in', 'checked_out', 'paid')
             and sp.nights && v_win
@@ -2557,6 +2571,9 @@ begin
   if not public.can_boarding('UPDATE', v_stay.branch_id) then
     raise exception 'not allowed' using errcode = '42501';
   end if;
+  if v_stay.kind = 'inpatient' then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
+  end if;
   if v_stay.status <> 'checked_in' then
     raise exception 'only a stay that is in can be checked out' using errcode = 'P0001', hint = 'not_editable';
   end if;
@@ -3547,6 +3564,9 @@ begin
   end if;
   if not public.can_boarding('UPDATE', v_stay.branch_id) then
     raise exception 'not allowed' using errcode = '42501';
+  end if;
+  if v_stay.kind = 'inpatient' then
+    raise exception 'an inpatient stay is managed on the inpatient screen' using errcode = 'P0001', hint = 'inpatient_stay';
   end if;
   if v_stay.status <> 'checked_in' then
     raise exception 'only a stay that is in can be extended' using errcode = 'P0001', hint = 'not_editable';

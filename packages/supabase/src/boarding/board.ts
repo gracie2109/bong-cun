@@ -1,7 +1,7 @@
 // The day board of kennels.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardCounts, BoardKennel, BoardPet, DayBoard, KennelState, KennelStatus, StayStatus } from "@bongcun/core/boarding";
+import type { BoardCounts, BoardKennel, BoardPet, DayBoard, KennelPurpose, KennelState, KennelStatus, StayStatus } from "@bongcun/core/boarding";
 import { unwrap } from "@bongcun/supabase/shared";
 import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
 
@@ -21,6 +21,9 @@ const toBoardPet = (value: unknown): BoardPet => {
     plannedOutAt: str(row.planned_out_at),
     hasNotes: row.has_notes === true,
     overdue: row.overdue === true,
+    kind: row.kind === "inpatient" ? "inpatient" : "boarding",
+    visitId: strOrNull(row.visit_id),
+    visitCode: strOrNull(row.visit_code),
   };
 };
 
@@ -32,6 +35,7 @@ const toBoardKennel = (value: unknown): BoardKennel => {
     name: strOrNull(row.name),
     kennelTypeId: str(row.kennel_type_id),
     kennelTypeName: str(row.kennel_type_name),
+    purpose: str(row.purpose) as KennelPurpose,
     status: str(row.status) as KennelStatus,
     state: str(row.state) as KennelState,
     conflict: row.conflict === true,
@@ -48,6 +52,7 @@ const toCounts = (value: unknown): BoardCounts => {
     occupied: Number(row.occupied ?? 0),
     overdue: Number(row.overdue ?? 0),
     free: Number(row.free ?? 0),
+    inpatient: Number(row.inpatient ?? 0),
   };
 };
 

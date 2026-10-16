@@ -6,6 +6,9 @@
         <span class="rounded-full px-2 py-0.5 text-xs font-semibold" :class="STAY_TONE[stay.status]">
           {{ $t(`boarding.status.${stay.status}`) }}
         </span>
+        <span v-if="stay.kind === 'inpatient'" class="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-800">
+          {{ $t("boarding.board.inpatient") }}
+        </span>
       </div>
       <p class="text-sm">
         <span class="font-medium">{{ stay.customerName }}</span>
@@ -19,7 +22,7 @@
       <p v-if="stay.note" class="text-sm italic text-muted-foreground">{{ stay.note }}</p>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <div v-if="stay.kind !== 'inpatient'" class="flex flex-wrap items-center gap-2">
       <template v-if="stay.status === 'booked'">
         <Button v-if="canCreate" @click="emit('check-in')">{{ $t("boarding.detail.checkIn") }}</Button>
         <Button v-if="canUpdate" variant="outline" @click="emit('edit')">{{ $t("petCare.common.edit") }}</Button>

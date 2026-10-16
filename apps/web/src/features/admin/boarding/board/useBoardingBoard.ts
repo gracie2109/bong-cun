@@ -36,14 +36,24 @@ export const useBoardingBoardView = (branchId: Ref<string | undefined>) => {
     dialogOpen.value = true;
   };
 
-  /** A kennel with a pet or a booked arrival opens that stay; a free, ready kennel starts a booking. */
+  const canViewMedical = computed(() => auth.can("medical", "VIEW"));
+
+  /**
+   * A kennel with a pet or a booked arrival opens that stay (an inpatient opens the Inpatient screen when the
+   * staff may see it); a free, ready hotel kennel starts a booking. A free medical kennel opens nothing:
+   * inpatients are admitted from the visit.
+   */
   const openKennel = (kennel: BoardKennel) => {
     const stay = kennel.pets[0] ?? kennel.arriving[0];
+    if (stay?.kind === "inpatient" && canViewMedical.value) {
+      router.push({ name: "medicalWard" });
+      return;
+    }
     if (stay) {
       router.push({ name: "boardingStayDetail", params: { stayId: stay.stayId } });
       return;
     }
-    if (kennel.state === "free" && kennel.status === "ready" && canCreate.value) openNew(kennel);
+    if (kennel.purpose === "boarding" && kennel.state === "free" && kennel.status === "ready" && canCreate.value) openNew(kennel);
   };
 
   const setStatus = useSetKennelStatus();

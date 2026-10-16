@@ -32,6 +32,8 @@
           @no-show="markNoShow"
         />
 
+        <InpatientNotice v-if="stay.kind === 'inpatient'" :stay="stay" />
+
         <section class="grid gap-3 lg:grid-cols-2">
           <PetCard
             v-for="pet in stay.pets"
@@ -53,7 +55,7 @@
             <CareLogTab :logs="stay.careLogs" :pets="activePets" :can-write="isIn && canCreate" />
           </TabsContent>
           <TabsContent value="extras" class="mt-4">
-            <ExtrasTab :charges="stay.charges" :pets="activePets" :can-add="isIn && canCreate" :can-remove="canUpdate" />
+            <ExtrasTab :charges="stay.charges" :pets="activePets" :can-add="isIn && canCreate && stay.kind !== 'inpatient'" :can-remove="canUpdate" />
           </TabsContent>
           <TabsContent value="money" class="mt-4">
             <ChargesTab :stay="stay" />
@@ -85,6 +87,7 @@ import CheckOutDialog from "./CheckOutDialog.vue";
 import ExtendDialog from "./ExtendDialog.vue";
 import ExtrasTab from "./ExtrasTab.vue";
 import MoveKennelDialog from "./MoveKennelDialog.vue";
+import InpatientNotice from "./InpatientNotice.vue";
 import PetCard from "./PetCard.vue";
 import StayHeader from "./StayHeader.vue";
 import { useStayDetail } from "./useStayDetail";
