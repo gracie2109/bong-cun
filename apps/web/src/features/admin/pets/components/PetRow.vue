@@ -5,12 +5,7 @@
   >
     <td class="px-4 py-3">
       <div class="flex min-w-0 items-center gap-3">
-        <Avatar class="size-10">
-          <AvatarImage v-if="pet.photoUrl" :src="pet.photoUrl" />
-          <AvatarFallback class="bg-primary/15 font-semibold text-primary">
-            {{ initials(pet.name) }}
-          </AvatarFallback>
-        </Avatar>
+        <PetAvatar :name="pet.name" :photo-url="pet.photoUrl" :species-icon="pet.speciesIcon" class="size-10" />
         <div class="min-w-0">
           <p class="flex items-center gap-2 font-semibold">
             <span class="truncate">{{ pet.name }}</span>
@@ -90,7 +85,7 @@
 import { useI18n } from "vue-i18n";
 import { Icon } from "@iconify/vue";
 import { EllipsisVertical } from "lucide-vue-next";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -99,7 +94,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { PetListItem } from "@bongcun/supabase/pets";
-import { formatAge, formatShortDate, initials } from "../format";
+import { formatAge, formatShortDate } from "../format";
 
 defineProps<{ pet: PetListItem; canUpdate: boolean }>();
 

@@ -66,6 +66,16 @@
       "ageYearsMonths": "{y} y {m} m",
       "ageMonths": "{m} m",
       "ageUnknown": "Unknown",
+      "photo": {
+        "add": "Add photo",
+        "change": "Change photo",
+        "remove": "Remove photo",
+        "uploading": "Uploading photo",
+        "hint": "Optional. The picture is shrunk automatically, 2 MB at most.",
+        "tooBig": "Photos can be 2 MB at most",
+        "badType": "This image format is not supported",
+        "createdWithoutPhoto": "The pet was created but the photo could not be saved"
+      },
       "registerSheet": {
         "title": "Register pet",
         "subtitle": "Quick entry at the counter: owner first, then the pet",
