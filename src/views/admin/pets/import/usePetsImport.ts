@@ -1,7 +1,7 @@
 import { useTableImport } from "@/composables/useTableImport";
 import { useImportPets } from "@/queries/dataImports";
 import { parsePets } from "./parsePets";
-import type { PetImportRow } from "./petsImportRow";
+import type { PetImportRow } from "@/types/dataImport";
 
 /** The "Khách và thú cưng" import: the shared flow with the pet file reader and `import_pets`. */
 export const usePetsImport = () => {

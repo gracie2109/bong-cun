@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import type { AdminOrderRow } from "@/types/shopOrderAdmin";
-import OrderStatusBadge from "@/views/client/orders/components/OrderStatusBadge.vue";
+import OrderStatusBadge from "@/components/common/OrderStatusBadge.vue";
 import { dateTime, money } from "@/views/admin/pos/format";
 
 defineProps<{ order: AdminOrderRow }>();

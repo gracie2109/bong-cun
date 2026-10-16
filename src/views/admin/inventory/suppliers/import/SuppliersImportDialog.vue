@@ -17,7 +17,7 @@
 import ImportDialog from "@/components/common/data-io/ImportDialog.vue";
 import type { PreviewColumn } from "@/composables/useTableImport";
 import { downloadSuppliersTemplate } from "./downloadSuppliersTemplate";
-import type { SupplierImportRow } from "./suppliersImportRow";
+import type { SupplierImportRow } from "@/types/dataImport";
 import { useSuppliersImport } from "./useSuppliersImport";
 
 const open = defineModel<boolean>("open", { required: true });

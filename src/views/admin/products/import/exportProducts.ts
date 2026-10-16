@@ -1,7 +1,8 @@
 import { useTableExport } from "@/composables/useTableExport";
 import { supabaseClient } from "@/lib/supabase";
 import { exportProducts } from "@/repositories/productImport";
-import { exportSheets, type ExportRow } from "./exportSheets";
+import { exportSheets } from "./exportSheets";
+import type { ExportRow } from "@/types/dataImport";
 import { TEMPLATE_FILE_NAME, templateSheets } from "./importTemplate";
 import { productCsvColumns, productPriceListColumns } from "./productExportColumns";
 

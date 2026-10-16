@@ -1,5 +1,5 @@
 import type { ExportColumn } from "@/lib/data-io/columns";
-import type { ExportRow } from "./exportSheets";
+import type { ExportRow } from "@/types/dataImport";
 import { IMAGE_SEPARATOR, MAX_ATTRIBUTES, PRODUCT_HEADERS } from "./importTemplate";
 
 const attribute = (row: ExportRow, index: number, field: "name" | "value") => row.attrs[index]?.[field] ?? "";

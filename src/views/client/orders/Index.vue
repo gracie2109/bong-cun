@@ -60,7 +60,7 @@ import CancelOrderDialog from "./components/CancelOrderDialog.vue";
 import OrderInfo from "./components/OrderInfo.vue";
 import OrderLines from "./components/OrderLines.vue";
 import OrderProgress from "./components/OrderProgress.vue";
-import OrderStatusBadge from "./components/OrderStatusBadge.vue";
+import OrderStatusBadge from "@/components/common/OrderStatusBadge.vue";
 
 const { order, loading, failed, notFound, retry, steps, cancellable, feeWentUp, cancelOpen, cancelReason, cancelling, openCancel, confirmCancel } =
   useOrderPage();

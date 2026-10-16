@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { supabaseClient } from "@/lib/supabase";
 import { exportProducts, importProducts } from "@/repositories/productImport";
-import type { ImportRow } from "@/views/admin/products/import/importTypes";
+import type { ImportRow } from "@/types/dataImport";
 import { productBrandKeys, productCategoryKeys, productKeys } from "./keys";
 import { notifyFailure } from "./notify";
 

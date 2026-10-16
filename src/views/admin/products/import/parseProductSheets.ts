@@ -2,7 +2,7 @@ import { addProblem, type ParsedImport } from "@/lib/data-io/types";
 import { flagRepeats, readSheet, type CellValue, type ReadRow } from "@/lib/data-io/importSchema";
 import type { SheetTable } from "@/lib/data-io/readTable";
 import { IMAGE_SEPARATOR, MAX_ATTRIBUTES, PRODUCT_SHEET, UNIT_SHEET } from "./importTemplate";
-import type { ImportRow, ImportUnit } from "./importTypes";
+import type { ImportRow, ImportUnit } from "@/types/dataImport";
 import { PRODUCT_COLUMNS, UNIT_COLUMNS } from "./productImportSchema";
 
 const str = (value: CellValue | undefined): string => (value === null || value === undefined ? "" : String(value));
