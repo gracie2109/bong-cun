@@ -670,3 +670,25 @@ Q9 đến Q14: grace chọn "theo khuyến nghị" (2026-10-16).
 | Q14 | Thêm Vitest và dependency-cruiser vào CI | PR 0b, 0c, 0d dùng chúng |
 
 Trạng thái: mọi quyết định cho giai đoạn 0 đến 3 đã chốt. Việc code do thread riêng "Monorepo giai đoạn 0 đến 3" (Sonnet) thực hiện theo kế hoạch này.
+
+## 24. Tiến độ thực hiện (cập nhật 2026-10-16)
+
+Làm theo Q1 (a): giai đoạn 0 đến 3. Mỗi dòng là một PR đã squash merge, CI xanh, không đụng migration.
+
+| Giai đoạn | PR | Nội dung |
+| --- | --- | --- |
+| 0a | #140 | Sửa import sai chiều, xóa `src/data` và `components/Vouchers`, thêm dependency-cruiser vào CI |
+| 0b | #141 | `AppError` và dịch mã lỗi Postgres; `notifyFailure` chỉ đọc mã lỗi |
+| 0d | #142 | `MAX_DELIVERY_G`, `MAX_QUOTE_FEE` chỉ còn một chỗ định nghĩa |
+| 0c | #143 | Vitest và test đầu tiên, chạy trong CI |
+| 1 | #144 | App vào `apps/web`, npm workspaces; `supabase/` ở gốc |
+| 2 | #145 đến #151 | `packages/core` (kiểu miền, quy tắc thuần, mã lỗi) và `packages/supabase` (toàn bộ repository, kiểu DB, `unwrap`/`parseRpc`/dịch lỗi). Không còn `apps/web/src/repositories` |
+
+Khác với kế hoạch gốc, có chủ ý:
+
+- Chuyển repository bằng script (`git mv` và viết lại import) theo cụm feature thay vì mapper từng feature. Repository vẫn trả kiểu như trước; mapper sang kiểu miền và `contract.ts` (zod vào/ra) làm dần khi có lý do.
+- `packages/supabase` có lib DOM vì `storage.ts` và đính kèm y tế còn nhận `File`; sẽ thành port lưu file khi làm mobile. `core` không có DOM.
+- Barrel `export *` theo feature (`@bongcun/core/shop`, `@bongcun/supabase/pos`...) thay vì khai `exports` từng đường con.
+- Luật dependency-cruiser: `core` không import framework hay `supabase-js`; `supabase` chỉ import `core`; trong `apps/web` chỉ store `auth` còn import `supabase-js` (sẽ tách ở giai đoạn 3).
+- Hợp đồng zod, mapper, test hình dạng RPC trên DB CI và test đối chiếu quyền (mục 17.5) chưa làm; cần DB trong test.
+- Nitro inline `@bongcun/core` để bundle server (proxy GHN) không import TypeScript ngoài.
