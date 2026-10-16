@@ -26,14 +26,18 @@
           @order="orderFor = row"
           @log="logFor = row"
           @discharge="dischargeRow = row"
-          @stop="stopOrder"
+          @edit="editOrder = $event"
+          @replace="startReplace(row, $event)"
+          @stop="stopOrder = $event"
           @give="giveDose"
           @skip="skipDose = $event"
         />
       </div>
     </div>
 
-    <OrderDialog :open="!!orderFor" :row="orderFor" @update:open="orderFor = null" />
+    <OrderDialog :open="!!orderFor" :row="orderFor" :replace-of="replaceOrder" @update:open="closeOrderDialog" />
+    <OrderEditDialog :open="!!editOrder" :order="editOrder" @update:open="editOrder = null" />
+    <StopOrderDialog :open="!!stopOrder" :order="stopOrder" @update:open="stopOrder = null" />
     <LogDialog :open="!!logFor" :row="logFor" @update:open="logFor = null" />
     <SkipDoseDialog :open="!!skipDose" :dose-id="skipDose?.id ?? null" @update:open="skipDose = null" />
     <ConfirmDialog
@@ -54,13 +58,29 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import type { WardOrder, WardRow } from "@bongcun/core/medical";
 import MedicalNav from "../MedicalNav.vue";
 import LogDialog from "./LogDialog.vue";
 import OrderDialog from "./OrderDialog.vue";
+import OrderEditDialog from "./OrderEditDialog.vue";
 import SkipDoseDialog from "./SkipDoseDialog.vue";
+import StopOrderDialog from "./StopOrderDialog.vue";
 import { useWard } from "./useWard";
 import WardCard from "./WardCard.vue";
 
 const { branches, selectBranch } = useCurrentBranch();
-const { branchId, query, rows, canUpdate, orderFor, logFor, skipDose, dischargeRow, giveDose, stopOrder, confirmDischarge } = useWard();
+const {
+  branchId, query, rows, canUpdate, orderFor, logFor, skipDose, dischargeRow, editOrder, replaceOrder, stopOrder,
+  giveDose, confirmDischarge,
+} = useWard();
+
+// "Replace" opens the order dialog for the same pet, filled with the old order.
+const startReplace = (row: WardRow, order: WardOrder) => {
+  orderFor.value = row;
+  replaceOrder.value = order;
+};
+const closeOrderDialog = () => {
+  orderFor.value = null;
+  replaceOrder.value = null;
+};
 </script>

@@ -3960,7 +3960,8 @@ begin
   end if;
 
   update public.inpatient_doses
-  set given_at = now(), given_by = v_uid, given_by_name = public.staff_display_name(v_uid)
+  set given_at = now(), given_by = v_uid, given_by_name = public.staff_display_name(v_uid),
+      qty = v_order.qty_per_dose
   where id = p_dose;
   return jsonb_build_object('warnings', coalesce(v_res -> 'warnings', '[]'::jsonb));
 end;
@@ -5057,6 +5058,122 @@ $$;
 ALTER FUNCTION "public"."inpatient_kennels"("p_branch" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."inpatient_log_change"("p_order" "uuid", "p_visit" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_uid uuid := (select auth.uid());
+begin
+  insert into public.inpatient_order_changes (order_id, visit_id, action, before, after, reason, changed_by, changed_by_name)
+  values (
+    p_order, p_visit, p_action, p_before, p_after, nullif(btrim(p_reason), ''),
+    v_uid, case when v_uid is null then null else public.staff_display_name(v_uid) end
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."inpatient_log_change"("p_order" "uuid", "p_visit" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."inpatient_order_history"("p_order" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_branch uuid;
+begin
+  select branch_id into v_branch from public.inpatient_orders where id = p_order;
+  if v_branch is null then
+    raise exception 'order not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if not public.can_medical('VIEW', v_branch) then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+  return coalesce((
+    select jsonb_agg(jsonb_build_object(
+      'id', c.id, 'action', c.action, 'before', c.before, 'after', c.after, 'reason', c.reason,
+      'changed_by_name', c.changed_by_name, 'changed_at', c.changed_at
+    ) order by c.changed_at desc, c.id)
+    from public.inpatient_order_changes c where c.order_id = p_order
+  ), '[]'::jsonb);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."inpatient_order_history"("p_order" "uuid") OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."inpatient_orders" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "stay_pet_id" "uuid" NOT NULL,
+    "stay_id" "uuid" NOT NULL,
+    "visit_id" "uuid" NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "kind" "text" NOT NULL,
+    "product_id" "uuid",
+    "service_id" "uuid",
+    "name" "text" NOT NULL,
+    "dose" "text",
+    "qty_per_dose" numeric(10,2) DEFAULT 1 NOT NULL,
+    "times" "text"[] NOT NULL,
+    "start_on" "date" NOT NULL,
+    "end_on" "date" NOT NULL,
+    "note" "text",
+    "item_id" "uuid",
+    "stopped_at" timestamp with time zone,
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "inpatient_orders_check" CHECK ((("end_on" >= "start_on") AND ("end_on" <= ("start_on" + 30)))),
+    CONSTRAINT "inpatient_orders_check1" CHECK (((("kind" = 'product'::"text") AND ("product_id" IS NOT NULL) AND ("service_id" IS NULL)) OR (("kind" = 'service'::"text") AND ("service_id" IS NOT NULL) AND ("product_id" IS NULL)) OR (("kind" = 'care'::"text") AND ("product_id" IS NULL) AND ("service_id" IS NULL)))),
+    CONSTRAINT "inpatient_orders_kind_check" CHECK (("kind" = ANY (ARRAY['product'::"text", 'service'::"text", 'care'::"text"]))),
+    CONSTRAINT "inpatient_orders_name_check" CHECK (("length"("btrim"("name")) > 0)),
+    CONSTRAINT "inpatient_orders_qty_per_dose_check" CHECK (("qty_per_dose" > (0)::numeric)),
+    CONSTRAINT "inpatient_orders_times_check" CHECK ((("cardinality"("times") >= 1) AND ("cardinality"("times") <= 8)))
+);
+
+
+ALTER TABLE "public"."inpatient_orders" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."inpatient_order_snapshot"("p_order" "public"."inpatient_orders") RETURNS "jsonb"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+  select jsonb_build_object(
+    'dose', p_order.dose, 'qty_per_dose', p_order.qty_per_dose, 'times', to_jsonb(p_order.times),
+    'start_on', p_order.start_on, 'end_on', p_order.end_on, 'note', p_order.note
+  );
+$$;
+
+
+ALTER FUNCTION "public"."inpatient_order_snapshot"("p_order" "public"."inpatient_orders") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."inpatient_signed_lock"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_visit uuid;
+begin
+  if tg_table_name = 'inpatient_orders' then
+    v_visit := coalesce(new.visit_id, old.visit_id);
+  else
+    select o.visit_id into v_visit from public.inpatient_orders o where o.id = coalesce(new.order_id, old.order_id);
+  end if;
+  if v_visit is not null and exists (select 1 from public.medical_visits where id = v_visit and signed_at is not null) then
+    raise exception 'the visit is signed' using errcode = 'P0001', hint = 'signed';
+  end if;
+  return coalesce(new, old);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."inpatient_signed_lock"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "date" DEFAULT NULL::"date") RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -5087,16 +5204,22 @@ begin
       'allergies', nullif(btrim(pt.allergies), ''),
       'orders', coalesce((
         select jsonb_agg(jsonb_build_object(
-          'id', o.id, 'kind', o.kind, 'name', o.name, 'dose', o.dose, 'qty_per_dose', o.qty_per_dose,
+          'id', o.id, 'kind', o.kind, 'product_id', o.product_id, 'service_id', o.service_id, 'name', o.name, 'dose', o.dose, 'qty_per_dose', o.qty_per_dose,
           'times', o.times, 'start_on', o.start_on, 'end_on', o.end_on, 'note', o.note,
-          'stopped', o.stopped_at is not null
+          'stopped', o.stopped_at is not null,
+          'edited', (select count(*) from public.inpatient_order_changes c where c.order_id = o.id and c.action = 'update'),
+          'missed', (
+            select count(*) from public.inpatient_doses d
+            where d.order_id = o.id and public.medical_local_date(d.due_at) = v_date and d.due_at < now()
+              and d.given_at is null and d.skipped_reason is null
+          )
         ) order by o.created_at)
         from public.inpatient_orders o where o.stay_pet_id = sp.id and o.stopped_at is null
       ), '[]'::jsonb),
       'doses', coalesce((
         select jsonb_agg(jsonb_build_object(
           'id', d.id, 'order_id', d.order_id, 'due_at', d.due_at, 'given_at', d.given_at,
-          'given_by_name', d.given_by_name, 'skipped_reason', d.skipped_reason
+          'given_by_name', d.given_by_name, 'skipped_reason', d.skipped_reason, 'qty', d.qty
         ) order by d.due_at)
         from public.inpatient_doses d
         join public.inpatient_orders o on o.id = d.order_id
@@ -8442,6 +8565,42 @@ $$;
 ALTER FUNCTION "public"."remove_medical_item"("p_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_order public.inpatient_orders;
+  v_new   uuid;
+begin
+  select * into v_order from public.inpatient_orders where id = p_id for update;
+  if not found then
+    raise exception 'order not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if not public.can_medical('UPDATE', v_order.branch_id) then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+  if v_order.stopped_at is not null then
+    raise exception 'the order is stopped' using errcode = 'P0001', hint = 'order_stopped';
+  end if;
+
+  -- The new order goes first: if it is refused, the old one keeps running.
+  v_new := public.save_inpatient_order(p || jsonb_build_object('stay_pet_id', v_order.stay_pet_id));
+  update public.inpatient_orders set stopped_at = now() where id = p_id;
+  delete from public.inpatient_doses
+  where order_id = p_id and given_at is null and skipped_reason is null and due_at > now();
+  perform public.inpatient_log_change(
+    p_id, v_order.visit_id, 'replace', public.inpatient_order_snapshot(v_order),
+    jsonb_build_object('new_order_id', v_new), p ->> 'reason'
+  );
+  return v_new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."report_adjustments"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text" DEFAULT 'all'::"text", "p_search" "text" DEFAULT NULL::"text", "p_limit" integer DEFAULT 20, "p_offset" integer DEFAULT 0) RETURNS TABLE("kind" "text", "id" "uuid", "branch_id" "uuid", "code" "text", "invoice_id" "uuid", "invoice_code" "text", "at" timestamp with time zone, "amount" numeric, "method" "text", "reason" "text", "by_name" "text", "item_summary" "text", "total_count" bigint)
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -9591,6 +9750,11 @@ begin
   select v_id, (d::timestamp + t::time) at time zone 'Asia/Ho_Chi_Minh'
   from generate_series(v_start::timestamp, v_end::timestamp, interval '1 day') d
   cross join unnest(v_times) t;
+
+  perform public.inpatient_log_change(v_id, v_stay.visit_id, 'create', null,
+    jsonb_build_object('name', v_name, 'dose', nullif(btrim(p ->> 'dose'), ''), 'qty_per_dose', v_qty,
+                       'times', to_jsonb(v_times), 'start_on', v_start, 'end_on', v_end,
+                       'note', nullif(btrim(p ->> 'note'), '')), null);
   return v_id;
 end;
 $_$;
@@ -12888,7 +13052,7 @@ $$;
 ALTER FUNCTION "public"."stock_summary"("p_branch" "uuid", "p_search" "text", "p_status" "text", "p_expiry_days" integer, "p_limit" integer, "p_offset" integer) OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."stop_inpatient_order"("p_id" "uuid") RETURNS "void"
+CREATE OR REPLACE FUNCTION "public"."stop_inpatient_order"("p_id" "uuid", "p_reason" "text" DEFAULT NULL::"text") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
     AS $$
@@ -12902,14 +13066,20 @@ begin
   if not public.can_medical('UPDATE', v_order.branch_id) then
     raise exception 'not allowed' using errcode = '42501';
   end if;
-  update public.inpatient_orders set stopped_at = coalesce(stopped_at, now()) where id = p_id;
+  if v_order.stopped_at is not null then
+    return;
+  end if;
+  update public.inpatient_orders set stopped_at = now() where id = p_id;
   delete from public.inpatient_doses
   where order_id = p_id and given_at is null and skipped_reason is null and due_at > now();
+  perform public.inpatient_log_change(
+    p_id, v_order.visit_id, 'stop', public.inpatient_order_snapshot(v_order), null, p_reason
+  );
 end;
 $$;
 
 
-ALTER FUNCTION "public"."stop_inpatient_order"("p_id" "uuid") OWNER TO "postgres";
+ALTER FUNCTION "public"."stop_inpatient_order"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."sync_user_email"() RETURNS "trigger"
@@ -13010,6 +13180,131 @@ $$;
 
 
 ALTER FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_product" "uuid", "p_qty" numeric, "p_lot" "uuid", "p_invoice" "uuid", "p_invoice_line" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $_$
+declare
+  v_order   public.inpatient_orders;
+  v_stay    public.boarding_stays;
+  v_today   date := public.business_date();
+  v_dose    text;
+  v_qty     numeric;
+  v_times   text[];
+  v_start   date;
+  v_end     date;
+  v_note    text;
+  v_after   public.inpatient_orders;
+  v_rebuild boolean;
+  v_due     timestamptz[];
+  v_added   int := 0;
+  v_removed int := 0;
+begin
+  select * into v_order from public.inpatient_orders where id = p_id for update;
+  if not found then
+    raise exception 'order not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if not public.can_medical('UPDATE', v_order.branch_id) then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+  if exists (select 1 from public.medical_visits where id = v_order.visit_id and signed_at is not null) then
+    raise exception 'the visit is signed' using errcode = 'P0001', hint = 'signed';
+  end if;
+  select * into v_stay from public.boarding_stays where id = v_order.stay_id;
+  if v_stay.status <> 'checked_in' then
+    raise exception 'the pet is not in the clinic' using errcode = 'P0001', hint = 'not_editable';
+  end if;
+  if v_order.stopped_at is not null then
+    raise exception 'the order is stopped' using errcode = 'P0001', hint = 'order_stopped';
+  end if;
+
+  -- The medicine, service or kind of an order never changes: stop it and write a new one.
+  if (p ? 'kind' and p ->> 'kind' is distinct from v_order.kind)
+     or (p ? 'product_id' and nullif(p ->> 'product_id', '')::uuid is distinct from v_order.product_id)
+     or (p ? 'service_id' and nullif(p ->> 'service_id', '')::uuid is distinct from v_order.service_id)
+     or (p ? 'name' and nullif(btrim(p ->> 'name'), '') is distinct from v_order.name) then
+    raise exception 'use replace to change the medicine' using errcode = '22023', hint = 'replace_order';
+  end if;
+
+  v_dose  := case when p ? 'dose' then nullif(btrim(p ->> 'dose'), '') else v_order.dose end;
+  v_qty   := case when p ? 'qty_per_dose' then nullif(p ->> 'qty_per_dose', '')::numeric else v_order.qty_per_dose end;
+  v_start := case when p ? 'start_on' then nullif(p ->> 'start_on', '')::date else v_order.start_on end;
+  v_end   := case when p ? 'end_on' then nullif(p ->> 'end_on', '')::date else v_order.end_on end;
+  v_note  := case when p ? 'note' then nullif(btrim(p ->> 'note'), '') else v_order.note end;
+  if p ? 'times' then
+    select coalesce(array_agg(distinct t order by t), '{}') into v_times
+    from jsonb_array_elements_text(coalesce(p -> 'times', '[]'::jsonb)) as x(t);
+    if cardinality(v_times) not between 1 and 8
+       or exists (select 1 from unnest(v_times) t where t !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$') then
+      raise exception 'pick the hours' using errcode = '22023', hint = 'bad_input';
+    end if;
+  else
+    v_times := v_order.times;
+  end if;
+
+  if v_qty is null or v_qty <= 0 or v_start is null or v_end is null or v_end < v_start or v_end > v_start + 30 then
+    raise exception 'bad order' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if v_end < v_today and v_end is distinct from v_order.end_on then
+    raise exception 'the end date is in the past' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if v_start is distinct from v_order.start_on and exists (
+    select 1 from public.inpatient_doses
+    where order_id = p_id and (given_at is not null or skipped_reason is not null)
+  ) then
+    raise exception 'doses were already recorded' using errcode = '22023', hint = 'bad_input';
+  end if;
+
+  update public.inpatient_orders set
+    dose = v_dose, qty_per_dose = v_qty, times = v_times, start_on = v_start, end_on = v_end, note = v_note
+  where id = p_id
+  returning * into v_after;
+
+  if public.inpatient_order_snapshot(v_after) is not distinct from public.inpatient_order_snapshot(v_order) then
+    return jsonb_build_object('id', p_id, 'doses_added', 0, 'doses_removed', 0);
+  end if;
+
+  v_rebuild := v_times is distinct from v_order.times or v_start is distinct from v_order.start_on
+               or v_end is distinct from v_order.end_on;
+  if v_rebuild then
+    select coalesce(array_agg(due), '{}') into v_due
+    from (
+      select (d::timestamp + t::time) at time zone 'Asia/Ho_Chi_Minh' as due
+      from generate_series(greatest(v_start, v_today)::timestamp, v_end::timestamp, interval '1 day') d
+      cross join unnest(v_times) t
+    ) x
+    where due > now();
+
+    -- Keep the doses that are still wanted, drop the rest, add the new ones.
+    with gone as (
+      delete from public.inpatient_doses
+      where order_id = p_id and given_at is null and skipped_reason is null and due_at > now()
+        and not (due_at = any (v_due))
+      returning 1
+    )
+    select count(*) into v_removed from gone;
+
+    with fresh as (
+      insert into public.inpatient_doses (order_id, due_at)
+      select p_id, unnest(v_due)
+      on conflict (order_id, due_at) do nothing
+      returning 1
+    )
+    select count(*) into v_added from fresh;
+  end if;
+
+  perform public.inpatient_log_change(
+    p_id, v_order.visit_id, 'update',
+    public.inpatient_order_snapshot(v_order), public.inpatient_order_snapshot(v_after), p ->> 'reason'
+  );
+  return jsonb_build_object('id', p_id, 'doses_added', v_added, 'doses_removed', v_removed);
+end;
+$_$;
+
+
+ALTER FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_medical_item"("p_id" "uuid", "p" "jsonb") RETURNS "jsonb"
@@ -13501,6 +13796,7 @@ CREATE TABLE IF NOT EXISTS "public"."inpatient_doses" (
     "given_by" "uuid",
     "given_by_name" "text",
     "skipped_reason" "text",
+    "qty" numeric(10,2),
     CONSTRAINT "inpatient_doses_check" CHECK ((("given_at" IS NULL) OR ("skipped_reason" IS NULL)))
 );
 
@@ -13508,36 +13804,22 @@ CREATE TABLE IF NOT EXISTS "public"."inpatient_doses" (
 ALTER TABLE "public"."inpatient_doses" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."inpatient_orders" (
+CREATE TABLE IF NOT EXISTS "public"."inpatient_order_changes" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "stay_pet_id" "uuid" NOT NULL,
-    "stay_id" "uuid" NOT NULL,
+    "order_id" "uuid" NOT NULL,
     "visit_id" "uuid" NOT NULL,
-    "branch_id" "uuid" NOT NULL,
-    "kind" "text" NOT NULL,
-    "product_id" "uuid",
-    "service_id" "uuid",
-    "name" "text" NOT NULL,
-    "dose" "text",
-    "qty_per_dose" numeric(10,2) DEFAULT 1 NOT NULL,
-    "times" "text"[] NOT NULL,
-    "start_on" "date" NOT NULL,
-    "end_on" "date" NOT NULL,
-    "note" "text",
-    "item_id" "uuid",
-    "stopped_at" timestamp with time zone,
-    "created_by" "uuid",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "inpatient_orders_check" CHECK ((("end_on" >= "start_on") AND ("end_on" <= ("start_on" + 30)))),
-    CONSTRAINT "inpatient_orders_check1" CHECK (((("kind" = 'product'::"text") AND ("product_id" IS NOT NULL) AND ("service_id" IS NULL)) OR (("kind" = 'service'::"text") AND ("service_id" IS NOT NULL) AND ("product_id" IS NULL)) OR (("kind" = 'care'::"text") AND ("product_id" IS NULL) AND ("service_id" IS NULL)))),
-    CONSTRAINT "inpatient_orders_kind_check" CHECK (("kind" = ANY (ARRAY['product'::"text", 'service'::"text", 'care'::"text"]))),
-    CONSTRAINT "inpatient_orders_name_check" CHECK (("length"("btrim"("name")) > 0)),
-    CONSTRAINT "inpatient_orders_qty_per_dose_check" CHECK (("qty_per_dose" > (0)::numeric)),
-    CONSTRAINT "inpatient_orders_times_check" CHECK ((("cardinality"("times") >= 1) AND ("cardinality"("times") <= 8)))
+    "action" "text" NOT NULL,
+    "before" "jsonb",
+    "after" "jsonb",
+    "reason" "text",
+    "changed_by" "uuid",
+    "changed_by_name" "text",
+    "changed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "inpatient_order_changes_action_check" CHECK (("action" = ANY (ARRAY['create'::"text", 'update'::"text", 'stop'::"text", 'replace'::"text"])))
 );
 
 
-ALTER TABLE "public"."inpatient_orders" OWNER TO "postgres";
+ALTER TABLE "public"."inpatient_order_changes" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."invoice_lines" (
@@ -14792,6 +15074,11 @@ ALTER TABLE ONLY "public"."inpatient_doses"
 
 
 
+ALTER TABLE ONLY "public"."inpatient_order_changes"
+    ADD CONSTRAINT "inpatient_order_changes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."inpatient_orders"
     ADD CONSTRAINT "inpatient_orders_pkey" PRIMARY KEY ("id");
 
@@ -15327,6 +15614,10 @@ CREATE INDEX "inpatient_doses_due_idx" ON "public"."inpatient_doses" USING "btre
 
 
 
+CREATE INDEX "inpatient_order_changes_order_idx" ON "public"."inpatient_order_changes" USING "btree" ("order_id", "changed_at" DESC);
+
+
+
 CREATE INDEX "inpatient_orders_stay_idx" ON "public"."inpatient_orders" USING "btree" ("stay_id");
 
 
@@ -15720,6 +16011,14 @@ CREATE OR REPLACE TRIGGER "customer_addresses_set_updated_at" BEFORE UPDATE ON "
 
 
 CREATE OR REPLACE TRIGGER "guard_user_columns" BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."guard_user_columns"();
+
+
+
+CREATE OR REPLACE TRIGGER "inpatient_doses_signed_lock" BEFORE INSERT OR DELETE OR UPDATE ON "public"."inpatient_doses" FOR EACH ROW EXECUTE FUNCTION "public"."inpatient_signed_lock"();
+
+
+
+CREATE OR REPLACE TRIGGER "inpatient_orders_signed_lock" BEFORE INSERT OR DELETE OR UPDATE ON "public"."inpatient_orders" FOR EACH ROW EXECUTE FUNCTION "public"."inpatient_signed_lock"();
 
 
 
@@ -16148,6 +16447,21 @@ ALTER TABLE ONLY "public"."inpatient_doses"
 
 ALTER TABLE ONLY "public"."inpatient_doses"
     ADD CONSTRAINT "inpatient_doses_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."inpatient_orders"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inpatient_order_changes"
+    ADD CONSTRAINT "inpatient_order_changes_changed_by_fkey" FOREIGN KEY ("changed_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."inpatient_order_changes"
+    ADD CONSTRAINT "inpatient_order_changes_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."inpatient_orders"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inpatient_order_changes"
+    ADD CONSTRAINT "inpatient_order_changes_visit_id_fkey" FOREIGN KEY ("visit_id") REFERENCES "public"."medical_visits"("id") ON DELETE CASCADE;
 
 
 
@@ -17194,6 +17508,9 @@ ALTER TABLE "public"."doc_sequences" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."inpatient_doses" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."inpatient_order_changes" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."inpatient_orders" ENABLE ROW LEVEL SECURITY;
 
 
@@ -17247,6 +17564,10 @@ ALTER TABLE "public"."kennels" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "medical read" ON "public"."inpatient_doses" FOR SELECT TO "authenticated" USING (( SELECT "public"."can_medical"('VIEW'::"text") AS "can_medical"));
+
+
+
+CREATE POLICY "medical read" ON "public"."inpatient_order_changes" FOR SELECT TO "authenticated" USING (( SELECT "public"."can_medical"('VIEW'::"text") AS "can_medical"));
 
 
 
@@ -18530,6 +18851,33 @@ GRANT ALL ON FUNCTION "public"."inpatient_kennels"("p_branch" "uuid") TO "servic
 
 
 
+REVOKE ALL ON FUNCTION "public"."inpatient_log_change"("p_order" "uuid", "p_visit" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."inpatient_log_change"("p_order" "uuid", "p_visit" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."inpatient_order_history"("p_order" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."inpatient_order_history"("p_order" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."inpatient_order_history"("p_order" "uuid") TO "service_role";
+
+
+
+GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."inpatient_orders" TO "authenticated";
+GRANT ALL ON TABLE "public"."inpatient_orders" TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."inpatient_order_snapshot"("p_order" "public"."inpatient_orders") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."inpatient_order_snapshot"("p_order" "public"."inpatient_orders") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."inpatient_signed_lock"() TO "anon";
+GRANT ALL ON FUNCTION "public"."inpatient_signed_lock"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."inpatient_signed_lock"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "date") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "date") TO "service_role";
@@ -19003,6 +19351,12 @@ GRANT ALL ON FUNCTION "public"."remove_medical_attachment"("p_id" "uuid") TO "se
 REVOKE ALL ON FUNCTION "public"."remove_medical_item"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."remove_medical_item"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."remove_medical_item"("p_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "service_role";
 
 
 
@@ -19495,9 +19849,9 @@ GRANT ALL ON FUNCTION "public"."stock_summary"("p_branch" "uuid", "p_search" "te
 
 
 
-REVOKE ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid") TO "service_role";
+REVOKE ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."stop_inpatient_order"("p_id" "uuid", "p_reason" "text") TO "service_role";
 
 
 
@@ -19513,6 +19867,12 @@ GRANT ALL ON FUNCTION "public"."take_stock_fefo"("p_branch" "uuid", "p_product" 
 
 REVOKE ALL ON FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_product" "uuid", "p_qty" numeric, "p_lot" "uuid", "p_invoice" "uuid", "p_invoice_line" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_product" "uuid", "p_qty" numeric, "p_lot" "uuid", "p_invoice" "uuid", "p_invoice_line" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "service_role";
 
 
 
@@ -19626,8 +19986,8 @@ GRANT ALL ON TABLE "public"."inpatient_doses" TO "service_role";
 
 
 
-GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."inpatient_orders" TO "authenticated";
-GRANT ALL ON TABLE "public"."inpatient_orders" TO "service_role";
+GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."inpatient_order_changes" TO "authenticated";
+GRANT ALL ON TABLE "public"."inpatient_order_changes" TO "service_role";
 
 
 

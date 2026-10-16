@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import type { AdmitInput, InpatientKennel, LogKind, OrderInput, OrderKind, Ward, WardDose, WardOrder, WardRow } from "@bongcun/core/medical";
 import { unwrap } from "@bongcun/supabase/shared";
+import { orderPayload } from "./inpatientOrders";
 import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
@@ -27,6 +28,8 @@ const toOrder = (raw: unknown): WardOrder => {
   return {
     id: str(row.id),
     kind: KINDS.find((kind) => kind === row.kind) ?? "care",
+    productId: strOrNull(row.product_id),
+    serviceId: strOrNull(row.service_id),
     name: str(row.name),
     dose: str(row.dose),
     qtyPerDose: Number(row.qty_per_dose ?? 1),
@@ -34,6 +37,8 @@ const toOrder = (raw: unknown): WardOrder => {
     startOn: str(row.start_on),
     endOn: str(row.end_on),
     note: str(row.note),
+    edited: Number(row.edited ?? 0),
+    missed: Number(row.missed ?? 0),
   };
 };
 
@@ -46,6 +51,7 @@ const toDose = (raw: unknown): WardDose => {
     givenAt: strOrNull(row.given_at),
     givenByName: strOrNull(row.given_by_name),
     skippedReason: strOrNull(row.skipped_reason),
+    qty: row.qty == null ? null : Number(row.qty),
   };
 };
 
@@ -90,27 +96,7 @@ export const admitInpatient = async (client: Client, visitId: string, input: Adm
 };
 
 export const saveInpatientOrder = async (client: Client, input: OrderInput): Promise<void> => {
-  unwrap(
-    await client.rpc("save_inpatient_order", {
-      p: {
-        stay_pet_id: input.stayPetId,
-        kind: input.kind,
-        product_id: input.productId,
-        service_id: input.serviceId,
-        name: input.name,
-        dose: input.dose,
-        qty_per_dose: input.qtyPerDose,
-        times: input.times,
-        start_on: input.startOn,
-        end_on: input.endOn,
-        note: input.note,
-      },
-    })
-  );
-};
-
-export const stopInpatientOrder = async (client: Client, id: string): Promise<void> => {
-  unwrap(await client.rpc("stop_inpatient_order", { p_id: id }));
+  unwrap(await client.rpc("save_inpatient_order", { p: orderPayload(input) }));
 };
 
 /** Returns the warnings of the line the dose was added to (low_stock). */

@@ -228,6 +228,7 @@ export const medicalKeys = {
   lots: (branchId: string, typeId: string) => [...medicalKeys.all, "lots", branchId, typeId] as const,
   ward: (branchId: string, date: string) => [...medicalKeys.all, "ward", branchId, date] as const,
   kennels: (branchId: string) => [...medicalKeys.all, "inpatient-kennels", branchId] as const,
+  orderHistory: (orderId: string) => [...medicalKeys.all, "order-history", orderId] as const,
   attachments: (visitId: string) => [...medicalKeys.all, "attachments", visitId] as const,
   flags: (petIds: string[]) => [...medicalKeys.all, "flags", [...petIds].sort()] as const,
   billable: (branchId: string, customerId: string) => [...medicalKeys.all, "billable", branchId, customerId] as const,
