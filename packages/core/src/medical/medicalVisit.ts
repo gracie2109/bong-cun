@@ -97,47 +97,6 @@ export type MedicalVisitDetail = MedicalVisit & {
 
 export type Vet = { id: string; name: string };
 
-export type CheckInInput = {
-  branchId: string;
-  customerId: string;
-  petId: string;
-  reason: string;
-  priority: VisitPriority;
-  vetId: string | null;
-  weightKg: number | null;
-  temperatureC: number | null;
-  /** The booked visit being checked in; the other fields are then taken from it. */
-  visitId?: string;
-  source?: VisitSource;
-};
-
-export type ScheduleInput = {
-  branchId: string;
-  customerId: string;
-  petId: string;
-  /** ISO timestamp. */
-  scheduledAt: string;
-  reason: string;
-  vetId: string | null;
-};
-
-/** What the vet writes on the record; also what Save sends. */
-export type RecordInput = {
-  weightKg: number | null;
-  temperatureC: number | null;
-  heartRate: number | null;
-  respRate: number | null;
-  vitalsNote: string;
-  subjective: string;
-  objective: string;
-  assessment: string;
-  plan: string;
-  ownerInstructions: string;
-  outcome: VisitOutcome | null;
-  recheckOn: string;
-  diagnoses: { termId: string | null; name: string; isContagious: boolean; note: string }[];
-};
-
 export type SignResult = { id: string; status: VisitStatus; recheckVisitId: string | null };
 
 export type ItemKind = "service" | "product" | "external";
@@ -163,25 +122,6 @@ export type VisitItem = {
   invoiceLineId: string | null;
   createdByName: string | null;
   createdAt: string;
-};
-
-/** The medicine text of a line; also what Change sends. */
-export type ItemDirections = {
-  takeHome: boolean;
-  dose: string;
-  frequency: string;
-  days: number | null;
-  route: string;
-  instructions: string;
-};
-
-export type ItemInput = ItemDirections & {
-  kind: ItemKind;
-  serviceId?: string;
-  productId?: string;
-  /** Name of a medicine bought elsewhere. */
-  name?: string;
-  qty: number;
 };
 
 export type ItemResult = { id: string; warnings: string[] };
