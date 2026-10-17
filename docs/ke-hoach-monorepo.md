@@ -742,4 +742,7 @@ Kế hoạch cho phần "vẫn chưa làm" ở mục 25 (hợp đồng kho, spa,
 - Bước 6 hợp đồng y tế: lượt khám (#179); tiêm chủng, danh mục, cài đặt, đính kèm (#180); nội trú gồm bảng nội trú, chuồng, nhận, y lệnh, liều, nhật ký, lịch sử y lệnh, xuất viện (#181).
 - Test DB y tế tạo danh mục (loại vắc-xin, sản phẩm) bằng quyền chủ cơ sở dữ liệu rồi mới đăng nhập admin, vì vai trò `authenticated` không có quyền ghi thẳng vào các bảng đó.
 
-Còn lại: bước 7 đưa queries/composables vào `features/`, làm sau khi PR thú cưng mất (#170, migration `20261025010000`) và các phần y tế còn lại merge.
+- Bước 7 đưa queries/composables vào `features/` (không đổi hành vi, không migration): bảng chủ sở hữu và script (#183); phía shop (#185); admin và shared (#186); barrel `index.ts` cho 18 feature và 4 luật dependency-cruiser `feature-via-index`, `shared-features-standalone`, `queries-infra-only`, `no-circular-features` (#187). `queries/bookings.ts` không ai dùng nên đã xóa.
+- Ngoại lệ có chủ đích: `format.ts` ở gốc mỗi feature được import thẳng (hàm thuần, Vitest không nạp được barrel vì barrel kéo component và `#imports`).
+
+Còn lại (hoãn có chủ đích): CMS, mobile, `nuxt-base`. Chưa bấm thử trên trình duyệt sau bước 7.
