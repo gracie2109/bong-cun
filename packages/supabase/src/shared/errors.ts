@@ -3,6 +3,10 @@
 import { AppError, type AppErrorCode } from "@bongcun/core/shared";
 import { posErrorHint, type PosErrorHint } from "@bongcun/core/pos";
 import { shopErrorHint, type ShopErrorHint } from "@bongcun/core/shop";
+import { inventoryErrorHint, type InventoryErrorHint } from "@bongcun/core/inventory";
+import { spaErrorHint, type SpaErrorHint } from "@bongcun/core/spa";
+import { boardingErrorHint, type BoardingErrorHint } from "@bongcun/core/boarding";
+import { medicalErrorHint, type MedicalErrorHint } from "@bongcun/core/medical";
 
 // Postgres error codes surfaced by PostgREST.
 export const PG_UNIQUE_VIOLATION = "23505";
@@ -10,7 +14,23 @@ export const PG_FOREIGN_KEY_VIOLATION = "23503";
 export const PG_INSUFFICIENT_PRIVILEGE = "42501";
 
 /** Every code an error leaving this package can carry. */
-export type DbErrorCode = AppErrorCode | PosErrorHint | ShopErrorHint;
+export type DbErrorCode =
+  | AppErrorCode
+  | PosErrorHint
+  | ShopErrorHint
+  | InventoryErrorHint
+  | SpaErrorHint
+  | BoardingErrorHint
+  | MedicalErrorHint;
+
+// The first module that names the hint wins; a hint two modules share is the same string either way.
+const hintOf = (error: unknown): DbErrorCode | null =>
+  posErrorHint(error) ??
+  shopErrorHint(error) ??
+  inventoryErrorHint(error) ??
+  spaErrorHint(error) ??
+  boardingErrorHint(error) ??
+  medicalErrorHint(error);
 
 const PG_TO_APP: Record<string, AppErrorCode> = {
   [PG_UNIQUE_VIOLATION]: "conflict",
@@ -25,6 +45,6 @@ const PG_TO_APP: Record<string, AppErrorCode> = {
 export const toAppError = (error: unknown): AppError<DbErrorCode> | null => {
   if (error instanceof AppError) return error as AppError<DbErrorCode>;
   const code = typeof error === "object" && error !== null ? (error as { code?: string }).code : undefined;
-  const appCode: DbErrorCode | undefined = (code ? PG_TO_APP[code] : undefined) ?? posErrorHint(error) ?? shopErrorHint(error) ?? undefined;
+  const appCode: DbErrorCode | undefined = (code ? PG_TO_APP[code] : undefined) ?? hintOf(error) ?? undefined;
   return appCode ? new AppError(appCode, error) : null;
 };
