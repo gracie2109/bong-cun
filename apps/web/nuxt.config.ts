@@ -71,7 +71,8 @@ const baseConfig = defineNuxtConfig({
   },
 
   runtimeConfig: {
-    public: { appTarget },
+    // apiBase is empty on the website (same-origin /api); the mobile build points it at the deployed server.
+    public: { appTarget, apiBase: "" },
     // Server-only (NUXT_GHN_*). Never move these to `public`.
     ghn: {
       token: "",
@@ -117,10 +118,16 @@ const baseConfig = defineNuxtConfig({
 });
 
 // The mobile build (NUXT_PUBLIC_APP_TARGET=mobile) is the same app minus admin, rendered client-side only.
+const mobile = mobileNuxtConfig();
+
 export default appTarget === "mobile"
   ? defineNuxtConfig({
       ...baseConfig,
-      ...mobileNuxtConfig(),
-      supabase: { ...baseConfig.supabase, ...mobileNuxtConfig().supabase },
+      ...mobile,
+      supabase: { ...baseConfig.supabase, ...mobile.supabase },
+      runtimeConfig: {
+        ...baseConfig.runtimeConfig,
+        public: { ...baseConfig.runtimeConfig?.public, ...mobile.runtimeConfig.public },
+      },
     })
   : baseConfig;
