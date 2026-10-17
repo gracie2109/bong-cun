@@ -42,7 +42,7 @@ import { CalendarHeart } from "lucide-vue-next";
 import ShopImage from "@/components/shop/ShopImage.vue";
 import BookingHowTo from "@/components/shop/spa/BookingHowTo.vue";
 import { Button } from "@/components/ui/button";
-import { useSpaCatalog } from "@/composables/spa/useSpaCatalog";
+import { useSpaCatalog } from "@/features/shop/spa/composables/useSpaCatalog";
 import { SHOP_PHOTOS } from "@/config/shopImagery";
 import SpaServiceList from "./SpaServiceList.vue";
 

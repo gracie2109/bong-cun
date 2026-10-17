@@ -74,7 +74,7 @@ import QuantityStepper from "@/components/shop/QuantityStepper.vue";
 import StockBadge from "@/components/shop/StockBadge.vue";
 import { Button } from "@/components/ui/button";
 import VariantOptions from "@/components/VariantOptions.vue";
-import type { useProductPage } from "@/composables/shop/useProductPage";
+import type { useProductPage } from "@/features/shop/product/composables/useProductPage";
 import type { ProductGroup } from "@bongcun/supabase/products";
 import DeliveryInfo from "./DeliveryInfo.vue";
 

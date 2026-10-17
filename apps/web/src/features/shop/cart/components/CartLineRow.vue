@@ -66,7 +66,7 @@
 import { computed, toRef } from "vue";
 import { Minus, Plus, Trash2 } from "lucide-vue-next";
 import PawMark from "@/components/shop/PawMark.vue";
-import { useQtyInput } from "@/composables/shop/useQtyInput";
+import { useQtyInput } from "@/features/shop/cart/composables/useQtyInput";
 import { formatPrice } from "@/lib/utils";
 import type { CartLineView } from "@bongcun/core/shop";
 import { lineAmount, lineIssue } from "@bongcun/core/shop";

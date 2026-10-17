@@ -64,7 +64,7 @@ import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { useShippingQuote } from "@/composables/shop/useShippingQuote";
+import type { useShippingQuote } from "@/features/shop/checkout/composables/useShippingQuote";
 import { formatPrice } from "@/lib/utils";
 import type { DeliveryMethod } from "@bongcun/core/shop";
 import { formatDate } from "@bongcun/core/shop";

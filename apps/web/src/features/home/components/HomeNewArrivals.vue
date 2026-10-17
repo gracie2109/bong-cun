@@ -30,7 +30,7 @@ import ProductCard from "@/components/shop/ProductCard.vue";
 import ProductCardSkeleton from "@/components/shop/ProductCardSkeleton.vue";
 import SectionHeading from "@/components/shop/SectionHeading.vue";
 import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
-import { useShopCatalog } from "@/queries/shopCatalog";
+import { useShopCatalog } from "@/features/shop/catalog/queries/shopCatalog";
 import { showcaseOrder } from "@/utils/shop/catalog";
 
 /** Full rows at every width: 8 cards in 2 or 4 columns, 6 in 3 columns; picked from the newest products. */

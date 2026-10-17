@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import { Clock } from "lucide-vue-next";
-import { useDurationLabel } from "@/composables/spa/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
 import { formatPrice } from "@/lib/utils";
 import type { SpaService, SpaSpecies } from "@bongcun/core/spa";
 import { priceLines } from "@bongcun/core/spa";

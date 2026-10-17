@@ -67,7 +67,7 @@ import { ShoppingBag } from "lucide-vue-next";
 import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import { useCheckout } from "@/composables/shop/useCheckout";
+import { useCheckout } from "@/features/shop/checkout/composables/useCheckout";
 import { computed } from "vue";
 import CheckoutAddress from "./components/CheckoutAddress.vue";
 import CheckoutLines from "./components/CheckoutLines.vue";

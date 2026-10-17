@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import TablePager from "@/components/common/TablePager.vue";
 import { Button } from "@/components/ui/button";
-import { useMyOrders } from "@/composables/shop/useMyOrders";
+import { useMyOrders } from "@/features/shop/account/composables/useMyOrders";
 import type { ShopOrderStatus } from "@bongcun/core/shop";
 import OrderCard from "./OrderCard.vue";
 

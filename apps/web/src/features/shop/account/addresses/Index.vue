@@ -56,8 +56,8 @@ import { DialogConfirm } from "@/components/common";
 import AddressCard from "@/components/shop/AddressCard.vue";
 import AddressFormDialog from "@/components/shop/AddressFormDialog.vue";
 import { Button } from "@/components/ui/button";
-import { useAddressBook } from "@/composables/shop/useAddressBook";
-import { useAddressForm } from "@/composables/shop/useAddressForm";
+import { useAddressBook } from "@/features/shop/account/composables/useAddressBook";
+import { useAddressForm } from "@/features/shop/account/composables/useAddressForm";
 import { MAX_ADDRESSES } from "@bongcun/core/shop";
 import { formatAddress } from "@bongcun/core/shop";
 

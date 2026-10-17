@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { Check, Clock, Sparkles } from "lucide-vue-next";
-import { useDurationLabel } from "@/composables/spa/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
 import type { SpaCombo } from "@bongcun/core/spa";
 import PriceDisplay from "../PriceDisplay.vue";
 

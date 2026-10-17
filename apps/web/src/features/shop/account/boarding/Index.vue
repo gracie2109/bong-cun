@@ -51,7 +51,7 @@
 import { Phone } from "lucide-vue-next";
 import TablePager from "@/components/common/TablePager.vue";
 import { Button } from "@/components/ui/button";
-import { useMyBoarding } from "@/composables/account/useMyBoarding";
+import { useMyBoarding } from "@/features/shop/account/composables/useMyBoarding";
 import { STORE_INFO } from "@/config/storeInfo";
 import { BOARDING_SCOPES } from "@bongcun/core/account";
 import StayCard from "./components/StayCard.vue";

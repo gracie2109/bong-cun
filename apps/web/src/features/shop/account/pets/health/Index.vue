@@ -45,7 +45,7 @@ import { useRoute } from "vue-router";
 import { ArrowLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMyPetHealth } from "@/queries/accountHealth";
+import { useMyPetHealth } from "@/features/shop/account/queries/accountHealth";
 import { formatDay } from "./format";
 import VaccineBook from "./VaccineBook.vue";
 import VisitHistory from "./VisitHistory.vue";

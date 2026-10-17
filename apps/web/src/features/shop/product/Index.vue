@@ -59,7 +59,7 @@ import { useRouter } from "vue-router";
 import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import { useProductPage } from "@/composables/shop/useProductPage";
+import { useProductPage } from "@/features/shop/product/composables/useProductPage";
 import { groupCover, groupGallery } from "@/utils/shop/catalog";
 import MobileBuyBar from "./components/MobileBuyBar.vue";
 import ProductBreadcrumb from "./components/ProductBreadcrumb.vue";

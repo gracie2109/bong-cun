@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { Checkbox } from "@/components/ui/checkbox";
-import { useDurationLabel } from "@/composables/spa/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
 import type { BookingPick } from "@bongcun/core/spa";
 
 defineProps<{ pick: BookingPick; checked: boolean; detail?: string }>();

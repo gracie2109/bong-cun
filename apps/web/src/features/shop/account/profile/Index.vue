@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import { useProfileForm } from "@/composables/account/useProfileForm";
+import { useProfileForm } from "@/features/shop/account/composables/useProfileForm";
 import GoogleLink from "./components/GoogleLink.vue";
 import ProfileForm from "./components/ProfileForm.vue";
 
