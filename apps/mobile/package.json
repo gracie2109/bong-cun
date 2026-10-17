@@ -1,0 +1,27 @@
+{
+  "name": "@bongcun/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Capacitor shell for the customer app. No UI code here: the screens live in apps/web (build target mobile).",
+  "scripts": {
+    "sync": "cap sync android",
+    "assets": "capacitor-assets generate --android --assetPath assets",
+    "apk": "cd android && ./gradlew assembleDebug",
+    "check:versions": "node scripts/check-plugin-versions.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/keyboard": "^8.0.0",
+    "@capacitor/network": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.3"
+  }
+}
