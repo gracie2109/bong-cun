@@ -92,12 +92,7 @@ import { Switch } from "@/components/ui/switch";
 import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
-import {
-  useDeleteProductCategory,
-  useMoveProductCategory,
-  useProductCategories,
-  useSaveProductCategory,
-} from "@/features/shared/products/queries/productCategories";
+import { useDeleteProductCategory, useMoveProductCategory, useProductCategories, useSaveProductCategory } from "@/features/shared/products";
 import type { CatalogFilter, ProductCategory } from "@bongcun/supabase/products";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ProductsNav from "../ProductsNav.vue";

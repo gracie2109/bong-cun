@@ -51,7 +51,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useSaveDiagnosisTerm } from "@/features/admin/medical/queries/medical";
-import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
+import { useSpeciesOptions } from "@/features/admin/pets";
 import type { DiagnosisTerm } from "@bongcun/core/medical";
 import { diagnosisTermInputFromDraft, draftFromDiagnosisTerm, emptyDiagnosisTermDraft } from "./diagnosisTermDraft";
 

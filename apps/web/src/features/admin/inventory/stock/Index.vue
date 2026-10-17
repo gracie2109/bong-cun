@@ -69,7 +69,7 @@ import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useStockAlertCounts, useStockSummary } from "@/features/admin/inventory/queries/inventory";
 import type { StockRow as StockRowData } from "@bongcun/supabase/inventory";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import InventoryNav from "../InventoryNav.vue";
 import StockAlertCards from "./StockAlertCards.vue";
 import StockFilterFields from "./StockFilterFields.vue";

@@ -40,6 +40,37 @@ module.exports = {
       to: { path: "^src/features/admin" },
     },
     {
+      name: "feature-via-index",
+      comment: "A feature reaches another feature only through its index.ts (or its pure format.ts); inside a feature, files import each other directly.",
+      severity: "error",
+      from: { path: "^src/features/([^/]+)/([^/]+)/" },
+      to: {
+        path: "^src/features/[^/]+/[^/]+/",
+        pathNot: ["^src/features/$1/$2/", "^src/features/[^/]+/[^/]+/(index|format)\\.ts$"],
+      },
+    },
+    {
+      name: "shared-features-standalone",
+      comment: "features/shared holds what admin and shop both use, so it may not import either of them.",
+      severity: "error",
+      from: { path: "^src/features/shared/" },
+      to: { path: "^src/features/(admin|shop|auth|home)/" },
+    },
+    {
+      name: "queries-infra-only",
+      comment: "src/queries keeps only keys, invalidate and notify; query hooks live in their feature.",
+      severity: "error",
+      from: {},
+      to: { path: "^src/queries/", pathNot: "^src/queries/(keys|invalidate|notify)\\.ts$" },
+    },
+    {
+      name: "no-circular-features",
+      comment: "Features may not import each other in a loop, also not through their index.ts.",
+      severity: "error",
+      from: { path: "^src/features/" },
+      to: { circular: true },
+    },
+    {
       name: "features-no-pages",
       comment: "Pages are thin shells that render a feature view; features never import pages or layouts.",
       severity: "error",

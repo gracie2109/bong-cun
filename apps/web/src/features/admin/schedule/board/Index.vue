@@ -118,7 +118,7 @@ import { useDayBoard, useFindAppointment } from "@/features/admin/schedule/queri
 import { SLOT_MINUTES, type Appointment, type BoardTicket } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import AppointmentDetailDialog from "../appointments/AppointmentDetailDialog.vue";
 import AppointmentDialog, { type BookingPrefill } from "../appointments/AppointmentDialog.vue";
 import { addDays, isoWeekday, timeOf, timeSlots, TICKET_TONE, todayKey } from "../format";

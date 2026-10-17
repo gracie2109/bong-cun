@@ -66,7 +66,7 @@ import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
 import { useMedicalVets, useMedicalVisits } from "@/features/admin/medical/queries/medicalVisits";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import MedicalNav from "../MedicalNav.vue";
 import VisitFilterFields from "./VisitFilterFields.vue";
 import VisitRow from "./VisitRow.vue";

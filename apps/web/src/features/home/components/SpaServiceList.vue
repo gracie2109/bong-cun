@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { Clock } from "lucide-vue-next";
 import PriceDisplay from "@/components/shop/PriceDisplay.vue";
-import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa";
 import type { SpaService, SpaSpecies } from "@bongcun/core/spa";
 import { lowestPrice, priceLines } from "@bongcun/core/spa";
 

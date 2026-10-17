@@ -19,8 +19,8 @@
 import { toRef } from "vue";
 import { Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import VaccineBookList from "@/features/admin/medical/book/VaccineBookList.vue";
-import VoidDoseDialog from "@/features/admin/medical/book/VoidDoseDialog.vue";
+import { VaccineBookList } from "@/features/admin/medical";
+import { VoidDoseDialog } from "@/features/admin/medical";
 import ExternalVaccineDialog from "./ExternalVaccineDialog.vue";
 import { useVaccinationBook } from "./useVaccinationBook";
 

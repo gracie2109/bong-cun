@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
-import PetHealthFlagsBanner from "@/features/admin/medical/flags/PetHealthFlagsBanner.vue";
+import { PetHealthFlagsBanner } from "@/features/admin/medical";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

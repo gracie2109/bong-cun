@@ -68,7 +68,7 @@ import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import type { StayStatus } from "@bongcun/core/boarding";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import BoardingNav from "../BoardingNav.vue";
 import { STAY_TONE } from "../format";
 import TimelineRow from "./TimelineRow.vue";

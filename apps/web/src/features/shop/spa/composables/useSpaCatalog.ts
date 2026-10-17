@@ -1,5 +1,5 @@
 import { computed, ref, watch } from "vue";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useBranches } from "@/features/shared/branches";
 import { useSpaPublicCatalog } from "@/features/shop/spa/queries/spaCatalog";
 import {
   combosForSpecies,

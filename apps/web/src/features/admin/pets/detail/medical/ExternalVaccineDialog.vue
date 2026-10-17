@@ -50,12 +50,12 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAddExternalVaccine } from "@/features/admin/medical/queries/vaccinations";
+import { useAddExternalVaccine } from "@/features/admin/medical";
 import type { VaccineBookEntry } from "@bongcun/core/medical";
-import VaccineTypeSelect from "@/features/admin/medical/book/VaccineTypeSelect.vue";
-import { useVaccineTypeOptions } from "@/features/admin/medical/book/useVaccineTypeOptions";
+import { VaccineTypeSelect } from "@/features/admin/medical";
+import { useVaccineTypeOptions } from "@/features/admin/medical";
 import { todayKey } from "@/features/admin/medical/format";
-import { nextDue, suggestedDoseNo } from "@/features/admin/medical/nextDue";
+import { nextDue, suggestedDoseNo } from "@/features/admin/medical";
 import { emptyExternalDraft, toExternalInput, type ExternalDraft } from "./externalDraft";
 
 const props = defineProps<{ open: boolean; petId: string; book: VaccineBookEntry[] }>();

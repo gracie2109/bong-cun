@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import InfiniteSelect from "@/components/common/InfiniteSelect.vue";
-import { useProductCategoryOptions } from "@/features/shared/products/queries/productCategories";
+import { useProductCategoryOptions } from "@/features/shared/products";
 import { categoryLabel } from "@bongcun/supabase/products";
 
 /** Searchable category choice; "" means no category. */

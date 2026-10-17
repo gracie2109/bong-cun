@@ -32,7 +32,7 @@ import { Settings2 } from "lucide-vue-next";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import SpaNav from "../SpaNav.vue";
 import HoursCard from "./HoursCard.vue";
 import ResourcesCard from "./ResourcesCard.vue";

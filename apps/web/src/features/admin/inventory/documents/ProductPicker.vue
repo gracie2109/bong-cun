@@ -49,7 +49,7 @@ import ScrollSentinel from "@/components/common/ScrollSentinel.vue";
 import { Input } from "@/components/ui/input";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 import { supabaseClient } from "@/lib/supabase";
-import { useSellableProductsPaged } from "@/features/shared/products/queries/products";
+import { useSellableProductsPaged } from "@/features/shared/products";
 import { searchSellableProducts, type SellableProduct } from "@bongcun/supabase/products";
 
 const BLUR_CLOSE_MS = 150;

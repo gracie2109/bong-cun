@@ -44,7 +44,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import MedicalNav from "../MedicalNav.vue";
 import DiagnosisTermsCard from "./DiagnosisTermsCard.vue";
 import RulesCard from "./RulesCard.vue";

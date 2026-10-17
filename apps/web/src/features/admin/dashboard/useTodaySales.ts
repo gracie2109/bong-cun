@@ -1,10 +1,10 @@
 import { computed } from "vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useReportOverview } from "@/features/admin/reports/queries/reports";
+import { useReportOverview } from "@/features/admin/reports";
 import type { ReportFilter } from "@bongcun/supabase/reports";
 import { useAuthStore } from "@/stores";
-import { todayInVietnam } from "../reports/shared/dateRange";
-import { useReportBranches } from "../reports/shared/useReportBranches";
+import { todayInVietnam } from "@/features/admin/reports";
+import { useReportBranches } from "@/features/admin/reports";
 
 /** Today's figures at the branch the staff member works at, for those allowed to see reports. */
 export const useTodaySales = () => {

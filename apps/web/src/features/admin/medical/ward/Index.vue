@@ -57,7 +57,7 @@ import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import type { WardOrder, WardRow } from "@bongcun/core/medical";
 import MedicalNav from "../MedicalNav.vue";
 import LogDialog from "./LogDialog.vue";

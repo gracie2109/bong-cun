@@ -1,5 +1,5 @@
 import { computed, ref, watch } from "vue";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useBranches } from "@/features/shared/branches";
 import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
 import { priceByCell, useServicePrices } from "@/features/admin/pets/queries/servicePrices";
 import { useSpeciesOptions } from "@/features/admin/pets/queries/species";

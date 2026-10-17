@@ -5,7 +5,7 @@ import { SEARCH_DEBOUNCE_FAST_MS } from "@/lib/listing";
 import { useOrdersByUsers } from "@/features/admin/users/queries/orders";
 import { useUsersCount, useUsersList } from "@/features/admin/users/queries/users";
 import { USER_SORT, type UserListFilter, type UserSort } from "@bongcun/supabase/users";
-import { CUSTOMER_ROLE } from "../settings/rbac";
+import { CUSTOMER_ROLE } from "@/features/admin/settings";
 import { buildCustomerStats, newCustomerSince } from "./customer-stats";
 
 const PAGE_SIZE = 8;

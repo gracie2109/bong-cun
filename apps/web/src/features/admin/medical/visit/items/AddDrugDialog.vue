@@ -63,7 +63,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { SellableProduct } from "@bongcun/supabase/products";
 import type { ItemInput } from "@bongcun/core/medical";
-import ProductPicker from "@/features/admin/inventory/documents/ProductPicker.vue";
+import { ProductPicker } from "@/features/admin/inventory";
 import DrugFields from "./DrugFields.vue";
 import { emptyDrugDraft, isDrugDraftComplete, toDrugInput, type DrugDraft } from "./itemDraft";
 

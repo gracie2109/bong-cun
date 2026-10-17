@@ -1,12 +1,12 @@
 import { computed, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
-import { useBranchPrices } from "@/features/admin/products/queries/branchPrices";
-import { useSellableStock } from "@/features/admin/inventory/queries/inventory";
+import { useAllPetServices } from "@/features/admin/pets";
+import { useBranchPrices } from "@/features/admin/products";
+import { useSellableStock } from "@/features/admin/inventory";
 import { useSellableCombos } from "@/features/admin/pos/queries/pos";
-import { useSellableProducts } from "@/features/shared/products/queries/products";
+import { useSellableProducts } from "@/features/shared/products";
 import type { LineType } from "@bongcun/supabase/pos";
-import { fold } from "@/features/admin/settings/rbac";
+import { fold } from "@/features/admin/settings";
 import { priceAtBranch } from "./branchPricing";
 import { groupProductItems, type CatalogItem } from "./catalog";
 

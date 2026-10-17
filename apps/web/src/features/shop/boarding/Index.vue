@@ -47,7 +47,7 @@ import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
 import { STORE_INFO } from "@/config/storeInfo";
 import { useBoardingPublicCatalog } from "@/features/shop/boarding/queries/boardingWeb";
-import SpaCatalogSkeleton from "../spa/catalog/components/SpaCatalogSkeleton.vue";
+import { SpaCatalogSkeleton } from "@/features/shop/spa";
 import BoardingHero from "./components/BoardingHero.vue";
 import KennelTypeCard from "./components/KennelTypeCard.vue";
 

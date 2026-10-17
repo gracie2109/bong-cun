@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { useProductBrands, useProductCategories } from "@/features/shared/products/queries/productCategories";
+import { useProductBrands, useProductCategories } from "@/features/shared/products";
 import { useShopCatalog } from "@/features/shop/catalog/queries/shopCatalog";
 import { buildCategoryTree, categoryName } from "@/utils/shop/catalog";
 import { useCatalogFilters } from "@/features/shop/catalog/composables/useCatalogFilters";

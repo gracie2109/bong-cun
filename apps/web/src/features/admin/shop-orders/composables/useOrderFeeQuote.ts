@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import { useShopSettings } from "@/features/shared/shop/queries/shop";
+import { useShopSettings } from "@/features/shared/shop";
 import { quoteShippingFee, ShippingQuoteError } from "@/services/shipment.service";
 import type { AdminOrder } from "@bongcun/core/shop";
 import { clampQuote } from "@bongcun/core/shop";

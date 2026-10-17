@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import { ChartColumn } from "lucide-vue-next";
-import { money } from "../reports/shared/format";
+import { money } from "@/features/admin/reports";
 import { useTodaySales } from "./useTodaySales";
 
 const { branch, visible, data } = useTodaySales();

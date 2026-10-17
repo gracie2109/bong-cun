@@ -20,7 +20,7 @@ import {
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petProfileKeys } from "@/queries/keys";
 import { invalidateCatalog } from "@/queries/invalidate";
-import { notifyMedicalFailure } from "@/features/admin/medical/queries/medical";
+import { notifyMedicalFailure } from "@/features/admin/medical";
 import { notifyFailure, notifySuccess } from "@/queries/notify";
 
 export const usePetsList = (page: MaybeRef<PageParams>, filter: MaybeRef<PetListFilter> = {}) =>

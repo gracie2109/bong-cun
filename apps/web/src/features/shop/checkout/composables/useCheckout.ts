@@ -2,15 +2,15 @@ import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
-import { usePlaceShopOrder } from "@/features/shop/orders/queries/shopOrders";
-import { useShopPublicSettings } from "@/features/shared/shop/queries/shop";
+import { usePlaceShopOrder } from "@/features/shop/orders";
+import { useShopPublicSettings } from "@/features/shared/shop";
 import { orderErrorDetail, orderErrorHint } from "@bongcun/supabase/shop";
 import { useAuthStore, useCart } from "@/stores";
 import type { DeliveryMethod } from "@bongcun/core/shop";
 import { lineKey } from "@bongcun/core/shop";
 import { checkoutErrors, pickupReceiver, toCartInput } from "@bongcun/core/shop";
 import { newClientRef } from "@/utils/shop/clientRef";
-import { useCartView } from "@/features/shop/cart/composables/useCartView";
+import { useCartView } from "@/features/shop/cart";
 import { useCheckoutAddress } from "@/features/shop/checkout/composables/useCheckoutAddress";
 import { useShippingQuote } from "@/features/shop/checkout/composables/useShippingQuote";
 

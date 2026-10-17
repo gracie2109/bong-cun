@@ -68,7 +68,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import CheckInDialog from "../check-in/CheckInDialog.vue";
 import { addDays, todayKey } from "../format";
 import MedicalNav from "../MedicalNav.vue";

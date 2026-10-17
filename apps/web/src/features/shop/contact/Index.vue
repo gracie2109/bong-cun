@@ -34,7 +34,7 @@
 import { Navigation, Phone } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { STORE_INFO } from "@/config/storeInfo";
-import StoreContactList from "@/features/shop/layout/StoreContactList.vue";
+import { StoreContactList } from "@/features/shop/layout";
 
 const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_INFO.address)}`;
 </script>

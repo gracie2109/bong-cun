@@ -56,7 +56,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
+import { useAllPetServices } from "@/features/admin/pets";
 import { useRulesForm } from "./useRulesForm";
 
 const NO_EXAM = "__none__";

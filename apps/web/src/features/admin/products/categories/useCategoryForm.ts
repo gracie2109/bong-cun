@@ -1,5 +1,5 @@
 import { reactive, ref, watch, type Ref } from "vue";
-import { useSaveProductCategory } from "@/features/shared/products/queries/productCategories";
+import { useSaveProductCategory } from "@/features/shared/products";
 import type { ProductCategory } from "@bongcun/supabase/products";
 
 /** The add/edit form of a category: filled when the dialog opens, saved with the shared mutation. */

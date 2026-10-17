@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
-import { useMyPets, useMyProfile } from "@/features/shop/account/queries/account";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useMyPets, useMyProfile } from "@/features/shop/account";
+import { useBranches } from "@/features/shared/branches";
 import { useBookAppointment, useSpaWebQuote, useSpaWebRules, useSpaWebSlots } from "@/features/shop/spa/queries/spaWeb";
 import { useSpaPublicCatalog } from "@/features/shop/spa/queries/spaCatalog";
 import type { BookingPick, BookingResult, BookingStep } from "@bongcun/core/spa";
