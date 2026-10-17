@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import AppDialog from "@/components/common/AppDialog.vue";
-import { useRestorePet } from "@/queries/pets";
+import { useRestorePet } from "@/features/admin/pets/queries/pets";
 import type { PetProfile } from "@bongcun/supabase/pets";
 
 const props = defineProps<{ open: boolean; pet: PetProfile }>();

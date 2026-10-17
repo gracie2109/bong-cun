@@ -171,7 +171,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCanManageRbac } from "@/composables/usePermission";
-import { useCreateRole, useUpdateRole } from "@/queries/roles";
+import { useCreateRole, useUpdateRole } from "@/features/admin/settings/queries/roles";
 import type { Branch } from "@bongcun/supabase/users";
 import type { Permission } from "@bongcun/supabase/users";
 import type { Role } from "@bongcun/supabase/users";

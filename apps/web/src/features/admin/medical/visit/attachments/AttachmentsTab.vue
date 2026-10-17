@@ -46,7 +46,7 @@ import { FileText, Trash2, Upload } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { openAttachment, useAddAttachment, useMedicalAttachments, useRemoveAttachment } from "@/queries/medicalAttachments";
+import { openAttachment, useAddAttachment, useMedicalAttachments, useRemoveAttachment } from "@/features/admin/medical/queries/medicalAttachments";
 import { validateAttachment } from "@bongcun/supabase/medical";
 import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalVisitDetail } from "@bongcun/core/medical";
 import { dateTime } from "../../format";

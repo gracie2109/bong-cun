@@ -37,7 +37,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useOrderFeeQuote } from "@/composables/shop/useOrderFeeQuote";
+import { useOrderFeeQuote } from "@/features/admin/shop-orders/composables/useOrderFeeQuote";
 import type { AdminOrder } from "@bongcun/core/shop";
 import { parseFee } from "@bongcun/core/shop";
 import { shouldWarnFeeChange } from "@bongcun/core/shop";

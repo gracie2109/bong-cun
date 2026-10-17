@@ -61,7 +61,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useSaveStaffAssignments } from "@/queries/staff";
+import { useSaveStaffAssignments } from "@/features/admin/settings/queries/staff";
 import type { Branch } from "@bongcun/supabase/users";
 import type { Role } from "@bongcun/supabase/users";
 import type { StaffMember } from "@bongcun/supabase/users";

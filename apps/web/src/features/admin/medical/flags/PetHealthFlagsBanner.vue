@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { usePetHealthFlags } from "@/queries/medicalFlags";
+import { usePetHealthFlags } from "@/features/admin/medical/queries/medicalFlags";
 
 /** Red for a recent contagious disease, yellow for an overdue vaccine or an allergy, per pet. */
 const props = defineProps<{ pets: { id: string; name: string }[] }>();

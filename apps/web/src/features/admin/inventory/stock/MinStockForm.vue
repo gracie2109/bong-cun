@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePermission } from "@/composables/usePermission";
-import { useSetMinStock } from "@/queries/inventory";
+import { useSetMinStock } from "@/features/admin/inventory/queries/inventory";
 import type { StockRow } from "@bongcun/supabase/inventory";
 import { parseQty } from "../format";
 

@@ -20,7 +20,7 @@ import { computed, ref } from "vue";
 import { useForm } from "vee-validate";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { BASE_GENDER } from "@/lib/constants";
-import { useCreateUser } from "@/queries/users";
+import { useCreateUser } from "@/features/admin/users/queries/users";
 import { initAddress, type IAddress } from "@bongcun/core/users";
 import type { IUser } from "@bongcun/core/users";
 import InfomationForm from "./components/InfomationForm.vue";

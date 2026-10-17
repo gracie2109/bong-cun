@@ -1,6 +1,6 @@
 import { computed, watchEffect } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import { useBranches } from "@/queries/branches";
+import { useBranches } from "@/features/shared/branches/queries/branches";
 
 const STORAGE_KEY = "admin.branchId";
 

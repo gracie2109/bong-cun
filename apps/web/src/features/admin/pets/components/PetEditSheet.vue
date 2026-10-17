@@ -38,8 +38,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useUpdatePet } from "@/queries/pets";
-import { useSpeciesOptions } from "@/queries/species";
+import { useUpdatePet } from "@/features/admin/pets/queries/pets";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
 import type { PetProfile } from "@bongcun/supabase/pets";
 import {
   formToPetInput,

@@ -114,7 +114,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, Plus, UserRound } from "lucide
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useDayBoard, useFindAppointment } from "@/queries/spa";
+import { useDayBoard, useFindAppointment } from "@/features/admin/schedule/queries/spa";
 import { SLOT_MINUTES, type Appointment, type BoardTicket } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";

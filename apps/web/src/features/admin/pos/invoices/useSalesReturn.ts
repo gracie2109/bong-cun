@@ -1,5 +1,5 @@
 import { computed, reactive, ref, type Ref } from "vue";
-import { useCreateSalesReturn } from "@/queries/pos";
+import { useCreateSalesReturn } from "@/features/admin/pos/queries/pos";
 import type { InvoiceDetail, RefundMethod, SalesReturn } from "@bongcun/supabase/pos";
 import { parseQty } from "@/features/admin/inventory/format";
 

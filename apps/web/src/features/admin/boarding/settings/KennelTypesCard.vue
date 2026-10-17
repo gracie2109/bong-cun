@@ -49,7 +49,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
-import { useKennelTypes } from "@/queries/boarding";
+import { useKennelTypes } from "@/features/admin/boarding/queries";
 import type { Branch } from "@bongcun/supabase/users";
 import type { KennelType, KennelTypeFilter } from "@bongcun/core/boarding";
 import KennelTypeDialog from "./KennelTypeDialog.vue";

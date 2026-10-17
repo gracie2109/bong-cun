@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import { useBoardingTimeline as useTimelineQuery } from "@/queries/boarding";
+import { useBoardingTimeline as useTimelineQuery } from "@/features/admin/boarding/queries";
 import type { TimelineKennel } from "@bongcun/core/boarding";
 import { addDays, todayKey } from "../format";
 import { windowDays } from "./timelineLayout";

@@ -27,7 +27,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useOpenShift } from "@/queries/pos";
+import { useOpenShift } from "@/features/admin/pos/queries/pos";
 import { money, parseAmount } from "../format";
 
 const props = defineProps<{ open: boolean; branchId: string; branchName: string }>();

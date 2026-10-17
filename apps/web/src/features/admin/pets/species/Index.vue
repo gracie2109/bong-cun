@@ -106,7 +106,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { usePermission } from "@/composables/usePermission";
-import { useSetSpeciesActive } from "@/queries/species";
+import { useSetSpeciesActive } from "@/features/admin/pets/queries/species";
 import type { Species, SpeciesSummary } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/features/admin/components";
 import PetsNav from "../PetsNav.vue";

@@ -23,7 +23,7 @@
 import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
-import { useBillableMedical } from "@/queries/medicalBilling";
+import { useBillableMedical } from "@/features/admin/pos/queries/medicalBilling";
 import type { BillableVisit } from "@bongcun/core/medical";
 import { money } from "../format";
 

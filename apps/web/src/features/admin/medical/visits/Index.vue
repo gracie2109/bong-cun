@@ -64,7 +64,7 @@ import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
-import { useMedicalVets, useMedicalVisits } from "@/queries/medicalVisits";
+import { useMedicalVets, useMedicalVisits } from "@/features/admin/medical/queries/medicalVisits";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
 import MedicalNav from "../MedicalNav.vue";

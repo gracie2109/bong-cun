@@ -62,7 +62,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { FILTER_ALL } from "@/lib/listing";
-import { useKennels, useSetKennelStatus } from "@/queries/boarding";
+import { useKennels, useSetKennelStatus } from "@/features/admin/boarding/queries";
 import type { Kennel, KennelFilter } from "@bongcun/core/boarding";
 import KennelDialog from "./KennelDialog.vue";
 import KennelRow from "./KennelRow.vue";

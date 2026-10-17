@@ -52,7 +52,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddCareLog } from "@/queries/boarding";
+import { useAddCareLog } from "@/features/admin/boarding/queries";
 import { CARE_KINDS, MEAL_EATEN, type CareKind, type MealEaten, type StayPet } from "@bongcun/core/boarding";
 
 const props = defineProps<{ pets: StayPet[] }>();

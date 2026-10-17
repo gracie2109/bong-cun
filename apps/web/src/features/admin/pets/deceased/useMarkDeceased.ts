@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { todayInput } from "../format";
-import { useMarkPetDeceased, usePetDeceasedPreview } from "@/queries/pets";
+import { useMarkPetDeceased, usePetDeceasedPreview } from "@/features/admin/pets/queries/pets";
 
 /** State of the "mark as deceased" dialog: the preview of what gets cancelled, the date and the note. */
 export const useMarkDeceased = (petId: Ref<string>, open: Ref<boolean>, birthDate: Ref<string | null>) => {

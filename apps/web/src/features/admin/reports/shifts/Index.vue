@@ -76,7 +76,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Input } from "@/components/ui/input";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
-import { useShiftRecon } from "@/queries/reports";
+import { useShiftRecon } from "@/features/admin/reports/queries/reports";
 import { EXPORT_LIMIT, listShiftRecon, type ShiftStatusFilter } from "@bongcun/supabase/reports";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";

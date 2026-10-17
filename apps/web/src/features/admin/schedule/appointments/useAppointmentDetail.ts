@@ -8,7 +8,7 @@ import {
   useCheckInAppointment,
   useMarkNoShow,
   useSetTicketStatus,
-} from "@/queries/spa";
+} from "@/features/admin/schedule/queries/spa";
 import { isCancellable, isEditable, isServing, type Appointment, type TicketStatus } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 

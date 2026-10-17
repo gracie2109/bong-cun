@@ -1,7 +1,7 @@
 import { computed, reactive, ref, watch, watchEffect, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { usePermission } from "@/composables/usePermission";
-import { useCustomerPets, useFetchServicePrice } from "@/queries/pos";
+import { useCustomerPets, useFetchServicePrice } from "@/features/admin/pos/queries/pos";
 import { DISCOUNT_LIMIT } from "@bongcun/supabase/pos";
 import type { BillableTicket } from "@bongcun/supabase/spa";
 import type { BillableBoardingStay } from "@bongcun/core/boarding";

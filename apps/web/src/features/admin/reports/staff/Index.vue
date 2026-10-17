@@ -73,7 +73,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Input } from "@/components/ui/input";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
-import { useStaffRevenue } from "@/queries/reports";
+import { useStaffRevenue } from "@/features/admin/reports/queries/reports";
 import { EXPORT_LIMIT, listStaffRevenue } from "@bongcun/supabase/reports";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";

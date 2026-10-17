@@ -1,5 +1,5 @@
 import { computed, ref, watch } from "vue";
-import { useSpeciesSummaries } from "@/queries/species";
+import { useSpeciesSummaries } from "@/features/admin/pets/queries/species";
 
 /** The species list and which one is open: the first until another is picked, or when the open one is hidden. */
 export const useSpeciesSelection = () => {

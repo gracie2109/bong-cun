@@ -70,7 +70,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
-import { useProductGroups, useSetProductGroupActive } from "@/queries/products";
+import { useProductGroups, useSetProductGroupActive } from "@/features/shared/products/queries/products";
 import type { ProductGroup } from "@bongcun/supabase/products";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ProductGroupSheet from "./ProductGroupSheet.vue";

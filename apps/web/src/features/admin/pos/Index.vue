@@ -107,7 +107,7 @@ import { computed, ref } from "vue";
 import { LogOut, ShoppingCart, Wallet } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useMyOpenShift } from "@/queries/pos";
+import { useMyOpenShift } from "@/features/admin/pos/queries/pos";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "./components/BranchPicker.vue";

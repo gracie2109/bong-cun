@@ -1,6 +1,6 @@
 import { computed, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useWeightBrackets } from "@/queries/weightBrackets";
+import { useWeightBrackets } from "@/features/admin/pets/queries/weightBrackets";
 import { findBracket } from "@bongcun/supabase/pets";
 
 /** Parses the typed weight and says which weight bracket of the species it falls in. */

@@ -57,8 +57,8 @@ import { computed } from "vue";
 import { Icon } from "@iconify/vue";
 import { ShieldCheck } from "lucide-vue-next";
 import { useRoute } from "vue-router";
-import { usePermissionsList } from "@/queries/permissions";
-import { useRolesList } from "@/queries/roles";
+import { usePermissionsList } from "@/features/admin/settings/queries/permissions";
+import { useRolesList } from "@/features/admin/settings/queries/roles";
 import { ContentWrap, Header } from "@/features/admin/components";
 
 defineProps<{ eyebrow?: string; title?: string; subtitle?: string }>();

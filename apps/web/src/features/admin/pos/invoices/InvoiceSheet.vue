@@ -102,7 +102,7 @@ import {
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePermission } from "@/composables/usePermission";
-import { useCancelInvoice, useInvoice, useInvoiceReturns } from "@/queries/pos";
+import { useCancelInvoice, useInvoice, useInvoiceReturns } from "@/features/admin/pos/queries/pos";
 import type { Branch } from "@bongcun/supabase/users";
 import { dateTime } from "../format";
 import { printReceipt } from "../receipt";

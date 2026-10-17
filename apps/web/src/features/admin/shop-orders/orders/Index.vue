@@ -64,7 +64,7 @@ import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import { SearchView } from "@/components/common/search-view";
 import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
-import { useOrdersPage } from "@/composables/shop/useOrdersPage";
+import { useOrdersPage } from "@/features/admin/shop-orders/composables/useOrdersPage";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ShopOrdersNav from "../ShopOrdersNav.vue";
 import OrderRow from "./components/OrderRow.vue";

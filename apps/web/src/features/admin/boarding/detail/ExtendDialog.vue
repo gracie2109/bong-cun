@@ -29,7 +29,7 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useExtendBoardingStay } from "@/queries/boarding";
+import { useExtendBoardingStay } from "@/features/admin/boarding/queries";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { dateKeyOf, timeOf, todayKey, toIso } from "../format";
 

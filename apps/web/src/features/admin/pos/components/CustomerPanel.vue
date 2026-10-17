@@ -71,7 +71,7 @@ import { refDebounced } from "@vueuse/core";
 import { Search, UserPlus, UserRound } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCustomerSearch } from "@/queries/customers";
+import { useCustomerSearch } from "@/features/admin/pets/queries/customers";
 import { digitsOf, matchKey, type CustomerMatch } from "@bongcun/supabase/customers";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 

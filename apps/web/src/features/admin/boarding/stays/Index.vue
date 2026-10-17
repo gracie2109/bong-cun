@@ -76,7 +76,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
-import { useBoardingStays, useMarkBoardingNoShow } from "@/queries/boarding";
+import { useBoardingStays, useMarkBoardingNoShow } from "@/features/admin/boarding/queries";
 import { useAuthStore } from "@/stores";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { ContentWrap, Header } from "@/features/admin/components";

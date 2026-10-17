@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
-import { usePetMedicalHistory } from "@/queries/medicalVisits";
+import { usePetMedicalHistory } from "@/features/admin/medical/queries/medicalVisits";
 import { dateTime } from "../../format";
 
 const props = defineProps<{ petId: string; currentVisitId: string }>();

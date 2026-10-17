@@ -64,7 +64,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import ShopGroupGallery from "@/components/ShopGroupGallery.vue";
 import VariantOptions from "@/components/VariantOptions.vue";
 import { useAddToCart } from "@/features/shop/cart/composables/useAddToCart";
-import { useVariantChoice } from "@/composables/useVariantChoice";
+import { useVariantChoice } from "@/features/shared/products/composables/useVariantChoice";
 import type { ShopGroup } from "@bongcun/core/shop";
 import { groupCover, groupGallery, groupHasPriceRange } from "@/utils/shop/catalog";
 import PriceDisplay from "./PriceDisplay.vue";

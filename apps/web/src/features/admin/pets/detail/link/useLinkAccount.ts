@@ -1,6 +1,6 @@
 import { refDebounced } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
-import { useLinkCustomerAccount, useUnlinkedAccounts } from "@/queries/customerAccounts";
+import { useLinkCustomerAccount, useUnlinkedAccounts } from "@/features/admin/pets/queries/customerAccounts";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
 
 /** Link one counter customer to a web account: search the accounts without a customer record, pick, save. */

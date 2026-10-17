@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import { usePetBook, useVoidVaccine } from "@/queries/vaccinations";
+import { usePetBook, useVoidVaccine } from "@/features/admin/medical/queries/vaccinations";
 import { useAuthStore } from "@/stores";
 import type { VaccineDose } from "@bongcun/core/medical";
 

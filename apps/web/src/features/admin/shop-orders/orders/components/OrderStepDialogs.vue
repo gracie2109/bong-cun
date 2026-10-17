@@ -59,7 +59,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
-import type { useOrderSheet } from "@/composables/shop/useOrderSheet";
+import type { useOrderSheet } from "@/features/admin/shop-orders/composables/useOrderSheet";
 import { parseFee } from "@bongcun/core/shop";
 import { money } from "@/features/admin/pos/format";
 import ConfirmOrderDialog from "./ConfirmOrderDialog.vue";

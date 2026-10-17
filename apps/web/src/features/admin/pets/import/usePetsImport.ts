@@ -1,5 +1,5 @@
 import { useTableImport } from "@/composables/useTableImport";
-import { useImportPets } from "@/queries/dataImports";
+import { useImportPets } from "@/features/admin/inventory/queries/dataImports";
 import { parsePets } from "./parsePets";
 import type { PetImportRow } from "@bongcun/core/data-io";
 

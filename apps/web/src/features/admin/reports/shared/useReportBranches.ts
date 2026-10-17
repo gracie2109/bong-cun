@@ -1,6 +1,6 @@
 import { computed } from "vue";
-import { useBranches } from "@/queries/branches";
-import { useReportBranchIds } from "@/queries/reports";
+import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useReportBranchIds } from "@/features/admin/reports/queries/reports";
 import { useAuthStore } from "@/stores";
 
 /** The branches the signed-in staff member may see reports for. */

@@ -21,7 +21,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSkipDose } from "@/queries/inpatient";
+import { useSkipDose } from "@/features/admin/medical/queries/inpatient";
 
 const props = defineProps<{ open: boolean; doseId: string | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();

@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { Switch } from "@/components/ui/switch";
-import { useBranchStaff, useSetStaffDoesServices } from "@/queries/spa";
+import { useBranchStaff, useSetStaffDoesServices } from "@/features/admin/schedule/queries/spa";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean }>();
 

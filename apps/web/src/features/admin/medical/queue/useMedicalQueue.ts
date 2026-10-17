@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { useRouter } from "vue-router";
-import { useMedicalQueue as useQueueQuery, useMarkNoShow, useStartVisit } from "@/queries/medicalVisits";
+import { useMedicalQueue as useQueueQuery, useMarkNoShow, useStartVisit } from "@/features/admin/medical/queries/medicalVisits";
 import { useAuthStore } from "@/stores";
 import type { MedicalVisit } from "@bongcun/core/medical";
 import { todayKey } from "../format";

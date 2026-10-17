@@ -1,5 +1,5 @@
 import { computed, ref, type Ref } from "vue";
-import { useFetchProductLots } from "@/queries/inventory";
+import { useFetchProductLots } from "@/features/admin/inventory/queries/inventory";
 import { isExpired, type DocType, type StockDocumentDetail } from "@bongcun/supabase/inventory";
 import type { Product, ProductUnit } from "@bongcun/supabase/products";
 import { blankLine, draftTotal, pickLot, toInput, validLine, type EditLine } from "./documentLines";

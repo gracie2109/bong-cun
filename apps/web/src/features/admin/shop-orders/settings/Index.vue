@@ -36,8 +36,8 @@
 import { computed } from "vue";
 import { Loader2, ShoppingBag } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { useShopSettingsForm } from "@/composables/shop/useShopSettingsForm";
-import { useBranches } from "@/queries/branches";
+import { useShopSettingsForm } from "@/features/admin/shop-orders/composables/useShopSettingsForm";
+import { useBranches } from "@/features/shared/branches/queries/branches";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ShopOrdersNav from "../ShopOrdersNav.vue";
 import MethodsCard from "./components/MethodsCard.vue";

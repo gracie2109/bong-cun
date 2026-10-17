@@ -60,7 +60,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { useSaveSupplier } from "@/queries/inventory";
+import { useSaveSupplier } from "@/features/admin/inventory/queries/inventory";
 import type { Supplier } from "@bongcun/supabase/inventory";
 
 const props = defineProps<{ open: boolean; supplier: Supplier | null }>();

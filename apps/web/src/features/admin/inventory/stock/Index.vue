@@ -66,7 +66,7 @@ import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { usePagedList } from "@/composables/usePagedList";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useStockAlertCounts, useStockSummary } from "@/queries/inventory";
+import { useStockAlertCounts, useStockSummary } from "@/features/admin/inventory/queries/inventory";
 import type { StockRow as StockRowData } from "@bongcun/supabase/inventory";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";

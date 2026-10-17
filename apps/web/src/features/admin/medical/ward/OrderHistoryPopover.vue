@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useOrderHistory } from "@/queries/inpatient";
+import { useOrderHistory } from "@/features/admin/medical/queries/inpatient";
 import type { WardOrder } from "@bongcun/core/medical";
 import { dateTime } from "../format";
 import { changedFields } from "./orderHistoryText";

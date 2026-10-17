@@ -1,6 +1,6 @@
 import { computed, reactive, watch, type Ref } from "vue";
-import { useBranches } from "@/queries/branches";
-import { usePriceEditableBranchIds, useProductBranchPrices, type ProductPriceChanges } from "@/queries/branchPrices";
+import { useBranches } from "@/features/shared/branches/queries/branches";
+import { usePriceEditableBranchIds, useProductBranchPrices, type ProductPriceChanges } from "@/features/admin/products/queries/branchPrices";
 import { useAuthStore } from "@/stores";
 import type { VariantRow } from "../productVariantForm";
 import { cellKey, cellPrice, priceText } from "./priceGrid";

@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useProductMovements } from "@/queries/inventory";
+import { useProductMovements } from "@/features/admin/inventory/queries/inventory";
 import { dateTime } from "@/features/admin/pos/format";
 import { day, qty } from "../format";
 

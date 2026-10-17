@@ -1,5 +1,5 @@
 import { useTableImport } from "@/composables/useTableImport";
-import { useImportSuppliers } from "@/queries/dataImports";
+import { useImportSuppliers } from "@/features/admin/inventory/queries/dataImports";
 import { parseSuppliers } from "./parseSuppliers";
 import type { SupplierImportRow } from "@bongcun/core/data-io";
 

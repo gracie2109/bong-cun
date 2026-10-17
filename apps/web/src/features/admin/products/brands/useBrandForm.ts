@@ -1,5 +1,5 @@
 import { reactive, ref, watch, type Ref } from "vue";
-import { useSaveProductBrand } from "@/queries/productCategories";
+import { useSaveProductBrand } from "@/features/shared/products/queries/productCategories";
 import type { ProductBrand } from "@bongcun/supabase/products";
 
 /** The add/edit form of a brand: filled when the dialog opens, saved with the shared mutation. */

@@ -19,8 +19,8 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
-import { useSaveKennelType } from "@/queries/boarding";
-import { useSpeciesOptions } from "@/queries/species";
+import { useSaveKennelType } from "@/features/admin/boarding/queries";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
 import type { Branch } from "@bongcun/supabase/users";
 import type { KennelType } from "@bongcun/core/boarding";
 import BranchPriceFields from "./BranchPriceFields.vue";

@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { EyeOff, Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { useDeleteCareLog } from "@/queries/boarding";
+import { useDeleteCareLog } from "@/features/admin/boarding/queries";
 import type { CareLog, StayPet } from "@bongcun/core/boarding";
 import { dateTime } from "../format";
 import CareLogForm from "./CareLogForm.vue";

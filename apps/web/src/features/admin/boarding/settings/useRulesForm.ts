@@ -1,5 +1,5 @@
 import { computed, ref, watch, type Ref } from "vue";
-import { useBoardingRules, useSaveBoardingRules } from "@/queries/boarding";
+import { useBoardingRules, useSaveBoardingRules } from "@/features/admin/boarding/queries";
 import type { BoardingRules } from "@bongcun/core/boarding";
 
 /** The nights a same-day stay can be charged as. */

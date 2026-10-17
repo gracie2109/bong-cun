@@ -19,7 +19,7 @@
 import { ref } from "vue";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddAddendum } from "@/queries/medicalVisits";
+import { useAddAddendum } from "@/features/admin/medical/queries/medicalVisits";
 import type { VisitAddendum } from "@bongcun/core/medical";
 import { dateTime } from "../../format";
 
