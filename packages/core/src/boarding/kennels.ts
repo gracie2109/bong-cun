@@ -40,21 +40,6 @@ export type KennelType = {
   kennelCount: number;
 };
 
-export type KennelTypeInput = {
-  name: string;
-  description: string | null;
-  photoUrl: string | null;
-  speciesIds: string[];
-  maxWeightKg: number | null;
-  maxPets: number;
-  isActive: boolean;
-  isPublic: boolean;
-  sortOrder: number;
-  sharedNightPrice: number;
-  sharedExtraPetNightPrice: number | null;
-  branchPrices: Pick<BranchKennelPrice, "branchId" | "nightPrice" | "extraPetNightPrice">[];
-};
-
 export type Kennel = {
   id: string;
   branchId: string;
@@ -65,25 +50,6 @@ export type Kennel = {
   status: KennelStatus;
   isActive: boolean;
   sortOrder: number;
-};
-
-export type KennelInput = {
-  branchId: string;
-  kennelTypeId: string;
-  code: string;
-  name: string | null;
-  isActive: boolean;
-  sortOrder: number;
-};
-
-/** Check-in and check-out rules of a branch. Times are "HH:mm". */
-export type BoardingRules = {
-  checkInFrom: string;
-  checkOutBy: string;
-  lateHalfUntil: string;
-  maxNights: number;
-  /** Nights charged for a pet dropped and collected on the same day (0.5 or 1). */
-  dayStayNights: number;
 };
 
 export type KennelTypeFilter = { search?: string; activeOnly?: boolean };

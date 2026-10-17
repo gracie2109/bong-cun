@@ -1,48 +1,16 @@
 // The kennel calendar and moving a pet to another kennel.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { BoardingTimeline, KennelStatus, StayStatus, TimelineKennel, TimelineSegment } from "@bongcun/core/boarding";
-import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
+import { timelineSchema } from "@bongcun/core/boarding";
+import type { BoardingTimeline } from "@bongcun/core/boarding";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
+import { toTimeline } from "./mappers";
 
 type Client = SupabaseClient<Database>;
 
-const toSegment = (value: unknown): TimelineSegment => {
-  const row = asRecord(value);
-  return {
-    stayId: str(row.stay_id),
-    stayCode: str(row.stay_code),
-    stayStatus: str(row.stay_status) as StayStatus,
-    stayPetId: str(row.stay_pet_id),
-    petName: str(row.pet_name),
-    customerName: str(row.customer_name),
-    kind: row.kind === "inpatient" ? "inpatient" : "boarding",
-    visitCode: strOrNull(row.visit_code),
-    from: str(row.from),
-    to: str(row.to),
-  };
-};
-
-const toKennel = (value: unknown): TimelineKennel => {
-  const row = asRecord(value);
-  return {
-    id: str(row.id),
-    code: str(row.code),
-    name: strOrNull(row.name),
-    kennelTypeId: str(row.kennel_type_id),
-    kennelTypeName: str(row.kennel_type_name),
-    status: str(row.status) as KennelStatus,
-    segments: Array.isArray(row.segments) ? row.segments.map(toSegment) : [],
-  };
-};
-
 export const getBoardingTimeline = async (client: Client, branchId: string, from: string, days: number): Promise<BoardingTimeline> => {
-  const result = asRecord(unwrap(await client.rpc("boarding_timeline", { p_branch: branchId, p_from: from, p_days: days })));
-  return {
-    from: str(result.from),
-    days: Number(result.days ?? days),
-    kennels: Array.isArray(result.kennels) ? result.kennels.map(toKennel) : [],
-  };
+  const raw = unwrap(await client.rpc("boarding_timeline", { p_branch: branchId, p_from: from, p_days: days }));
+  return toTimeline(parseRpc("boarding_timeline", timelineSchema, raw));
 };
 
 export const moveBoardingPet = async (client: Client, stayPetId: string, kennelId: string): Promise<void> => {
