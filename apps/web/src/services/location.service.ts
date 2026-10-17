@@ -1,3 +1,4 @@
+import { resolveApiUrl } from "@/composables/useApiUrl";
 import type { GHNDistrict, GHNProvince, GHNWard } from "@bongcun/core/users";
 
 // GHN is called through our server routes (server/api/ghn), which hold the token.
@@ -5,7 +6,7 @@ type GhnResponse<T> = { code?: number; message?: string; data?: T };
 
 export async function getProvince() {
   try {
-    const response = (await $fetch<GhnResponse<any[]>>("/api/ghn/provinces")).data;
+    const response = (await $fetch<GhnResponse<any[]>>(resolveApiUrl("/api/ghn/provinces"))).data;
     const responseMap = response?.map((i: any) => {
       return {
         ...i,
@@ -23,7 +24,7 @@ export async function getDistrict(provinceId: number | string) {
   try {
     if (!provinceId) return null;
     const response = (
-      await $fetch<GhnResponse<any[]>>("/api/ghn/districts", {
+      await $fetch<GhnResponse<any[]>>(resolveApiUrl("/api/ghn/districts"), {
         query: { provinceId },
       })
     ).data;
@@ -43,7 +44,7 @@ export async function getWard(districtId: number | string) {
   try {
     if (!districtId) return null;
     const response = (
-      await $fetch<GhnResponse<GHNWard[]>>("/api/ghn/wards", {
+      await $fetch<GhnResponse<GHNWard[]>>(resolveApiUrl("/api/ghn/wards"), {
         query: { districtId },
       })
     ).data;

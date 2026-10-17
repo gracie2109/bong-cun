@@ -1,3 +1,5 @@
+import { resolveApiUrl } from "@/composables/useApiUrl";
+
 // GHN is called through our server routes (server/api/ghn), which hold the token, the ShopId and
 // the service ids; the route picks light or heavy goods from the weight.
 
@@ -33,7 +35,7 @@ const toBody = (input: ShippingPlaces & { insuranceValue?: number }) => ({
 
 const post = async <T>(path: string, body: object): Promise<GhnResponse<T>> => {
   try {
-    return await $fetch<GhnResponse<T>>(path, { method: "POST", body });
+    return await $fetch<GhnResponse<T>>(resolveApiUrl(path), { method: "POST", body });
   } catch (error) {
     const status = (error as { statusCode?: number; status?: number }).statusCode ?? (error as { status?: number }).status;
     throw new ShippingQuoteError(status === 422 ? "too_heavy" : "unavailable");

@@ -1,6 +1,8 @@
 // Build target "mobile": the customer part of the app as a static SPA for the Capacitor WebView.
 // Pure helpers only, so nuxt.config.ts stays short and the rules are easy to test.
 
+export const DEFAULT_API_BASE = "https://bong-cun.vercel.app";
+
 export type AppTarget = "web" | "mobile";
 
 type PageLike = { path: string; children?: PageLike[] };
@@ -26,6 +28,8 @@ export const mobileNuxtConfig = () => ({
   ssr: false,
   // The WebView has no server, so no cookie is ever set for the session: keep it in localStorage.
   supabase: { useSsrCookies: false },
+  // The app has no server of its own, so /api/ghn goes to the deployed site (override: NUXT_PUBLIC_API_BASE).
+  runtimeConfig: { public: { apiBase: DEFAULT_API_BASE } },
   hooks: {
     "pages:extend": (pages: PageLike[]) => dropAdminRoutes(pages),
   },
