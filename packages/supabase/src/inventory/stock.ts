@@ -1,43 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
+import { stockAlertCountsSchema } from "@bongcun/core/inventory";
+import { pageRange, parseRpc, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { num } from "./helpers";
+import { toStockAlertCounts, toStockRow } from "./mappers";
+import type { StockAlertCounts, StockFilter, StockRow } from "./types";
 
 type Client = SupabaseClient<Database>;
-
-// --------------------------------------------------------------------- stock
-export const STOCK_STATUSES = ["all", "low", "out", "expiring", "expired"] as const;
-export type StockStatus = (typeof STOCK_STATUSES)[number];
-export type StockAlertStatus = Exclude<StockStatus, "all">;
-
-/** Days ahead that count as "expiring soon". */
-export const EXPIRY_WINDOWS = [30, 60, 90] as const;
-
-export type StockRow = {
-  productId: string;
-  name: string;
-  sku: string | null;
-  barcode: string | null;
-  unit: string;
-  isActive: boolean;
-  onHand: number;
-  /** Unexpired stock: what a sale can take. */
-  sellable: number;
-  expired: number;
-  expiring: number;
-  nextExpiry: string | null;
-  stockValue: number;
-  minQty: number | null;
-};
-
-export type StockFilter = {
-  branchId: string;
-  search?: string;
-  status?: StockStatus;
-  expiryDays?: number;
-};
-
-export type StockAlertCounts = Record<StockAlertStatus, number>;
 
 export const getStockSummary = async (
   client: Client,
@@ -55,24 +24,7 @@ export const getStockSummary = async (
       p_offset: from,
     })
   );
-  return {
-    rows: rows.map((row) => ({
-      productId: row.product_id,
-      name: row.name,
-      sku: row.sku,
-      barcode: row.barcode,
-      unit: row.unit,
-      isActive: row.is_active,
-      onHand: num(row.on_hand),
-      sellable: num(row.sellable),
-      expired: num(row.expired),
-      expiring: num(row.expiring),
-      nextExpiry: row.next_expiry,
-      stockValue: num(row.stock_value),
-      minQty: row.min_qty === null ? null : num(row.min_qty),
-    })),
-    total: rows.length ? num(rows[0].total_count) : 0,
-  };
+  return { rows: rows.map(toStockRow), total: rows.length ? num(rows[0].total_count) : 0 };
 };
 
 export const getStockAlertCounts = async (
@@ -80,9 +32,8 @@ export const getStockAlertCounts = async (
   branchId: string,
   expiryDays: number
 ): Promise<StockAlertCounts> => {
-  const raw = (unwrap(await client.rpc("stock_alert_counts", { p_branch: branchId, p_expiry_days: expiryDays })) ??
-    {}) as Record<string, unknown>;
-  return { low: num(raw.low), out: num(raw.out), expiring: num(raw.expiring), expired: num(raw.expired) };
+  const raw = unwrap(await client.rpc("stock_alert_counts", { p_branch: branchId, p_expiry_days: expiryDays }));
+  return toStockAlertCounts(parseRpc("stock_alert_counts", stockAlertCountsSchema, raw));
 };
 
 /** Unexpired stock per product at a branch, for the counter. Products that do not track stock are absent. */
