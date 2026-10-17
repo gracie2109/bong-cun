@@ -1,8 +1,10 @@
 // Spa tables, opening hours and which staff do services (branch settings).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
-import { unwrap } from "@bongcun/supabase/shared";
-import { str } from "@bongcun/supabase/shared";
+import { weekHoursSchema } from "@bongcun/core/spa";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
+import { toWeekHours } from "./mappers";
+import type { DayHours } from "./types";
 
 type Client = SupabaseClient<Database>;
 
@@ -43,19 +45,12 @@ export const saveSpaResource = async (client: Client, input: SpaResourceInput, i
   );
 
 // ---------------------------------------------------------------- hours
-export type DayHours = { weekday: number; openTime: string; closeTime: string; isClosed: boolean };
-
 /** Monday = 1 ... Sunday = 7, as the database stores it. */
 export const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7] as const;
 
 export const getWeekHours = async (client: Client, branchId: string): Promise<DayHours[]> => {
-  const rows = unwrap(await client.rpc("spa_week_hours", { p_branch: branchId })) as Record<string, unknown>[] | null;
-  return (rows ?? []).map((row) => ({
-    weekday: Number(row.weekday),
-    openTime: str(row.open_time),
-    closeTime: str(row.close_time),
-    isClosed: row.is_closed === true,
-  }));
+  const raw = unwrap(await client.rpc("spa_week_hours", { p_branch: branchId }));
+  return toWeekHours(parseRpc("spa_week_hours", weekHoursSchema, raw ?? []));
 };
 
 export const saveWeekHours = async (client: Client, branchId: string, hours: DayHours[]): Promise<void> => {
