@@ -46,7 +46,7 @@ import { Info } from "lucide-vue-next";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
 import { STORE_INFO } from "@/config/storeInfo";
-import { useBoardingPublicCatalog } from "@/queries/boardingWeb";
+import { useBoardingPublicCatalog } from "@/features/shop/boarding/queries/boardingWeb";
 import SpaCatalogSkeleton from "../spa/catalog/components/SpaCatalogSkeleton.vue";
 import BoardingHero from "./components/BoardingHero.vue";
 import KennelTypeCard from "./components/KennelTypeCard.vue";

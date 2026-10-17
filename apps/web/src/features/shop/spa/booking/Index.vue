@@ -84,7 +84,7 @@ import { computed } from "vue";
 import { Loader2 } from "lucide-vue-next";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import { useBookingWizard } from "@/composables/spa/useBookingWizard";
+import { useBookingWizard } from "@/features/shop/spa/composables/useBookingWizard";
 import BookingDone from "./components/BookingDone.vue";
 import BookingSteps from "./components/BookingSteps.vue";
 import StepBranch from "./components/StepBranch.vue";

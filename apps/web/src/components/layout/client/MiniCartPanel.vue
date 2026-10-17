@@ -44,7 +44,7 @@ import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ShoppingBag } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { useCartView } from "@/composables/shop/useCartView";
+import { useCartView } from "@/features/shop/cart/composables/useCartView";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/stores";
 import { lineKey } from "@bongcun/core/shop";

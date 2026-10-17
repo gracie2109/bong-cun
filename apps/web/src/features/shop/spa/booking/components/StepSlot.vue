@@ -42,7 +42,7 @@ import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDurationLabel } from "@/composables/spa/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
 import type { BookingRules, SpaSlot } from "@bongcun/core/spa";
 import { businessDate, dayLabel, slotTimeLabel } from "@bongcun/core/spa";
 

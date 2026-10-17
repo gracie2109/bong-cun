@@ -54,7 +54,7 @@ import { PartyPopper } from "lucide-vue-next";
 import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import { useOrderPage } from "@/composables/shop/useOrderPage";
+import { useOrderPage } from "@/features/shop/orders/composables/useOrderPage";
 import { formatDateTime } from "@bongcun/core/shop";
 import CancelOrderDialog from "./components/CancelOrderDialog.vue";
 import OrderInfo from "./components/OrderInfo.vue";

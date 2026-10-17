@@ -71,7 +71,7 @@ import { CalendarPlus } from "lucide-vue-next";
 import { DialogConfirm } from "@/components/common";
 import TablePager from "@/components/common/TablePager.vue";
 import { Button } from "@/components/ui/button";
-import { useMyAppointments } from "@/composables/account/useMyAppointments";
+import { useMyAppointments } from "@/features/shop/account/composables/useMyAppointments";
 import { APPOINTMENT_SCOPES } from "@bongcun/core/account";
 import AppointmentCard from "./components/AppointmentCard.vue";
 

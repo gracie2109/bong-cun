@@ -50,8 +50,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useCatalog } from "@/composables/shop/useCatalog";
-import { useCatalogChips } from "@/composables/shop/useCatalogChips";
+import { useCatalog } from "@/features/shop/catalog/composables/useCatalog";
+import { useCatalogChips } from "@/features/shop/catalog/composables/useCatalogChips";
 import CatalogChips from "./components/CatalogChips.vue";
 import CatalogFilterSheet from "./components/CatalogFilterSheet.vue";
 import CatalogFilters from "./components/CatalogFilters.vue";

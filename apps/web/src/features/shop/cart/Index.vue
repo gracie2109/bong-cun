@@ -54,7 +54,7 @@ import { ArrowLeft } from "lucide-vue-next";
 import CheckoutSteps from "@/components/shop/checkout/CheckoutSteps.vue";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import { Button } from "@/components/ui/button";
-import { useCartPage } from "@/composables/shop/useCartPage";
+import { useCartPage } from "@/features/shop/cart/composables/useCartPage";
 import { lineKey } from "@bongcun/core/shop";
 import CartEmpty from "./components/CartEmpty.vue";
 import CartLineRow from "./components/CartLineRow.vue";

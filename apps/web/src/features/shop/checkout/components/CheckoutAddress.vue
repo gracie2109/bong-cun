@@ -46,7 +46,7 @@ import { MapPin, Plus } from "lucide-vue-next";
 import AddressCard from "@/components/shop/AddressCard.vue";
 import AddressFormDialog from "@/components/shop/AddressFormDialog.vue";
 import { Button } from "@/components/ui/button";
-import type { useCheckoutAddress } from "@/composables/shop/useCheckoutAddress";
+import type { useCheckoutAddress } from "@/features/shop/checkout/composables/useCheckoutAddress";
 import AddressPickerDialog from "./AddressPickerDialog.vue";
 import CheckoutSection from "./CheckoutSection.vue";
 

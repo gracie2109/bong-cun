@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { Button } from "@/components/ui/button";
-import { useMyPets } from "@/composables/account/useMyPets";
+import { useMyPets } from "@/features/shop/account/composables/useMyPets";
 import PetCard from "./components/PetCard.vue";
 
 const page = useMyPets();

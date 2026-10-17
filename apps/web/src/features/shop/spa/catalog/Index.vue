@@ -86,7 +86,7 @@ import EmptyState from "@/components/shop/EmptyState.vue";
 import PillGroup from "@/components/shop/PillGroup.vue";
 import BookingHowTo from "@/components/shop/spa/BookingHowTo.vue";
 import { Button } from "@/components/ui/button";
-import { useSpaCatalog } from "@/composables/spa/useSpaCatalog";
+import { useSpaCatalog } from "@/features/shop/spa/composables/useSpaCatalog";
 import { STORE_INFO } from "@/config/storeInfo";
 import { useAuthStore } from "@/stores";
 import ComboList from "./components/ComboList.vue";

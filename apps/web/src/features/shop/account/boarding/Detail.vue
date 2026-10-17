@@ -71,7 +71,7 @@ import { useI18n } from "vue-i18n";
 import { ArrowLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import { useMyBoardingStay } from "@/queries/accountBoarding";
+import { useMyBoardingStay } from "@/features/shop/account/queries/accountBoarding";
 import { dayLabel } from "@bongcun/core/spa";
 import CareTimeline from "./components/CareTimeline.vue";
 import { dayOf, STATUS_TONE } from "./format";

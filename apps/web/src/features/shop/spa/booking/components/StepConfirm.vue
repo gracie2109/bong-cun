@@ -33,7 +33,7 @@
 import { useI18n } from "vue-i18n";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useDurationLabel } from "@/composables/spa/useDurationLabel";
+import { useDurationLabel } from "@/features/shop/spa/composables/useDurationLabel";
 import { formatPrice } from "@/lib/utils";
 import type { MyPet } from "@bongcun/core/account";
 import type { WebQuote } from "@bongcun/core/spa";
