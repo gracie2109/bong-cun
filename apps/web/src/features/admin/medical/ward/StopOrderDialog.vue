@@ -21,7 +21,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useStopOrder } from "@/queries/inpatient";
+import { useStopOrder } from "@/features/admin/medical/queries/inpatient";
 import type { WardOrder } from "@bongcun/core/medical";
 
 const props = defineProps<{ open: boolean; order: WardOrder | null }>();

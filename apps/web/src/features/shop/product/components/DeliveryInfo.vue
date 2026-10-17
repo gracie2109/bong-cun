@@ -18,7 +18,7 @@ import { useI18n } from "vue-i18n";
 import { Store, Truck } from "lucide-vue-next";
 import { STORE_INFO } from "@/config/storeInfo";
 import { formatPrice } from "@/lib/utils";
-import { useShopPublicSettings } from "@/queries/shop";
+import { useShopPublicSettings } from "@/features/shared/shop/queries/shop";
 
 /** How the item can reach the customer, from the shop's online-sale settings (the same ones checkout uses). */
 const props = defineProps<{ inStoreOnly: boolean }>();

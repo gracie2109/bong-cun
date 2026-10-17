@@ -1,8 +1,8 @@
 import { computed, reactive, ref, watch, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { supabaseClient } from "@/lib/supabase";
-import { useSaveBranchPrices } from "@/queries/branchPrices";
-import { useProductAttributes, useProductGroup, useSaveProductGroup } from "@/queries/products";
+import { useSaveBranchPrices } from "@/features/admin/products/queries/branchPrices";
+import { useProductAttributes, useProductGroup, useSaveProductGroup } from "@/features/shared/products/queries/products";
 import type { ProductGroup } from "@bongcun/supabase/products";
 import { deleteImagesQuietly } from "@bongcun/supabase/storage";
 import { parseAmount } from "@/features/admin/pos/format";

@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { useUpdateRole } from "@/queries/roles";
+import { useUpdateRole } from "@/features/admin/settings/queries/roles";
 import type { Permission } from "@bongcun/supabase/users";
 import type { Role } from "@bongcun/supabase/users";
 import { methodsOf, roleMethods, type Method } from "../rbac";

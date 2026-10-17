@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
-import { useMedicalPrescription } from "@/queries/medicalVisits";
+import { useMedicalPrescription } from "@/features/admin/medical/queries/medicalVisits";
 import PrescriptionSheet from "./PrescriptionSheet.vue";
 
 const props = defineProps<{ open: boolean; visitId: string }>();

@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { formatPrice } from "@/lib/utils";
-import { useAllPetServices } from "@/queries/petServices";
+import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
 import type { PetCombo, PetComboInput } from "@bongcun/supabase/spa";
 import { DEFAULT_MARK, STATUS_SELLING, STATUS_STOPPED } from "./comboStatus";
 

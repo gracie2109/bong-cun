@@ -77,7 +77,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCloseShift, useShiftSummary } from "@/queries/pos";
+import { useCloseShift, useShiftSummary } from "@/features/admin/pos/queries/pos";
 import type { CashShift } from "@bongcun/supabase/pos";
 import { money, parseAmount } from "../format";
 

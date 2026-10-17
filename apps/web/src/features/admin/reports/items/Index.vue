@@ -70,7 +70,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
 import { useI18n } from "vue-i18n";
-import { useTopItems } from "@/queries/reports";
+import { useTopItems } from "@/features/admin/reports/queries/reports";
 import { EXPORT_LIMIT, listTopItems } from "@bongcun/supabase/reports";
 import { ContentWrap, Header } from "@/features/admin/components";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";

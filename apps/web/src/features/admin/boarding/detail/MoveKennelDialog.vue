@@ -34,7 +34,7 @@ import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useKennels, useMoveBoardingPet } from "@/queries/boarding";
+import { useKennels, useMoveBoardingPet } from "@/features/admin/boarding/queries";
 import type { BoardingStay, StayPet } from "@bongcun/core/boarding";
 
 const FIRST_PAGE = { pageIndex: 1, pageSize: 100 };

@@ -78,7 +78,7 @@ import { Switch } from "@/components/ui/switch";
 import { usePagedList } from "@/composables/usePagedList";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePermission } from "@/composables/usePermission";
-import { useSaveSupplier, useSuppliersList } from "@/queries/inventory";
+import { useSaveSupplier, useSuppliersList } from "@/features/admin/inventory/queries/inventory";
 import type { Supplier, SupplierFilter } from "@bongcun/supabase/inventory";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";

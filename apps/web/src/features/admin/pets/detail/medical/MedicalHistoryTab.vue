@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
 import { Button } from "@/components/ui/button";
-import { usePetMedicalHistory } from "@/queries/medicalVisits";
+import { usePetMedicalHistory } from "@/features/admin/medical/queries/medicalVisits";
 import { dateTime, VISIT_TONE } from "@/features/admin/medical/format";
 
 const props = defineProps<{ petId: string }>();

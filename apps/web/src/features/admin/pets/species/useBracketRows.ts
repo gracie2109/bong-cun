@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useSaveWeightBrackets, useWeightBrackets } from "@/queries/weightBrackets";
+import { useSaveWeightBrackets, useWeightBrackets } from "@/features/admin/pets/queries/weightBrackets";
 import { checkBrackets, type WeightBracketInput } from "@bongcun/supabase/pets";
 
 /** One editable bracket. Text fields hold what was typed; numbers are parsed on save. */

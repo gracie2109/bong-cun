@@ -25,7 +25,7 @@
 import { computed } from "vue";
 import { Home } from "lucide-vue-next";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useBoardingBoard } from "@/queries/boarding";
+import { useBoardingBoard } from "@/features/admin/boarding/queries";
 import { useAuthStore } from "@/stores";
 import { todayKey } from "../boarding/format";
 

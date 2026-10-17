@@ -2,7 +2,7 @@ import { computed, reactive, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
-import { useCustomerSearch } from "@/queries/customers";
+import { useCustomerSearch } from "@/features/admin/pets/queries/customers";
 import { digitsOf, type CustomerMatch } from "@bongcun/supabase/customers";
 import type { RegisterOwner } from "@bongcun/supabase/pets";
 

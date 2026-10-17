@@ -63,7 +63,7 @@ import PagedTableCard from "@/components/common/PagedTableCard.vue";
 import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
-import { useInvoicesList } from "@/queries/pos";
+import { useInvoicesList } from "@/features/admin/pos/queries/pos";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "../components/BranchPicker.vue";
 import PosNav from "../PosNav.vue";

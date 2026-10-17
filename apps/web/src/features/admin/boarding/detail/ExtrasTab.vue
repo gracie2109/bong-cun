@@ -56,8 +56,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAddBoardingExtra, useRemoveBoardingExtra } from "@/queries/boarding";
-import { useAllPetServices } from "@/queries/petServices";
+import { useAddBoardingExtra, useRemoveBoardingExtra } from "@/features/admin/boarding/queries";
+import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
 import type { StayCharge, StayPet } from "@bongcun/core/boarding";
 import { money } from "../format";
 

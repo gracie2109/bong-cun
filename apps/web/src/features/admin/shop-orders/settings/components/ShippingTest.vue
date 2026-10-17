@@ -17,7 +17,7 @@
 import { toRef } from "vue";
 import { Loader2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { useShippingTest } from "@/composables/shop/useShippingTest";
+import { useShippingTest } from "@/features/admin/shop-orders/composables/useShippingTest";
 import type { GhnLocation } from "@bongcun/core/shop";
 
 const props = defineProps<{ from: GhnLocation }>();

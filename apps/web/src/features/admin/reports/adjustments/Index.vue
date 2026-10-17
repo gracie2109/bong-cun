@@ -84,7 +84,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Input } from "@/components/ui/input";
 import { usePagedList } from "@/composables/usePagedList";
 import { supabaseClient } from "@/lib/supabase";
-import { useAdjustments } from "@/queries/reports";
+import { useAdjustments } from "@/features/admin/reports/queries/reports";
 import { EXPORT_LIMIT, listAdjustments, type AdjustmentKind } from "@bongcun/supabase/reports";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";

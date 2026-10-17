@@ -18,7 +18,7 @@
 import { computed, ref } from "vue";
 import { Syringe } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import { usePetBook, useVoidVaccine } from "@/queries/vaccinations";
+import { usePetBook, useVoidVaccine } from "@/features/admin/medical/queries/vaccinations";
 import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import type { VaccineDose } from "@bongcun/core/medical";
 import VaccineBookList from "../../book/VaccineBookList.vue";

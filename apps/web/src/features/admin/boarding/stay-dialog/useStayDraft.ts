@@ -6,8 +6,8 @@ import {
   useCancelBoardingStay,
   useSaveBoardingStay,
   useTypeAvailability,
-} from "@/queries/boarding";
-import { useCustomerPets } from "@/queries/pos";
+} from "@/features/admin/boarding/queries";
+import { useCustomerPets } from "@/features/admin/pos/queries/pos";
 import { boardingErrorDetail, boardingErrorHint } from "@bongcun/supabase/boarding";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import type { Buyer } from "@/features/admin/pos/components/CustomerPanel.vue";

@@ -121,8 +121,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { formatPrice } from "@/lib/utils";
-import { useCreatePetCombo, useUpdatePetCombo } from "@/queries/petCombos";
-import { useSpeciesOptions } from "@/queries/species";
+import { useCreatePetCombo, useUpdatePetCombo } from "@/features/admin/pets/queries/petCombos";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
 import type { PetCombo } from "@bongcun/supabase/spa";
 import { COMBO_MARKS } from "./comboStatus";
 import { useComboForm } from "./useComboForm";

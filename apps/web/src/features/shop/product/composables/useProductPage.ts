@@ -1,9 +1,9 @@
 import { computed } from "vue";
 import { useHead } from "#imports";
 import { useRoute } from "vue-router";
-import { useSellableGroup } from "@/queries/products";
+import { useSellableGroup } from "@/features/shared/products/queries/products";
 import { useRelatedGroups, useVariantAvailability } from "@/features/shop/catalog/queries/shopCatalog";
-import { useVariantChoice } from "@/composables/useVariantChoice";
+import { useVariantChoice } from "@/features/shared/products/composables/useVariantChoice";
 import { useAddToCart } from "@/features/shop/cart/composables/useAddToCart";
 
 /** Variants with at most this many left show "only N left". */

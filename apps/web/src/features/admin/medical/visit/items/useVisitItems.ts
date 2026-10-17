@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import i18n from "@/i18n";
 import { sendMessageToast } from "@/lib/utils";
-import { useAddItem, useRemoveItem, useUpdateItem } from "@/queries/medicalVisits";
+import { useAddItem, useRemoveItem, useUpdateItem } from "@/features/admin/medical/queries/medicalVisits";
 import type { ItemInput, MedicalVisitDetail } from "@bongcun/core/medical";
 
 /** The lines of one visit: who may change them, the dialogs, and the actions on a line. */

@@ -51,7 +51,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAdmitInpatient, useInpatientKennels } from "@/queries/inpatient";
+import { useAdmitInpatient, useInpatientKennels } from "@/features/admin/medical/queries/inpatient";
 import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { toIso } from "@/features/admin/schedule/format";
 

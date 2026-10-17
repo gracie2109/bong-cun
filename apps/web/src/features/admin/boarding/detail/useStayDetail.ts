@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useBoardingStay, useMarkBoardingNoShow } from "@/queries/boarding";
+import { useBoardingStay, useMarkBoardingNoShow } from "@/features/admin/boarding/queries";
 import { useAuthStore } from "@/stores";
 import type { StayPet } from "@bongcun/core/boarding";
 

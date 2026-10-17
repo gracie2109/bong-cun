@@ -1,10 +1,10 @@
 import { computed, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAllPetServices } from "@/queries/petServices";
-import { useBranchPrices } from "@/queries/branchPrices";
-import { useSellableStock } from "@/queries/inventory";
-import { useSellableCombos } from "@/queries/pos";
-import { useSellableProducts } from "@/queries/products";
+import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
+import { useBranchPrices } from "@/features/admin/products/queries/branchPrices";
+import { useSellableStock } from "@/features/admin/inventory/queries/inventory";
+import { useSellableCombos } from "@/features/admin/pos/queries/pos";
+import { useSellableProducts } from "@/features/shared/products/queries/products";
 import type { LineType } from "@bongcun/supabase/pos";
 import { fold } from "@/features/admin/settings/rbac";
 import { priceAtBranch } from "./branchPricing";

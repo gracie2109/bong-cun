@@ -68,7 +68,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { Button } from "@/components/ui/button";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePagedList } from "@/composables/usePagedList";
-import { useAppointmentsList } from "@/queries/spa";
+import { useAppointmentsList } from "@/features/admin/schedule/queries/spa";
 import { isEditable, type Appointment } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";

@@ -43,7 +43,7 @@
 import { computed, ref, toRef, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useCheckOutBoarding, useCheckoutPreview } from "@/queries/boarding";
+import { useCheckOutBoarding, useCheckoutPreview } from "@/features/admin/boarding/queries";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { money } from "../format";
 

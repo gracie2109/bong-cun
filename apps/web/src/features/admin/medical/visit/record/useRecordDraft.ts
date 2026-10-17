@@ -1,5 +1,5 @@
 import { computed, ref, watch, type Ref } from "vue";
-import { useSaveRecord, useSignVisit } from "@/queries/medicalVisits";
+import { useSaveRecord, useSignVisit } from "@/features/admin/medical/queries/medicalVisits";
 import type { MedicalVisitDetail } from "@bongcun/core/medical";
 import { canSignDraft, draftFromVisit, toRecordInput, type RecordDraft } from "./recordDraft";
 

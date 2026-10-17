@@ -63,7 +63,7 @@ import { useRoute } from "vue-router";
 import { ChevronRight, PawPrint } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePermission } from "@/composables/usePermission";
-import { usePet, useSetPetStatus } from "@/queries/pets";
+import { usePet, useSetPetStatus } from "@/features/admin/pets/queries/pets";
 import type { PetStatus } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/features/admin/components";
 import PetEditSheet from "../components/PetEditSheet.vue";

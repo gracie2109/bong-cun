@@ -58,7 +58,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { todayKey } from "@/features/admin/schedule/format";
-import { useUpdateOrder } from "@/queries/inpatient";
+import { useUpdateOrder } from "@/features/admin/medical/queries/inpatient";
 import type { WardOrder } from "@bongcun/core/medical";
 import OrderHoursField from "./OrderHoursField.vue";
 import { canEditStart, editDraftFromOrder, hasOrderChanges, isEditDraftValid, toUpdateInput, type OrderEditDraft } from "./orderEditDraft";

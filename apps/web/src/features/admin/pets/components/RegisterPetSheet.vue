@@ -57,8 +57,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useRegisterPet } from "@/queries/pets";
-import { useSpeciesOptions } from "@/queries/species";
+import { useRegisterPet } from "@/features/admin/pets/queries/pets";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
 import {
   emptyPetForm,
   formToPetInput,

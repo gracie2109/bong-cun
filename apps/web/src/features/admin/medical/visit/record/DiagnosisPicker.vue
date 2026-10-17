@@ -43,7 +43,7 @@ import { X } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SEARCH_DEBOUNCE_MS } from "@/lib/listing";
-import { useDiagnosisTerms } from "@/queries/medical";
+import { useDiagnosisTerms } from "@/features/admin/medical/queries/medical";
 import type { DiagnosisTerm } from "@bongcun/core/medical";
 import type { RecordDraft } from "./recordDraft";
 

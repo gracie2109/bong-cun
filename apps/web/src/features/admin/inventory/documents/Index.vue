@@ -91,7 +91,7 @@ import {
 import { usePagedList } from "@/composables/usePagedList";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { usePermission } from "@/composables/usePermission";
-import { useStockDocuments } from "@/queries/inventory";
+import { useStockDocuments } from "@/features/admin/inventory/queries/inventory";
 import { DOC_TYPES, type DocType } from "@bongcun/supabase/inventory";
 import { ContentWrap, Header } from "@/features/admin/components";
 import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";

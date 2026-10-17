@@ -1,5 +1,5 @@
 import { computed, type Ref } from "vue";
-import { useKennelTypes } from "@/queries/boarding";
+import { useKennelTypes } from "@/features/admin/boarding/queries";
 
 const OPTIONS_PAGE = { pageIndex: 1, pageSize: 100 };
 

@@ -105,7 +105,7 @@ import { Switch } from "@/components/ui/switch";
 import { useListFilters } from "@/composables/useListFilters";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
-import { usePetCombosList, useSetPetComboActive } from "@/queries/petCombos";
+import { usePetCombosList, useSetPetComboActive } from "@/features/admin/pets/queries/petCombos";
 import type { PetCombo } from "@bongcun/supabase/spa";
 import { ContentWrap, Header } from "@/features/admin/components";
 import PetsNav from "../PetsNav.vue";

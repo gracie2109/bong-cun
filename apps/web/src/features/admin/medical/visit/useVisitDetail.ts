@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useCancelVisit, useMedicalVisit, useMarkNoShow, useStartVisit } from "@/queries/medicalVisits";
+import { useCancelVisit, useMedicalVisit, useMarkNoShow, useStartVisit } from "@/features/admin/medical/queries/medicalVisits";
 import { useAuthStore } from "@/stores";
 
 /** The visit of the route with what the signed-in staff may do to it, and the actions on it. */

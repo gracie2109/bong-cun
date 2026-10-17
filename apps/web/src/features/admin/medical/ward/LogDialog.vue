@@ -26,7 +26,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddLog } from "@/queries/inpatient";
+import { useAddLog } from "@/features/admin/medical/queries/inpatient";
 import type { LogKind, WardRow } from "@bongcun/core/medical";
 
 const KINDS: LogKind[] = ["vitals", "treatment", "note"];

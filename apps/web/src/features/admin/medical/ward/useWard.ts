@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useDischarge, useGiveDose, useInpatientWard } from "@/queries/inpatient";
+import { useDischarge, useGiveDose, useInpatientWard } from "@/features/admin/medical/queries/inpatient";
 import { useAuthStore } from "@/stores";
 import type { WardDose, WardRow } from "@bongcun/core/medical";
 import { todayKey } from "../../boarding/format";

@@ -17,7 +17,7 @@
 import { toRef } from "vue";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useClinicOnly, useSetClinicOnly } from "@/queries/productClinicOnly";
+import { useClinicOnly, useSetClinicOnly } from "@/features/admin/products/queries/productClinicOnly";
 
 /** Medicine sold only at the clinic: saved at once, apart from the product form. */
 const props = defineProps<{ groupId: string | null }>();

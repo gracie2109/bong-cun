@@ -1,6 +1,6 @@
 import { computed, ref, type Ref } from "vue";
 import { useListFilters } from "@/composables/useListFilters";
-import { useMarkReminded, useMedicalReminders } from "@/queries/vaccinations";
+import { useMarkReminded, useMedicalReminders } from "@/features/admin/medical/queries/vaccinations";
 import { usePagedList } from "@/composables/usePagedList";
 import { useAuthStore } from "@/stores";
 import type { Reminder, ReminderFilter, ReminderScope } from "@bongcun/core/medical";

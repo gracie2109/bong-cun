@@ -50,7 +50,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useSaveKennel } from "@/queries/boarding";
+import { useSaveKennel } from "@/features/admin/boarding/queries";
 import type { Kennel, KennelType } from "@bongcun/core/boarding";
 
 const props = defineProps<{ open: boolean; branchId: string | undefined; kennel: Kennel | null; types: KennelType[] }>();

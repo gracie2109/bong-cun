@@ -63,7 +63,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCheckInBoarding } from "@/queries/boarding";
+import { useCheckInBoarding } from "@/features/admin/boarding/queries";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { useKennelTypeOptions } from "../useKennelTypeOptions";
 import { checkInDraftOf, isCheckInComplete, isOverweight, toCheckInInput, type CheckInPetDraft } from "./checkInDraft";

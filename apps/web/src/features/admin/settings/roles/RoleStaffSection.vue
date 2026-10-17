@@ -53,7 +53,7 @@ import { computed, ref } from "vue";
 import { UserPlus } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useSaveStaffAssignments } from "@/queries/staff";
+import { useSaveStaffAssignments } from "@/features/admin/settings/queries/staff";
 import type { Branch } from "@bongcun/supabase/users";
 import type { Role } from "@bongcun/supabase/users";
 import type { StaffMember } from "@bongcun/supabase/users";

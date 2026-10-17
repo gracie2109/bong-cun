@@ -1,6 +1,6 @@
 import { useTableImport } from "@/composables/useTableImport";
 import type { ImportReport } from "@bongcun/core/data-io";
-import { useImportProducts } from "@/queries/productImport";
+import { useImportProducts } from "@/features/admin/products/queries/productImport";
 import type { ImportRow, ProductImportReport } from "@bongcun/core/data-io";
 import { parseProductSheets } from "./parseProductSheets";
 

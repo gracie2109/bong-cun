@@ -31,7 +31,7 @@
 import { toRef } from "vue";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useOrderSheet } from "@/composables/shop/useOrderSheet";
+import { useOrderSheet } from "@/features/admin/shop-orders/composables/useOrderSheet";
 import OrderStatusBadge from "@/components/common/OrderStatusBadge.vue";
 import { dateTime } from "@/features/admin/pos/format";
 import OrderActionButtons from "./OrderActionButtons.vue";

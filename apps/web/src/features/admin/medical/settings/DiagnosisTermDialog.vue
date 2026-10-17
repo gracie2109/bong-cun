@@ -50,8 +50,8 @@ import ChipPicker from "@/components/common/ChipPicker.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useSaveDiagnosisTerm } from "@/queries/medical";
-import { useSpeciesOptions } from "@/queries/species";
+import { useSaveDiagnosisTerm } from "@/features/admin/medical/queries/medical";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
 import type { DiagnosisTerm } from "@bongcun/core/medical";
 import { diagnosisTermInputFromDraft, draftFromDiagnosisTerm, emptyDiagnosisTermDraft } from "./diagnosisTermDraft";
 

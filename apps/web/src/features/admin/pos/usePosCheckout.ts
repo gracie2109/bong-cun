@@ -1,7 +1,7 @@
 import { ref, watch, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { supabaseClient } from "@/lib/supabase";
-import { useCreateInvoice } from "@/queries/pos";
+import { useCreateInvoice } from "@/features/admin/pos/queries/pos";
 import { getInvoice, type SaleCustomer, type SaleResult } from "@bongcun/supabase/pos";
 import type { Branch } from "@bongcun/supabase/users";
 import type { Buyer } from "./components/CustomerPanel.vue";

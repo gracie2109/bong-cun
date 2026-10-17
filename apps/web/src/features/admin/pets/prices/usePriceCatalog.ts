@@ -1,9 +1,9 @@
 import { computed, ref, watch } from "vue";
-import { useBranches } from "@/queries/branches";
-import { useAllPetServices } from "@/queries/petServices";
-import { priceByCell, useServicePrices } from "@/queries/servicePrices";
-import { useSpeciesOptions } from "@/queries/species";
-import { useWeightBrackets } from "@/queries/weightBrackets";
+import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
+import { priceByCell, useServicePrices } from "@/features/admin/pets/queries/servicePrices";
+import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
+import { useWeightBrackets } from "@/features/admin/pets/queries/weightBrackets";
 
 export const SHARED = "shared";
 

@@ -108,7 +108,7 @@ import { Button } from "@/components/ui/button";
 import { usePagedList } from "@/composables/usePagedList";
 import { usePermission } from "@/composables/usePermission";
 import { useAuthStore } from "@/stores";
-import { usePetsList, useSetPetStatus } from "@/queries/pets";
+import { usePetsList, useSetPetStatus } from "@/features/admin/pets/queries/pets";
 import type { PetListItem, PetStatus } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/features/admin/components";
 import PetsImportDialog from "./import/PetsImportDialog.vue";
