@@ -1,17 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type {
-  CheckInInput,
-  ItemInput,
-  ItemDirections,
-  ItemResult,
-  RecordInput,
-  ScheduleInput,
-  SignResult,
-  VisitStatus,
-} from "@bongcun/core/medical";
-import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
+import { checkedInVisitSchema, itemResultSchema, signResultSchema } from "@bongcun/core/medical";
+import type { CheckInInput, ItemInput, ItemDirections, ItemResult, RecordInput, ScheduleInput, SignResult } from "@bongcun/core/medical";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
 
@@ -19,8 +10,7 @@ export const checkInMedicalVisit = async (
   client: Client,
   input: CheckInInput
 ): Promise<{ id: string; code: string; queueNo: number }> => {
-  const row = asRecord(
-    unwrap(
+  const raw = unwrap(
       await client.rpc("check_in_medical_visit", {
         p: {
           visit_id: input.visitId ?? null,
@@ -35,9 +25,9 @@ export const checkInMedicalVisit = async (
           source: input.source ?? "counter",
         },
       })
-    )
   );
-  return { id: str(row.id), code: str(row.code), queueNo: Number(row.queue_no ?? 0) };
+  const row = parseRpc("check_in_medical_visit", checkedInVisitSchema, raw);
+  return { id: row.id, code: row.code, queueNo: row.queue_no ?? 0 };
 };
 
 export const scheduleMedicalVisit = async (client: Client, input: ScheduleInput, id?: string): Promise<string> =>
@@ -93,8 +83,8 @@ export const saveMedicalRecord = async (client: Client, id: string, record: Reco
 };
 
 export const signMedicalVisit = async (client: Client, id: string): Promise<SignResult> => {
-  const row = asRecord(unwrap(await client.rpc("sign_medical_visit", { p_id: id })));
-  return { id: str(row.id), status: str(row.status) as VisitStatus, recheckVisitId: strOrNull(row.recheck_visit_id) };
+  const row = parseRpc("sign_medical_visit", signResultSchema, unwrap(await client.rpc("sign_medical_visit", { p_id: id })));
+  return { id: row.id, status: row.status, recheckVisitId: row.recheck_visit_id ?? null };
 };
 
 export const addMedicalAddendum = async (client: Client, id: string, content: string): Promise<void> => {
@@ -110,9 +100,9 @@ export const markMedicalNoShow = async (client: Client, id: string): Promise<voi
 };
 
 // ------------------------------------------------------------------- lines
-const toItemResult = (value: unknown): ItemResult => {
-  const row = asRecord(value);
-  return { id: str(row.id), warnings: Array.isArray(row.warnings) ? row.warnings.map(String) : [] };
+const toItemResult = (rpc: string, value: unknown): ItemResult => {
+  const row = parseRpc(rpc, itemResultSchema, value);
+  return { id: row.id, warnings: row.warnings ?? [] };
 };
 
 const directions = (item: ItemDirections) => ({
@@ -126,6 +116,7 @@ const directions = (item: ItemDirections) => ({
 
 export const addMedicalItem = async (client: Client, visitId: string, input: ItemInput): Promise<ItemResult> =>
   toItemResult(
+    "add_medical_item",
     unwrap(
       await client.rpc("add_medical_item", {
         p_visit: visitId,
@@ -147,6 +138,7 @@ export const updateMedicalItem = async (
   patch: Partial<ItemDirections> & { qty?: number }
 ): Promise<ItemResult> =>
   toItemResult(
+    "update_medical_item",
     unwrap(
       await client.rpc("update_medical_item", {
         p_id: id,
