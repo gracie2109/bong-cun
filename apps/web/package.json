@@ -8,6 +8,7 @@
     "build": "nuxt build",
     "preview": "nuxt preview",
     "generate": "nuxt generate",
+    "generate:mobile": "NUXT_PUBLIC_APP_TARGET=mobile nuxt generate",
     "type-check": "nuxt typecheck",
     "deps:check": "depcruise src --config .dependency-cruiser.cjs --output-type err",
     "test": "vitest run",

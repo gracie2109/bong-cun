@@ -10,6 +10,7 @@
     "dev": "npm run dev -w @bongcun/web",
     "build": "npm run build -w @bongcun/web",
     "preview": "npm run preview -w @bongcun/web",
+    "generate:mobile": "npm run generate:mobile -w @bongcun/web",
     "type-check": "npm run type-check -w @bongcun/core -w @bongcun/supabase -w @bongcun/web",
     "deps:check": "npm run deps:check -w @bongcun/web && depcruise packages --config packages/.dependency-cruiser.cjs --output-type err",
     "test": "npm run test -w @bongcun/web",

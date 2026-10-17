@@ -4,7 +4,11 @@
 const i18nFiles = (locale: string) =>
   ["common", "shop", "services", "admin"].map((area) => `${locale}/${area}.json`);
 
-export default defineNuxtConfig({
+import { mobileNuxtConfig, resolveAppTarget } from "./config/mobileTarget";
+
+const appTarget = resolveAppTarget(process.env.NUXT_PUBLIC_APP_TARGET);
+
+const baseConfig = defineNuxtConfig({
   compatibilityDate: "2026-10-01",
   srcDir: "src/",
 
@@ -67,6 +71,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    public: { appTarget },
     // Server-only (NUXT_GHN_*). Never move these to `public`.
     ghn: {
       token: "",
@@ -110,3 +115,12 @@ export default defineNuxtConfig({
     optimizeDeps: { exclude: ["vue-zoomable"] },
   },
 });
+
+// The mobile build (NUXT_PUBLIC_APP_TARGET=mobile) is the same app minus admin, rendered client-side only.
+export default appTarget === "mobile"
+  ? defineNuxtConfig({
+      ...baseConfig,
+      ...mobileNuxtConfig(),
+      supabase: { ...baseConfig.supabase, ...mobileNuxtConfig().supabase },
+    })
+  : baseConfig;
