@@ -742,4 +742,4 @@ Kế hoạch cho phần "vẫn chưa làm" ở mục 25 (hợp đồng kho, spa,
 - Bước 6 hợp đồng y tế: lượt khám (#179); tiêm chủng, danh mục, cài đặt, đính kèm (#180); nội trú gồm bảng nội trú, chuồng, nhận, y lệnh, liều, nhật ký, lịch sử y lệnh, xuất viện (#181).
 - Test DB y tế tạo danh mục (loại vắc-xin, sản phẩm) bằng quyền chủ cơ sở dữ liệu rồi mới đăng nhập admin, vì vai trò `authenticated` không có quyền ghi thẳng vào các bảng đó.
 
-Còn lại: bước 7 đưa queries/composables vào `features/`, làm sau khi PR thú cưng mất (#170, migration `20261023030000`) và các phần y tế còn lại merge.
+Còn lại: bước 7 đưa queries/composables vào `features/`, làm sau khi PR thú cưng mất (#170, migration `20261025010000`) và các phần y tế còn lại merge.

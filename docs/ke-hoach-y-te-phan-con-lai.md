@@ -1,6 +1,6 @@
 # Y tế: ba việc còn lại
 
-**Tiến độ:** bước 1 xong (nhãn Nội trú trên bảng chuồng, chặn trả chuồng, gia hạn, dịch vụ thêm với lượt nội trú; migration `20261023010000`). Bước 2 xong (sửa giờ, ngày kết thúc, số lượng, liều, ghi chú của y lệnh; đổi thuốc; dừng có lý do; nhật ký y lệnh; mỗi liều lưu số lượng của nó; khóa y lệnh và liều khi bệnh án đã ký; migration `20261023020000` và `20261024040000` cho bảng nội trú). Màn hình sửa có ô "Từ ngày" chỉ bật khi y lệnh chưa bắt đầu. Bước 3 xong (đánh dấu thú đã mất kèm ngày và ghi chú, hủy lịch spa, lưu trú, lượt khám hẹn còn chờ, chặn khi thú đang trong chuồng, khôi phục; migration `20261023030000`). Chưa làm ở bước 3: cột "Ngày mất" khi xuất danh sách thú (view `pet_overview` chưa có ngày mất).
+**Tiến độ:** bước 1 xong (nhãn Nội trú trên bảng chuồng, chặn trả chuồng, gia hạn, dịch vụ thêm với lượt nội trú; migration `20261023010000`). Bước 2 xong (sửa giờ, ngày kết thúc, số lượng, liều, ghi chú của y lệnh; đổi thuốc; dừng có lý do; nhật ký y lệnh; mỗi liều lưu số lượng của nó; khóa y lệnh và liều khi bệnh án đã ký; migration `20261023020000` và `20261024040000` cho bảng nội trú). Màn hình sửa có ô "Từ ngày" chỉ bật khi y lệnh chưa bắt đầu. Bước 3 xong (đánh dấu thú đã mất kèm ngày và ghi chú, hủy lịch spa, lưu trú, lượt khám hẹn còn chờ, chặn khi thú đang trong chuồng, khôi phục; migration `20261025010000`). Chưa làm ở bước 3: cột "Ngày mất" khi xuất danh sách thú (view `pet_overview` chưa có ngày mất).
 
 Kế hoạch cho ba việc còn thiếu sau khi module Y tế (`docs/ho-so-benh-an.md`, 8 bước, migration `20261021*`) đã xong:
 
@@ -109,7 +109,7 @@ Thêm `replace_order`, `order_stopped` vào `packages/core/src/medical/errors.ts
 
 ### 5.1 Dữ liệu và trigger
 
-Migration `supabase/migrations/20261023030000_pet_deceased.sql`:
+Migration `supabase/migrations/20261025010000_pet_deceased.sql`:
 
 - `pets.deceased_note text`.
 - `pets_deceased_before` (BEFORE UPDATE OF status trên `pets`):
@@ -165,7 +165,7 @@ Migration `supabase/migrations/20261023040000_deceased_pet_bookings_and_customer
 | --- | --- | --- | --- |
 | 1 | Nhãn Nội trú trên bảng chuồng, chặn thao tác lưu trú với lượt nội trú | `20261023010000_inpatient_on_kennel_board.sql` | |
 | 2 | Sửa, đổi thuốc, dừng có lý do, nhật ký y lệnh, khóa khi đã ký | `20261023020000_inpatient_order_edits.sql` | |
-| 3 | Ghi thú đã mất, dọn lịch, khôi phục, admin | `20261023030000_pet_deceased.sql` | |
+| 3 | Ghi thú đã mất, dọn lịch, khôi phục, admin | `20261025010000_pet_deceased.sql` | |
 | 4 | Chặn đặt spa cho thú đã mất, khách xem thú đã mất | `20261023040000_deceased_pet_bookings_and_customer_view.sql` | sau bước 3 |
 
 Mỗi PR: `npm run db:start`, `npm run db:test`, `npm run db:schema` và commit `supabase/schema.sql`; typecheck, build, Vitest, `deps:check`. Migration forward-only, chạy lại được (`create or replace`, `if not exists`, `drop ... if exists` cho trigger và policy). Khi merge vào `main`, workflow "Supabase migrate" tự chạy. Bản dán tay (dự phòng): `/mnt/project-files/pet-care-plan/migration-y-te-con-lai-1..4.sql`. Mỗi bước xong cập nhật dòng tiến độ ở đầu file này và ở `docs/ho-so-benh-an.md`.

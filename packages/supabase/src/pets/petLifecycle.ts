@@ -1,4 +1,4 @@
-// Marking a pet deceased and bringing it back (see 20261023030000_pet_deceased.sql).
+// Marking a pet deceased and bringing it back (see 20261025010000_pet_deceased.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";

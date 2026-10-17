@@ -14417,8 +14417,8 @@ CREATE TABLE IF NOT EXISTS "public"."pets" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deceased_on" "date",
-    "deceased_note" "text",
     "photo_path" "text",
+    "deceased_note" "text",
     CONSTRAINT "pets_name_check" CHECK (("length"("btrim"("name")) > 0)),
     CONSTRAINT "pets_sex_check" CHECK (("sex" = ANY (ARRAY['male'::"text", 'female'::"text", 'unknown'::"text"]))),
     CONSTRAINT "pets_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'deceased'::"text", 'archived'::"text"])))
