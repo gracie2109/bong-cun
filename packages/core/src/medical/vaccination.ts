@@ -29,23 +29,6 @@ export type VaccineBookEntry = {
 
 export type VaccineLot = { id: string; lotNo: string; expiryDate: string | null; qtyOnHand: number };
 
-export type GiveVaccineInput = {
-  vaccineTypeId: string;
-  lotId: string | null;
-  doseNo: number | null;
-  nextDueOn: string | null;
-};
-
-export type ExternalVaccineInput = {
-  vaccineTypeId: string;
-  givenOn: string;
-  externalPlace: string;
-  lotNo: string;
-  expiryDate: string;
-  doseNo: number | null;
-  nextDueOn: string | null;
-};
-
 export type GiveVaccineResult = { id: string; warnings: string[] };
 
 export type ReminderScope = "due" | "overdue" | "recheck";

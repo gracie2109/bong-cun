@@ -1,9 +1,10 @@
 // Files attached to a visit, kept in the private "medical" bucket (see 20261021070300_medical_attachments.sql).
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalAttachment } from "@bongcun/core/medical";
-import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, str, strOrNull } from "@bongcun/supabase/shared";
+import { attachmentsSchema } from "@bongcun/core/medical";
+import type { AttachmentKind, MedicalAttachment } from "@bongcun/core/medical";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
+import { toAttachment } from "./mappers";
 
 type Client = SupabaseClient<Database>;
 
@@ -20,21 +21,8 @@ export const validateAttachment = (file: { type: string; size: number }): "type"
 };
 
 export const listMedicalAttachments = async (client: Client, visitId: string): Promise<MedicalAttachment[]> => {
-  const rows = unwrap(await client.rpc("list_medical_attachments", { p_visit: visitId }));
-  return (Array.isArray(rows) ? rows : []).map((raw) => {
-    const row = asRecord(raw);
-    return {
-      id: str(row.id),
-      visitId: str(row.visit_id),
-      kind: ATTACHMENT_KINDS.find((kind) => kind === row.kind) ?? "other",
-      title: str(row.title),
-      filePath: str(row.file_path),
-      mimeType: str(row.mime_type),
-      sizeBytes: Number(row.size_bytes ?? 0),
-      createdByName: strOrNull(row.created_by_name),
-      createdAt: str(row.created_at),
-    };
-  });
+  const raw = unwrap(await client.rpc("list_medical_attachments", { p_visit: visitId }));
+  return (parseRpc("list_medical_attachments", attachmentsSchema, raw) ?? []).map(toAttachment);
 };
 
 export type AttachmentInput = { petId: string; visitId: string; kind: AttachmentKind; title: string; file: File };

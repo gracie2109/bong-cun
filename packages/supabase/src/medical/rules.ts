@@ -2,20 +2,15 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import type { MedicalRules } from "@bongcun/core/medical";
-import { unwrap } from "@bongcun/supabase/shared";
-import { asRecord, strOrNull } from "@bongcun/supabase/shared";
+import { medicalRulesRowSchema } from "@bongcun/core/medical";
+import { parseRpc, unwrap } from "@bongcun/supabase/shared";
+import { toMedicalRules } from "./mappers";
 
 type Client = SupabaseClient<Database>;
 
 export const getMedicalRules = async (client: Client, branchId: string): Promise<MedicalRules> => {
-  const row = asRecord(unwrap(await client.rpc("medical_settings_get", { p_branch: branchId })));
-  return {
-    examServiceId: strOrNull(row.exam_service_id),
-    examServiceName: strOrNull(row.exam_service_name),
-    remindAheadDays: Number(row.remind_ahead_days ?? 7),
-    contagiousDays: Number(row.contagious_days ?? 30),
-    requireVaccineForBoarding: row.require_vaccine_for_boarding === true,
-  };
+  const raw = unwrap(await client.rpc("medical_settings_get", { p_branch: branchId }));
+  return toMedicalRules(parseRpc("medical_settings_get", medicalRulesRowSchema, raw));
 };
 
 export const saveMedicalRules = async (client: Client, branchId: string, rules: MedicalRules): Promise<void> => {

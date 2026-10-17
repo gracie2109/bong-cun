@@ -13,14 +13,6 @@ export type DiagnosisTerm = {
   sortOrder: number;
 };
 
-export type DiagnosisTermInput = {
-  name: string;
-  speciesIds: string[];
-  isContagious: boolean;
-  isActive: boolean;
-  sortOrder: number;
-};
-
 export type DiagnosisTermFilter = { search?: string; speciesId?: string; activeOnly?: boolean };
 
 export type VaccineKind = "vaccine" | "deworm" | "other";
@@ -49,27 +41,5 @@ export type VaccineType = {
   sortOrder: number;
 };
 
-export type VaccineTypeInput = {
-  name: string;
-  kind: VaccineKind;
-  speciesIds: string[];
-  productId: string | null;
-  seriesDoses: number;
-  seriesIntervalDays: number | null;
-  boosterIntervalDays: number | null;
-  minAgeWeeks: number | null;
-  isActive: boolean;
-  sortOrder: number;
-};
-
 export type VaccineTypeFilter = { search?: string; kind?: VaccineKind; speciesId?: string; activeOnly?: boolean };
 
-/** The medical rules of a branch. */
-export type MedicalRules = {
-  /** Service added when a vet takes a case; null = none. */
-  examServiceId: string | null;
-  examServiceName: string | null;
-  remindAheadDays: number;
-  contagiousDays: number;
-  requireVaccineForBoarding: boolean;
-};
