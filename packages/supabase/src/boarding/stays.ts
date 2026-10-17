@@ -1,81 +1,18 @@
 // Stays: booking, listing, quoting and cancelling.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type {
-  BoardingStay,
-  QuoteItem,
-  QuoteWarning,
-  StayFilter,
-  StayInput,
-  StayPet,
-  StayQuote,
-  StaySource,
-  StayStatus,
-  TypeAvailability,
+import {
+  quoteSchema,
+  savedStaySchema,
+  stayPageSchema,
+  stayRowSchema,
+  typeAvailabilitySchema,
 } from "@bongcun/core/boarding";
-import { toCareLog, toCharge } from "./care";
-import { unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
-import { asRecord, numOrNull, str, strOrNull } from "@bongcun/supabase/shared";
+import type { BoardingStay, StayFilter, StayInput, StayQuote, TypeAvailability } from "@bongcun/core/boarding";
+import { parseRpc, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
+import { toBoardingStay, toQuote, toTypeAvailability } from "./mappers";
 
 type Client = SupabaseClient<Database>;
-
-const toStayPet = (value: unknown): StayPet => {
-  const row = asRecord(value);
-  return {
-    id: str(row.id),
-    lineNo: Number(row.line_no ?? 0),
-    petId: str(row.pet_id),
-    petName: str(row.pet_name),
-    petPhotoUrl: strOrNull(row.pet_photo_url),
-    status: row.status === "cancelled" ? "cancelled" : "active",
-    kennelTypeId: str(row.kennel_type_id),
-    kennelTypeName: str(row.kennel_type_name),
-    kennelId: str(row.kennel_id),
-    kennelCode: str(row.kennel_code),
-    nightsFrom: str(row.nights_from),
-    nightsTo: str(row.nights_to),
-    chargedNights: Number(row.charged_nights ?? 0),
-    isExtraPet: row.is_extra_pet === true,
-    estNightPrice: Number(row.est_night_price ?? 0),
-    nightPrice: numOrNull(row.night_price),
-    weightKg: numOrNull(row.weight_kg),
-    vaccineChecked: row.vaccine_checked === true,
-    vaccineNote: strOrNull(row.vaccine_note),
-    belongings: strOrNull(row.belongings),
-    belongingsReturned: row.belongings_returned === true,
-    feeding: strOrNull(row.feeding),
-    medication: strOrNull(row.medication),
-    hasNotes: row.has_notes === true,
-  };
-};
-
-export const toBoardingStay = (value: unknown): BoardingStay => {
-  const row = asRecord(value);
-  return {
-    id: str(row.id),
-    code: str(row.code),
-    branchId: str(row.branch_id),
-    status: str(row.status) as StayStatus,
-    customerId: str(row.customer_id),
-    customerName: str(row.customer_name),
-    customerPhone: str(row.customer_phone),
-    plannedInAt: str(row.planned_in_at),
-    plannedOutAt: str(row.planned_out_at),
-    checkedInAt: strOrNull(row.checked_in_at),
-    checkedOutAt: strOrNull(row.checked_out_at),
-    source: str(row.source) as StaySource,
-    kind: row.kind === "inpatient" ? "inpatient" : "boarding",
-    visitId: strOrNull(row.visit_id),
-    visitCode: strOrNull(row.visit_code),
-    emergencyPhone: strOrNull(row.emergency_phone),
-    note: strOrNull(row.note),
-    cancelReason: strOrNull(row.cancel_reason),
-    estTotal: Number(row.est_total ?? 0),
-    pets: Array.isArray(row.pets) ? row.pets.map(toStayPet) : [],
-    careLogs: Array.isArray(row.care_logs) ? row.care_logs.map(toCareLog) : [],
-    charges: Array.isArray(row.charges) ? row.charges.map(toCharge) : [],
-  };
-};
 
 export const listBoardingStays = async (
   client: Client,
@@ -83,25 +20,23 @@ export const listBoardingStays = async (
   page: PageParams,
   filter: StayFilter = {}
 ): Promise<Page<BoardingStay>> => {
-  const result = asRecord(
-    unwrap(
-      await client.rpc("list_boarding_stays", {
-        p_branch: branchId,
-        p_from: filter.from || undefined,
-        p_to: filter.to || undefined,
-        p_status: filter.status || undefined,
-        p_search: filter.search?.trim() || undefined,
-        p_page: page.pageIndex,
-        p_page_size: page.pageSize,
-      })
-    )
+  const raw = unwrap(
+    await client.rpc("list_boarding_stays", {
+      p_branch: branchId,
+      p_from: filter.from || undefined,
+      p_to: filter.to || undefined,
+      p_status: filter.status || undefined,
+      p_search: filter.search?.trim() || undefined,
+      p_page: page.pageIndex,
+      p_page_size: page.pageSize,
+    })
   );
-  const rows = Array.isArray(result.rows) ? result.rows : [];
-  return { rows: rows.map(toBoardingStay), total: Number(result.total ?? 0) };
+  const result = parseRpc("list_boarding_stays", stayPageSchema, raw);
+  return { rows: (result.rows ?? []).map(toBoardingStay), total: result.total };
 };
 
 export const getBoardingStay = async (client: Client, id: string): Promise<BoardingStay> =>
-  toBoardingStay(unwrap(await client.rpc("get_boarding_stay", { p_id: id })));
+  toBoardingStay(parseRpc("get_boarding_stay", stayRowSchema, unwrap(await client.rpc("get_boarding_stay", { p_id: id }))));
 
 const toPayload = (branchId: string | null, input: StayInput) => ({
   ...(branchId ? { branch_id: branchId } : {}),
@@ -129,27 +64,8 @@ export const saveBoardingStay = async (
   input: StayInput,
   id?: string
 ): Promise<{ id: string; code: string }> => {
-  const result = asRecord(
-    unwrap(await client.rpc("save_boarding_stay", { p: toPayload(branchId, input), p_id: id }))
-  );
-  return { id: str(result.id), code: str(result.code) };
-};
-
-const toQuoteItem = (value: unknown): QuoteItem => {
-  const row = asRecord(value);
-  return {
-    lineNo: Number(row.line_no ?? 0),
-    petId: str(row.pet_id),
-    petName: str(row.pet_name),
-    kennelTypeId: str(row.kennel_type_id),
-    kennelTypeName: str(row.kennel_type_name),
-    kennelId: str(row.kennel_id),
-    kennelCode: str(row.kennel_code),
-    isExtraPet: row.is_extra_pet === true,
-    nightPrice: Number(row.night_price ?? 0),
-    amount: Number(row.amount ?? 0),
-    warnings: Array.isArray(row.warnings) ? (row.warnings as QuoteWarning[]) : [],
-  };
+  const raw = unwrap(await client.rpc("save_boarding_stay", { p: toPayload(branchId, input), p_id: id }));
+  return parseRpc("save_boarding_stay", savedStaySchema, raw);
 };
 
 /** The price and the kennels a booking would get, nothing saved. `stayId` = the stay being edited. */
@@ -159,14 +75,8 @@ export const quoteBoardingStay = async (
   input: StayInput,
   stayId?: string
 ): Promise<StayQuote> => {
-  const result = asRecord(
-    unwrap(await client.rpc("boarding_quote", { p_branch: branchId, p: toPayload(null, input), p_stay: stayId }))
-  );
-  return {
-    nights: Number(result.nights ?? 0),
-    total: Number(result.total ?? 0),
-    items: Array.isArray(result.items) ? result.items.map(toQuoteItem) : [],
-  };
+  const raw = unwrap(await client.rpc("boarding_quote", { p_branch: branchId, p: toPayload(null, input), p_stay: stayId }));
+  return toQuote(parseRpc("boarding_quote", quoteSchema, raw));
 };
 
 export const getTypeAvailability = async (
@@ -175,17 +85,8 @@ export const getTypeAvailability = async (
   from: string,
   to: string
 ): Promise<TypeAvailability[]> => {
-  const rows = unwrap(await client.rpc("boarding_availability", { p_branch: branchId, p_from: from, p_to: to }));
-  return (Array.isArray(rows) ? rows : []).map((value) => {
-    const row = asRecord(value);
-    return {
-      kennelTypeId: str(row.kennel_type_id),
-      name: str(row.name),
-      total: Number(row.total ?? 0),
-      free: Number(row.free ?? 0),
-      nightPrice: numOrNull(row.night_price),
-    };
-  });
+  const raw = unwrap(await client.rpc("boarding_availability", { p_branch: branchId, p_from: from, p_to: to }));
+  return (parseRpc("boarding_availability", typeAvailabilitySchema, raw) ?? []).map(toTypeAvailability);
 };
 
 export const cancelBoardingStay = async (client: Client, id: string, reason?: string): Promise<void> => {

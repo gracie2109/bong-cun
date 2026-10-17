@@ -7,6 +7,7 @@ export * from "./checkInOut";
 export * from "@bongcun/core/boarding";
 export * from "./kennelTypes";
 export * from "./kennels";
+export * from "./mappers";
 export * from "./publicCatalog";
 export * from "./rules";
 export * from "./stays";

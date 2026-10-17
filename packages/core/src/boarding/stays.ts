@@ -68,30 +68,6 @@ export type BoardingStay = {
 
 export type StayFilter = { from?: string; to?: string; status?: StayStatus | ""; search?: string };
 
-/** What the booking dialog sends for one pet. */
-export type StayPetInput = {
-  petId: string;
-  kennelTypeId: string;
-  /** Leave out to let the database pick a free kennel of the type. */
-  kennelId?: string | null;
-  /** 1-based line of an earlier pet whose kennel this one shares. */
-  shareWith?: number | null;
-  feeding?: string;
-  medication?: string;
-  belongings?: string;
-};
-
-export type StayInput = {
-  customerId: string;
-  /** ISO instants. */
-  plannedInAt: string;
-  plannedOutAt: string;
-  source: "counter" | "phone";
-  emergencyPhone: string;
-  note: string;
-  pets: StayPetInput[];
-};
-
 export type QuoteWarning = "overweight" | "behavior";
 
 export type QuoteItem = {
