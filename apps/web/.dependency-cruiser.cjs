@@ -57,7 +57,8 @@ module.exports = {
       name: "feature-via-index",
       comment: "A feature reaches another feature only through its index.ts (or its pure format.ts); inside a feature, files import each other directly.",
       severity: "error",
-      from: { path: "^src/features/([^/]+)/([^/]+)/" },
+      // features/native is one flat feature (composables/, helpers/, components/), not area/module folders.
+      from: { path: "^src/features/([^/]+)/([^/]+)/", pathNot: "^src/features/native/" },
       to: {
         path: "^src/features/[^/]+/[^/]+/",
         pathNot: ["^src/features/$1/$2/", "^src/features/[^/]+/[^/]+/(index|format)\\.ts$"],

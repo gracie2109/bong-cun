@@ -275,5 +275,8 @@
         "passwordPh": "Tối thiểu 8 ký tự"
       }
     }
+  },
+  "native": {
+    "offline": "Mất kết nối mạng. Một số nội dung có thể chưa được cập nhật."
   }
 }

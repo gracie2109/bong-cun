@@ -275,5 +275,8 @@
         "passwordPh": "At least 8 characters"
       }
     }
+  },
+  "native": {
+    "offline": "No connection. Some content may be out of date."
   }
 }

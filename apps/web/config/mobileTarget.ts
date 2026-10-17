@@ -26,6 +26,8 @@ export const dropAdminRoutes = (pages: PageLike[]): void => {
 /** The slice of Nuxt config the mobile build adds on top of the shared one. */
 export const mobileNuxtConfig = () => ({
   ssr: false,
+  // Native glue (status bar, Back button, offline banner...) exists only in the app build.
+  plugins: ["~/features/native/plugins/native.client"],
   // The WebView has no server, so no cookie is ever set for the session: keep it in localStorage.
   supabase: { useSsrCookies: false },
   // The app has no server of its own, so /api/ghn goes to the deployed site (override: NUXT_PUBLIC_API_BASE).
