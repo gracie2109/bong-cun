@@ -1,5 +1,6 @@
 import {
   boardSchema,
+  boardingErrorHint,
   boardingRulesRowSchema,
   kennelPageSchema,
   kennelTypePageSchema,
@@ -8,7 +9,6 @@ import {
   stayRowSchema,
   timelineSchema,
 } from "@bongcun/core/boarding";
-import { toAppError } from "@bongcun/supabase/shared";
 import { describe, expect, it } from "vitest";
 import { inRolledBackTransaction } from "./db";
 import { payloadOf, setUpStay } from "./boardingFixture";
@@ -59,7 +59,7 @@ describe("Boarding board and settings RPCs match the app's contract", () => {
       const s = await setUpStay(db);
       const kennel = { branch_id: s.branch, kennel_type_id: s.type, code: "C1" };
       const error = await db.rpc("save_kennel", kennel).catch((e: unknown) => e);
-      expect(toAppError(error)?.code).toBe("duplicate_code");
+      expect(boardingErrorHint(error)).toBe("duplicate_code");
     });
   });
 });
