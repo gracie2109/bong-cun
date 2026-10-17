@@ -26,6 +26,16 @@ jobs:
       - run: npm run deps:check
       - run: npm test
       - run: npm run build
+      - name: Build the customer app as a static SPA (the Capacitor bundle)
+        run: npm run generate:mobile
+        env:
+          SUPABASE_URL: https://example.supabase.co
+          SUPABASE_KEY: ci-placeholder
+      - name: No admin code in the mobile bundle
+        run: |
+          if ls apps/web/.output/public/_nuxt | grep -i admin; then
+            echo "::error::Admin chunks found in the mobile build"; exit 1
+          fi
 
   db:
     runs-on: ubuntu-latest
