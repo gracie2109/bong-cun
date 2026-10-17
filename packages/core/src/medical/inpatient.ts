@@ -1,7 +1,7 @@
 // In-patient care: kennels, orders and the doses of one day (see 20261021080100_inpatient_rpcs.sql).
-export type InpatientKennel = { id: string; code: string; typeName: string; purpose: "medical" | "isolation"; free: boolean };
+import type { OrderKind } from "./contract/inpatient";
 
-export type OrderKind = "product" | "service" | "care";
+export type InpatientKennel = { id: string; code: string; typeName: string; purpose: "medical" | "isolation"; free: boolean };
 
 export type WardOrder = {
   id: string;
@@ -55,20 +55,3 @@ export type WardRow = {
 
 export type Ward = { date: string; rows: WardRow[] };
 
-export type AdmitInput = { kennelId: string; plannedOutAt: string | null; note: string };
-
-export type OrderInput = {
-  stayPetId: string;
-  kind: OrderKind;
-  productId: string | null;
-  serviceId: string | null;
-  name: string;
-  dose: string;
-  qtyPerDose: number;
-  times: string[];
-  startOn: string;
-  endOn: string;
-  note: string;
-};
-
-export type LogKind = "vitals" | "treatment" | "note";
