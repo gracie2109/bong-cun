@@ -41,6 +41,6 @@ const orders = computed(() => ordersQuery.data.value?.rows ?? []);
 const nextAppointment = computed(() => appointmentsQuery.data.value?.rows[0] ?? null);
 // The tile only shows while a pet is in the hotel.
 const currentStay = computed(() => boardingQuery.data.value?.rows[0] ?? null);
-const petCount = computed(() => (hasCustomer.value && petsQuery.data.value ? petsQuery.data.value.length : null));
+const petCount = computed(() => (hasCustomer.value && petsQuery.data.value ? petsQuery.data.value.filter((pet) => pet.status === "active").length : null));
 const loading = computed(() => ordersQuery.isLoading.value);
 </script>

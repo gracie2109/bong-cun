@@ -14,6 +14,9 @@
         <PetAvatar :name="health.petName" :photo-url="health.petPhotoUrl" class="size-14 text-base" />
         <div>
           <h2 class="text-lg font-semibold">{{ $t("client.health.title", { name: health.petName }) }}</h2>
+          <p v-if="health.status === 'deceased'" class="text-sm font-medium text-muted-foreground">
+            {{ health.deceasedOn ? $t("client.pets.deceasedOn", { date: formatDay(health.deceasedOn) }) : $t("client.pets.deceased") }}
+          </p>
           <p class="text-sm text-muted-foreground">{{ $t("client.health.intro") }}</p>
         </div>
       </div>
@@ -43,6 +46,7 @@ import { ArrowLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMyPetHealth } from "@/queries/accountHealth";
+import { formatDay } from "./format";
 import VaccineBook from "./VaccineBook.vue";
 import VisitHistory from "./VisitHistory.vue";
 

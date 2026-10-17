@@ -582,7 +582,9 @@
       "weight": "Cân nặng",
       "allergies": "Dị ứng",
       "nextVaccine": "Mũi tiêm tiếp theo: {name} – {date}",
-      "healthBook": "Sổ sức khỏe"
+      "healthBook": "Sổ sức khỏe",
+      "deceased": "Đã mất",
+      "deceasedOn": "Đã mất ngày {date}"
     },
     "spa": {
       "title": "Dịch vụ spa cho thú cưng",

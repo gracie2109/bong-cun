@@ -1674,6 +1674,10 @@ begin
     ) then
       raise exception 'pet not found' using errcode = 'P0002', hint = 'no_pet';
     end if;
+    if exists (select 1 from public.pets where id = v_pet and status <> 'active') then
+      raise exception 'the pet is not active' using errcode = 'P0001',
+        hint = case when (select status from public.pets where id = v_pet) = 'deceased' then 'pet_deceased' else 'no_pet' end;
+    end if;
     v_quote := public.spa_ticket_quote(v_branch, v_pet, v_item ->> 'type', nullif(v_item ->> 'id', '')::uuid);
     v_quotes := v_quotes || v_quote;
     v_minutes := v_minutes + (v_quote ->> 'minutes')::int;
@@ -7268,7 +7272,7 @@ begin
   select p.* into v_pet
   from public.pets p
   join public.pet_owners po on po.pet_id = p.id
-  where p.id = p_pet and po.customer_id = v_cust and po.to_date is null and p.status = 'active';
+  where p.id = p_pet and po.customer_id = v_cust and po.to_date is null and p.status in ('active', 'deceased');
   if not found then
     raise exception 'pet not found' using errcode = 'P0002', hint = 'not_found';
   end if;
@@ -7276,6 +7280,8 @@ begin
   return jsonb_build_object(
     'pet_id', v_pet.id,
     'pet_name', v_pet.name,
+    'status', v_pet.status,
+    'deceased_on', v_pet.deceased_on,
     'pet_photo_url', v_pet.photo_url,
     'phone', (
       select b.phone from public.branches b where b.is_active and b.phone is not null
@@ -7289,9 +7295,9 @@ begin
           'name', t.name,
           'kind', t.kind,
           'last_given_on', last.given_on,
-          'next_due_on', last.next_due_on,
+          'next_due_on', case when v_pet.status = 'active' then last.next_due_on end,
           'state', case
-            when last.next_due_on is null then 'ok'
+            when last.next_due_on is null or v_pet.status <> 'active' then 'ok'
             when last.next_due_on < v_today then 'overdue'
             when last.next_due_on <= v_today + 14 then 'due_soon'
             else 'ok' end,
@@ -7370,6 +7376,8 @@ begin
                'sex', p.sex,
                'neutered', p.neutered,
                'birth_date', p.birth_date,
+               'status', p.status,
+               'deceased_on', p.deceased_on,
                'allergies', p.allergies,
                'behavior_notes', p.behavior_notes,
                'weight_kg', (
@@ -7378,7 +7386,7 @@ begin
                ),
                'role', po.role,
                'can_edit', po.role = 'primary',
-               'has_open_appointment', exists (
+               'has_open_appointment', p.status = 'active' and exists (
                  select 1
                  from public.appointment_items ai
                  join public.appointments a on a.id = ai.appointment_id
@@ -7392,17 +7400,17 @@ begin
                    where v.pet_id = p.id and v.vaccine_type_id = t.id and v.voided_at is null
                    order by v.given_on desc, v.created_at desc limit 1
                  ) l on true
-                 where l.next_due_on is not null
+                 where l.next_due_on is not null and p.status = 'active'
                  order by l.next_due_on, t.name
                  limit 1
                )
              )
-             order by lower(p.name), p.created_at
+             order by (p.status = 'active') desc, lower(p.name), p.created_at
            )
     from public.pet_owners po
     join public.pets p on p.id = po.pet_id
     join public.species s on s.id = p.species_id
-    where po.customer_id = v_cust and po.to_date is null and p.status = 'active'
+    where po.customer_id = v_cust and po.to_date is null and p.status in ('active', 'deceased')
   ), '[]'::jsonb);
 end;
 $$;
@@ -9676,6 +9684,10 @@ begin
       where pet_id = v_pet and customer_id = v_customer and to_date is null
     ) then
       raise exception 'line %: the pet does not belong to this customer', v_line_no using errcode = '22023';
+    end if;
+    if exists (select 1 from public.pets where id = v_pet and status <> 'active') then
+      raise exception 'line %: the pet is not active', v_line_no using errcode = '22023',
+        hint = case when (select status from public.pets where id = v_pet) = 'deceased' then 'pet_deceased' else 'no_pet' end;
     end if;
     select species_id into v_species from public.pets where id = v_pet;
 

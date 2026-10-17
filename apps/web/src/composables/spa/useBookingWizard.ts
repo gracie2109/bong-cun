@@ -30,7 +30,7 @@ export const useBookingWizard = () => {
   const branchId = computed(() => pickedBranch.value ?? branches.value[0]?.id ?? null);
   const catalogQuery = useSpaPublicCatalog(branchId);
 
-  const pets = computed(() => petsQuery.data.value ?? []);
+  const pets = computed(() => (petsQuery.data.value ?? []).filter((pet) => pet.status === "active"));
   const picks = ref<PicksByPet>({});
   const petOrder = computed(() => pets.value.map((pet) => pet.id).filter((id) => picks.value[id]));
   const items = computed(() => toBookingItems(picks.value, petOrder.value));

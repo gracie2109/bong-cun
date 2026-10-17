@@ -33,6 +33,10 @@ export type MyPet = {
   allergies: string;
   behaviorNotes: string;
   weightKg: number | null;
+  /** A deceased pet stays in the list, muted: no booking, no next vaccine. */
+  status: "active" | "deceased";
+  /** yyyy-mm-dd, only for a deceased pet. */
+  deceasedOn: string | null;
   /** The vaccine due next, from the e-book of shots. */
   nextVaccine: { name: string; dueOn: string } | null;
 };
@@ -59,7 +63,15 @@ export type HealthVisit = {
   branchName: string;
   takeHome: HealthTakeHome[];
 };
-export type PetHealth = { petId: string; petName: string; petPhotoUrl: string | null; phone: string; vaccines: HealthVaccine[]; visits: HealthVisit[] };
+export type PetHealth = {
+  petId: string;
+  petName: string;
+  petPhotoUrl: string | null;
+  status: "active" | "deceased";
+  deceasedOn: string | null;
+  phone: string; vaccines: HealthVaccine[];
+  visits: HealthVisit[];
+};
 
 /** A web account without a customer record, as staff see it when linking. */
 export type UnlinkedAccount = { userId: string; fullName: string; phone: string; email: string };

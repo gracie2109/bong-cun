@@ -19,6 +19,8 @@ type PetJson = {
   allergies: string | null;
   behavior_notes: string | null;
   weight_kg: number | null;
+  status?: string;
+  deceased_on?: string | null;
   next_vaccine?: { name: string; due_on: string } | null;
 };
 
@@ -37,6 +39,8 @@ const toPet = (row: PetJson): MyPet => ({
   allergies: row.allergies ?? "",
   behaviorNotes: row.behavior_notes ?? "",
   weightKg: row.weight_kg === null ? null : Number(row.weight_kg),
+  status: row.status === "deceased" ? "deceased" : "active",
+  deceasedOn: row.deceased_on ?? null,
   nextVaccine: row.next_vaccine ? { name: row.next_vaccine.name, dueOn: row.next_vaccine.due_on } : null,
 });
 
