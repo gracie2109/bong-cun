@@ -728,3 +728,15 @@ Làm thêm trên nền mục 25, không đổi migration:
 ### 25.2 Phần còn lại
 
 Kế hoạch cho phần "vẫn chưa làm" ở mục 25 (hợp đồng kho, spa, lưu trú, y tế; đưa queries/composables vào `features/`; bỏ `vue-multiselect`) nằm ở [ke-hoach-don-monorepo-con-lai.md](ke-hoach-don-monorepo-con-lai.md).
+
+### 25.3 Tiến độ dọn phần còn lại (2026-10-17)
+
+Đã merge, không đổi migration, CI app + db xanh:
+
+- Bước 1: bỏ `vue-multiselect` (#169). Bước 2: `toAppError` đọc hint của kho, spa, lưu trú, y tế; test hint quét `supabase/schema.sql` (#171).
+- Bước 3 hợp đồng kho (#173). Bước 4 hợp đồng spa admin và đặt lịch online (#174, #175).
+- Bước 5 hợp đồng lưu trú: đặt chỗ, báo giá, nhận, trả, tiền ra POS (#176); bảng chuồng (có nội trú), lịch, chuồng, loại chuồng, cài đặt, trang công khai (#177).
+- Mỗi nhóm có schema zod trong `packages/core/src/<module>/contract/`, mapper thuần trong `packages/supabase/src/<module>/mappers/`, repository dùng `parseRpc`, test đơn vị và test DB.
+- Ghi chú: mã Postgres `23505` luôn thành `conflict` trong `toAppError`; màn hình đọc `hint` (ví dụ `duplicate_code`) bằng `boardingErrorHint`.
+
+Còn lại: bước 6 hợp đồng y tế (chờ PR xác nhận thú cưng mất, migration `20261023030000`) và bước 7 đưa queries/composables vào `features/`.
