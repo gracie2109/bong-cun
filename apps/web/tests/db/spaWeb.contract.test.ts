@@ -52,7 +52,7 @@ describe("Online spa booking RPCs match the app's contract", () => {
       const booked = bookedAppointmentSchema.parse(
         await db.rpc("book_my_appointment", { branch_id: spa.branch, start_at: spa.startAt, note: "", items })
       );
-      expect(booked.code).toMatch(/^LH/);
+      expect(booked.code).toMatch(/-LH-/);
     });
   });
 
