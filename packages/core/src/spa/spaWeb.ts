@@ -1,10 +1,7 @@
-export type BookingKind = "service" | "combo";
+import type { BookingKind } from "./contract/web";
 
 /** One thing chosen for one pet. `minutes` and `name` come from the public catalog, for the step summary. */
 export type BookingPick = { kind: BookingKind; id: string; name: string; minutes: number };
-
-/** What the booking RPCs take: one entry per ticket. */
-export type BookingItem = { petId: string; kind: BookingKind; id: string };
 
 /** A start time of the chosen block and whether a table is free for all of it. */
 export type SpaSlot = { startAt: string; free: boolean };
@@ -32,7 +29,6 @@ export const DEFAULT_BOOKING_RULES: BookingRules = {
   maxBlockMinutes: 600,
 };
 
-export type BookingInput = { branchId: string; startAt: string; note: string; items: BookingItem[] };
 export type BookingResult = { id: string; code: string };
 
 export const BOOKING_STEPS = ["branch", "pets", "slot", "confirm"] as const;
