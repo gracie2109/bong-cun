@@ -26,8 +26,8 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     env:
-      SUPABASE_URL: https://example.supabase.co
-      SUPABASE_KEY: placeholder-for-build-test
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
     steps:
       - name: Check the repository variables
         run: |
