@@ -1,31 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "@bongcun/supabase/db";
+import type { Database } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";
-import { num } from "./helpers";
+import { toLot } from "./mappers";
+import type { StockLot } from "./types";
 
 type Client = SupabaseClient<Database>;
 
 // ---------------------------------------------------------------------- lots
-export type StockLot = {
-  id: string;
-  productId: string;
-  lotNo: string;
-  expiryDate: string | null;
-  unitCost: number;
-  qtyOnHand: number;
-  receivedAt: string;
-};
-
-const toLot = (row: Tables<"stock_lots">): StockLot => ({
-  id: row.id,
-  productId: row.product_id,
-  lotNo: row.lot_no,
-  expiryDate: row.expiry_date,
-  unitCost: num(row.unit_cost),
-  qtyOnHand: num(row.qty_on_hand),
-  receivedAt: row.received_at,
-});
-
 /** A product's lots at a branch in FEFO order; empty lots only when asked. */
 export const listProductLots = async (
   client: Client,
