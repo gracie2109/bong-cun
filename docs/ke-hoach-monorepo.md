@@ -739,4 +739,7 @@ Kế hoạch cho phần "vẫn chưa làm" ở mục 25 (hợp đồng kho, spa,
 - Mỗi nhóm có schema zod trong `packages/core/src/<module>/contract/`, mapper thuần trong `packages/supabase/src/<module>/mappers/`, repository dùng `parseRpc`, test đơn vị và test DB.
 - Ghi chú: mã Postgres `23505` luôn thành `conflict` trong `toAppError`; màn hình đọc `hint` (ví dụ `duplicate_code`) bằng `boardingErrorHint`.
 
-Còn lại: bước 6 hợp đồng y tế (chờ PR xác nhận thú cưng mất, migration `20261023030000`) và bước 7 đưa queries/composables vào `features/`.
+- Bước 6 hợp đồng y tế: lượt khám (#179); tiêm chủng, danh mục, cài đặt, đính kèm (#180); nội trú gồm bảng nội trú, chuồng, nhận, y lệnh, liều, nhật ký, lịch sử y lệnh, xuất viện (#181).
+- Test DB y tế tạo danh mục (loại vắc-xin, sản phẩm) bằng quyền chủ cơ sở dữ liệu rồi mới đăng nhập admin, vì vai trò `authenticated` không có quyền ghi thẳng vào các bảng đó.
+
+Còn lại: bước 7 đưa queries/composables vào `features/`, làm sau khi PR thú cưng mất (#170, migration `20261023030000`) và các phần y tế còn lại merge.
