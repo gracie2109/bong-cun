@@ -19,7 +19,7 @@
         <User class="mr-2 h-4 w-4" />
         <span>{{ $t(item.label) }}</span>
       </DropdownMenuItem>
-      <DropdownMenuItem v-if="isStaff" @click="router.push({ name: 'dashboard' })">
+      <DropdownMenuItem v-if="isStaff && !isNativeApp" @click="router.push({ name: 'dashboard' })">
         <LayoutDashboard class="mr-2 h-4 w-4" />
         <span>{{ $t("client.menu.admin") }}</span>
       </DropdownMenuItem>
@@ -33,6 +33,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useAppTarget } from "@/features/native";
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
@@ -48,6 +49,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ACCOUNT_MENU_ITEMS } from "@/lib/clientAccountMenu";
 import { useAuthStore } from "@/stores";
+
+const { isNativeApp } = useAppTarget();
 
 const store = useAuthStore();
 const router = useRouter();

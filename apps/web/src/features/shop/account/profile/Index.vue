@@ -15,16 +15,19 @@
         :email="profile.email.value"
         @submit="profile.submit"
       />
-      <GoogleLink />
+      <GoogleLink v-if="!isNativeApp" />
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { useAppTarget } from "@/features/native";
 import { Button } from "@/components/ui/button";
 import { useProfileForm } from "@/features/shop/account/composables/useProfileForm";
 import GoogleLink from "./components/GoogleLink.vue";
 import ProfileForm from "./components/ProfileForm.vue";
+
+const { isNativeApp } = useAppTarget();
 
 const profile = useProfileForm();
 </script>

@@ -238,3 +238,16 @@ Quy tắc chung khi code: mỗi file `.vue`/`.ts` dưới khoảng 300 dòng; tr
 - Cho biết có máy Android để cài APK không; nếu không, làm M10 (PWA) trước để dùng trên iPad.
 - Gửi logo/ảnh icon nếu muốn (không có thì dùng icon tạm).
 - Quyết sau: có lên Google Play/App Store không (mục 8.4), có cần push từ server không (mục 7).
+
+## 14. Tình trạng thực hiện (2026-10-17)
+
+| Bước | PR | Ghi chú |
+| --- | --- | --- |
+| M1 | #190 | Đích build `mobile`; bước `generate:mobile` trong CI; chặn chunk admin trong bundle |
+| M2 | #191 | `apiBase` + CORS cho `/api/ghn/**` (middleware `server/middleware/ghn-cors.ts`) |
+| M3 | #192 | `apps/mobile` (Capacitor 8, Android), icon tạm "BC" nền cam, luật dependency-cruiser |
+| M4 | #193 | Workflow `mobile-android.yml`; cần 2 repository variables `SUPABASE_URL`, `SUPABASE_KEY` (không có thì báo lỗi rõ ở bước đầu). Build APK đã chạy thử xanh với giá trị giả trên nhánh PR |
+| M5 | #194 | `features/native`: status bar, bàn phím, nút Back, link ngoài, `OfflineBanner`. Link `tel:`/`mailto:`/Zalo để WebView tự chuyển cho Android (`App.openUrl` không còn trong Capacitor 8) |
+| M6 | PR này | `AppTabBar`, ẩn đăng nhập Google và mục Quản trị, `StaffWebNotice` |
+
+Lệch so với kế hoạch: `features/native` phẳng (composables/helpers/components) nên luật `feature-via-index` loại trừ thư mục này; `OfflineBanner` thay màn `ServerOffline` toàn trang khi ở trong app. Chưa chạy trên máy thật hay máy ảo: chỉ kiểm bằng typecheck, test, build và Chromium 390×844.

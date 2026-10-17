@@ -9,6 +9,7 @@
       <PetsTile :count="petCount" />
       <CurrentStayTile v-if="currentStay" :stay="currentStay" />
     </div>
+    <StaffWebNotice v-if="isNativeApp && isStaff" />
     <RecentOrders :orders="orders.slice(0, RECENT_ORDERS)" :loading="loading" />
   </div>
 </template>
@@ -19,6 +20,7 @@ import { storeToRefs } from "pinia";
 import { useMyPets, useMyProfile } from "@/features/shop/account/queries/account";
 import { useMyAppointments } from "@/features/shop/account/queries/accountAppointments";
 import { useMyBoardingStays } from "@/features/shop/account/queries/accountBoarding";
+import { StaffWebNotice, useAppTarget } from "@/features/native";
 import { useMyShopOrders } from "@/features/shop/orders";
 import { useAuthStore } from "@/stores";
 import CurrentStayTile from "./components/CurrentStayTile.vue";
@@ -28,7 +30,8 @@ import RecentOrders from "./components/RecentOrders.vue";
 
 const RECENT_ORDERS = 3;
 
-const { currentUser } = storeToRefs(useAuthStore());
+const { currentUser, isStaff } = storeToRefs(useAuthStore());
+const { isNativeApp } = useAppTarget();
 const profile = useMyProfile();
 const hasCustomer = computed(() => Boolean(profile.data.value?.customerId));
 const petsQuery = useMyPets(hasCustomer);
