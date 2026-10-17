@@ -19,10 +19,12 @@ describe("Medical vaccination, catalog and settings RPCs match the app's contrac
   it("give a shot, read the e-book, reminders, catalogs, settings, flags and attachments", async () => {
     await inRolledBackTransaction(async (db) => {
       const m = await setUpVisit(db);
+      await db.signOut();
       const type = await db.scalar<string>(
         "insert into public.vaccine_types (name, kind, booster_interval_days) values ('Contract shot', 'vaccine', 365) returning id"
       );
       await db.rows("insert into public.diagnosis_terms (name) values ('Contract diagnosis')");
+      await db.signIn(m.admin);
 
       const { id: visit } = checkedInVisitSchema.parse(
         await db.rpc("check_in_medical_visit", { branch_id: m.branch, customer_id: m.customer, pet_id: m.pet })
@@ -65,8 +67,10 @@ describe("Medical vaccination, catalog and settings RPCs match the app's contrac
   it("giving a shot from a type with a product but no batch raises no_lot", async () => {
     await inRolledBackTransaction(async (db) => {
       const m = await setUpVisit(db);
+      await db.signOut();
       const product = await db.scalar<string>("select tests.create_product('Contract vaccine', 100000)");
       const type = await db.scalar<string>("insert into public.vaccine_types (name, product_id) values ('Stocked shot', $1) returning id", [product]);
+      await db.signIn(m.admin);
       const { id: visit } = checkedInVisitSchema.parse(
         await db.rpc("check_in_medical_visit", { branch_id: m.branch, customer_id: m.customer, pet_id: m.pet })
       );

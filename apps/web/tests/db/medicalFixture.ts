@@ -11,5 +11,5 @@ export const setUpVisit = async (db: Session) => {
     "insert into public.pet_services (name, type, general_price, duration_minutes, category) values ('Contract exam', 'all', 120000, 30, 'medical') returning id"
   );
   await db.signIn(admin);
-  return { branch, customer, pet, service };
+  return { branch, admin, customer, pet, service };
 };
