@@ -18,13 +18,6 @@ export type CareLog = {
   canDelete: boolean;
 };
 
-export type CareLogInput = {
-  kind: CareKind;
-  mealEaten?: MealEaten;
-  content: string;
-  visibleToCustomer: boolean;
-};
-
 export type ChargeKind = "night" | "late" | "extra";
 
 export type StayCharge = {
