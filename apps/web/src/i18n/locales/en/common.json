@@ -277,6 +277,14 @@
     }
   },
   "native": {
-    "offline": "No connection. Some content may be out of date."
+    "offline": "No connection. Some content may be out of date.",
+    "tabs": {
+      "home": "Home",
+      "products": "Products",
+      "spa": "Spa",
+      "cart": "Cart",
+      "account": "Account"
+    },
+    "staffNotice": "Admin tools are on the web."
   }
 }

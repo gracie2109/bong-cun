@@ -80,7 +80,7 @@
             >
               {{ $t("pageFields.authen.createAcc") }}
             </Button>
-            <Button variant="outline" class="w-full  h-[50px]" :disabled="loading">
+            <Button v-if="!isNativeApp" variant="outline" class="w-full  h-[50px]" :disabled="loading">
               Login with Google
             </Button>
           </div>
@@ -101,6 +101,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAppTarget } from "@/features/native";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -113,6 +114,8 @@ import { InputPassword, VerifyEmailCode } from "@/components/common";
 import { useRoute, useRouter } from "vue-router";
 import useValidation from "@/composables/useValidation";
 import { registerSchema } from "@/validations/auth";
+
+const { isNativeApp } = useAppTarget();
 const route = useRoute();
 const router = useRouter();
 const emits = defineEmits(["directPath", "closeDialog"]);

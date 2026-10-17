@@ -34,7 +34,7 @@
           <Button type="submit" class="w-full h-[50px]">
             {{ $t("pageMeta.login") }}
           </Button>
-          <Button type="button" variant="outline" class="w-full h-[50px]" @click="handleSubmit('google')">
+          <Button v-if="!isNativeApp" type="button" variant="outline" class="w-full h-[50px]" @click="handleSubmit('google')">
             Login with Google
           </Button>
         </div>
@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAppTarget } from "@/features/native";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,6 +68,8 @@ import InputPassword from "@/components/common/InputPassword.vue";
 import VerifyEmailCode from "@/components/common/VerifyEmailCode.vue";
 import { loginSchema } from "@/validations/auth";
 import useValidation from "@/composables/useValidation";
+
+const { isNativeApp } = useAppTarget();
 
 const authStore = useAuthStore();
 const route = useRoute();

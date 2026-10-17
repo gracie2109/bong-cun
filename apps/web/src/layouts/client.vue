@@ -6,12 +6,16 @@
   <main id="main" class="relative min-h-[70vh] w-full">
     <slot />
   </main>
-  <ClientFooter />
+  <AppTabBar v-if="isNativeApp" />
+  <ClientFooter v-else />
 </template>
 
 <script setup lang="ts">
 import ShopHeader from "@/components/layout/client/ShopHeader.vue";
 import ClientFooter from "@/features/shop/layout/ClientFooter.vue";
+import { AppTabBar, useAppTarget } from "@/features/native";
+
+const { isNativeApp } = useAppTarget();
 
 // The shop palette and font; on <html> so sheets and dialogs teleported to <body> share it.
 useHead({ htmlAttrs: { class: "shop-theme" } });

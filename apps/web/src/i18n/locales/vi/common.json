@@ -277,6 +277,14 @@
     }
   },
   "native": {
-    "offline": "Mất kết nối mạng. Một số nội dung có thể chưa được cập nhật."
+    "offline": "Mất kết nối mạng. Một số nội dung có thể chưa được cập nhật.",
+    "tabs": {
+      "home": "Trang chủ",
+      "products": "Sản phẩm",
+      "spa": "Spa",
+      "cart": "Giỏ hàng",
+      "account": "Tài khoản"
+    },
+    "staffNotice": "Quản trị dùng trên web."
   }
 }
