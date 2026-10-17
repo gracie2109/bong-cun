@@ -13,6 +13,20 @@ module.exports = {
       to: { path: "node_modules/@supabase/" },
     },
     {
+      name: "native-only-in-native-feature",
+      comment: "Capacitor plugins are imported only inside features/native; the rest of the app stays plain web code.",
+      severity: "error",
+      from: { path: "^src", pathNot: "^src/features/native/" },
+      to: { path: "node_modules/@capacitor/" },
+    },
+    {
+      name: "admin-not-native",
+      comment: "The app has no admin screens, so admin code must not depend on the native layer.",
+      severity: "error",
+      from: { path: "^src/features/admin" },
+      to: { path: "^src/features/native" },
+    },
+    {
       name: "queries-no-features",
       comment: "Query hooks sit below screens.",
       severity: "error",
