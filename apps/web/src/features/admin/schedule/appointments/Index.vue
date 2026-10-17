@@ -72,7 +72,7 @@ import { useAppointmentsList } from "@/features/admin/schedule/queries/spa";
 import { isEditable, type Appointment } from "@bongcun/supabase/spa";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import SpaNav from "../SpaNav.vue";
 import AppointmentDetailDialog from "./AppointmentDetailDialog.vue";
 import AppointmentDialog from "./AppointmentDialog.vue";

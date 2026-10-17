@@ -51,7 +51,7 @@ import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Label } from "@/components/ui/label";
 import type { MedicalVisit } from "@bongcun/core/medical";
-import CustomerPanel from "@/features/admin/pos/components/CustomerPanel.vue";
+import { CustomerPanel } from "@/features/admin/pos";
 import CheckInFields from "./CheckInFields.vue";
 import type { CheckInMode } from "./checkInDraft";
 import { useCheckInDraft } from "./useCheckInDraft";

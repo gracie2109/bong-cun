@@ -1,5 +1,5 @@
 import { computed, reactive, ref, watch } from "vue";
-import { useSaveShopSettings, useShopSettings } from "@/features/shared/shop/queries/shop";
+import { useSaveShopSettings, useShopSettings } from "@/features/shared/shop";
 import { useAuthStore } from "@/stores";
 import { settingsErrors, toForm, toSettings, type SettingsForm } from "@bongcun/core/shop";
 import { emptyGhnLocation } from "@bongcun/core/shop";

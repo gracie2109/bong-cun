@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { useProductCategories } from "@/features/shared/products/queries/productCategories";
+import { useProductCategories } from "@/features/shared/products";
 
 /** Categories are few; this page holds them all for the chip bar. */
 const CATEGORY_PAGE = { pageIndex: 1, pageSize: 200 };

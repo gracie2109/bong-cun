@@ -78,7 +78,7 @@ import { computed } from "vue";
 import { Crown, IdCard, SquarePen, UserCog, X } from "lucide-vue-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useBranches } from "@/features/shared/branches";
 import { useStaffList } from "@/features/admin/settings/queries/staff";
 import type { Permission } from "@bongcun/supabase/users";
 import type { Role } from "@bongcun/supabase/users";

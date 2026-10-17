@@ -103,7 +103,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Appointment } from "@bongcun/supabase/spa";
 import { money } from "@/features/admin/pos/format";
-import PetHealthFlagsBanner from "@/features/admin/medical/flags/PetHealthFlagsBanner.vue";
+import { PetHealthFlagsBanner } from "@/features/admin/medical";
 import { APPOINTMENT_TONE, dateTime, timeOf } from "../format";
 import TicketRow from "./TicketRow.vue";
 import { useAppointmentDetail } from "./useAppointmentDetail";

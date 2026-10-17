@@ -88,7 +88,7 @@ import { useAdjustments } from "@/features/admin/reports/queries/reports";
 import { EXPORT_LIMIT, listAdjustments, type AdjustmentKind } from "@bongcun/supabase/reports";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import InvoiceSheet from "@/features/admin/pos/invoices/InvoiceSheet.vue";
+import { InvoiceSheet } from "@/features/admin/pos";
 import ExportMenu from "@/components/common/data-io/ExportMenu.vue";
 import ReportFilterBar from "../shared/ReportFilterBar.vue";
 import { useReportExport } from "../shared/useReportExport";

@@ -66,7 +66,7 @@ import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { money } from "@/features/admin/pos/format";
-import { usePaymentSplit, type PaymentEntry } from "@/features/admin/pos/usePaymentSplit";
+import { usePaymentSplit, type PaymentEntry } from "@/features/admin/pos";
 
 const props = defineProps<{ total: number; busy: boolean }>();
 const open = defineModel<boolean>("open", { required: true });

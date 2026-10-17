@@ -20,7 +20,7 @@
 import { computed, ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { useSaveVaccineType } from "@/features/admin/medical/queries/medical";
-import { useSpeciesOptions } from "@/features/admin/pets/queries/species";
+import { useSpeciesOptions } from "@/features/admin/pets";
 import type { VaccineType } from "@bongcun/core/medical";
 import VaccineTypeFields from "./VaccineTypeFields.vue";
 import {

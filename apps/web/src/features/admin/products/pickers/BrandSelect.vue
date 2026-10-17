@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import InfiniteSelect from "@/components/common/InfiniteSelect.vue";
-import { useProductBrandOptions } from "@/features/shared/products/queries/productCategories";
+import { useProductBrandOptions } from "@/features/shared/products";
 
 /** Searchable brand choice; "" means no brand. */
 defineProps<{

@@ -94,7 +94,7 @@ import { usePermission } from "@/composables/usePermission";
 import { useStockDocuments } from "@/features/admin/inventory/queries/inventory";
 import { DOC_TYPES, type DocType } from "@bongcun/supabase/inventory";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import InventoryNav from "../InventoryNav.vue";
 import DocumentRow from "./DocumentRow.vue";
 import DocumentSheet from "./DocumentSheet.vue";

@@ -1,8 +1,8 @@
 import { computed, ref } from "vue";
-import { useMyAddresses } from "@/features/shop/account/queries/shopAddresses";
+import { useMyAddresses } from "@/features/shop/account";
 import { useAuthStore } from "@/stores";
 import type { Address } from "@bongcun/core/shop";
-import { useAddressForm } from "@/features/shop/account/composables/useAddressForm";
+import { useAddressForm } from "@/features/shop/account";
 
 /**
  * The delivery address of the checkout: the shopper's default one until they pick another or add

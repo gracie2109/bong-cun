@@ -7,10 +7,10 @@ import {
   useSaveBoardingStay,
   useTypeAvailability,
 } from "@/features/admin/boarding/queries";
-import { useCustomerPets } from "@/features/admin/pos/queries/pos";
+import { useCustomerPets } from "@/features/admin/pos";
 import { boardingErrorDetail, boardingErrorHint } from "@bongcun/supabase/boarding";
 import type { BoardingStay } from "@bongcun/core/boarding";
-import type { Buyer } from "@/features/admin/pos/components/CustomerPanel.vue";
+import type { Buyer } from "@/features/admin/pos";
 import { useKennelTypeOptions } from "../useKennelTypeOptions";
 import {
   draftFromStay,

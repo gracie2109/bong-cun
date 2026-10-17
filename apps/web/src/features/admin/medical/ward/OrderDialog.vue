@@ -86,10 +86,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReplaceOrder, useSaveOrder } from "@/features/admin/medical/queries/inpatient";
-import { useAllPetServices } from "@/features/admin/pets/queries/petServices";
+import { useAllPetServices } from "@/features/admin/pets";
 import type { SellableProduct } from "@bongcun/supabase/products";
 import type { OrderKind, WardOrder, WardRow } from "@bongcun/core/medical";
-import ProductPicker from "@/features/admin/inventory/documents/ProductPicker.vue";
+import { ProductPicker } from "@/features/admin/inventory";
 import OrderHoursField from "./OrderHoursField.vue";
 import { draftFromOrder, emptyOrderDraft, isOrderDraftComplete, toOrderInput, type OrderDraft } from "./orderDraft";
 

@@ -97,7 +97,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCanManageRbac } from "@/composables/usePermission";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useBranches } from "@/features/shared/branches";
 import { usePermissionsList } from "@/features/admin/settings/queries/permissions";
 import { useDeleteRole, useRolesList } from "@/features/admin/settings/queries/roles";
 import { useStaffList } from "@/features/admin/settings/queries/staff";

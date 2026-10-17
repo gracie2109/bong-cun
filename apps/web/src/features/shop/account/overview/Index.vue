@@ -19,7 +19,7 @@ import { storeToRefs } from "pinia";
 import { useMyPets, useMyProfile } from "@/features/shop/account/queries/account";
 import { useMyAppointments } from "@/features/shop/account/queries/accountAppointments";
 import { useMyBoardingStays } from "@/features/shop/account/queries/accountBoarding";
-import { useMyShopOrders } from "@/features/shop/orders/queries/shopOrders";
+import { useMyShopOrders } from "@/features/shop/orders";
 import { useAuthStore } from "@/stores";
 import CurrentStayTile from "./components/CurrentStayTile.vue";
 import NextAppointmentTile from "./components/NextAppointmentTile.vue";

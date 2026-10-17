@@ -76,7 +76,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { VACCINE_KINDS } from "@bongcun/core/medical";
-import ProductPicker from "@/features/admin/inventory/documents/ProductPicker.vue";
+import { ProductPicker } from "@/features/admin/inventory";
 import type { VaccineTypeDraft } from "./vaccineTypeDraft";
 
 defineProps<{ species: { id: string; name: string }[] }>();

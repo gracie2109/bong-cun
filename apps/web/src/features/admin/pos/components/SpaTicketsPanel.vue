@@ -29,7 +29,7 @@
 import PetAvatar from "@/components/common/PetAvatar.vue";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
-import { useBillableTickets } from "@/features/admin/schedule/queries/spa";
+import { useBillableTickets } from "@/features/admin/schedule";
 import type { BillableTicket } from "@bongcun/supabase/spa";
 import { money } from "../format";
 

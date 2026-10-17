@@ -80,7 +80,7 @@ import { useBoardingStays, useMarkBoardingNoShow } from "@/features/admin/boardi
 import { useAuthStore } from "@/stores";
 import type { BoardingStay } from "@bongcun/core/boarding";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import BoardingNav from "../BoardingNav.vue";
 import StayDialog from "../stay-dialog/StayDialog.vue";
 import StayFilterFields from "./StayFilterFields.vue";

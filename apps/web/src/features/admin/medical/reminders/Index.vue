@@ -73,7 +73,7 @@ import TableStateRows from "@/components/common/TableStateRows.vue";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { REMINDER_SCOPES } from "@bongcun/core/medical";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BranchPicker from "@/features/admin/pos/components/BranchPicker.vue";
+import { BranchPicker } from "@/features/admin/pos";
 import MedicalNav from "../MedicalNav.vue";
 import ReminderRow from "./ReminderRow.vue";
 import RemindDialog from "./RemindDialog.vue";

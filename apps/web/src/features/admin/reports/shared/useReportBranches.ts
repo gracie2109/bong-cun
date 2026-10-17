@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { useBranches } from "@/features/shared/branches/queries/branches";
+import { useBranches } from "@/features/shared/branches";
 import { useReportBranchIds } from "@/features/admin/reports/queries/reports";
 import { useAuthStore } from "@/stores";
 

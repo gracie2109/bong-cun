@@ -25,8 +25,8 @@
 import { computed } from "vue";
 import { Stethoscope } from "lucide-vue-next";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
-import { useMedicalQueue } from "@/features/admin/medical/queries/medicalVisits";
-import { useMedicalReminders } from "@/features/admin/medical/queries/vaccinations";
+import { useMedicalQueue } from "@/features/admin/medical";
+import { useMedicalReminders } from "@/features/admin/medical";
 import { useAuthStore } from "@/stores";
 import { todayKey } from "../boarding/format";
 
