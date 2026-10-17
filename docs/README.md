@@ -24,6 +24,7 @@
 | [ke-hoach-monorepo.md](ke-hoach-monorepo.md) | Audit codebase và kế hoạch chuyển sang monorepo (apps web/cms/mobile, packages core, supabase, nuxt-base), feature-first; bản 2: backend thay được (Supabase, NestJS), nghiệp vụ trong SQL so với TS, hợp đồng use case, ports chỉ ở dịch vụ ngoài, lộ trình PR nhỏ có đường lui |
 | [ke-hoach-don-monorepo-con-lai.md](ke-hoach-don-monorepo-con-lai.md) | Kế hoạch phần còn lại của monorepo: hợp đồng zod và mã lỗi cho kho, spa, lưu trú, y tế; đưa queries/composables vào features có barrel và luật; bỏ vue-multiselect; thứ tự để tránh đụng thread y tế và ảnh thú cưng |
 | [anh-thu-cung.md](anh-thu-cung.md) | Kế hoạch ảnh thú cưng: bucket `pet-photos` công khai, policy theo quyền `pets`, thu nhỏ ảnh trên trình duyệt, RPC đổi/xoá ảnh, hiện ảnh ở admin, POS, spa, lưu trú, y tế và trang khách, sao lưu ảnh |
+| [ke-hoach-app-mobile.md](ke-hoach-app-mobile.md) | Kế hoạch app mobile cho khách: Capacitor bọc phần khách của web thành SPA, Android trước (APK từ GitHub Actions), đăng nhập, proxy GHN, thông báo cục bộ, CI, rủi ro, các bước PR M0 đến M11 |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
