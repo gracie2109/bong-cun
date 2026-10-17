@@ -1,6 +1,7 @@
 <template>
   <div class="app_xcontent">
-    <NuxtLayout v-if="isOnline">
+    <OfflineBanner v-if="isNativeApp" />
+    <NuxtLayout v-if="isOnline || isNativeApp">
       <NuxtPage :page-key="pageKey" />
     </NuxtLayout>
     <div v-else><ServerOffline /></div>
@@ -19,6 +20,7 @@ import { useI18n } from "vue-i18n";
 import { useOnline } from "@vueuse/core";
 import { Toaster } from "@/components/ui/sonner";
 import ServerOffline from "./components/ServerOffline.vue";
+import { OfflineBanner, useAppTarget } from "@/features/native";
 
 const route = useRoute();
 // A page re-mounts on any URL change, except pages that keep their filters in the query and
@@ -27,6 +29,8 @@ const pageKey = (to: RouteLocationNormalizedLoaded) => (to.meta.keepOnQuery ? to
 const { t, localeProperties } = useI18n();
 // SSR-safe: reports online on the server and tracks the browser state after hydration.
 const isOnline = useOnline();
+// In the app the pages stay visible when the connection drops; a banner says so instead.
+const { isNativeApp } = useAppTarget();
 
 const title = computed(() => t(`pageMeta.${route.meta.titleKey}`));
 const description = computed(() => t("seo.description"));

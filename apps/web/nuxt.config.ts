@@ -124,6 +124,7 @@ export default appTarget === "mobile"
   ? defineNuxtConfig({
       ...baseConfig,
       ...mobile,
+      plugins: [...(baseConfig.plugins ?? []), ...mobile.plugins],
       supabase: { ...baseConfig.supabase, ...mobile.supabase },
       runtimeConfig: {
         ...baseConfig.runtimeConfig,

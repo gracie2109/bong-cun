@@ -19,6 +19,13 @@
   "dependencies": {
     "@bongcun/core": "*",
     "@bongcun/supabase": "*",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/keyboard": "^8.0.0",
+    "@capacitor/network": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
     "@internationalized/date": "^3.5.6",
     "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/supabase": "^2.0.10",
