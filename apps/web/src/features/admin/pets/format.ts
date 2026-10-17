@@ -33,5 +33,7 @@ export const formatDate =(iso: string): string => format(new Date(iso), "dd/MM/y
 
 export const formatShortDate = (iso: string): string => format(new Date(iso), "dd/MM");
 
+export const formatDateTime = (iso: string): string => format(new Date(iso), "dd/MM/yyyy HH:mm");
+
 /** Today as yyyy-MM-dd, the format of `<input type="date">`. */
 export const todayInput = (): string => format(new Date(), "yyyy-MM-dd");

@@ -5,17 +5,22 @@ import {
   addPetWeight,
   getPet,
   listPets,
+  markPetDeceased,
+  petDeceasedPreview,
   registerPet,
+  restorePet,
   setPetStatus,
   updatePet,
   type PetInput,
   type PetListFilter,
+  type MarkDeceasedInput,
   type PetStatus,
   type RegisterPetInput,
 } from "@bongcun/supabase/pets";
 import { toPage, type PageParams } from "@bongcun/supabase/shared";
 import { petProfileKeys } from "./keys";
 import { invalidateCatalog } from "./invalidate";
+import { notifyMedicalFailure } from "./medical";
 import { notifyFailure, notifySuccess } from "./notify";
 
 export const usePetsList = (page: MaybeRef<PageParams>, filter: MaybeRef<PetListFilter> = {}) =>
@@ -80,5 +85,40 @@ export const useAddPetWeight = () => {
       notifySuccess("create");
     },
     onError: (error) => notifyFailure("create", error),
+  });
+};
+
+/** What marking the pet deceased would cancel; only fetched while the dialog is open. */
+export const usePetDeceasedPreview = (id: MaybeRef<string | undefined>, enabled: MaybeRef<boolean>) =>
+  useQuery({
+    queryKey: computed(() => [...petProfileKeys.detail(unref(id) ?? ""), "deceased-preview"] as const),
+    queryFn: () => petDeceasedPreview(supabaseClient(), unref(id) as string),
+    enabled: computed(() => !!unref(id) && unref(enabled)),
+    gcTime: 0,
+  });
+
+// Bookings, stays and visits of the pet change too, so every screen that is open refreshes.
+export const useMarkPetDeceased = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: MarkDeceasedInput }) =>
+      markPetDeceased(supabaseClient(), id, input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries();
+      notifySuccess("update");
+    },
+    onError: (error) => notifyMedicalFailure("update", error),
+  });
+};
+
+export const useRestorePet = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => restorePet(supabaseClient(), id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries();
+      notifySuccess("update");
+    },
+    onError: (error) => notifyMedicalFailure("update", error),
   });
 };

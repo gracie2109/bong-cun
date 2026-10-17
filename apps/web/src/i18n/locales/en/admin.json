@@ -158,6 +158,34 @@
           "customer_has_account": "This customer already has a web account.",
           "account_has_customer": "This account is already linked to another customer."
         }
+      },
+      "deceased": {
+        "title": "Mark {name} as deceased",
+        "desc": "The profile and medical records are kept. Bookings that have not started are cancelled and no new ones can be made.",
+        "confirm": "Mark as deceased",
+        "date": "Date of death",
+        "note": "Note",
+        "notePlaceholder": "Cause, if you want to keep it",
+        "on": "Passed away on {date}",
+        "nothingBooked": "Nothing is booked for this pet.",
+        "cancel": {
+          "appointments": "Cancel {n} spa booking(s) not started",
+          "stays": "Cancel {n} hotel booking(s)",
+          "visits": "Cancel {n} booked visit(s)"
+        },
+        "partOnly": "only this pet's line is removed, the other pet keeps the booking",
+        "blocked": "The pet is in a kennel. Check it out or discharge it first.",
+        "blockedType": {
+          "boarding": "Hotel stay",
+          "inpatient": "Inpatient"
+        },
+        "openWork": "Work in progress is not cancelled, finish it by hand:",
+        "openType": {
+          "appointment": "Spa booking",
+          "visit": "Visit"
+        },
+        "restoreTitle": "Restore {name}",
+        "restoreDesc": "The pet goes back to active and the date of death is cleared. Cancelled bookings are not brought back."
       }
     },
     "species": {
@@ -1391,7 +1419,8 @@
       "already_admitted": "The pet is already admitted.",
       "already_done": "This dose is already handled.",
       "replace_order": "The medicine or service cannot be edited, use Replace.",
-      "order_stopped": "This order is already stopped."
+      "order_stopped": "This order is already stopped.",
+      "pet_in_kennel": "The pet is in a kennel. Check it out or discharge it first."
     },
     "settings": {
       "title": "Medical settings",

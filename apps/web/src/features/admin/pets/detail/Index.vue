@@ -30,6 +30,8 @@
           :latest-weight-kg="pet.weights[0]?.weightKg"
           @edit="editOpen = true"
           @change-status="changeStatus"
+          @mark-deceased="deceasedOpen = true"
+          @restore-deceased="restoreOpen = true"
         />
 
         <div class="grid gap-5 xl:grid-cols-[24rem_minmax(0,1fr)]">
@@ -48,6 +50,8 @@
 
 
         <PetEditSheet v-model:open="editOpen" :pet="pet" />
+        <MarkDeceasedDialog v-model:open="deceasedOpen" :pet="pet" />
+        <RestorePetDialog v-model:open="restoreOpen" :pet="pet" />
       </template>
     </div>
   </ContentWrap>
@@ -63,6 +67,8 @@ import { usePet, useSetPetStatus } from "@/queries/pets";
 import type { PetStatus } from "@bongcun/supabase/pets";
 import { ContentWrap, Header } from "@/features/admin/components";
 import PetEditSheet from "../components/PetEditSheet.vue";
+import MarkDeceasedDialog from "../deceased/MarkDeceasedDialog.vue";
+import RestorePetDialog from "../deceased/RestorePetDialog.vue";
 import PetsNav from "../PetsNav.vue";
 import PetActivityTabs from "./PetActivityTabs.vue";
 import PetOwnersCard from "./PetOwnersCard.vue";
@@ -77,6 +83,8 @@ const petQuery = usePet(petId);
 const pet = computed(() => petQuery.data.value ?? null);
 
 const editOpen = ref(false);
+const deceasedOpen = ref(false);
+const restoreOpen = ref(false);
 const setStatus = useSetPetStatus();
 
 const changeStatus = async (status: PetStatus) => {

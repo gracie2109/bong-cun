@@ -28,6 +28,9 @@
           ({{ formatAge(pet.birthDate, t) }})
         </span>
       </p>
+      <p v-if="pet.status === 'deceased'" class="text-sm text-muted-foreground">
+        {{ deceasedLine }}
+      </p>
       <p v-if="pet.microchip" class="text-xs text-muted-foreground">
         Microchip: {{ pet.microchip }}
       </p>
@@ -57,13 +60,16 @@
           <Button variant="ghost" size="icon"><EllipsisVertical class="size-4" /></Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem v-if="pet.status !== 'active'" @click="emit('changeStatus', 'active')">
+          <DropdownMenuItem v-if="pet.status === 'archived'" @click="emit('changeStatus', 'active')">
+            {{ $t("petCare.common.restore") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem v-if="pet.status === 'deceased'" @click="emit('restoreDeceased')">
             {{ $t("petCare.common.restore") }}
           </DropdownMenuItem>
           <DropdownMenuItem v-if="pet.status === 'active'" @click="emit('changeStatus', 'archived')">
             {{ $t("petCare.common.archive") }}
           </DropdownMenuItem>
-          <DropdownMenuItem v-if="pet.status === 'active'" @click="emit('changeStatus', 'deceased')">
+          <DropdownMenuItem v-if="pet.status === 'active'" @click="emit('markDeceased')">
             {{ $t("petCare.pets.detail.markDeceased") }}
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -73,6 +79,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Icon } from "@iconify/vue";
 import { Banknote, EllipsisVertical, Pencil } from "lucide-vue-next";
@@ -87,14 +94,28 @@ import type { PetProfile, PetStatus } from "@bongcun/supabase/pets";
 import { formatAge, formatDate } from "../format";
 import PetPhotoButton from "../photo/PetPhotoButton.vue";
 
-defineProps<{
+const props = defineProps<{
   pet: PetProfile;
   canUpdate: boolean;
   /** Prefills the price check for this pet's weight. */
   latestWeightKg?: number;
 }>();
 
-const emit = defineEmits<{ edit: []; changeStatus: [status: PetStatus] }>();
+const emit = defineEmits<{
+  edit: [];
+  changeStatus: [status: PetStatus];
+  markDeceased: [];
+  restoreDeceased: [];
+}>();
 
 const { t } = useI18n();
+
+const deceasedLine = computed(() =>
+  [
+    props.pet.deceasedOn ? t("petCare.pets.deceased.on", { date: formatDate(props.pet.deceasedOn) }) : "",
+    props.pet.deceasedNote,
+  ]
+    .filter(Boolean)
+    .join(" · ")
+);
 </script>
