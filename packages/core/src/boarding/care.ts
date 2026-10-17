@@ -39,17 +39,6 @@ export type StayCharge = {
   invoiceLineId: string | null;
 };
 
-/** What the check-in dialog sends for one pet. */
-export type CheckInPetInput = {
-  stayPetId: string;
-  weightKg: number;
-  vaccineChecked: boolean;
-  vaccineNote: string;
-  belongings: string;
-  feeding: string;
-  medication: string;
-};
-
 export type CheckoutLine = Pick<StayCharge, "stayPetId" | "petName" | "kind" | "name" | "qty" | "unitPrice" | "amount">;
 
 export type CheckoutBelonging = { stayPetId: string; petName: string; belongings: string; returned: boolean };

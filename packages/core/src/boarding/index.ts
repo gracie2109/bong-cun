@@ -6,3 +6,4 @@ export * from "./care";
 export * from "./timeline";
 export * from "./web";
 export * from "./errors";
+export * from "./contract";
