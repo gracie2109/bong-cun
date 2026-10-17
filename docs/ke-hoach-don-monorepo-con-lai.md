@@ -104,6 +104,8 @@ Rủi ro: trung bình; y tế là module lớn nhất. Mỗi PR chỉ đổi ada
 
 ### Bước 7: Đưa queries và composables vào features (làm cuối)
 
+**Trạng thái (2026-10-17): xong 7a đến 7e, đã merge #183, #185, #186, #187.**
+
 **Cấu trúc đích**
 
 ```
