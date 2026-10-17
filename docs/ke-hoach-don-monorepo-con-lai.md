@@ -131,6 +131,111 @@ Quy tắc chọn chỗ: file chỉ một feature dùng thì vào feature đó; f
   - `queries-infra-only`: `src/queries` chỉ còn `keys`, `invalidate`, `notify`.
   - Giữ luật cũ: admin và shop không import nhau (cả hai được import `features/shared`).
 
+### Bảng chủ sở hữu (7a, 2026-10-17)
+
+Chạy `node apps/web/scripts/feature-owners.mjs` (trong `apps/web`) để in lại bảng từ đồ thị import. Quyết định cuối cho các file không có một chủ duy nhất nằm ở `apps/web/scripts/featureDecisions.mjs`: file dùng chung nhiều module và không có chủ nghiệp vụ ở lại `src/composables`; file dùng cả admin lẫn shop vào `features/shared/<module>`; file nhiều module admin dùng vào module giữ luật nghiệp vụ.
+
+| File | Used by | Destination | Note |
+| --- | --- | --- | --- |
+| `src/composables/account/useMyAppointments.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/account/useMyBoarding.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/account/useMyPets.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/account/useProfileForm.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/layout/useHeaderSearch.ts` | - | `src/composables (stays)` | generic or unused |
+| `src/composables/listFilters.ts` | admin/boarding, admin/inventory, admin/medical, admin/pets, admin/pos, admin/products, admin/reports, admin/schedule, admin/users, admin/shop-orders | `src/composables (stays)` | generic or unused |
+| `src/composables/shop/useAddToCart.ts` | shop/product, home, shop/catalog | `features/shop/cart/composables` | decided in featureDecisions.mjs |
+| `src/composables/shop/useAddressBook.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/shop/useAddressForm.ts` | shop/account, shop/checkout | `features/shop/account/composables` | decided in featureDecisions.mjs |
+| `src/composables/shop/useCartPage.ts` | shop/cart | `features/shop/cart/composables` | one module |
+| `src/composables/shop/useCartView.ts` | shop/checkout, shop/cart | `features/shop/cart/composables` | decided in featureDecisions.mjs |
+| `src/composables/shop/useCatalog.ts` | shop/catalog | `features/shop/catalog/composables` | one module |
+| `src/composables/shop/useCatalogChips.ts` | shop/catalog | `features/shop/catalog/composables` | one module |
+| `src/composables/shop/useCatalogFilters.ts` | shop/catalog | `features/shop/catalog/composables` | one module |
+| `src/composables/shop/useCheckout.ts` | shop/checkout | `features/shop/checkout/composables` | one module |
+| `src/composables/shop/useCheckoutAddress.ts` | shop/checkout | `features/shop/checkout/composables` | one module |
+| `src/composables/shop/useGhnLocationPicker.ts` | admin/shop-orders, shop/account, shop/checkout | `features/shared/shop/composables` | decided in featureDecisions.mjs |
+| `src/composables/shop/useMyOrders.ts` | shop/account | `features/shop/account/composables` | one module |
+| `src/composables/shop/useOrderFeeQuote.ts` | admin/shop-orders | `features/admin/shop-orders/composables` | one module |
+| `src/composables/shop/useOrderPage.ts` | shop/orders | `features/shop/orders/composables` | one module |
+| `src/composables/shop/useOrderSheet.ts` | admin/shop-orders | `features/admin/shop-orders/composables` | one module |
+| `src/composables/shop/useOrdersPage.ts` | admin/shop-orders | `features/admin/shop-orders/composables` | one module |
+| `src/composables/shop/useProductPage.ts` | shop/product | `features/shop/product/composables` | one module |
+| `src/composables/shop/useQtyInput.ts` | shop/cart | `features/shop/cart/composables` | one module |
+| `src/composables/shop/useServerPrefetch.ts` | home, shop/catalog | `src/composables (stays)` | generic or unused |
+| `src/composables/shop/useShippingQuote.ts` | shop/checkout | `features/shop/checkout/composables` | one module |
+| `src/composables/shop/useShippingTest.ts` | admin/shop-orders | `features/admin/shop-orders/composables` | one module |
+| `src/composables/shop/useShopSettingsForm.ts` | admin/shop-orders | `features/admin/shop-orders/composables` | one module |
+| `src/composables/spa/useBookingWizard.ts` | shop/spa | `features/shop/spa/composables` | one module |
+| `src/composables/spa/useDurationLabel.ts` | home, shop/spa | `features/shop/spa/composables` | decided in featureDecisions.mjs |
+| `src/composables/spa/useSpaCatalog.ts` | home, shop/spa | `features/shop/spa/composables` | decided in featureDecisions.mjs |
+| `src/composables/useCurrentBranch.ts` | admin/boarding, admin/dashboard, admin/inventory, admin/medical, admin/pos, admin/reports, admin/schedule | `src/composables (stays)` | generic or unused |
+| `src/composables/useInfiniteOptions.ts` | admin/inventory, admin/pos, admin/products, shop/product, home, shop/catalog | `src/composables (stays)` | generic or unused |
+| `src/composables/useListFilters.ts` | admin/boarding, admin/inventory, admin/medical, admin/pets, admin/pos, admin/products, admin/reports, admin/schedule, admin/users, admin/shop-orders | `src/composables (stays)` | generic or unused |
+| `src/composables/usePagedList.ts` | admin/boarding, admin/inventory, admin/medical, admin/pets, admin/pos, admin/products, admin/reports, admin/schedule, admin/users, admin/shop-orders | `src/composables (stays)` | generic or unused |
+| `src/composables/usePagedRows.ts` | - | `src/composables (stays)` | generic or unused |
+| `src/composables/usePagedSearch.ts` | admin/reports | `src/composables (stays)` | generic or unused |
+| `src/composables/usePermission.ts` | admin/inventory, admin/pets, admin/pos, admin/products, admin/settings, admin/users | `src/composables (stays)` | generic or unused |
+| `src/composables/usePolling.ts` | - | `src/composables (stays)` | generic or unused |
+| `src/composables/useTableExport.ts` | admin/boarding, admin/inventory, admin/medical, admin/pets, admin/pos, admin/products, admin/reports, admin/schedule, admin/shop-orders, admin/users | `src/composables (stays)` | generic or unused |
+| `src/composables/useTableImport.ts` | admin/inventory, admin/pets, admin/products | `src/composables (stays)` | generic or unused |
+| `src/composables/useToastImage.ts` | - | `src/composables (stays)` | generic or unused |
+| `src/composables/useValidation.ts` | auth, admin/components, admin/users, shop/account, admin/products | `src/composables (stays)` | generic or unused |
+| `src/composables/useVariantChoice.ts` | admin/pos, shop/product, home, shop/catalog | `features/shared/products/composables` | decided in featureDecisions.mjs |
+| `src/queries/account.ts` | shop/account, shop/spa | `features/shop/account/queries` | decided in featureDecisions.mjs |
+| `src/queries/accountAppointments.ts` | shop/account | `features/shop/account/queries` | one module |
+| `src/queries/accountBoarding.ts` | shop/account | `features/shop/account/queries` | one module |
+| `src/queries/accountHealth.ts` | shop/account | `features/shop/account/queries` | one module |
+| `src/queries/boarding/action.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/calendar.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/care.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/failure.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/index.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/kennels.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boarding/stays.ts` | admin/boarding, admin/dashboard, admin/pos | `features/admin/boarding/queries` | decided in featureDecisions.mjs |
+| `src/queries/boardingWeb.ts` | shop/boarding | `features/shop/boarding/queries` | one module |
+| `src/queries/bookings.ts` | - | `src/queries (stays)` | generic or unused |
+| `src/queries/branchPrices.ts` | admin/pos, admin/products | `features/admin/products/queries` | decided in featureDecisions.mjs |
+| `src/queries/branches.ts` | admin/reports, admin/pets, admin/products, admin/settings, admin/shop-orders, admin/boarding, admin/dashboard, admin/inventory, admin/medical, admin/pos, admin/schedule, home, shop/spa | `features/shared/branches/queries` | decided in featureDecisions.mjs |
+| `src/queries/customerAccounts.ts` | admin/pets | `features/admin/pets/queries` | one module |
+| `src/queries/customers.ts` | admin/pos, admin/pets | `features/admin/pets/queries` | decided in featureDecisions.mjs |
+| `src/queries/dataImports.ts` | admin/inventory, admin/pets | `features/admin/inventory/queries` | decided in featureDecisions.mjs |
+| `src/queries/ghnLocations.ts` | admin/shop-orders, shop/account, shop/checkout | `features/shared/shop/queries` | decided in featureDecisions.mjs |
+| `src/queries/inpatient.ts` | admin/medical | `features/admin/medical/queries` | one module |
+| `src/queries/inventory.ts` | admin/inventory, admin/pos | `features/admin/inventory/queries` | decided in featureDecisions.mjs |
+| `src/queries/medical.ts` | admin/medical, admin/dashboard, admin/pets | `features/admin/medical/queries` | decided in featureDecisions.mjs |
+| `src/queries/medicalAttachments.ts` | admin/medical | `features/admin/medical/queries` | one module |
+| `src/queries/medicalBilling.ts` | admin/pos | `features/admin/pos/queries` | one module |
+| `src/queries/medicalFlags.ts` | admin/medical | `features/admin/medical/queries` | one module |
+| `src/queries/medicalVisits.ts` | admin/dashboard, admin/medical, admin/pets | `features/admin/medical/queries` | decided in featureDecisions.mjs |
+| `src/queries/orders.ts` | admin/users | `features/admin/users/queries` | one module |
+| `src/queries/permissions.ts` | admin/settings | `features/admin/settings/queries` | one module |
+| `src/queries/petCombos.ts` | admin/pets | `features/admin/pets/queries` | one module |
+| `src/queries/petServices.ts` | admin/boarding, admin/medical, admin/pets, admin/pos, admin/schedule | `features/admin/pets/queries` | decided in featureDecisions.mjs |
+| `src/queries/pets.ts` | admin/pets | `features/admin/pets/queries` | one module |
+| `src/queries/pos.ts` | admin/boarding, admin/medical, admin/pos, admin/schedule | `features/admin/pos/queries` | decided in featureDecisions.mjs |
+| `src/queries/productCategories.ts` | admin/pos, admin/products, home, shop/catalog | `features/shared/products/queries` | decided in featureDecisions.mjs |
+| `src/queries/productClinicOnly.ts` | admin/products | `features/admin/products/queries` | one module |
+| `src/queries/productImport.ts` | admin/products | `features/admin/products/queries` | one module |
+| `src/queries/products.ts` | admin/inventory, admin/pos, admin/products, shop/product | `features/shared/products/queries` | decided in featureDecisions.mjs |
+| `src/queries/reports.ts` | admin/dashboard, admin/reports | `features/admin/reports/queries` | decided in featureDecisions.mjs |
+| `src/queries/roles.ts` | admin/settings | `features/admin/settings/queries` | one module |
+| `src/queries/servicePrices.ts` | admin/pets | `features/admin/pets/queries` | one module |
+| `src/queries/shop.ts` | shop/product, admin/shop-orders, shop/checkout, shop/cart | `features/shared/shop/queries` | decided in featureDecisions.mjs |
+| `src/queries/shopAddresses.ts` | shop/checkout, shop/account | `features/shop/account/queries` | decided in featureDecisions.mjs |
+| `src/queries/shopCatalog.ts` | home, shop/product, shop/catalog | `features/shop/catalog/queries` | decided in featureDecisions.mjs |
+| `src/queries/shopOrders.ts` | shop/account, shop/orders, shop/checkout | `features/shop/orders/queries` | decided in featureDecisions.mjs |
+| `src/queries/shopOrdersAdmin.ts` | admin/shop-orders | `features/admin/shop-orders/queries` | one module |
+| `src/queries/spa.ts` | admin/pos, admin/schedule | `features/admin/schedule/queries` | decided in featureDecisions.mjs |
+| `src/queries/spaCatalog.ts` | home, shop/spa | `features/shop/spa/queries` | decided in featureDecisions.mjs |
+| `src/queries/spaWeb.ts` | shop/spa | `features/shop/spa/queries` | one module |
+| `src/queries/species.ts` | admin/boarding, admin/medical, admin/pets | `features/admin/pets/queries` | decided in featureDecisions.mjs |
+| `src/queries/staff.ts` | admin/settings | `features/admin/settings/queries` | one module |
+| `src/queries/users.ts` | admin/users | `features/admin/users/queries` | one module |
+| `src/queries/vaccinations.ts` | admin/dashboard, admin/medical, admin/pets | `features/admin/medical/queries` | decided in featureDecisions.mjs |
+| `src/queries/weightBrackets.ts` | admin/pets | `features/admin/pets/queries` | one module |
+
+Ghi chú: `composables/layout/useHeaderSearch`, `usePagedRows`, `usePolling`, `useToastImage` và `queries/bookings` hiện không màn hình nào import; giữ nguyên, không xóa trong bước này. Vì `features/shared` không được import `admin` hay `shop`, nếu 7e báo `queries/shop` hay `queries/products` import ngược một module admin/shop thì tách phần đó ra khỏi `shared`.
+
 **Kiểm mỗi PR**: typecheck, build, `deps:check`, Vitest; `git diff --stat -M` cho thấy toàn bộ là rename (100%) trừ dòng import. Sau 7b, 7c, 7d grace bấm thử nhanh: shop (xem sản phẩm, giỏ, đặt lịch spa, tài khoản), admin (POS bán một đơn, mở bệnh án, bảng chuồng, nhập kho).
 
 **Rủi ro**
