@@ -50,7 +50,7 @@ object-src 'none'; base-uri 'self'; form-action 'self'
 ### 1.2. Chặn chạy trên domain lạ
 
 - `apps/web/src/plugins/domain-guard.client.ts` chạy đầu tiên trên trình duyệt. Nếu `location.hostname` không nằm trong danh sách cho phép thì `location.replace` sang cùng trang trên domain thật (giữ path, query, hash). Không chạy trong app Capacitor.
-- Danh sách cho phép: `runtimeConfig.public.allowedHosts` (mặc định `bong-cun.vercel.app, bong-cun-*.vercel.app, localhost, 127.0.0.1`), domain thật: `runtimeConfig.public.siteUrl` (mặc định `https://bong-cun.vercel.app`). Đổi bằng biến môi trường `NUXT_PUBLIC_ALLOWED_HOSTS`, `NUXT_PUBLIC_SITE_URL`. Dấu `*` chỉ khớp trong một nhãn domain (không vượt dấu chấm).
+- Danh sách cho phép: `runtimeConfig.public.allowedHosts` (mặc định `bong-cun.vercel.app, bong-cun-*-ptthaothaos-projects.vercel.app, localhost, 127.0.0.1`: production, preview của team Vercel này và máy dev), domain thật: `runtimeConfig.public.siteUrl` (mặc định `https://bong-cun.vercel.app`). Đổi bằng biến môi trường `NUXT_PUBLIC_ALLOWED_HOSTS`, `NUXT_PUBLIC_SITE_URL`. Dấu `*` chỉ khớp trong một nhãn domain (không vượt dấu chấm).
 - Lớp này chặn kiểu clone "proxy/mirror" (chạy nguyên site của mình qua domain khác). Kẻ tải mã về và xoá plugin thì vẫn dựng được giao diện, nhưng không có dữ liệu thật ngoài phần công khai (xem mục 2).
 
 ### 1.3. Canonical
@@ -116,7 +116,7 @@ Nguồn: Supabase security advisor (`get_advisors`) và truy vấn chỉ đọc 
 
 - [ ] Supabase Dashboard → Authentication → URL Configuration: **Site URL** là domain thật (`https://bong-cun.vercel.app` hoặc domain riêng sau này); **Redirect URLs** chỉ gồm domain thật, `http://localhost:3004/**` khi cần dev, và scheme của app mobile nếu dùng. Xoá mọi URL lạ.
 - [ ] Supabase Dashboard → Authentication → Attack Protection (hoặc Policies → Password): bật **Leaked password protection** (điểm L1) nếu gói cho phép.
-- [ ] Vercel → Project → Settings → Environment Variables (khi có domain riêng): đặt `NUXT_PUBLIC_SITE_URL=https://<domain thật>` và `NUXT_PUBLIC_ALLOWED_HOSTS=<domain thật>,www.<domain thật>,bong-cun-*-<team>.vercel.app,localhost,127.0.0.1`. Nên thu hẹp mẫu preview theo tên team trên Vercel.
+- [ ] Vercel → Project → Settings → Environment Variables (khi có domain riêng): đặt `NUXT_PUBLIC_SITE_URL=https://<domain thật>` và `NUXT_PUBLIC_ALLOWED_HOSTS=<domain thật>,www.<domain thật>,bong-cun.vercel.app,bong-cun-*-ptthaothaos-projects.vercel.app,localhost,127.0.0.1`. Nếu đổi tên team trên Vercel thì sửa mẫu preview theo.
 - [ ] Cloudflare (khi có domain riêng): trỏ DNS qua Cloudflare, bật proxy (đám mây cam); bật **Bot Fight Mode** và WAF managed rules gói Free; thêm rate limiting rule cho `/api/*`; nếu bị spam đăng ký/đặt đơn thì thêm **Turnstile** cho form đăng nhập/đăng ký/checkout (cần sửa code, báo Claude làm).
 - [ ] Theo dõi domain giả: đặt lịch xem [crt.sh](https://crt.sh/?q=bongcun) với các từ khoá "bongcun", "bong-cun", "bông cún" (chứng chỉ mới cho domain na ná); tạo Google Alerts cho tên shop, số điện thoại và địa chỉ cửa hàng.
 - [ ] Khi phát hiện bản giả: chụp màn hình, lưu URL và thời gian; tra nhà đăng ký domain và nơi host bằng `whois`/ICANN Lookup; gửi báo cáo abuse cho nhà đăng ký và nhà host (kèm bằng chứng và link site thật); báo Google Safe Browsing (safebrowsing.google.com/safebrowsing/report_phish) và gửi yêu cầu gỡ theo DMCA tới Google Search; nếu dùng Vercel/Netlify/Cloudflare thì dùng form abuse của họ.

@@ -12,12 +12,12 @@ describe("host allowlist", () => {
   const hosts = parseHostList(DEFAULT_ALLOWED_HOSTS);
 
   it("accepts production, previews and local dev", () => {
-    for (const host of ["bong-cun.vercel.app", "bong-cun-git-main-team.vercel.app", "localhost", "127.0.0.1"]) {
+    for (const host of ["bong-cun.vercel.app", "bong-cun-git-feature-security-anti-82388d-ptthaothaos-projects.vercel.app", "localhost", "127.0.0.1"]) {
       expect(isAllowedHost(host, hosts)).toBe(true);
     }
   });
   it("rejects other domains", () => {
-    for (const host of ["bongcun-shop.com", "bong-cun.vercel.app.evil.com", "evil.vercel.app", "x.bong-cun.vercel.app"]) {
+    for (const host of ["bongcun-shop.com", "bong-cun.vercel.app.evil.com", "evil.vercel.app", "x.bong-cun.vercel.app", "bong-cun-copy.vercel.app"]) {
       expect(isAllowedHost(host, hosts)).toBe(false);
     }
   });
