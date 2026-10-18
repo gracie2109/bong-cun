@@ -138,3 +138,12 @@ export type ProductGroupInput = {
   attributes: { name: string; values: string[] }[];
   variants: ProductVariantInput[];
 };
+
+/** Why a product group could not be deleted: it was sold (kept for the records) or it has stock history. */
+export type ProductDeleteBlockReason = "sold" | "stocked";
+
+/** Result of deleting several groups: the ones removed and the ones kept, each with its reason. */
+export type ProductDeleteResult = {
+  deleted: string[];
+  blocked: { id: string; reason: ProductDeleteBlockReason }[];
+};

@@ -5,6 +5,7 @@ import i18n from "@/i18n";
 import { supabaseClient } from "@/lib/supabase";
 import { sendMessageToast } from "@/lib/utils";
 import {
+  deleteProductGroups,
   getProductGroup,
   getSellableGroup,
   listProductAttributes,
@@ -107,5 +108,14 @@ export const useSetProductGroupActive = () => {
       notifySuccess("update");
     },
     onError: (error) => notifyFailure("update", error),
+  });
+};
+
+export const useDeleteProductGroups = () => {
+  const invalidate = useInvalidateCatalog();
+  return useMutation({
+    mutationFn: (ids: string[]) => deleteProductGroups(supabaseClient(), ids),
+    onSuccess: invalidate,
+    onError: (error) => notifyFailure("delete", error),
   });
 };

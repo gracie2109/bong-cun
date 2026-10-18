@@ -800,6 +800,16 @@
     }
   },
   "products": {
+    "delete": {
+      "action": "Xóa",
+      "selected": "Đã chọn {n} sản phẩm",
+      "clear": "Bỏ chọn",
+      "selectPage": "Chọn tất cả sản phẩm trên trang",
+      "confirmTitle": "Xóa {n} sản phẩm?",
+      "confirmDesc": "Chỉ xóa được sản phẩm chưa từng bán và chưa có lịch sử kho. Sản phẩm khác sẽ được giữ lại (có thể chuyển sang ngừng sử dụng). Không hoàn tác được.",
+      "done": "Đã xóa {n} sản phẩm.",
+      "kept": "Giữ lại {n} sản phẩm: {sold} đã có lượt mua, {stocked} đã có lịch sử kho. Hãy chuyển sang ngừng sử dụng."
+    },
     "title": "Sản phẩm",
     "subtitle": "Nhóm sản phẩm và biến thể: giá, đơn vị, mã vạch, tồn kho.",
     "add": "Thêm sản phẩm",
