@@ -14,7 +14,8 @@ export const parseProxyImageUrl = (raw: string): URL | null => {
   } catch {
     return null;
   }
-  if (url.protocol !== "https:" || url.username || url.password || url.port) return null;
+  const hasLogin = /^https:\/\/[^/?#]*@/.test(url.href);
+  if (url.protocol !== "https:" || hasLogin || url.host !== url.hostname) return null;
   return (IMAGE_PROXY_HOSTS as readonly string[]).includes(url.hostname) ? url : null;
 };
 
