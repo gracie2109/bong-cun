@@ -685,7 +685,8 @@
         "done": "Hoàn thành",
         "paid": "Đã thanh toán",
         "cancelled": "Đã hủy",
-        "no_show": "Không đến"
+        "no_show": "Không đến",
+        "overdue": "Đã quá giờ hẹn"
       },
       "cancel": "Hủy lịch",
       "cancelTitle": "Hủy lịch hẹn này?",
@@ -730,7 +731,8 @@
         "checked_out": "Đã trả",
         "paid": "Đã thanh toán",
         "cancelled": "Đã hủy",
-        "no_show": "Không đến"
+        "no_show": "Không đến",
+        "overdue": "Quá ngày, chưa nhận"
       },
       "until": "Đến {day}",
       "nights": "{n} đêm",

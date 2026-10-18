@@ -7023,7 +7023,7 @@ begin
     select a.*
     from public.appointments a
     where a.customer_id = v_cust
-      and (a.status in ('booked', 'checked_in', 'in_progress')) = v_upcoming
+      and (a.status in ('checked_in', 'in_progress') or (a.status = 'booked' and a.end_at > now())) = v_upcoming
   )
   select
     (select count(*) from f),
@@ -7039,6 +7039,7 @@ begin
           'branch_name', b.name,
           'branch_phone', b.phone,
           'can_cancel', a.status = 'booked' and a.start_at - now() > v_cancel,
+          'overdue', a.status = 'booked' and a.end_at <= now(),
           'est_total', (
             select coalesce(sum(i.est_price), 0)
             from public.appointment_items i where i.appointment_id = a.id and i.status <> 'cancelled'
@@ -7133,6 +7134,23 @@ $$;
 ALTER FUNCTION "public"."my_boarding_stay"("p_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_in_scope"("p_stay" "public"."boarding_stays", "p_scope" "text") RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  select case p_scope
+    when 'upcoming' then p_stay.status = 'booked' and p_stay.planned_out_at > now()
+    when 'current' then p_stay.status = 'checked_in'
+    when 'past' then p_stay.status in ('checked_out', 'paid', 'cancelled', 'no_show')
+      or (p_stay.status = 'booked' and p_stay.planned_out_at <= now())
+    else false
+  end;
+$$;
+
+
+ALTER FUNCTION "public"."my_boarding_stay_in_scope"("p_stay" "public"."boarding_stays", "p_scope" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_json"("p_stay" "public"."boarding_stays") RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -7149,6 +7167,7 @@ CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_json"("p_stay" "public"."b
     'branch_phone', b.phone,
     'est_total', (public.boarding_stay_json(p_stay) ->> 'est_total')::numeric,
     'is_final', p_stay.status in ('checked_out', 'paid'),
+    'overdue', p_stay.status = 'booked' and p_stay.planned_out_at <= now(),
     'pets', coalesce((
       select jsonb_agg(jsonb_build_object(
         'pet_name', sp.pet_name,
@@ -7202,7 +7221,7 @@ begin
   end if;
 
   select count(*) into v_total
-  from public.boarding_stays s where s.customer_id = v_cust and s.status = any(v_states);
+  from public.boarding_stays s where s.customer_id = v_cust and public.my_boarding_stay_in_scope(s, p_scope);
 
   select coalesce(jsonb_agg(public.my_boarding_stay_json(s) order by
            case when p_scope = 'past' then null else s.planned_in_at end asc,
@@ -7210,7 +7229,7 @@ begin
   into v_rows
   from (
     select * from public.boarding_stays s
-    where s.customer_id = v_cust and s.status = any(v_states)
+    where s.customer_id = v_cust and public.my_boarding_stay_in_scope(s, p_scope)
     order by case when p_scope = 'past' then null else s.planned_in_at end asc, s.planned_in_at desc
     limit v_size offset v_offset
   ) s;
@@ -19462,6 +19481,11 @@ GRANT ALL ON FUNCTION "public"."my_appointments"("p_scope" "text", "p_page" inte
 REVOKE ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."my_boarding_stay_in_scope"("p_stay" "public"."boarding_stays", "p_scope" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_boarding_stay_in_scope"("p_stay" "public"."boarding_stays", "p_scope" "text") TO "service_role";
 
 
 

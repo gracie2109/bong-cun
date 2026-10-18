@@ -30,6 +30,7 @@ type StayJson = {
   branch_phone: string | null;
   est_total: number;
   is_final: boolean;
+  overdue?: boolean;
   pets: PetJson[];
 };
 
@@ -62,6 +63,7 @@ const toStay = (row: StayJson): MyBoardingStay => ({
   branchPhone: row.branch_phone ?? "",
   estTotal: Number(row.est_total),
   isFinal: row.is_final,
+  overdue: row.overdue ?? false,
   pets: row.pets.map(toPet),
 });
 
