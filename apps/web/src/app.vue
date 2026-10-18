@@ -21,6 +21,7 @@ import { useOnline } from "@vueuse/core";
 import { Toaster } from "@/components/ui/sonner";
 import ServerOffline from "./components/ServerOffline.vue";
 import { OfflineBanner, useAppTarget } from "@/features/native";
+import { useCanonicalLink } from "@/features/shared/security";
 
 const route = useRoute();
 // A page re-mounts on any URL change, except pages that keep their filters in the query and
@@ -47,4 +48,6 @@ useSeoMeta({
   ogType: "website",
   robots: () => (route.meta.noindex ? "noindex, follow" : undefined),
 });
+// Copies of the site still point search engines at the real domain.
+useCanonicalLink();
 </script>

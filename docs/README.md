@@ -26,6 +26,7 @@
 | [anh-thu-cung.md](anh-thu-cung.md) | Kế hoạch ảnh thú cưng: bucket `pet-photos` công khai, policy theo quyền `pets`, thu nhỏ ảnh trên trình duyệt, RPC đổi/xoá ảnh, hiện ảnh ở admin, POS, spa, lưu trú, y tế và trang khách, sao lưu ảnh |
 | [ke-hoach-app-mobile.md](ke-hoach-app-mobile.md) | Kế hoạch app mobile cho khách: Capacitor bọc phần khách của web thành SPA, Android trước (APK từ GitHub Actions), đăng nhập, proxy GHN, thông báo cục bộ, CI, rủi ro, các bước PR M0 đến M11 |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
+| [security-anti-clone.md](security-anti-clone.md) | Chống clone và mạo danh: header bảo mật và CSP, chặn chạy trên domain lạ, canonical, rate limit, báo cáo rà soát Supabase theo mức độ, việc làm tay (Supabase Auth, Cloudflare, theo dõi domain giả) |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
 
 Tài liệu phân tích mới được thêm thẳng vào thư mục này.
