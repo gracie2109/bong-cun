@@ -1287,6 +1287,7 @@
     "exportAll": "Export all products",
     "dropTitle": "Drop an Excel file here or click to choose",
     "dropHint": ".xlsx file in the template layout: sheet \"San pham\", plus sheet \"Don vi\" for conversion units",
+    "imagesNote": "Pictures on other sites are copied into the shop storage while importing, which can take a few minutes. Keep this page open.",
     "noPermission": "You can only export. Importing needs permission to create and edit products.",
     "readFailed": "The file could not be read. Use an .xlsx file in the template layout.",
     "rowCount": "{n} rows",

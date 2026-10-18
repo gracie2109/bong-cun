@@ -1287,6 +1287,7 @@
     "exportAll": "Xuất tất cả sản phẩm",
     "dropTitle": "Kéo file Excel vào đây hoặc bấm để chọn",
     "dropHint": "File .xlsx theo mẫu: sheet \"San pham\", thêm sheet \"Don vi\" nếu có đơn vị quy đổi",
+    "imagesNote": "Ảnh ở link ngoài sẽ được tải về kho ảnh của shop khi nhập nên có thể mất vài phút. Đừng đóng trang này.",
     "noPermission": "Bạn chỉ được xuất file. Nhập sản phẩm cần quyền tạo và sửa sản phẩm.",
     "readFailed": "Không đọc được file. Hãy dùng file .xlsx theo mẫu.",
     "rowCount": "{n} dòng",
