@@ -1,8 +1,10 @@
+import { CATALOG_IMAGE_TYPES } from "@bongcun/core/media";
+
 // Pictures the admin may pull into the shop's own storage through /api/admin/image-proxy.
 // Only plain https addresses on these hosts are fetched (no other host, port or credentials).
 export const IMAGE_PROXY_HOSTS = ["fexafkqzpbzjcupvbfhe.supabase.co", "auth.paddy.vn", "cdn.shopify.com"] as const;
 
-export const IMAGE_PROXY_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
+export const IMAGE_PROXY_TYPES: readonly string[] = CATALOG_IMAGE_TYPES;
 export const IMAGE_PROXY_MAX_BYTES = 5 * 1024 * 1024;
 export const IMAGE_PROXY_TIMEOUT_MS = 15_000;
 
@@ -22,7 +24,7 @@ export const parseProxyImageUrl = (raw: string): URL | null => {
 /** The media type of a response, without parameters; null when it is not an allowed picture type. */
 export const proxyImageType = (contentType: string | null): string | null => {
   const type = contentType?.split(";")[0]?.trim().toLowerCase() ?? "";
-  return (IMAGE_PROXY_TYPES as readonly string[]).includes(type) ? type : null;
+  return IMAGE_PROXY_TYPES.includes(type) ? type : null;
 };
 
 /** Reads a body up to `maxBytes`; null when it is bigger (the rest is not downloaded). */

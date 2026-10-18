@@ -1,16 +1,17 @@
 // Image uploads. Pure TS: takes a client, no Vue/Pinia/env.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
+import { CATALOG_IMAGE_TYPES } from "@bongcun/core/media";
 
 type Client = SupabaseClient<Database>;
 
 export const IMAGE_BUCKET = "images";
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+export const ALLOWED_IMAGE_TYPES: readonly string[] = CATALOG_IMAGE_TYPES;
 
 /** Returns a message when the file cannot be uploaded, otherwise null. */
 export const validateImage = (file: { type: string; size: number }): string | null => {
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) return "Only PNG, JPEG, WebP or GIF images are allowed.";
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) return "Only PNG, JPEG, WebP, AVIF or GIF images are allowed.";
   if (file.size > MAX_IMAGE_BYTES) return "The image must be 5 MB or smaller.";
   return null;
 };

@@ -14,7 +14,7 @@
         <Upload class="mr-1.5 size-4" />{{ $t("medical.attachments.upload") }}
       </Button>
       <div class="sm:col-span-3">
-        <input ref="fileInput" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" class="text-sm" @change="onPick" />
+        <input ref="fileInput" type="file" :accept="ACCEPT" class="text-sm" @change="onPick" />
         <p v-if="fileError" class="mt-1 text-xs text-red-600">{{ $t(`medical.attachments.error.${fileError}`) }}</p>
       </div>
     </form>
@@ -47,7 +47,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { openAttachment, useAddAttachment, useMedicalAttachments, useRemoveAttachment } from "@/features/admin/medical/queries/medicalAttachments";
-import { validateAttachment } from "@bongcun/supabase/medical";
+import { ALLOWED_ATTACHMENT_TYPES, validateAttachment } from "@bongcun/supabase/medical";
+import { acceptAttribute } from "@bongcun/core/media";
 import { ATTACHMENT_KINDS, type AttachmentKind, type MedicalVisitDetail } from "@bongcun/core/medical";
 import { dateTime } from "../../format";
 
@@ -65,6 +66,7 @@ const draft = reactive<{ kind: AttachmentKind; title: string }>({ kind: "lab", t
 const file = ref<File | null>(null);
 const fileError = ref<"type" | "size" | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
+const ACCEPT = acceptAttribute(ALLOWED_ATTACHMENT_TYPES);
 const ready = computed(() => !!file.value && !fileError.value && draft.title.trim().length > 0);
 
 const onPick = (event: Event) => {

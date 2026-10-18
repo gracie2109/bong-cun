@@ -2,6 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { attachmentsSchema } from "@bongcun/core/medical";
+import { PHOTO_TYPES } from "@bongcun/core/media";
 import type { AttachmentKind, MedicalAttachment } from "@bongcun/core/medical";
 import { parseRpc, unwrap } from "@bongcun/supabase/shared";
 import { toAttachment } from "./mappers";
@@ -10,7 +11,7 @@ type Client = SupabaseClient<Database>;
 
 export const MEDICAL_BUCKET = "medical";
 export const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
-export const ALLOWED_ATTACHMENT_TYPES = ["image/png", "image/jpeg", "image/webp", "application/pdf"];
+export const ALLOWED_ATTACHMENT_TYPES: readonly string[] = [...PHOTO_TYPES, "application/pdf"];
 const SIGNED_URL_SECONDS = 600;
 
 /** Returns a message key when the file cannot be attached, otherwise null. */
