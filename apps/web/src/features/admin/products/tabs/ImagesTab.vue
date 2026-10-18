@@ -56,6 +56,8 @@ import { useFileDialog } from "@vueuse/core";
 import { ImagePlus, Loader2, Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { MAX_GROUP_IMAGES as MAX } from "@bongcun/supabase/products";
+import { ALLOWED_IMAGE_TYPES } from "@bongcun/supabase/storage";
+import { acceptAttribute } from "@bongcun/core/media";
 import ProductThumb from "../ProductThumb.vue";
 import type { GalleryImage } from "../images/useImageGallery";
 
@@ -76,7 +78,7 @@ const drop = (to: number) => {
   dragOver.value = -1;
 };
 
-const { open, files, reset } = useFileDialog({ accept: "image/png,image/jpeg,image/webp,image/gif", multiple: true });
+const { open, files, reset } = useFileDialog({ accept: acceptAttribute(ALLOWED_IMAGE_TYPES), multiple: true });
 watch(files, (list) => {
   if (!list || list.length === 0) return;
   emit("add", [...list]);

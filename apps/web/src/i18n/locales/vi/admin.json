@@ -1801,7 +1801,7 @@
         "other": "Khác"
       },
       "error": {
-        "type": "Chỉ nhận ảnh PNG, JPEG, WebP hoặc PDF.",
+        "type": "Chỉ nhận ảnh PNG, JPEG, WebP, AVIF hoặc PDF.",
         "size": "File phải nhỏ hơn 10 MB."
       }
     },

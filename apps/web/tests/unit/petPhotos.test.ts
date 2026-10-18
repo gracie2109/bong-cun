@@ -3,7 +3,8 @@ import { MAX_PET_PHOTO_BYTES, validatePetPhoto } from "@bongcun/supabase/pets";
 import { fitWithin, renameExtension } from "@/lib/images/compressImage";
 
 describe("validatePetPhoto", () => {
-  it("accepts webp, jpeg and png up to 2 MB", () => {
+  it("accepts webp, jpeg, png and avif up to 2 MB", () => {
+    expect(validatePetPhoto({ type: "image/avif", size: 1000 })).toBeNull();
     expect(validatePetPhoto({ type: "image/webp", size: 1000 })).toBeNull();
     expect(validatePetPhoto({ type: "image/jpeg", size: MAX_PET_PHOTO_BYTES })).toBeNull();
     expect(validatePetPhoto({ type: "image/png", size: 1 })).toBeNull();

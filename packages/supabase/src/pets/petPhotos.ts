@@ -1,14 +1,15 @@
 // One profile photo per pet, kept in the public "pet-photos" bucket (see 20261024010000_pet_photos.sql).
-// Files are named <pet id>/<uuid>.webp and never overwritten, so the long cache is safe.
+// Files are named <pet id>/<uuid>.<ext> (usually webp) and never overwritten, so the long cache is safe.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";
+import { IMAGE_MIME, PHOTO_TYPES, imageExtension } from "@bongcun/core/media";
 
 type Client = SupabaseClient<Database>;
 
 export const PET_PHOTO_BUCKET = "pet-photos";
 export const MAX_PET_PHOTO_BYTES = 2 * 1024 * 1024;
-export const PET_PHOTO_TYPES = ["image/webp", "image/jpeg", "image/png"];
+export const PET_PHOTO_TYPES: readonly string[] = PHOTO_TYPES;
 const CACHE_SECONDS = "31536000";
 
 /** Returns a message key when the file cannot be a pet photo, otherwise null. */
@@ -18,7 +19,7 @@ export const validatePetPhoto = (file: { type: string; size: number }): "type" |
   return null;
 };
 
-const extensionOf = (type: string): string => (type === "image/jpeg" ? "jpg" : type === "image/png" ? "png" : "webp");
+const extensionOf = (type: string): string => imageExtension(type) ?? imageExtension(IMAGE_MIME.webp)!;
 
 /** Uploads the file under the pet's folder and returns its path and public URL. */
 export const uploadPetPhoto = async (
