@@ -51,7 +51,7 @@ update ctx set
   appt_solo   = pg_temp.book('booked', array[pet]),
   appt_busy   = pg_temp.book('checked_in', array[pet]);
 
--- Hotel: a booked stay for the pet alone; a visit booked ahead.
+-- Hotel (fixed 10:00 shop time, so the check-in hours rule does not depend on when the test runs): a booked stay for the pet alone; a visit booked ahead.
 insert into public.kennel_types (name, species_ids, purpose, max_pets) values ('PD room', '{}', 'boarding', 1);
 insert into public.kennel_type_prices (kennel_type_id, night_price) select id, 100000 from public.kennel_types where name = 'PD room';
 insert into public.kennels (branch_id, kennel_type_id, code) select c.branch, t.id, 'PD1' from ctx c, public.kennel_types t where t.name = 'PD room';
@@ -62,7 +62,7 @@ select tests.login(cashier) from ctx;
 set local role authenticated;
 update ctx set stay = (public.save_boarding_stay(jsonb_build_object(
   'branch_id', branch, 'customer_id', customer,
-  'planned_in_at', now() + interval '3 days', 'planned_out_at', now() + interval '5 days',
+  'planned_in_at', ((date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '3 days 10 hours') at time zone 'Asia/Ho_Chi_Minh'), 'planned_out_at', ((date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '5 days 10 hours') at time zone 'Asia/Ho_Chi_Minh'),
   'pets', jsonb_build_array(jsonb_build_object('pet_id', pet, 'kennel_type_id', kennel_type))
 ), null) ->> 'id')::uuid;
 reset role;
@@ -76,7 +76,7 @@ select tests.login(cashier) from ctx;
 set local role authenticated;
 create temp table ctx2 as select (public.save_boarding_stay(jsonb_build_object(
   'branch_id', branch, 'customer_id', customer,
-  'planned_in_at', now() + interval '1 day', 'planned_out_at', now() + interval '2 days',
+  'planned_in_at', ((date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '1 days 10 hours') at time zone 'Asia/Ho_Chi_Minh'), 'planned_out_at', ((date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '2 days 10 hours') at time zone 'Asia/Ho_Chi_Minh'),
   'pets', jsonb_build_array(jsonb_build_object('pet_id', pet2, 'kennel_type_id', kennel_type))
 ), null) ->> 'id')::uuid as stay from ctx;
 reset role;
