@@ -35,6 +35,11 @@ const baseConfig = defineNuxtConfig({
     head: {
       bodyAttrs: { class: "dark:text-#e9e9e9 auto-bg" },
       meta: [
+        { name: "theme-color", content: "#F97316" },
+        { name: "mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-title", content: "Bông Cún" },
+        { name: "apple-mobile-web-app-status-bar-style", content: "default" },
         {
           name: "viewport",
           content:
@@ -43,6 +48,9 @@ const baseConfig = defineNuxtConfig({
       ],
       link: [
         { rel: "icon", href: "/favicon.ico" },
+        // Installable on iPhone/iPad ("Add to Home Screen") and Android without a store; no service worker.
+        { rel: "manifest", href: "/manifest.webmanifest" },
+        { rel: "apple-touch-icon", href: "/icons/apple-touch-icon.png" },
         {
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap",
