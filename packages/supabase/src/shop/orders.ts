@@ -167,6 +167,7 @@ export const ORDER_ERROR_HINTS = [
   "out_of_stock",
   "too_heavy",
   "cod_limit",
+  "too_many_orders",
   "order_not_found",
   "not_cancellable",
 ] as const;

@@ -137,7 +137,8 @@
         "in_store_only": "{names} chỉ bán tại cửa hàng, bạn chọn nhận tại cửa hàng nhé.",
         "out_of_stock": "Không đủ hàng: {names}. Bạn giảm số lượng nhé.",
         "too_heavy": "Đơn quá nặng để giao, bạn chọn nhận tại cửa hàng hoặc tách đơn nhé.",
-        "cod_limit": "Đơn giao tận nơi tối đa {max}, bạn tách đơn hoặc nhận tại cửa hàng nhé."
+        "cod_limit": "Đơn giao tận nơi tối đa {max}, bạn tách đơn hoặc nhận tại cửa hàng nhé.",
+        "too_many_orders": "Bạn đang có nhiều đơn chờ xác nhận. Đợi cửa hàng xác nhận rồi đặt tiếp, hoặc gọi cho cửa hàng nhé."
       }
     },
     "address": {
