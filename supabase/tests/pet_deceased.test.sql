@@ -62,7 +62,8 @@ select tests.login(cashier) from ctx;
 set local role authenticated;
 update ctx set stay = (public.save_boarding_stay(jsonb_build_object(
   'branch_id', branch, 'customer_id', customer,
-  'planned_in_at', now() + interval '3 days', 'planned_out_at', now() + interval '5 days',
+  'planned_in_at', (date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '3 days 9 hours') at time zone 'Asia/Ho_Chi_Minh',
+  'planned_out_at', (date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '5 days 9 hours') at time zone 'Asia/Ho_Chi_Minh',
   'pets', jsonb_build_array(jsonb_build_object('pet_id', pet, 'kennel_type_id', kennel_type))
 ), null) ->> 'id')::uuid;
 reset role;
@@ -76,7 +77,8 @@ select tests.login(cashier) from ctx;
 set local role authenticated;
 create temp table ctx2 as select (public.save_boarding_stay(jsonb_build_object(
   'branch_id', branch, 'customer_id', customer,
-  'planned_in_at', now() + interval '1 day', 'planned_out_at', now() + interval '2 days',
+  'planned_in_at', (date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '1 day 9 hours') at time zone 'Asia/Ho_Chi_Minh',
+  'planned_out_at', (date_trunc('day', now() at time zone 'Asia/Ho_Chi_Minh') + interval '2 days 9 hours') at time zone 'Asia/Ho_Chi_Minh',
   'pets', jsonb_build_array(jsonb_build_object('pet_id', pet2, 'kennel_type_id', kennel_type))
 ), null) ->> 'id')::uuid as stay from ctx;
 reset role;
