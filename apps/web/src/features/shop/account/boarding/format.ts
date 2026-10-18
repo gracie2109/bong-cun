@@ -7,6 +7,7 @@ export const STATUS_TONE: Record<string, string> = {
   paid: "bg-green-100 text-green-700",
   cancelled: "bg-muted text-muted-foreground",
   no_show: "bg-red-100 text-red-700",
+  overdue: "bg-orange-100 text-orange-700",
 };
 
 /** yyyy-MM-dd of an instant in the shop's time zone. */

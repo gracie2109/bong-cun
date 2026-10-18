@@ -102,6 +102,8 @@ export type MyAppointment = {
   branchPhone: string;
   /** Booked and more than the cancel window ahead: decided by the server. */
   canCancel: boolean;
+  /** Still booked but its end time has passed (the shop has not marked it yet): decided by the server. */
+  overdue: boolean;
   estTotal: number;
   hasUnpriced: boolean;
   items: MyAppointmentItem[];
@@ -139,6 +141,8 @@ export type MyBoardingStay = {
   /** The estimate, or the final amount once the stay is checked out. */
   estTotal: number;
   isFinal: boolean;
+  /** Still booked but the planned check-out has passed: decided by the server. */
+  overdue: boolean;
   pets: MyBoardingPet[];
 };
 
@@ -165,3 +169,7 @@ export type MyBoardingCharge = {
 };
 
 export type MyBoardingDetail = MyBoardingStay & { careLogs: MyBoardingLog[]; charges: MyBoardingCharge[] };
+
+/** The status key a customer sees: a booked visit or stay whose time has passed reads "overdue", not "booked". */
+export const shownBookingStatus = (booking: { status: string; overdue: boolean }): string =>
+  booking.overdue ? "overdue" : booking.status;

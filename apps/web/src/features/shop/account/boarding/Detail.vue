@@ -17,8 +17,8 @@
             <p class="font-semibold">{{ dayLabel(dayOf(stay.plannedInAt), locale) }}</p>
             <p class="text-sm text-primary">{{ $t("client.boarding.until", { day: dayLabel(dayOf(stay.plannedOutAt), locale) }) }}</p>
           </div>
-          <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[stay.status] ?? 'bg-muted text-muted-foreground'">
-            {{ $t(`client.boarding.status.${stay.status}`) }}
+          <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[shownBookingStatus(stay)] ?? 'bg-muted text-muted-foreground'">
+            {{ $t(`client.boarding.status.${shownBookingStatus(stay)}`) }}
           </span>
         </div>
         <p class="text-sm text-muted-foreground">
@@ -72,6 +72,7 @@ import { ArrowLeft } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { useMyBoardingStay } from "@/features/shop/account/queries/accountBoarding";
+import { shownBookingStatus } from "@bongcun/core/account";
 import { dayLabel } from "@bongcun/core/spa";
 import CareTimeline from "./components/CareTimeline.vue";
 import { dayOf, STATUS_TONE } from "./format";
