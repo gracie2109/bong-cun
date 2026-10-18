@@ -17,7 +17,7 @@ export const renameExtension = (name: string, extension: string): string =>
 /**
  * Scales a picture down (1600px and quality 0.85 unless told otherwise) and re-encodes it as WebP in
  * the browser. A GIF (it may be animated) and anything the browser cannot decode or shrink come back
- * unchanged.
+ * unchanged; an AVIF is kept as is when the WebP copy would not be smaller (AVIF usually is already).
  */
 export const compressImage = async (file: File, options: CompressOptions = {}): Promise<File> => {
   const { maxEdge = MAX_EDGE, quality = WEBP_QUALITY } = options;

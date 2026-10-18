@@ -1791,7 +1791,7 @@
         "other": "Other"
       },
       "error": {
-        "type": "Only PNG, JPEG, WebP images or PDF.",
+        "type": "Only PNG, JPEG, WebP, AVIF images or PDF.",
         "size": "The file must be under 10 MB."
       }
     },
