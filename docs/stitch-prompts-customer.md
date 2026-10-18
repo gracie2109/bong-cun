@@ -10,7 +10,7 @@
 
 ## Prompt 0: Bối cảnh và phong cách chung
 ```
-Design system for "Bông Cún", a public website of a pet shop + grooming spa in Vietnam. Users are pet owners on phones (most) and desktops. All UI text is Vietnamese.
+Design system for "Pawtiny", a public website of a pet shop + grooming spa in Vietnam. Users are pet owners on phones (most) and desktops. All UI text is Vietnamese.
 
 Layout: top header with logo, menu ("Trang chủ", "Sản phẩm", "Dịch vụ spa", "Giới thiệu", "Liên hệ"), search icon, cart icon with count badge, and either a "Đăng nhập" button or a user avatar menu ("Tài khoản", "Đơn hàng", "Thú cưng", "Lịch hẹn", "Đăng xuất"). Footer with 3 columns: about, quick links, contact (address, hotline, opening hours). Mobile: hamburger menu and sticky bottom action bar where needed.
 
@@ -19,7 +19,7 @@ Visual style: warm, friendly, trustworthy, lots of whitespace, big photos. Light
 
 ## Prompt 1: Trang chủ
 ```
-Home page. Hero banner with headline "Chăm sóc thú cưng của bạn như người nhà", subtitle, two buttons "Mua sắm ngay" (primary) and "Đặt lịch spa" (outline). Below: row of 6 category tiles (e.g. "Thức ăn cho chó", "Thức ăn cho mèo", "Phụ kiện", "Đồ chơi", "Vệ sinh", "Thuốc & vitamin"); section "Sản phẩm mới" with a horizontal grid of 8 product cards; a call-to-action block "Đặt lịch spa online" with photo of a groomed dog, 3 short benefits (đặt trong 1 phút, chọn giờ còn trống, hủy dễ dàng) and a button "Đặt lịch ngay"; short "Vì sao chọn Bông Cún" strip with 4 icons; footer.
+Home page. Hero banner with headline "Chăm sóc thú cưng của bạn như người nhà", subtitle, two buttons "Mua sắm ngay" (primary) and "Đặt lịch spa" (outline). Below: row of 6 category tiles (e.g. "Thức ăn cho chó", "Thức ăn cho mèo", "Phụ kiện", "Đồ chơi", "Vệ sinh", "Thuốc & vitamin"); section "Sản phẩm mới" with a horizontal grid of 8 product cards; a call-to-action block "Đặt lịch spa online" with photo of a groomed dog, 3 short benefits (đặt trong 1 phút, chọn giờ còn trống, hủy dễ dàng) and a button "Đặt lịch ngay"; short "Vì sao chọn Pawtiny" strip with 4 icons; footer.
 ```
 
 ## Prompt 2: Danh sách sản phẩm

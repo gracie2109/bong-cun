@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { LogOut, PawPrint } from "lucide-vue-next";
+import { LogOut } from "lucide-vue-next";
+import { STORE_INFO } from "@/config/storeInfo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -51,12 +52,10 @@ const userName = computed(
     <Sidebar collapsible="icon" class="border-r">
       <SidebarHeader class="border-b px-3 py-4 group-data-[collapsible=icon]:px-2">
         <router-link :to="{ name: 'dashboard' }" class="flex items-center gap-3">
-          <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <PawPrint class="size-5" />
-          </span>
+          <img src="/icons/logo-mark.png" alt="" width="36" height="36" class="size-9 shrink-0 rounded-xl" />
           <span class="min-w-0 group-data-[collapsible=icon]:hidden">
             <span class="flex items-center gap-1.5 text-base font-bold leading-tight">
-              BongCun
+              {{ STORE_INFO.brand }}
               <span class="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
                 Admin
               </span>

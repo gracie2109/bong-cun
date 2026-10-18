@@ -1,4 +1,4 @@
-/** First letters of the first two words of a name, upper-cased ("Bông Cún" -> "BC"). */
+/** First letters of the first two words of a name, upper-cased ("Nguyễn An" -> "NA"). */
 export const initialsOf = (name: string): string =>
   name
     .trim()

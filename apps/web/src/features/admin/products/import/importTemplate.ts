@@ -34,8 +34,8 @@ export const YES = "Có";
 export const NO = "Không";
 
 const SAMPLE_PRODUCT_ROWS: SheetData = [
-  ["Áo thun mèo", "Phụ kiện > Quần áo", "Bông Cún", "Áo cotton mềm", "", "Size", "S", "Màu", "Đỏ", "", "", "ATM-S-D", "", "cái", 120000, YES, YES],
-  ["Áo thun mèo", "Phụ kiện > Quần áo", "Bông Cún", "", "", "Size", "M", "Màu", "Đỏ", "", "", "ATM-M-D", "", "cái", 130000, YES, YES],
+  ["Áo thun mèo", "Phụ kiện > Quần áo", "Pawtiny", "Áo cotton mềm", "", "Size", "S", "Màu", "Đỏ", "", "", "ATM-S-D", "", "cái", 120000, YES, YES],
+  ["Áo thun mèo", "Phụ kiện > Quần áo", "Pawtiny", "", "", "Size", "M", "Màu", "Đỏ", "", "", "ATM-M-D", "", "cái", 130000, YES, YES],
   ["Hạt cho chó", "Thức ăn > Hạt", "Royal", "", "", "", "", "", "", "", "", "HAT-1KG", "8930000000011", "gói", 95000, YES, YES],
 ];
 
