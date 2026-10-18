@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import i18n from "@/i18n";
 import { usePlaceShopOrder } from "@/features/shop/orders";
-import { useShopPublicSettings } from "@/features/shared/shop";
+import { useShopPublicSettings } from "@/features/shared/public-api";
 import { orderErrorDetail, orderErrorHint } from "@bongcun/supabase/shop";
 import { useAuthStore, useCart } from "@/stores";
 import type { DeliveryMethod } from "@bongcun/core/shop";

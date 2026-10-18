@@ -1,5 +1,5 @@
 import { computed } from "vue";
-import { useProductBrands, useProductCategories } from "@/features/shared/products";
+import { usePublicBrands, usePublicCategories } from "@/features/shared/public-api";
 import { useShopCatalog } from "@/features/shop/catalog/queries/shopCatalog";
 import { buildCategoryTree, categoryName } from "@/utils/shop/catalog";
 import { useCatalogFilters } from "@/features/shop/catalog/composables/useCatalogFilters";
@@ -12,8 +12,8 @@ const LOOKUP_PAGE = { pageIndex: 1, pageSize: 200 };
 export const useCatalog = () => {
   const state = useCatalogFilters();
   const catalog = useShopCatalog(state.filters);
-  const categories = useProductCategories(LOOKUP_PAGE);
-  const brands = useProductBrands(LOOKUP_PAGE);
+  const categories = usePublicCategories(LOOKUP_PAGE);
+  const brands = usePublicBrands(LOOKUP_PAGE);
   useServerPrefetch(catalog.query, categories, brands);
 
   const categoryTree = computed(() => buildCategoryTree(categories.data.value?.rows ?? []));
