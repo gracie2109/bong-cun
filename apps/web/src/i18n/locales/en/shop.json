@@ -685,7 +685,8 @@
         "done": "Done",
         "paid": "Paid",
         "cancelled": "Cancelled",
-        "no_show": "No show"
+        "no_show": "No show",
+        "overdue": "Past due"
       },
       "cancel": "Cancel",
       "cancelTitle": "Cancel this appointment?",
@@ -730,7 +731,8 @@
         "checked_out": "Picked up",
         "paid": "Paid",
         "cancelled": "Cancelled",
-        "no_show": "No show"
+        "no_show": "No show",
+        "overdue": "Past due"
       },
       "until": "Until {day}",
       "nights": "{n} nights",

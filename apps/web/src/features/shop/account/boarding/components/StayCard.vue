@@ -8,8 +8,8 @@
           {{ $t("client.boarding.until", { day: dayLabel(dayOf(stay.plannedOutAt), locale) }) }}
         </p>
       </div>
-      <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[stay.status] ?? 'bg-muted text-muted-foreground'">
-        {{ $t(`client.boarding.status.${stay.status}`) }}
+      <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[shownBookingStatus(stay)] ?? 'bg-muted text-muted-foreground'">
+        {{ $t(`client.boarding.status.${shownBookingStatus(stay)}`) }}
       </span>
     </div>
 
@@ -42,7 +42,7 @@ import PetAvatar from "@/components/common/PetAvatar.vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { MyBoardingStay } from "@bongcun/core/account";
+import { shownBookingStatus, type MyBoardingStay } from "@bongcun/core/account";
 import { dayLabel } from "@bongcun/core/spa";
 import { dayOf, STATUS_TONE } from "../format";
 
