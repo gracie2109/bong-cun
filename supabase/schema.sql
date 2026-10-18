@@ -12381,6 +12381,32 @@ $$;
 ALTER FUNCTION "public"."shop_order_log"("p_id" "uuid", "p_status" "text", "p_note" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."shop_orders_throttle"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_waiting int;
+  v_recent  int;
+begin
+  select count(*) filter (where o.status = 'pending'),
+         count(*) filter (where o.placed_at > now() - interval '1 hour')
+    into v_waiting, v_recent
+  from public.shop_orders o
+  where o.user_id = new.user_id;
+
+  if v_waiting >= 5 or v_recent >= 10 then
+    raise exception 'too many online orders, try again later'
+      using errcode = '22023', hint = 'too_many_orders';
+  end if;
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."shop_orders_throttle"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."shop_product_groups"("p_search" "text" DEFAULT NULL::"text", "p_category" "uuid" DEFAULT NULL::"uuid", "p_brand" "uuid" DEFAULT NULL::"uuid", "p_sort" "text" DEFAULT 'newest'::"text", "p_limit" integer DEFAULT 24, "p_offset" integer DEFAULT 0) RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -16460,6 +16486,10 @@ CREATE OR REPLACE TRIGGER "shop_orders_set_updated_at" BEFORE UPDATE ON "public"
 
 
 
+CREATE OR REPLACE TRIGGER "shop_orders_throttle" BEFORE INSERT ON "public"."shop_orders" FOR EACH ROW EXECUTE FUNCTION "public"."shop_orders_throttle"();
+
+
+
 CREATE OR REPLACE TRIGGER "take_stock" AFTER INSERT ON "public"."invoice_lines" FOR EACH ROW WHEN (("new"."item_type" = 'product'::"text")) EXECUTE FUNCTION "public"."invoice_line_take_stock"();
 
 
@@ -18277,10 +18307,6 @@ CREATE POLICY "products viewers read" ON "public"."product_imports" FOR SELECT T
 
 
 
-CREATE POLICY "public create" ON "public"."bookings" FOR INSERT TO "authenticated", "anon" WITH CHECK (((("user_id" IS NULL) OR ("user_id" = ( SELECT "auth"."uid"() AS "uid"))) AND ("status" = 'PENDING'::"text") AND (NOT "is_cancel") AND (NOT "is_moving_time") AND ("cancel_date" IS NULL) AND ("cancel_by" IS NULL) AND ("cancel_reason" IS NULL) AND ("confirm_changed_by" IS NULL) AND ("confirm_from_time" IS NULL) AND ("confirm_to_time" IS NULL) AND (("char_length"("name") >= 1) AND ("char_length"("name") <= 200)) AND (("char_length"("email") >= 3) AND ("char_length"("email") <= 320)) AND (("char_length"("phone_number") >= 6) AND ("char_length"("phone_number") <= 20)) AND (("content" IS NULL) OR ("char_length"("content") <= 2000))));
-
-
-
 CREATE POLICY "public read" ON "public"."banners" FOR SELECT TO "authenticated", "anon" USING (true);
 
 
@@ -19559,14 +19585,12 @@ GRANT ALL ON FUNCTION "public"."pet_vaccinations"("p_pet" "uuid") TO "service_ro
 
 
 
-GRANT ALL ON FUNCTION "public"."pets_deceased_after"() TO "anon";
-GRANT ALL ON FUNCTION "public"."pets_deceased_after"() TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."pets_deceased_after"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."pets_deceased_after"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."pets_deceased_before"() TO "anon";
-GRANT ALL ON FUNCTION "public"."pets_deceased_before"() TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."pets_deceased_before"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."pets_deceased_before"() TO "service_role";
 
 
@@ -20017,6 +20041,11 @@ GRANT ALL ON FUNCTION "public"."shop_order_log"("p_id" "uuid", "p_status" "text"
 
 
 
+REVOKE ALL ON FUNCTION "public"."shop_orders_throttle"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."shop_orders_throttle"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."shop_product_groups"("p_search" "text", "p_category" "uuid", "p_brand" "uuid", "p_sort" "text", "p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."shop_product_groups"("p_search" "text", "p_category" "uuid", "p_brand" "uuid", "p_sort" "text", "p_limit" integer, "p_offset" integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."shop_product_groups"("p_search" "text", "p_category" "uuid", "p_brand" "uuid", "p_sort" "text", "p_limit" integer, "p_offset" integer) TO "authenticated";
@@ -20388,7 +20417,6 @@ GRANT ALL ON TABLE "public"."weight_brackets" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."pet_overview" TO "anon";
 GRANT ALL ON TABLE "public"."pet_overview" TO "authenticated";
 GRANT ALL ON TABLE "public"."pet_overview" TO "service_role";
 

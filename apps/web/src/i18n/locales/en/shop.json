@@ -137,7 +137,8 @@
         "in_store_only": "{names} is sold in store only, please choose in-store pickup.",
         "out_of_stock": "Not enough stock: {names}. Please lower the quantity.",
         "too_heavy": "The parcel is too heavy to deliver. Choose in-store pickup or split the order.",
-        "cod_limit": "Home delivery orders are limited to {max}. Split the order or pick it up in store."
+        "cod_limit": "Home delivery orders are limited to {max}. Split the order or pick it up in store.",
+        "too_many_orders": "You have several orders waiting for confirmation. Wait for the shop to confirm them or call the shop."
       }
     },
     "address": {

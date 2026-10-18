@@ -17,6 +17,7 @@ export const SHOP_ERROR_HINTS = [
   "out_of_stock",
   "too_heavy",
   "cod_limit",
+  "too_many_orders",
   "invalid_fee",
   "order_not_found",
   "bad_status",
