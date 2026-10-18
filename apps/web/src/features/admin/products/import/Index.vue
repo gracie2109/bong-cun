@@ -41,6 +41,7 @@
             </div>
           </div>
 
+          <p v-if="importer.phase.value === 'importing'" class="text-sm text-muted-foreground">{{ $t("productImport.imagesNote") }}</p>
           <p v-if="importer.phase.value === 'done'" class="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-primary">
             {{ $t("dataIo.import.done") }}
           </p>

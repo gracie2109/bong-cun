@@ -300,3 +300,12 @@ Khác với kế hoạch:
 - Màn xuất thú cưng không có cột microchip và email chủ (view `pet_overview` không có hai trường đó).
 
 Kiểm tra đã làm: typecheck và `nuxt build` qua ở mọi bước; hàm đọc/ghi CSV, so khớp cột, parse sản phẩm (so với bản cũ), khách và thú cưng, phiếu nhập chạy thử bằng Node; `import_pets`, `import_suppliers`, `find_products_by_sku` chạy thử trên Postgres cục bộ với bảng mô phỏng (đủ cột, khoá, ràng buộc liên quan; chưa chạy qua RLS thật). Chưa bấm thử trên trình duyệt: mở file Excel/Numbers, in PDF thật, kéo thả file, các nút theo quyền.
+
+## 13. Ảnh sản phẩm ở link ngoài (18/10/2026)
+
+Cột "Ảnh" của file nhập sản phẩm nhận địa chỉ ảnh. Khi nhập thật (không phải bước kiểm tra), ảnh nằm ngoài kho của shop được tải về: trình duyệt gọi `GET /api/admin/image-proxy?url=...` (server lấy ảnh hộ vì trang kia không cho trình duyệt đọc), nén WebP rồi tải vào `catalog/imported/` như ảnh tải tay. Dòng nhập được ghi bằng địa chỉ mới nên shop không phụ thuộc trang gốc.
+
+- Route chỉ cho người có `products: UPDATE` (hỏi `can_products` bằng token của người gọi), chỉ lấy `https` trên các host trong `server/utils/imageProxy.ts` (`fexafkqzpbzjcupvbfhe.supabase.co`, `auth.paddy.vn`, `cdn.shopify.com`), không theo chuyển hướng, tối đa 5 MB, chỉ JPEG/PNG/WebP/GIF.
+- Ảnh không tải được thì bị bỏ khỏi dòng (không giữ link ngoài) và hiện một cảnh báo; sản phẩm vẫn được nhập.
+- Nhập lại cùng file tải lại ảnh lên đường dẫn mới (file cũ trong `catalog/imported/` thành ảnh mồ côi, chưa có bước dọn).
+- Ảnh trong dữ liệu mẫu là ảnh của trang gốc: chỉ dùng để thử, cần thay ảnh của mình trước khi bán thật.
