@@ -251,3 +251,7 @@ Quy tắc chung khi code: mỗi file `.vue`/`.ts` dưới khoảng 300 dòng; tr
 | M6 | PR này | `AppTabBar`, ẩn đăng nhập Google và mục Quản trị, `StaffWebNotice` |
 
 Lệch so với kế hoạch: `features/native` phẳng (composables/helpers/components) nên luật `feature-via-index` loại trừ thư mục này; `OfflineBanner` thay màn `ServerOffline` toàn trang khi ở trong app. Chưa chạy trên máy thật hay máy ảo: chỉ kiểm bằng typecheck, test, build và Chromium 390×844.
+
+### M10 (PWA cho iPhone/iPad): đã làm 2026-10-18
+
+Website có `manifest.webmanifest`, icon 192/512/maskable, `apple-touch-icon` và các thẻ `apple-mobile-web-app-*` (không service worker, không offline). Cài trên iPhone/iPad: mở https://bong-cun.vercel.app bằng **Safari**, bấm nút Chia sẻ, chọn "Thêm vào Màn hình chính". Android/Chrome có mục "Cài đặt ứng dụng". Chạy ở chế độ toàn màn hình, vẫn là giao diện web (không có thanh tab dưới, không thông báo). Icon vẫn là bản tạm "BC" nền cam: thay `apps/mobile/assets/icon-only.png` rồi tạo lại `apps/web/public/icons/*`. App iOS thật (M11) vẫn cần tài khoản Apple 99 USD/năm.

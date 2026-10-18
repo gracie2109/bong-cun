@@ -1,0 +1,17 @@
+{
+  "name": "Bông Cún Pet shop & Spa",
+  "short_name": "Bông Cún",
+  "description": "Pet shop & spa: mua hàng, đặt lịch spa, lưu trú cho thú cưng.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "vi",
+  "background_color": "#FFFFFF",
+  "theme_color": "#F97316",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
