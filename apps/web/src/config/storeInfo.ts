@@ -1,6 +1,8 @@
 /** Public contact details shown in the footer and on the contact page. Edit here when they change. */
 export const STORE_INFO = {
-  name: "Bông Cún Pet Shop & Spa",
+  /** Short brand name: logo, page titles, receipts. */
+  brand: "Pawtiny",
+  name: "Pawtiny Pet Shop & Spa",
   address: "Yên Nghĩa, Hà Đông, Hà Nội",
   phone: "0123456789",
   email: "admin@gmail.com",

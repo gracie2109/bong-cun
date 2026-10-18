@@ -22,6 +22,6 @@ Needs JDK 21 and the Android SDK (`ANDROID_HOME`). CI builds it for you: see the
   range (`cap sync` reads this file; npm installs one copy at the root). `npm run check:versions` checks it.
 - **Native code only in `apps/web/src/features/native`.** dependency-cruiser fails on `@capacitor/*` imports elsewhere.
 - **Icon and splash** come from `assets/`: replace `icon-only.png`, `icon-foreground.png`, `icon-background.png`,
-  `splash.png`, `splash-dark.png` and run `npm run assets -w @bongcun/mobile`. The current ones are a placeholder
-  ("BC" on orange).
+  `splash.png`, `splash-dark.png` and run `npm run assets -w @bongcun/mobile`. The current ones are the Pawtiny
+  logo (dog and cat on cream).
 - `android/` is committed; build output, `local.properties` and the copied web bundle are ignored.

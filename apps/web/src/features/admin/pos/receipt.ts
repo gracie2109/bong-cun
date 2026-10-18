@@ -1,5 +1,6 @@
 // Prints an 80 mm retail receipt through a hidden iframe, so the admin page itself is untouched.
 import { escapeHtml, printHtml } from "@/lib/print";
+import { STORE_INFO } from "@/config/storeInfo";
 import type { Branch } from "@bongcun/supabase/users";
 import type { InvoiceDetail } from "@bongcun/supabase/pos";
 import { dateTime, money } from "./format";
@@ -34,7 +35,7 @@ export const receiptHtml = (invoice: InvoiceDetail, branch: Branch | null, t: Tr
   hr { border: 0; border-top: 1px dashed #000; margin: 6px 0; }
   .muted { color: #444; font-size: 11px; }
 </style></head><body>
-  <h1>${escapeHtml(branch?.name ?? "BongCun")}</h1>
+  <h1>${escapeHtml(branch?.name ?? STORE_INFO.brand)}</h1>
   ${branch?.address ? `<p class="c muted">${escapeHtml(branch.address)}</p>` : ""}
   ${branch?.phone ? `<p class="c muted">${escapeHtml(branch.phone)}</p>` : ""}
   <hr>

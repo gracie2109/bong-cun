@@ -70,7 +70,7 @@ apps/
 │     └─ types.ts
 └─ mobile/                      # MỚI: vỏ Capacitor, không có code giao diện
    ├─ package.json              # @capacitor/cli, @capacitor/android, các plugin native
-   ├─ capacitor.config.ts       # appId vn.bongcun.app, appName "Bông Cún", webDir ../web/.output/public
+   ├─ capacitor.config.ts       # appId vn.bongcun.app, appName "Pawtiny", webDir ../web/.output/public
    ├─ assets/                   # icon.png, splash.png gốc (sinh ra mọi kích thước bằng @capacitor/assets)
    ├─ android/                  # do `npx cap add android` tạo, có commit
    └─ README.md                 # cách build, cài APK
@@ -254,4 +254,4 @@ Lệch so với kế hoạch: `features/native` phẳng (composables/helpers/com
 
 ### M10 (PWA cho iPhone/iPad): đã làm 2026-10-18
 
-Website có `manifest.webmanifest`, icon 192/512/maskable, `apple-touch-icon` và các thẻ `apple-mobile-web-app-*` (không service worker, không offline). Cài trên iPhone/iPad: mở https://bong-cun.vercel.app bằng **Safari**, bấm nút Chia sẻ, chọn "Thêm vào Màn hình chính". Android/Chrome có mục "Cài đặt ứng dụng". Chạy ở chế độ toàn màn hình, vẫn là giao diện web (không có thanh tab dưới, không thông báo). Icon vẫn là bản tạm "BC" nền cam: thay `apps/mobile/assets/icon-only.png` rồi tạo lại `apps/web/public/icons/*`. App iOS thật (M11) vẫn cần tài khoản Apple 99 USD/năm.
+Website có `manifest.webmanifest`, icon 192/512/maskable, `apple-touch-icon` và các thẻ `apple-mobile-web-app-*` (không service worker, không offline). Cài trên iPhone/iPad: mở https://bong-cun.vercel.app bằng **Safari**, bấm nút Chia sẻ, chọn "Thêm vào Màn hình chính". Android/Chrome có mục "Cài đặt ứng dụng". Chạy ở chế độ toàn màn hình, vẫn là giao diện web (không có thanh tab dưới, không thông báo). Icon là logo Pawtiny (chó và mèo trên nền kem, 2026-10-18); muốn đổi thì thay `apps/mobile/assets/*`, chạy `npm run assets -w @bongcun/mobile` và tạo lại `apps/web/public/icons/*`. App iOS thật (M11) vẫn cần tài khoản Apple 99 USD/năm.
