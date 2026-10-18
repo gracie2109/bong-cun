@@ -61,5 +61,5 @@ begin
 end;
 $$;
 
-revoke execute on function public.delete_product_groups(uuid[]) from public;
+revoke execute on function public.delete_product_groups(uuid[]) from public, anon;
 grant execute on function public.delete_product_groups(uuid[]) to authenticated;
