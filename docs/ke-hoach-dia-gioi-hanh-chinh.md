@@ -1,6 +1,8 @@
 # Kế hoạch LocationModule: địa giới hành chính, địa chỉ và mapping GHN
 
-Ngày lập: 2026-10-18. Trạng thái: kế hoạch đã duyệt (theo quy ước dự án), code làm ở thread riêng theo các bước L1–L9 bên dưới, mỗi bước một PR.
+Ngày lập: 2026-10-18.
+
+> **Đã thay một phần (2026-10-18):** grace chọn làm Location Service thành một dự án NestJS riêng. Mục 3, 4, 5, 6, 7 và 9 bên dưới được thay bằng [`docs/location-service/kien-truc.md`](./location-service/kien-truc.md) và contract [`openapi.yaml`](./location-service/openapi.yaml). Mục 1 (audit) và mục 2 (nguồn dữ liệu, GHN) vẫn dùng. Không code theo các bước L1–L10 nữa.
 
 Ký hiệu trong tài liệu:
 
