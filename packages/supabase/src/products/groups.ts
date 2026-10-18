@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
 import { pageRange, unwrap, type Page, type PageParams } from "@bongcun/supabase/shared";
 import { toGroup, type GroupJson } from "./mappers";
-import type { ProductAttribute, ProductFilter, ProductGroup, ProductGroupInput } from "@bongcun/core/products";
+import type { ProductAttribute, ProductDeleteResult, ProductFilter, ProductGroup, ProductGroupInput } from "@bongcun/core/products";
 
 type Client = SupabaseClient<Database>;
 
@@ -106,6 +106,13 @@ export const saveProductGroup = async (client: Client, input: ProductGroupInput)
 export const setProductGroupActive = async (client: Client, id: string, isActive: boolean): Promise<void> => {
   const { error } = await client.rpc("set_product_group_active", { p_group: id, p_active: isActive });
   if (error) throw error;
+};
+
+/** Deletes groups (all variants) that were never sold or stocked; the others are kept and returned with a reason. */
+export const deleteProductGroups = async (client: Client, ids: string[]): Promise<ProductDeleteResult> => {
+  const { data, error } = await client.rpc("delete_product_groups", { p_groups: ids });
+  if (error) throw error;
+  return data as unknown as ProductDeleteResult;
 };
 
 /** Error hints raised by save_product_group, for readable messages. */

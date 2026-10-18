@@ -2592,6 +2592,7 @@ export type Database = {
       save_product_brand: { Args: { p: Json }; Returns: string }
       move_product_category: { Args: { p_direction: string; p_id: string }; Returns: undefined }
       delete_product_category: { Args: { p_id: string }; Returns: undefined }
+      delete_product_groups: { Args: { p_groups: string[] }; Returns: Json }
       delete_product_brand: { Args: { p_id: string }; Returns: undefined }
       product_group_json: { Args: { p_all: boolean; p_group: string }; Returns: Json }
       save_product_group: { Args: { p: Json }; Returns: string }

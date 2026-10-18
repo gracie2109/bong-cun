@@ -4,6 +4,9 @@
     :class="[group.isActive ? '' : 'opacity-60', canUpdate ? 'cursor-pointer hover:bg-muted/40' : '']"
     @click="canUpdate && emit('edit', group.id)"
   >
+    <td v-if="canDelete" class="w-10 px-4 py-3" @click.stop>
+      <Checkbox :checked="selected" :aria-label="group.name" @update:checked="(value) => emit('select', group.id, value === true)" />
+    </td>
     <td class="px-4 py-3">
       <div class="flex items-center gap-3">
         <ProductThumb :src="group.imageUrl ?? group.variants.find((item) => item.imageUrl)?.imageUrl" class="size-10 shrink-0" />
@@ -43,14 +46,19 @@
     </td>
     <td class="whitespace-nowrap px-4 py-3 text-right font-semibold">{{ priceRange }}</td>
     <td class="px-4 py-3 text-right" @click.stop>
-      <DropdownMenu v-if="canUpdate">
+      <DropdownMenu v-if="canUpdate || canDelete">
         <DropdownMenuTrigger as-child>
           <Button variant="ghost" size="icon" class="size-8"><EllipsisVertical class="size-4" /></Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem @click="emit('edit', group.id)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
-          <DropdownMenuItem @click="emit('setActive', group, !group.isActive)">
-            {{ group.isActive ? $t("petCare.common.archive") : $t("petCare.common.restore") }}
+          <template v-if="canUpdate">
+            <DropdownMenuItem @click="emit('edit', group.id)">{{ $t("petCare.common.edit") }}</DropdownMenuItem>
+            <DropdownMenuItem @click="emit('setActive', group, !group.isActive)">
+              {{ group.isActive ? $t("petCare.common.archive") : $t("petCare.common.restore") }}
+            </DropdownMenuItem>
+          </template>
+          <DropdownMenuItem v-if="canDelete" class="text-destructive" @click="emit('delete', group.id)">
+            {{ $t("products.delete.action") }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -62,6 +70,7 @@
 import { computed } from "vue";
 import { EllipsisVertical } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,9 +81,14 @@ import type { ProductGroup } from "@bongcun/supabase/products";
 import { money } from "@/features/admin/pos/format";
 import ProductThumb from "./ProductThumb.vue";
 
-const props = defineProps<{ group: ProductGroup; canUpdate: boolean }>();
+const props = defineProps<{ group: ProductGroup; canUpdate: boolean; canDelete: boolean; selected: boolean }>();
 
-const emit = defineEmits<{ edit: [groupId: string]; setActive: [group: ProductGroup, isActive: boolean] }>();
+const emit = defineEmits<{
+  edit: [groupId: string];
+  setActive: [group: ProductGroup, isActive: boolean];
+  select: [groupId: string, on: boolean];
+  delete: [groupId: string];
+}>();
 
 /** One price, or the lowest and highest when the variants differ. */
 const priceRange = computed(() => {

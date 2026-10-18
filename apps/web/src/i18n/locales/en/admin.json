@@ -800,6 +800,16 @@
     }
   },
   "products": {
+    "delete": {
+      "action": "Delete",
+      "selected": "{n} products selected",
+      "clear": "Clear",
+      "selectPage": "Select all products on this page",
+      "confirmTitle": "Delete {n} products?",
+      "confirmDesc": "Only products that were never sold and have no stock history can be deleted. The others are kept (archive them instead). This cannot be undone.",
+      "done": "Deleted {n} products.",
+      "kept": "Kept {n} products: {sold} already bought, {stocked} with stock history. Archive them instead."
+    },
     "title": "Products",
     "subtitle": "Product groups and variants: price, unit, barcode, stock.",
     "add": "Add product",
