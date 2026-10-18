@@ -6,8 +6,8 @@
         <p class="font-semibold">{{ dayLabel(startDay, locale) }}</p>
         <p class="text-sm text-primary">{{ rangeLabel(appointment.startAt, minutes) }}</p>
       </div>
-      <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[appointment.status] ?? 'bg-muted text-muted-foreground'">
-        {{ $t(`client.appointments.status.${appointment.status}`) }}
+      <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="STATUS_TONE[status] ?? 'bg-muted text-muted-foreground'">
+        {{ $t(`client.appointments.status.${status}`) }}
       </span>
     </div>
 
@@ -36,7 +36,7 @@
       <Button v-if="appointment.canCancel" size="sm" variant="outline" class="text-red-600" :disabled="busy" @click="emit('cancel')">
         {{ $t("client.appointments.cancel") }}
       </Button>
-      <p v-else-if="appointment.status === 'booked'" class="text-xs text-muted-foreground">
+      <p v-else-if="status === 'booked'" class="text-xs text-muted-foreground">
         {{ $t("client.appointments.callToCancel") }}
         <a v-if="appointment.branchPhone" :href="`tel:${appointment.branchPhone}`" class="font-medium text-primary">{{ appointment.branchPhone }}</a>
       </p>
@@ -50,7 +50,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-import type { MyAppointment } from "@bongcun/core/account";
+import { shownBookingStatus, type MyAppointment } from "@bongcun/core/account";
 import { businessDate, dayLabel, rangeLabel } from "@bongcun/core/spa";
 
 const STATUS_TONE: Record<string, string> = {
@@ -61,12 +61,14 @@ const STATUS_TONE: Record<string, string> = {
   paid: "bg-green-100 text-green-700",
   cancelled: "bg-muted text-muted-foreground",
   no_show: "bg-red-100 text-red-700",
+  overdue: "bg-orange-100 text-orange-700",
 };
 
 const props = defineProps<{ appointment: MyAppointment; busy: boolean }>();
 const emit = defineEmits<{ cancel: [] }>();
 
 const { locale } = useI18n();
+const status = computed(() => shownBookingStatus(props.appointment));
 const startDay = computed(() => businessDate(new Date(props.appointment.startAt)));
 const minutes = computed(() => Math.round((new Date(props.appointment.endAt).getTime() - new Date(props.appointment.startAt).getTime()) / 60000));
 </script>
