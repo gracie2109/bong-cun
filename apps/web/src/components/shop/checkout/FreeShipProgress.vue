@@ -15,7 +15,7 @@
 import { computed } from "vue";
 import { Truck } from "lucide-vue-next";
 import { formatPrice } from "@/lib/utils";
-import { useShopPublicSettings } from "@/features/shared/shop/queries/shop";
+import { useShopPublicSettings } from "@/features/shared/public-api";
 
 /** "Buy X more for free delivery", from the shop's free-shipping threshold; hidden when there is none. */
 const props = defineProps<{ subtotal: number }>();

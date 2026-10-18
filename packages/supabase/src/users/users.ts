@@ -39,7 +39,8 @@ export const isDisplayNameAvailable = async (
 // underneath changes.
 export const toCurrentUser = (row: UserRow): IUser => {
   const email = row.email ?? "";
-  const displayName = row.display_name ?? row.full_name ?? email.split("@")[0];
+  const [localPart = ""] = email.split("@");
+  const displayName = row.display_name ?? row.full_name ?? localPart;
   return {
     userId: row.id,
     email,

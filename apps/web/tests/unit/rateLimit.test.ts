@@ -20,6 +20,7 @@ describe("rateLimitBucket", () => {
   it("limits GHN quotes harder than lookups and leaves pages alone", () => {
     expect(rateLimitBucket("/api/ghn/shipping-fee")).toBe("quote");
     expect(rateLimitBucket("/api/ghn/provinces")).toBe("lookup");
+    expect(rateLimitBucket("/api/public/products")).toBe("catalog");
     expect(rateLimitBucket("/products")).toBeNull();
   });
 });

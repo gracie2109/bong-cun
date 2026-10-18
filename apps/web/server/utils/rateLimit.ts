@@ -2,6 +2,7 @@
 // window, so this slows down scrapers and accidental loops; it is not a hard global quota.
 
 export type RateLimitRule = { limit: number; windowMs: number };
+export type RateLimitBucket = "quote" | "lookup" | "catalog";
 export type RateLimitResult = { allowed: boolean; remaining: number; retryAfterSec: number };
 
 type Window = { count: number; resetAt: number };
@@ -34,14 +35,17 @@ export const createRateLimiter = (rule: RateLimitRule, now: () => number = Date.
 };
 
 /** Which bucket a path falls in, or null when it is not limited. */
-export const rateLimitBucket = (path: string): "quote" | "lookup" | null => {
+export const rateLimitBucket = (path: string): RateLimitBucket | null => {
   if (!path.startsWith("/api/")) return null;
+  // Catalog reads: a page render asks several at once, so a looser bucket.
+  if (path.startsWith("/api/public/")) return "catalog";
   // Price quotes call GHN on every request: the tighter bucket.
   if (path.startsWith("/api/ghn/shipping-fee") || path.startsWith("/api/ghn/leadtime")) return "quote";
   return "lookup";
 };
 
-export const RATE_LIMIT_RULES: Record<"quote" | "lookup", RateLimitRule> = {
+export const RATE_LIMIT_RULES: Record<RateLimitBucket, RateLimitRule> = {
   quote: { limit: 30, windowMs: 60_000 },
   lookup: { limit: 120, windowMs: 60_000 },
+  catalog: { limit: 300, windowMs: 60_000 },
 };

@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useHead } from "#imports";
 import { useRoute } from "vue-router";
-import { useSellableGroup } from "@/features/shared/products";
+import { usePublicGroup } from "@/features/shared/public-api";
 import { useRelatedGroups, useVariantAvailability } from "@/features/shop/catalog";
 import { useVariantChoice } from "@/features/shared/products";
 import { useAddToCart } from "@/features/shop/cart";
@@ -16,7 +16,7 @@ export const useProductPage = () => {
   const route = useRoute();
   const id = computed(() => String(route.params.id ?? ""));
 
-  const groupQuery = useSellableGroup(id);
+  const groupQuery = usePublicGroup(id);
   const group = computed(() => groupQuery.data.value ?? null);
   const variantIds = computed(() => (group.value?.variants ?? []).map((variant) => variant.id));
 

@@ -1,10 +1,11 @@
 import { RATE_LIMIT_RULES, createRateLimiter, rateLimitBucket } from "../utils/rateLimit";
 
-// Per-IP limits for the public /api routes (the GHN proxy). Runs after ghn-cors, so a 429
+// Per-IP limits for the public /api routes (the GHN proxy and the catalog reads). Runs after ghn-cors, so a 429
 // still carries the app's CORS headers; preflights are not counted.
 const limiters = {
   quote: createRateLimiter(RATE_LIMIT_RULES.quote),
   lookup: createRateLimiter(RATE_LIMIT_RULES.lookup),
+  catalog: createRateLimiter(RATE_LIMIT_RULES.catalog),
 };
 
 export default defineEventHandler((event) => {

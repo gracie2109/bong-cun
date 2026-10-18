@@ -1,5 +1,5 @@
 import { computed, ref, watch } from "vue";
-import { useBranches } from "@/features/shared/branches";
+import { usePublicBranches } from "@/features/shared/public-api";
 import { useSpaPublicCatalog } from "@/features/shop/spa/queries/spaCatalog";
 import {
   combosForSpecies,
@@ -9,7 +9,7 @@ import {
 
 /** The public price list: pick a branch (when there are several) and a species, read its services and combos. */
 export const useSpaCatalog = () => {
-  const branchesQuery = useBranches();
+  const branchesQuery = usePublicBranches();
   const branches = computed(() => branchesQuery.data.value ?? []);
 
   const picked = ref<string | null>(null);

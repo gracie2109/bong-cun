@@ -34,10 +34,10 @@ import { computed } from "vue";
 import { ArrowRight, ShoppingBasket } from "lucide-vue-next";
 import SectionHeading from "@/components/shop/SectionHeading.vue";
 import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
-import { useProductCategories } from "@/features/shared/products";
+import { usePublicCategories } from "@/features/shared/public-api";
 import CategoryTile from "./CategoryTile.vue";
 
-const query = useProductCategories({ pageIndex: 1, pageSize: 12 }, { rootsOnly: true });
+const query = usePublicCategories({ pageIndex: 1, pageSize: 12 }, true);
 useServerPrefetch(query);
 const loading = computed(() => query.isLoading.value);
 const categories = computed(() => (query.data.value?.rows ?? []).filter((row) => row.isActive));

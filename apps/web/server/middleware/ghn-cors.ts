@@ -1,8 +1,11 @@
 import { appCorsHeaders } from "../utils/appCors";
 
-// Lets the mobile app (a different origin) call the GHN proxy; the GHN token stays on the server.
+// Lets the mobile app (a different origin) call the GHN proxy and the public catalog routes;
+// the GHN token and the database stay on the server.
+const APP_API_PREFIXES = ["/api/ghn/", "/api/public/"];
+
 export default defineEventHandler((event) => {
-  if (!event.path.startsWith("/api/ghn/")) return;
+  if (!APP_API_PREFIXES.some((prefix) => event.path.startsWith(prefix))) return;
   const headers = appCorsHeaders(getRequestHeader(event, "origin"));
   if (!headers) return;
   setResponseHeaders(event, headers);

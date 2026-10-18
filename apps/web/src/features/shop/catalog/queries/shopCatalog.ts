@@ -1,18 +1,19 @@
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/vue-query";
 import { computed, unref, type MaybeRef } from "vue";
 import { supabaseClient } from "@/lib/supabase";
-import { fetchVariantAvailability, listRelatedGroups, listShopGroups } from "@bongcun/supabase/shop";
 import type { CatalogFilters } from "@bongcun/core/shop";
 import { shopCatalogKeys } from "@/queries/keys";
+import { usePublicApi } from "@/features/shared/public-api";
 
 /** Groups per request of the shop list; "Xem thêm" fetches the next page. */
 export const SHOP_PAGE_SIZE = 24;
 
 /** The shop list a page at a time, narrowed by the filters (search is already debounced by the caller). */
 export const useShopCatalog = (filters: MaybeRef<Partial<CatalogFilters>>, pageSize = SHOP_PAGE_SIZE) => {
+  const api = usePublicApi();
   const query = useInfiniteQuery({
     queryKey: computed(() => shopCatalogKeys.list({ ...unref(filters) }, pageSize)),
-    queryFn: ({ pageParam }) => listShopGroups(supabaseClient(), { pageIndex: pageParam, pageSize }, { ...unref(filters) }),
+    queryFn: ({ pageParam }) => api.products({ pageIndex: pageParam, pageSize }, { ...unref(filters) }),
     initialPageParam: 1,
     getNextPageParam: (last, all) => {
       const loaded = all.reduce((sum, page) => sum + page.rows.length, 0);
@@ -31,17 +32,21 @@ export const useShopCatalog = (filters: MaybeRef<Partial<CatalogFilters>>, pageS
 };
 
 /** Other groups of the same category as `groupId`. */
-export const useRelatedGroups = (groupId: MaybeRef<string | undefined>) =>
-  useQuery({
+export const useRelatedGroups = (groupId: MaybeRef<string | undefined>) => {
+  const api = usePublicApi();
+  return useQuery({
     queryKey: computed(() => shopCatalogKeys.related(unref(groupId) ?? "")),
-    queryFn: () => listRelatedGroups(supabaseClient(), unref(groupId) ?? ""),
+    queryFn: () => api.related(unref(groupId) ?? ""),
     enabled: computed(() => Boolean(unref(groupId))),
   });
+};
 
 /** Stock of each variant of a group, for dimming the ones that cannot be bought. */
-export const useVariantAvailability = (productIds: MaybeRef<string[]>) =>
-  useQuery({
+export const useVariantAvailability = (productIds: MaybeRef<string[]>) => {
+  const api = usePublicApi();
+  return useQuery({
     queryKey: computed(() => shopCatalogKeys.availability(unref(productIds))),
-    queryFn: () => fetchVariantAvailability(supabaseClient(), unref(productIds)),
+    queryFn: () => api.stock(unref(productIds)),
     enabled: computed(() => unref(productIds).length > 0),
   });
+};

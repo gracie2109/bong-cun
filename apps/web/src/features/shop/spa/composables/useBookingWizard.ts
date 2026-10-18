@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import { useMyPets, useMyProfile } from "@/features/shop/account";
-import { useBranches } from "@/features/shared/branches";
+import { usePublicBranches } from "@/features/shared/public-api";
 import { useBookAppointment, useSpaWebQuote, useSpaWebRules, useSpaWebSlots } from "@/features/shop/spa/queries/spaWeb";
 import { useSpaPublicCatalog } from "@/features/shop/spa/queries/spaCatalog";
 import type { BookingPick, BookingResult, BookingStep } from "@bongcun/core/spa";
@@ -17,7 +17,7 @@ export const useBookingWizard = () => {
   const profile = useMyProfile();
   const hasCustomer = computed(() => Boolean(profile.data.value?.customerId));
   const petsQuery = useMyPets(hasCustomer);
-  const branchesQuery = useBranches();
+  const branchesQuery = usePublicBranches();
   const rules = useSpaWebRules();
 
   const branches = computed(() => branchesQuery.data.value ?? []);
