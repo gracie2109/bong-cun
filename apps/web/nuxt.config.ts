@@ -5,6 +5,8 @@ const i18nFiles = (locale: string) =>
   ["common", "shop", "services", "admin"].map((area) => `${locale}/${area}.json`);
 
 import { mobileNuxtConfig, resolveAppTarget } from "./config/mobileTarget";
+import { STATIC_SECURITY_HEADERS } from "./config/securityHeaders";
+import { DEFAULT_ALLOWED_HOSTS, DEFAULT_SITE_URL } from "./config/site";
 
 const appTarget = resolveAppTarget(process.env.NUXT_PUBLIC_APP_TARGET);
 
@@ -68,6 +70,8 @@ const baseConfig = defineNuxtConfig({
 
   // Hybrid rendering: public pages are server-rendered, signed-in areas are SPA.
   routeRules: {
+    // Anti-framing and sniffing headers everywhere (the CSP is added by server/middleware/security-headers.ts).
+    "/**": { headers: STATIC_SECURITY_HEADERS },
     "/admin/**": { ssr: false },
     "/cart": { ssr: false },
     "/checkout": { ssr: false },
@@ -80,7 +84,9 @@ const baseConfig = defineNuxtConfig({
 
   runtimeConfig: {
     // apiBase is empty on the website (same-origin /api); the mobile build points it at the deployed server.
-    public: { appTarget, apiBase: "" },
+    // siteUrl/allowedHosts: the real domain for canonical links and the wrong-domain guard
+    // (NUXT_PUBLIC_SITE_URL, NUXT_PUBLIC_ALLOWED_HOSTS).
+    public: { appTarget, apiBase: "", siteUrl: DEFAULT_SITE_URL, allowedHosts: DEFAULT_ALLOWED_HOSTS },
     // Server-only (NUXT_GHN_*). Never move these to `public`.
     ghn: {
       token: "",
