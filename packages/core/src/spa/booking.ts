@@ -10,7 +10,7 @@ export type PicksByPet = Record<string, BookingPick[]>;
 export const businessDate = (now: Date = new Date(), addDays = 0): string => {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
   if (addDays === 0) return parts;
-  const [y, m, d] = parts.split("-").map(Number);
+  const [y = 0, m = 1, d = 1] = parts.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + addDays)).toISOString().slice(0, 10);
 };
 
