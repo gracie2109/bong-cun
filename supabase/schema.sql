@@ -581,6 +581,52 @@ $$;
 ALTER FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."auto_cancel_expired_bookings"("p_grace_minutes" integer DEFAULT 60) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_cutoff  timestamptz;
+  v_appts   integer;
+  v_stays   integer;
+begin
+  if p_grace_minutes is null or p_grace_minutes < 0 then
+    raise exception 'p_grace_minutes must not be negative' using errcode = '22023', hint = 'bad_grace';
+  end if;
+  v_cutoff := now() - make_interval(mins => p_grace_minutes);
+
+  with expired as (
+    update public.appointments
+    set status = 'cancelled', cancelled_at = now(), cancel_reason = public.expired_booking_reason()
+    where status = 'booked' and end_at < v_cutoff
+    returning id
+  ), items as (
+    update public.appointment_items set status = 'cancelled'
+    where appointment_id in (select id from expired)
+    returning 1
+  )
+  select count(*) into v_appts from expired;
+
+  with expired as (
+    update public.boarding_stays
+    set status = 'cancelled', cancelled_at = now(), cancel_reason = public.expired_booking_reason()
+    where status = 'booked' and kind = 'boarding' and planned_out_at < v_cutoff
+    returning id
+  ), pets as (
+    update public.boarding_stay_pets set status = 'cancelled'
+    where stay_id in (select id from expired)
+    returning 1
+  )
+  select count(*) into v_stays from expired;
+
+  return jsonb_build_object('appointments', v_appts, 'stays', v_stays);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."auto_cancel_expired_bookings"("p_grace_minutes" integer) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer DEFAULT 48) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -3571,6 +3617,15 @@ $$;
 
 
 ALTER FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."expired_booking_reason"() RETURNS "text"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$ select 'Tự hủy: quá thời gian hẹn'::text $$;
+
+
+ALTER FUNCTION "public"."expired_booking_reason"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."export_products"("p_limit" integer DEFAULT 500, "p_offset" integer DEFAULT 0) RETURNS "jsonb"
@@ -7105,6 +7160,7 @@ begin
           'branch_phone', b.phone,
           'can_cancel', a.status = 'booked' and a.start_at - now() > v_cancel,
           'overdue', a.status = 'booked' and a.end_at <= now(),
+          'expired', a.status = 'cancelled' and a.cancel_reason = public.expired_booking_reason(),
           'est_total', (
             select coalesce(sum(i.est_price), 0)
             from public.appointment_items i where i.appointment_id = a.id and i.status <> 'cancelled'
@@ -7233,6 +7289,7 @@ CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_json"("p_stay" "public"."b
     'est_total', (public.boarding_stay_json(p_stay) ->> 'est_total')::numeric,
     'is_final', p_stay.status in ('checked_out', 'paid'),
     'overdue', p_stay.status = 'booked' and p_stay.planned_out_at <= now(),
+    'expired', p_stay.status = 'cancelled' and p_stay.cancel_reason = public.expired_booking_reason(),
     'pets', coalesce((
       select jsonb_agg(jsonb_build_object(
         'pet_name', sp.pet_name,
@@ -18722,6 +18779,11 @@ GRANT ALL ON FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid
 
 
 
+REVOKE ALL ON FUNCTION "public"."auto_cancel_expired_bookings"("p_grace_minutes" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."auto_cancel_expired_bookings"("p_grace_minutes" integer) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) TO "service_role";
 
@@ -19055,6 +19117,11 @@ GRANT ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") TO "service_r
 REVOKE ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."expired_booking_reason"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."expired_booking_reason"() TO "service_role";
 
 
 

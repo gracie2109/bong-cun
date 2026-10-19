@@ -17,6 +17,7 @@ type AppointmentJson = {
   branch_phone: string | null;
   can_cancel: boolean;
   overdue?: boolean;
+  expired?: boolean;
   est_total: number;
   has_unpriced: boolean;
   items: { name: string; pet_name: string | null; pet_photo_url: string | null; start_at: string; status: string; est_price: number | null }[];
@@ -33,6 +34,7 @@ const toAppointment = (row: AppointmentJson): MyAppointment => ({
   branchPhone: row.branch_phone ?? "",
   canCancel: row.can_cancel,
   overdue: row.overdue ?? false,
+  expired: row.expired ?? false,
   estTotal: Number(row.est_total),
   hasUnpriced: row.has_unpriced,
   items: row.items.map((item) => ({

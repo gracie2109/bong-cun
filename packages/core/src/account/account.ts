@@ -104,6 +104,8 @@ export type MyAppointment = {
   canCancel: boolean;
   /** Still booked but its end time has passed (the shop has not marked it yet): decided by the server. */
   overdue: boolean;
+  /** Cancelled by the system because nobody came: decided by the server. */
+  expired: boolean;
   estTotal: number;
   hasUnpriced: boolean;
   items: MyAppointmentItem[];
@@ -143,6 +145,8 @@ export type MyBoardingStay = {
   isFinal: boolean;
   /** Still booked but the planned check-out has passed: decided by the server. */
   overdue: boolean;
+  /** Cancelled by the system because nobody came: decided by the server. */
+  expired: boolean;
   pets: MyBoardingPet[];
 };
 
@@ -170,6 +174,8 @@ export type MyBoardingCharge = {
 
 export type MyBoardingDetail = MyBoardingStay & { careLogs: MyBoardingLog[]; charges: MyBoardingCharge[] };
 
-/** The status key a customer sees: a booked visit or stay whose time has passed reads "overdue", not "booked". */
-export const shownBookingStatus = (booking: { status: string; overdue: boolean }): string =>
-  booking.overdue ? "overdue" : booking.status;
+/** The status key a customer sees: a booked visit or stay whose time has passed reads "overdue", one the system cancelled for it reads "expired". */
+export const shownBookingStatus = (booking: { status: string; overdue: boolean; expired: boolean }): string => {
+  if (booking.expired) return "expired";
+  return booking.overdue ? "overdue" : booking.status;
+};

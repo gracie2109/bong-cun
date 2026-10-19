@@ -686,7 +686,8 @@
         "paid": "Paid",
         "cancelled": "Cancelled",
         "no_show": "No show",
-        "overdue": "Past due"
+        "overdue": "Past due",
+        "expired": "Cancelled: time passed"
       },
       "cancel": "Cancel",
       "cancelTitle": "Cancel this appointment?",
@@ -732,7 +733,8 @@
         "paid": "Paid",
         "cancelled": "Cancelled",
         "no_show": "No show",
-        "overdue": "Past due"
+        "overdue": "Past due",
+        "expired": "Cancelled: time passed"
       },
       "until": "Until {day}",
       "nights": "{n} nights",
