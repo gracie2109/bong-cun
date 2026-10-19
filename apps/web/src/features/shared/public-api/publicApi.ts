@@ -17,7 +17,6 @@ export const createPublicApi = (get: PublicGet): PublicApi => ({
     }),
   product: (id) => get(`products/${encodeURIComponent(id)}`),
   related: (id) => get(`products/${encodeURIComponent(id)}/related`),
-  stock: (productIds) => get("stock", { ids: productIds.join(",") }),
   spaCatalog: (branchId) => get("spa-catalog", { branch: branchId ?? undefined }),
   boardingCatalog: () => get("boarding-catalog"),
   shopSettings: () => get("shop-settings"),

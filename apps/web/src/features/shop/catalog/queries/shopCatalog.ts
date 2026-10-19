@@ -40,13 +40,3 @@ export const useRelatedGroups = (groupId: MaybeRef<string | undefined>) => {
     enabled: computed(() => Boolean(unref(groupId))),
   });
 };
-
-/** Stock of each variant of a group, for dimming the ones that cannot be bought. */
-export const useVariantAvailability = (productIds: MaybeRef<string[]>) => {
-  const api = usePublicApi();
-  return useQuery({
-    queryKey: computed(() => shopCatalogKeys.availability(unref(productIds))),
-    queryFn: () => api.stock(unref(productIds)),
-    enabled: computed(() => unref(productIds).length > 0),
-  });
-};

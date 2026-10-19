@@ -3,7 +3,7 @@ import { computed, unref, type MaybeRef } from "vue";
 import { spaKeys } from "@/queries/keys";
 import { usePublicApi } from "@/features/shared/public-api";
 
-/** The public price list for a branch (null = shared prices only). */
+/** The public price list for a branch; null asks for the first branch and the answer names it. */
 export const useSpaPublicCatalog = (branchId: MaybeRef<string | null>) => {
   const api = usePublicApi();
   return useQuery({

@@ -254,7 +254,6 @@ export const shopCatalogKeys = {
   all: ["shop-catalog"] as const,
   list: (filters: unknown, pageSize: number) => [...shopCatalogKeys.all, "list", filters, pageSize] as const,
   related: (groupId: string) => [...shopCatalogKeys.all, "related", groupId] as const,
-  availability: (productIds: string[]) => [...shopCatalogKeys.all, "availability", [...productIds].sort()] as const,
   group: (groupId: string) => [...shopCatalogKeys.all, "group", groupId] as const,
   categories: (page: PageParams, rootsOnly: boolean) => [...shopCatalogKeys.all, "categories", page, rootsOnly] as const,
   brands: (page: PageParams) => [...shopCatalogKeys.all, "brands", page] as const,
