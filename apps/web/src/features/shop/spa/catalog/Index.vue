@@ -3,64 +3,60 @@
     <SpaHero :book-target="bookTarget" :book-label="bookLabel" />
 
     <div class="shop-container pt-10 md:pt-14">
-      <!-- Client only: the price list needs the branch first, which the server render cannot wait for. -->
-      <ClientOnly>
-        <div v-if="catalog.branches.value.length > 1" class="mb-6">
+      <div v-if="catalog.branches.value.length > 1" class="mb-6">
+        <PillGroup
+          :options="catalog.branches.value"
+          :model-value="catalog.branchId.value"
+          :label="$t('client.spa.branch')"
+          @update:model-value="catalog.pickBranch"
+        />
+      </div>
+
+      <SpaCatalogSkeleton v-if="catalog.loading.value" />
+      <EmptyState
+        v-else-if="catalog.failed.value"
+        tone="error"
+        :title="$t('client.spa.loadFailed')"
+        :text="$t('client.catalog.errorHint')"
+      >
+        <Button class="h-11 rounded-full px-6" @click="catalog.retry">{{ $t("client.catalog.retry") }}</Button>
+      </EmptyState>
+      <EmptyState v-else-if="!catalog.species.value" :title="$t('client.spa.empty')" :text="$t('client.spa.emptyHint')">
+        <Button as-child variant="outline" class="h-11 rounded-full px-6">
+          <a :href="`tel:${STORE_INFO.phone}`">{{ STORE_INFO.phone }}</a>
+        </Button>
+      </EmptyState>
+      <template v-else>
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-2xl font-extrabold tracking-tight">
+            {{ $t("client.spa.priceTitle") }}
+          </h2>
           <PillGroup
-            :options="catalog.branches.value"
-            :model-value="catalog.branchId.value"
-            :label="$t('client.spa.branch')"
-            @update:model-value="catalog.pickBranch"
+            :options="catalog.speciesList.value"
+            :model-value="catalog.species.value.id"
+            :label="$t('client.spa.species')"
+            @update:model-value="catalog.pickSpecies"
           />
         </div>
 
-        <SpaCatalogSkeleton v-if="catalog.loading.value" />
-        <EmptyState
-          v-else-if="catalog.failed.value"
-          tone="error"
-          :title="$t('client.spa.loadFailed')"
-          :text="$t('client.catalog.errorHint')"
-        >
-          <Button class="h-11 rounded-full px-6" @click="catalog.retry">{{ $t("client.catalog.retry") }}</Button>
-        </EmptyState>
-        <EmptyState v-else-if="!catalog.species.value" :title="$t('client.spa.empty')" :text="$t('client.spa.emptyHint')">
-          <Button as-child variant="outline" class="h-11 rounded-full px-6">
-            <a :href="`tel:${STORE_INFO.phone}`">{{ STORE_INFO.phone }}</a>
-          </Button>
-        </EmptyState>
-        <template v-else>
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <h2 class="text-2xl font-extrabold tracking-tight">
-              {{ $t("client.spa.priceTitle") }}
-            </h2>
-            <PillGroup
-              :options="catalog.speciesList.value"
-              :model-value="catalog.species.value.id"
-              :label="$t('client.spa.species')"
-              @update:model-value="catalog.pickSpecies"
-            />
-          </div>
+        <section v-if="catalog.combos.value.length" class="mt-8" aria-labelledby="spa-combos">
+          <h3 id="spa-combos" class="shop-eyebrow !text-sage">
+            {{ $t("client.spa.combos") }}
+          </h3>
+          <ComboList class="mt-4" :combos="catalog.combos.value" />
+        </section>
 
-          <section v-if="catalog.combos.value.length" class="mt-8" aria-labelledby="spa-combos">
-            <h3 id="spa-combos" class="shop-eyebrow !text-sage">
-              {{ $t("client.spa.combos") }}
-            </h3>
-            <ComboList class="mt-4" :combos="catalog.combos.value" />
-          </section>
+        <section v-if="catalog.services.value.length" class="mt-10" aria-labelledby="spa-services">
+          <h3 id="spa-services" class="shop-eyebrow !text-sage">
+            {{ $t("client.spa.services") }}
+          </h3>
+          <ServicePriceList class="mt-4" :services="catalog.services.value" :species="catalog.species.value" />
+        </section>
 
-          <section v-if="catalog.services.value.length" class="mt-10" aria-labelledby="spa-services">
-            <h3 id="spa-services" class="shop-eyebrow !text-sage">
-              {{ $t("client.spa.services") }}
-            </h3>
-            <ServicePriceList class="mt-4" :services="catalog.services.value" :species="catalog.species.value" />
-          </section>
-
-          <p class="mt-6 flex gap-2 text-sm text-muted-foreground">
-            <Info class="mt-0.5 size-4 shrink-0" aria-hidden="true" />{{ $t("client.spa.priceNote") }}
-          </p>
-        </template>
-        <template #fallback><SpaCatalogSkeleton /></template>
-      </ClientOnly>
+        <p class="mt-6 flex gap-2 text-sm text-muted-foreground">
+          <Info class="mt-0.5 size-4 shrink-0" aria-hidden="true" />{{ $t("client.spa.priceNote") }}
+        </p>
+      </template>
 
       <section class="mt-16 rounded-[32px] bg-white p-6 ring-1 ring-border/70 md:p-10" aria-labelledby="spa-how">
         <div class="flex flex-wrap items-end justify-between gap-4">

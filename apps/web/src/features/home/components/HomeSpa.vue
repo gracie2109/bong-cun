@@ -13,14 +13,10 @@
           <p class="shop-eyebrow !text-sage">{{ $t("client.home.spa.eyebrow") }}</p>
           <h2 id="home-spa" class="shop-display mt-2 text-3xl md:text-[40px] md:leading-tight">{{ $t("client.home.spa.title") }}</h2>
           <p class="mt-4 max-w-xl text-lg text-muted-foreground">{{ $t("client.home.spa.text") }}</p>
-          <!-- Client only: the price list needs the branch first, which the server render cannot wait for. -->
-          <ClientOnly>
-            <template v-if="species && services.length > 0">
-              <p class="mt-7 text-sm font-semibold text-sage">{{ $t("client.home.spa.priceFor", { species: species.name }) }}</p>
-              <SpaServiceList class="mt-3" :services="services" :species="species" />
-            </template>
-            <template #fallback><div class="shop-skeleton mt-7 h-48 rounded-2xl" aria-hidden="true" /></template>
-          </ClientOnly>
+          <template v-if="species && services.length > 0">
+            <p class="mt-7 text-sm font-semibold text-sage">{{ $t("client.home.spa.priceFor", { species: species.name }) }}</p>
+            <SpaServiceList class="mt-3" :services="services" :species="species" />
+          </template>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button as-child class="h-12 rounded-full bg-sage px-6 text-base font-semibold hover:bg-sage/90">
               <RouterLink :to="{ path: '/spa/book' }"><CalendarHeart class="mr-2 size-5" />{{ $t("client.home.spa.book") }}</RouterLink>
