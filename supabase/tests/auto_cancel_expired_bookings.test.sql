@@ -2,7 +2,7 @@
 -- and the customer's pages report them as expired. Started work and bookings ahead are left alone.
 begin;
 \ir _helpers/setup.psql
-select plan(11);
+select plan(10);
 
 create temp table ctx as
 select tests.create_user('expired@test.local') as account, tests.create_branch('EB') as branch;
