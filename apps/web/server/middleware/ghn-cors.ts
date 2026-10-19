@@ -6,6 +6,8 @@ const APP_API_PREFIXES = ["/api/ghn/", "/api/public/"];
 
 export default defineEventHandler((event) => {
   if (!APP_API_PREFIXES.some((prefix) => event.path.startsWith(prefix))) return;
+  // The routes are cached (CDN, server), and the answer differs per Origin.
+  appendResponseHeader(event, "Vary", "Origin");
   const headers = appCorsHeaders(getRequestHeader(event, "origin"));
   if (!headers) return;
   setResponseHeaders(event, headers);

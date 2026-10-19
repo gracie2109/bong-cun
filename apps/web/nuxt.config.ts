@@ -5,6 +5,7 @@ const i18nFiles = (locale: string) =>
   ["common", "shop", "services", "admin"].map((area) => `${locale}/${area}.json`);
 
 import { mobileNuxtConfig, resolveAppTarget } from "./config/mobileTarget";
+import { publicApiCacheRules } from "./config/publicApiCache";
 import { STATIC_SECURITY_HEADERS } from "./config/securityHeaders";
 import { DEFAULT_ALLOWED_HOSTS, DEFAULT_SITE_URL } from "./config/site";
 
@@ -73,6 +74,10 @@ const baseConfig = defineNuxtConfig({
   routeRules: {
     // Anti-framing and sniffing headers everywhere (the CSP is added by server/middleware/security-headers.ts).
     "/**": { headers: STATIC_SECURITY_HEADERS },
+    // Anonymous catalog reads are cached on the server (the page HTML is not: the header shows the signed-in user).
+    // Reference data changes rarely; the product list and related items can lag a minute; product detail
+    // carries stock, so it is never cached.
+    ...publicApiCacheRules,
     "/admin/**": { ssr: false },
     "/cart": { ssr: false },
     "/checkout": { ssr: false },
