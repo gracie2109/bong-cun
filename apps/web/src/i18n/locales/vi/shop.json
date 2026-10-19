@@ -671,11 +671,13 @@
     "appointments": {
       "scope": {
         "upcoming": "Sắp tới",
-        "past": "Đã qua"
+        "past": "Đã qua",
+        "cancelled": "Đã hủy"
       },
       "empty": {
         "upcoming": "Bạn chưa có lịch sắp tới.",
-        "past": "Chưa có lịch nào đã qua."
+        "past": "Chưa có lịch nào đã qua.",
+        "cancelled": "Bạn chưa có lịch nào bị hủy."
       },
       "loadFailed": "Không tải được danh sách lịch hẹn.",
       "status": {
@@ -718,12 +720,14 @@
       "scope": {
         "upcoming": "Sắp tới",
         "current": "Đang ở",
-        "past": "Đã xong"
+        "past": "Đã xong",
+        "cancelled": "Đã hủy"
       },
       "empty": {
         "upcoming": "Bạn chưa có lượt lưu trú sắp tới.",
         "current": "Hiện chưa có bé nào đang ở khách sạn.",
-        "past": "Chưa có lượt lưu trú nào đã xong."
+        "past": "Chưa có lượt lưu trú nào đã xong.",
+        "cancelled": "Bạn chưa có lượt lưu trú nào bị hủy."
       },
       "loadFailed": "Không tải được thông tin lưu trú.",
       "status": {
