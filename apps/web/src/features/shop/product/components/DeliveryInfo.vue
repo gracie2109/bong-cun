@@ -18,6 +18,7 @@ import { useI18n } from "vue-i18n";
 import { Store, Truck } from "lucide-vue-next";
 import { STORE_INFO } from "@/config/storeInfo";
 import { formatPrice } from "@/lib/utils";
+import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
 import { useShopPublicSettings } from "@/features/shared/public-api";
 
 /** How the item can reach the customer, from the shop's online-sale settings (the same ones checkout uses). */
@@ -25,6 +26,7 @@ const props = defineProps<{ inStoreOnly: boolean }>();
 
 const { t } = useI18n();
 const settingsQuery = useShopPublicSettings();
+useServerPrefetch(settingsQuery);
 
 const rows = computed(() => {
   const settings = settingsQuery.data.value;

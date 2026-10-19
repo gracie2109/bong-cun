@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { usePublicGroup } from "@/features/shared/public-api";
 import { useRelatedGroups, useVariantAvailability } from "@/features/shop/catalog";
 import { useVariantChoice } from "@/features/shared/products";
+import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
 import { useAddToCart } from "@/features/shop/cart";
 
 /** Variants with at most this many left show "only N left". */
@@ -27,6 +28,9 @@ export const useProductPage = () => {
   const choice = useVariantChoice(group, canSell);
   const addToCart = useAddToCart(choice.variant);
   const related = useRelatedGroups(id);
+  // Stock needs the group's variants, so it runs after the group. A disabled query never settles,
+  // so the server render only waits for stock when there are variants.
+  useServerPrefetch(groupQuery, () => (variantIds.value.length > 0 ? [availability, related] : [related]));
 
   const status = computed<ProductStatus>(() => {
     if (groupQuery.isPending.value) return "loading";

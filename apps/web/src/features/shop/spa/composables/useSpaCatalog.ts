@@ -1,4 +1,5 @@
 import { computed, ref, watch } from "vue";
+import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
 import { usePublicBranches } from "@/features/shared/public-api";
 import { useSpaPublicCatalog } from "@/features/shop/spa/queries/spaCatalog";
 import {
@@ -15,6 +16,8 @@ export const useSpaCatalog = () => {
   const picked = ref<string | null>(null);
   const branchId = computed(() => picked.value ?? branches.value[0]?.id ?? null);
   const catalogQuery = useSpaPublicCatalog(branchId);
+  // The catalog is keyed by the branch, so it runs after the branches resolve.
+  useServerPrefetch(branchesQuery, () => [catalogQuery]);
 
   const speciesList = computed(() => (catalogQuery.data.value ? speciesWithOffers(catalogQuery.data.value) : []));
   const speciesPicked = ref<string | null>(null);
