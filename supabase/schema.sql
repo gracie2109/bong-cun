@@ -7131,7 +7131,7 @@ begin
   if auth.uid() is null then
     raise exception 'sign in first' using errcode = '28000', hint = 'not_signed_in';
   end if;
-  if p_scope not in ('upcoming', 'past') then
+  if p_scope not in ('upcoming', 'past', 'cancelled') then
     raise exception 'unknown scope' using errcode = '22023', hint = 'invalid_scope';
   end if;
   v_upcoming := p_scope = 'upcoming';
@@ -7143,7 +7143,11 @@ begin
     select a.*
     from public.appointments a
     where a.customer_id = v_cust
-      and (a.status in ('checked_in', 'in_progress') or (a.status = 'booked' and a.end_at > now())) = v_upcoming
+      and case p_scope
+            when 'upcoming' then a.status in ('checked_in', 'in_progress') or (a.status = 'booked' and a.end_at > now())
+            when 'cancelled' then a.status = 'cancelled'
+            else a.status in ('done', 'paid', 'no_show') or (a.status = 'booked' and a.end_at <= now())
+          end
   )
   select
     (select count(*) from f),
@@ -7262,7 +7266,8 @@ CREATE OR REPLACE FUNCTION "public"."my_boarding_stay_in_scope"("p_stay" "public
   select case p_scope
     when 'upcoming' then p_stay.status = 'booked' and p_stay.planned_out_at > now()
     when 'current' then p_stay.status = 'checked_in'
-    when 'past' then p_stay.status in ('checked_out', 'paid', 'cancelled', 'no_show')
+    when 'cancelled' then p_stay.status = 'cancelled'
+    when 'past' then p_stay.status in ('checked_out', 'paid', 'no_show')
       or (p_stay.status = 'booked' and p_stay.planned_out_at <= now())
     else false
   end;
@@ -7333,7 +7338,8 @@ begin
   v_states := case p_scope
     when 'upcoming' then array['booked']
     when 'current' then array['checked_in']
-    when 'past' then array['checked_out', 'paid', 'cancelled', 'no_show']
+    when 'past' then array['checked_out', 'paid', 'no_show']
+    when 'cancelled' then array['cancelled']
   end;
   if v_states is null then
     raise exception 'unknown scope' using errcode = '22023', hint = 'invalid_scope';
@@ -7346,13 +7352,13 @@ begin
   from public.boarding_stays s where s.customer_id = v_cust and public.my_boarding_stay_in_scope(s, p_scope);
 
   select coalesce(jsonb_agg(public.my_boarding_stay_json(s) order by
-           case when p_scope = 'past' then null else s.planned_in_at end asc,
+           case when p_scope in ('past', 'cancelled') then null else s.planned_in_at end asc,
            s.planned_in_at desc), '[]'::jsonb)
   into v_rows
   from (
     select * from public.boarding_stays s
     where s.customer_id = v_cust and public.my_boarding_stay_in_scope(s, p_scope)
-    order by case when p_scope = 'past' then null else s.planned_in_at end asc, s.planned_in_at desc
+    order by case when p_scope in ('past', 'cancelled') then null else s.planned_in_at end asc, s.planned_in_at desc
     limit v_size offset v_offset
   ) s;
 

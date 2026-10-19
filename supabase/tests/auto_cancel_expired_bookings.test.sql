@@ -2,7 +2,7 @@
 -- and the customer's pages report them as expired. Started work and bookings ahead are left alone.
 begin;
 \ir _helpers/setup.psql
-select plan(10);
+select plan(12);
 
 create temp table ctx as
 select tests.create_user('expired@test.local') as account, tests.create_branch('EB') as branch;
@@ -51,7 +51,7 @@ select is(public.auto_cancel_expired_bookings(), '{"appointments": 0, "stays": 0
 select tests.login(account) from ctx;
 set local role authenticated;
 select is(
-  (select jsonb_path_query_array(public.my_appointments('past') -> 'rows', '$[*] ? (@.expired == true).code')),
+  (select jsonb_path_query_array(public.my_appointments('cancelled') -> 'rows', '$[*] ? (@.expired == true).code')),
   '["EB-OLD"]'::jsonb, 'the customer sees the cancelled visit as expired'
 );
 select is(
@@ -59,12 +59,21 @@ select is(
   '["EB-RECENT"]'::jsonb, 'a visit inside the grace hour is still only overdue'
 );
 select is(
-  (select jsonb_path_query_array(public.my_boarding_stays('past') -> 'rows', '$[*] ? (@.expired == true).code')),
+  (select jsonb_path_query_array(public.my_boarding_stays('cancelled') -> 'rows', '$[*] ? (@.expired == true).code')),
   '["EB-STAY-OLD"]'::jsonb, 'the customer sees the cancelled stay as expired'
 );
 select is(
   (select jsonb_path_query_array(public.my_boarding_stays('upcoming') -> 'rows', '$[*].code')),
   '["EB-STAY-NEXT"]'::jsonb, 'upcoming stays keep only the one ahead'
+);
+
+select is(
+  (select jsonb_path_query_array(public.my_appointments('cancelled') -> 'rows', '$[*].code')),
+  '["EB-OLD"]'::jsonb, 'the cancelled tab lists only the cancelled visit'
+);
+select is(
+  (select jsonb_path_query_array(public.my_appointments('past') -> 'rows', '$[*].code')),
+  '["EB-RECENT"]'::jsonb, 'the past tab no longer lists cancelled visits'
 );
 
 select * from finish();

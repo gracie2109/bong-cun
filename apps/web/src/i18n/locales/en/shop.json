@@ -671,11 +671,13 @@
     "appointments": {
       "scope": {
         "upcoming": "Upcoming",
-        "past": "Past"
+        "past": "Past",
+        "cancelled": "Cancelled"
       },
       "empty": {
         "upcoming": "You have no upcoming visits.",
-        "past": "No past visits yet."
+        "past": "No past visits yet.",
+        "cancelled": "You have no cancelled visits."
       },
       "loadFailed": "Could not load your appointments.",
       "status": {
@@ -718,12 +720,14 @@
       "scope": {
         "upcoming": "Upcoming",
         "current": "Staying",
-        "past": "Finished"
+        "past": "Finished",
+        "cancelled": "Cancelled"
       },
       "empty": {
         "upcoming": "You have no upcoming stays.",
         "current": "No pet is staying with us right now.",
-        "past": "No finished stays yet."
+        "past": "No finished stays yet.",
+        "cancelled": "You have no cancelled stays."
       },
       "loadFailed": "Could not load your boarding stays.",
       "status": {

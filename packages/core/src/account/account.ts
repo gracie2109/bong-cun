@@ -76,7 +76,7 @@ export type PetHealth = {
 /** A web account without a customer record, as staff see it when linking. */
 export type UnlinkedAccount = { userId: string; fullName: string; phone: string; email: string };
 
-export const APPOINTMENT_SCOPES = ["upcoming", "past"] as const;
+export const APPOINTMENT_SCOPES = ["upcoming", "past", "cancelled"] as const;
 export type AppointmentScope = (typeof APPOINTMENT_SCOPES)[number];
 
 export type MyAppointmentItem = {
@@ -111,7 +111,7 @@ export type MyAppointment = {
   items: MyAppointmentItem[];
 };
 
-export const BOARDING_SCOPES = ["upcoming", "current", "past"] as const;
+export const BOARDING_SCOPES = ["upcoming", "current", "past", "cancelled"] as const;
 export type BoardingScope = (typeof BOARDING_SCOPES)[number];
 
 export type MyBoardingPet = {
