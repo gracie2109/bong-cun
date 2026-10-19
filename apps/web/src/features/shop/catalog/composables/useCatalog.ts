@@ -1,17 +1,17 @@
 import { computed } from "vue";
 import { usePublicBrands, usePublicCategories } from "@/features/shared/public-api";
-import { useShopCatalog } from "@/features/shop/catalog/queries/shopCatalog";
-import { buildCategoryTree, categoryName } from "@/utils/shop/catalog";
+import { SHOP_PAGE_SIZE, useShopCatalog } from "@/features/shop/catalog/queries/shopCatalog";
+import { buildCategoryTree, categoryName, filtersToQuery } from "@/utils/shop/catalog";
 import { useCatalogFilters } from "@/features/shop/catalog/composables/useCatalogFilters";
 import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
 
 /** Small fixed lookups (categories, brands) load once; the list pages through the RPC. */
 const LOOKUP_PAGE = { pageIndex: 1, pageSize: 200 };
 
-/** Everything the shop list screen needs: URL filters, the groups, and the filter lookups. */
+/** Everything the shop list screen needs: URL filters and page, the groups, and the filter lookups. */
 export const useCatalog = () => {
   const state = useCatalogFilters();
-  const catalog = useShopCatalog(state.filters);
+  const catalog = useShopCatalog(state.filters, SHOP_PAGE_SIZE, state.page);
   const categories = usePublicCategories(LOOKUP_PAGE);
   const brands = usePublicBrands(LOOKUP_PAGE);
   useServerPrefetch(catalog.query, categories, brands);
@@ -28,14 +28,9 @@ export const useCatalog = () => {
     ...state,
     groups: catalog.groups,
     total: catalog.total,
-    loadMore: catalog.loadMore,
+    pageSize: SHOP_PAGE_SIZE,
+    pageQuery: computed(() => filtersToQuery(state.filters.value)),
     loading: computed(() => catalog.query.isPending.value),
-    // New filters are loading while the previous list stays on screen.
-    refreshing: computed(
-      () => catalog.query.isFetching.value && !catalog.query.isPending.value && !catalog.query.isFetchingNextPage.value
-    ),
-    loadingMore: catalog.query.isFetchingNextPage,
-    hasMore: catalog.query.hasNextPage,
     failed: catalog.query.isError,
     retry: () => void catalog.query.refetch(),
     categoryTree,
