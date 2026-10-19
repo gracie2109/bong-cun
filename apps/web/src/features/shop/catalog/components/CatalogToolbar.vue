@@ -1,7 +1,7 @@
 <template>
   <div class="sticky top-16 z-20 -mx-4 bg-background/90 px-4 py-3 backdrop-blur-md sm:mx-0 sm:px-0 lg:top-[72px]">
     <div class="flex items-center gap-2 sm:gap-3">
-      <div class="relative min-w-0 flex-1">
+      <form class="relative min-w-0 flex-1" role="search" @submit.prevent="emit('submitSearch')">
         <label for="catalog-search" class="sr-only">{{ $t("client.catalog.searchLabel") }}</label>
         <Search class="pointer-events-none absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-muted-foreground" />
         <input
@@ -18,11 +18,11 @@
           type="button"
           class="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-content-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
           :aria-label="$t('client.catalog.clearSearch')"
-          @click="search = ''"
+          @click="emit('clearSearch')"
         >
           <X class="size-4" />
         </button>
-      </div>
+      </form>
       <button
         type="button"
         class="relative inline-flex h-11 shrink-0 items-center gap-2 rounded-full border bg-white px-4 text-sm font-medium transition-colors hover:border-foreground/40 lg:hidden"
@@ -35,9 +35,6 @@
       </button>
       <CatalogSort :model-value="sort" @update:model-value="emit('sort', $event)" />
     </div>
-    <div class="absolute inset-x-0 bottom-0 h-0.5 overflow-hidden" aria-hidden="true">
-      <div v-if="refreshing" class="toolbar-progress h-full w-1/3 rounded-full bg-primary" />
-    </div>
   </div>
 </template>
 
@@ -46,21 +43,8 @@ import { Search, SlidersHorizontal, X } from "lucide-vue-next";
 import type { CatalogSort as Sort } from "@bongcun/core/shop";
 import CatalogSort from "./CatalogSort.vue";
 
-defineProps<{ sort: Sort; filterCount: number; refreshing: boolean }>();
+defineProps<{ sort: Sort; filterCount: number }>();
 const search = defineModel<string>("search", { required: true });
-const emit = defineEmits<{ sort: [value: Sort]; openFilters: [] }>();
+const emit = defineEmits<{ sort: [value: Sort]; openFilters: []; submitSearch: []; clearSearch: [] }>();
 </script>
 
-<style scoped>
-.toolbar-progress {
-  animation: toolbar-progress 1s var(--ease-in-out) infinite;
-}
-@keyframes toolbar-progress {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(300%);
-  }
-}
-</style>

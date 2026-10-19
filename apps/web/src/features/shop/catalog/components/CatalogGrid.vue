@@ -16,26 +16,17 @@
   </EmptyState>
 
   <template v-else>
-    <ul
-      class="grid grid-cols-2 gap-x-4 gap-y-8 transition-opacity duration-300 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-4"
-      :class="{ 'opacity-60': refreshing }"
-      :aria-busy="refreshing"
-    >
+    <ul class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 xl:grid-cols-4">
       <li v-for="(group, index) in groups" :key="group.id" class="shop-reveal" :style="{ '--i': revealIndex(index) }">
         <ProductCard :group="group" />
       </li>
     </ul>
-    <CatalogLoadMore
-      :shown="groups.length"
-      :total="total"
-      :has-more="hasMore"
-      :loading-more="loadingMore"
-      @load-more="emit('loadMore')"
-    />
+    <CatalogPagination :page="page" :page-size="pageSize" :total="total" :shown="shownCount" :query="query" />
   </template>
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { WifiOff } from "lucide-vue-next";
 import EmptyState from "@/components/shop/EmptyState.vue";
 import ProductCard from "@/components/shop/ProductCard.vue";
@@ -43,17 +34,21 @@ import ProductCardSkeleton from "@/components/shop/ProductCardSkeleton.vue";
 import { Button } from "@/components/ui/button";
 import type { ShopGroup } from "@bongcun/core/shop";
 import { revealIndex } from "@/utils/shop/motion";
-import CatalogLoadMore from "./CatalogLoadMore.vue";
+import CatalogPagination from "./CatalogPagination.vue";
 
-defineProps<{
+const props = defineProps<{
   groups: ShopGroup[];
   total: number;
+  page: number;
+  pageSize: number;
+  /** The URL query of the current filters, for the page links. */
+  query: Record<string, string>;
   loading: boolean;
-  refreshing: boolean;
   failed: boolean;
   filtered: boolean;
-  hasMore: boolean;
-  loadingMore: boolean;
 }>();
-const emit = defineEmits<{ loadMore: []; retry: []; clear: [] }>();
+const emit = defineEmits<{ retry: []; clear: [] }>();
+
+// Products up to the end of this page, e.g. 48 of 130 on page 2.
+const shownCount = computed(() => Math.min(props.total, (props.page - 1) * props.pageSize + props.groups.length));
 </script>

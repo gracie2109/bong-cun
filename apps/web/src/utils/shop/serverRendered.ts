@@ -9,9 +9,18 @@ export const isServerRenderedPath = (path: string): boolean =>
   (SERVER_RENDERED_PATHS as readonly string[]).includes(path) ||
   SERVER_RENDERED_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
 
+const CATALOG_PATH = "/products";
+const pathOf = (url: string): string => url.split(/[?#]/)[0] ?? url;
+const withoutHash = (url: string): string => url.split("#")[0] ?? url;
+
 /**
- * A move that should reload the page: it lands on a server-rendered page at another path.
- * Changes to the query or hash of the same page (search, filters, "load more") stay in the browser.
+ * A move that should reload the page: it lands on a server-rendered page at another path, or it
+ * changes the search, filters, sort or page of the product list (those are in the URL query, so the
+ * server renders the new list). A hash change, or a query change on any other page, stays in the browser.
  */
-export const needsDocumentLoad = (fromPath: string, toPath: string): boolean =>
-  fromPath !== toPath && isServerRenderedPath(toPath);
+export const needsDocumentLoad = (fromUrl: string, toUrl: string): boolean => {
+  const toPath = pathOf(toUrl);
+  if (!isServerRenderedPath(toPath)) return false;
+  if (pathOf(fromUrl) !== toPath) return true;
+  return toPath === CATALOG_PATH && withoutHash(fromUrl) !== withoutHash(toUrl);
+};

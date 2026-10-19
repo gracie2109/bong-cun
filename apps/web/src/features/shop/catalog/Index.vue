@@ -20,8 +20,9 @@
           v-model:search="catalog.searchText.value"
           :sort="catalog.filters.value.sort"
           :filter-count="chips.length"
-          :refreshing="catalog.refreshing.value"
           @sort="catalog.setSort"
+          @submit-search="catalog.submitSearch"
+          @clear-search="catalog.clearSearch"
           @open-filters="filtersOpen = true"
         />
         <CatalogChips :chips="chips" class="mt-3" @clear="catalog.clear" />
@@ -29,13 +30,12 @@
           class="mt-5"
           :groups="catalog.groups.value"
           :total="catalog.total.value"
+          :page="catalog.page.value"
+          :page-size="catalog.pageSize"
+          :query="catalog.pageQuery.value"
           :loading="catalog.loading.value"
-          :refreshing="catalog.refreshing.value"
           :failed="catalog.failed.value"
           :filtered="catalog.isFiltered.value"
-          :has-more="catalog.hasMore.value"
-          :loading-more="catalog.loadingMore.value"
-          @load-more="catalog.loadMore"
           @retry="catalog.retry"
           @clear="catalog.clear"
         />

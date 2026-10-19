@@ -9,7 +9,7 @@ export default defineNuxtPlugin(() => {
 
   useRouter().beforeEach((to, from) => {
     if (from === START_LOCATION) return;
-    if (!needsDocumentLoad(from.path, to.path)) return;
+    if (!needsDocumentLoad(from.fullPath, to.fullPath)) return;
     window.location.assign(to.fullPath);
     return false;
   });

@@ -22,8 +22,16 @@ describe("needsDocumentLoad", () => {
     expect(needsDocumentLoad("/cart", "/spa")).toBe(true);
   });
 
-  it("stays in the browser for the same page or a client-side page", () => {
+  it("reloads when the product list's search, filters, sort or page change", () => {
+    expect(needsDocumentLoad("/products", "/products?q=cat")).toBe(true);
+    expect(needsDocumentLoad("/products?q=cat", "/products?q=cat&page=2")).toBe(true);
+    expect(needsDocumentLoad("/products?page=2", "/products")).toBe(true);
+  });
+
+  it("stays in the browser for a hash change, another page's query or a client-side page", () => {
     expect(needsDocumentLoad("/products", "/products")).toBe(false);
+    expect(needsDocumentLoad("/products?q=a", "/products?q=a#top")).toBe(false);
+    expect(needsDocumentLoad("/spa", "/spa?x=1")).toBe(false);
     expect(needsDocumentLoad("/products", "/cart")).toBe(false);
     expect(needsDocumentLoad("/spa", "/spa/book")).toBe(false);
   });
