@@ -88,7 +88,7 @@ export const useBookingWizard = () => {
     pets,
     branches,
     rules,
-    catalog: computed(() => catalogQuery.data.value ?? null),
+    catalog: computed(() => catalogQuery.data.value?.catalog ?? null),
     // steps
     steps,
     current,

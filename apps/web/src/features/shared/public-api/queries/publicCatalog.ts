@@ -29,7 +29,7 @@ export const usePublicBrands = (page: MaybeRef<PageParams>) => {
   });
 };
 
-/** One product group with only its sellable variants (null when it does not exist). */
+/** One product group with only its sellable variants (null when it does not exist), plus its stock. */
 export const usePublicGroup = (id: MaybeRef<string | undefined>) => {
   const api = usePublicApi();
   return useQuery({

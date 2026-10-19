@@ -3,7 +3,6 @@ import { z } from "zod";
 import { CATALOG_SORTS } from "@bongcun/core/shop";
 
 const MAX_PAGE_SIZE = 200;
-const MAX_STOCK_IDS = 99;
 
 const optionalId = z.string().uuid().optional();
 
@@ -26,10 +25,3 @@ export const productsQuerySchema = pageQuerySchema.extend({
 export const branchQuerySchema = z.object({ branch: optionalId });
 
 export const idParamSchema = z.object({ id: z.string().uuid() });
-
-export const stockQuerySchema = z.object({
-  ids: z
-    .string()
-    .transform((value) => value.split(",").filter(Boolean))
-    .pipe(z.array(z.string().uuid()).min(1).max(MAX_STOCK_IDS)),
-});

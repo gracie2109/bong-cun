@@ -13,13 +13,15 @@ export const useSpaCatalog = () => {
   const branchesQuery = usePublicBranches();
   const branches = computed(() => branchesQuery.data.value ?? []);
 
+  // Until a branch is picked the server answers for the first one, so both requests can run together
+  // (a request that waits for another cannot be rendered on the server).
   const picked = ref<string | null>(null);
-  const branchId = computed(() => picked.value ?? branches.value[0]?.id ?? null);
-  const catalogQuery = useSpaPublicCatalog(branchId);
-  // The catalog is keyed by the branch, so it runs after the branches resolve.
-  useServerPrefetch(branchesQuery, () => [catalogQuery]);
+  const catalogQuery = useSpaPublicCatalog(picked);
+  const catalog = computed(() => catalogQuery.data.value?.catalog ?? null);
+  const branchId = computed(() => picked.value ?? catalogQuery.data.value?.branchId ?? branches.value[0]?.id ?? null);
+  useServerPrefetch(branchesQuery, catalogQuery);
 
-  const speciesList = computed(() => (catalogQuery.data.value ? speciesWithOffers(catalogQuery.data.value) : []));
+  const speciesList = computed(() => (catalog.value ? speciesWithOffers(catalog.value) : []));
   const speciesPicked = ref<string | null>(null);
   const species = computed(
     () => speciesList.value.find((item) => item.id === speciesPicked.value) ?? speciesList.value[0] ?? null
@@ -31,10 +33,10 @@ export const useSpaCatalog = () => {
   });
 
   const services = computed(() =>
-    catalogQuery.data.value && species.value ? servicesForSpecies(catalogQuery.data.value, species.value.id) : []
+    catalog.value && species.value ? servicesForSpecies(catalog.value, species.value.id) : []
   );
   const combos = computed(() =>
-    catalogQuery.data.value && species.value ? combosForSpecies(catalogQuery.data.value, species.value.id) : []
+    catalog.value && species.value ? combosForSpecies(catalog.value, species.value.id) : []
   );
 
   return {

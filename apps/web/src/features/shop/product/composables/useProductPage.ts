@@ -2,7 +2,7 @@ import { computed } from "vue";
 import { useHead } from "#imports";
 import { useRoute } from "vue-router";
 import { usePublicGroup } from "@/features/shared/public-api";
-import { useRelatedGroups, useVariantAvailability } from "@/features/shop/catalog";
+import { useRelatedGroups } from "@/features/shop/catalog";
 import { useVariantChoice } from "@/features/shared/products";
 import { useServerPrefetch } from "@/composables/shop/useServerPrefetch";
 import { useAddToCart } from "@/features/shop/cart";
@@ -18,19 +18,16 @@ export const useProductPage = () => {
   const id = computed(() => String(route.params.id ?? ""));
 
   const groupQuery = usePublicGroup(id);
-  const group = computed(() => groupQuery.data.value ?? null);
-  const variantIds = computed(() => (group.value?.variants ?? []).map((variant) => variant.id));
-
-  const availability = useVariantAvailability(variantIds);
+  const group = computed(() => groupQuery.data.value?.group ?? null);
+  // How many of each variant can be bought now; it comes with the group.
+  const availability = computed(() => groupQuery.data.value?.stock ?? {});
   const canSell = (variant: { id: string; trackStock: boolean }) =>
-    !variant.trackStock || (availability.data.value?.[variant.id] ?? 1) > 0;
+    !variant.trackStock || (availability.value[variant.id] ?? 1) > 0;
 
   const choice = useVariantChoice(group, canSell);
   const addToCart = useAddToCart(choice.variant);
   const related = useRelatedGroups(id);
-  // Stock needs the group's variants, so it runs after the group. A disabled query never settles,
-  // so the server render only waits for stock when there are variants.
-  useServerPrefetch(groupQuery, () => (variantIds.value.length > 0 ? [availability, related] : [related]));
+  useServerPrefetch(groupQuery, related);
 
   const status = computed<ProductStatus>(() => {
     if (groupQuery.isPending.value) return "loading";
@@ -44,7 +41,7 @@ export const useProductPage = () => {
     const picked = choice.variant.value;
     if (!picked) return null;
     if (!picked.trackStock) return { kind: "in" as const, count: null };
-    const left = availability.data.value?.[picked.id];
+    const left = availability.value[picked.id];
     if (left === undefined) return null;
     if (left <= 0) return { kind: "out" as const, count: 0 };
     return { kind: left <= LOW_STOCK ? ("low" as const) : ("in" as const), count: left };
