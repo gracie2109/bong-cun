@@ -277,9 +277,3 @@ export const boardingWebKeys = {
   catalog: () => ["boarding-web", "catalog"] as const,
 };
 
-export const ghnLocationKeys = {
-  all: ["ghn-locations"] as const,
-  provinces: () => [...ghnLocationKeys.all, "provinces"] as const,
-  districts: (provinceId: number) => [...ghnLocationKeys.all, "districts", provinceId] as const,
-  wards: (districtId: number) => [...ghnLocationKeys.all, "wards", districtId] as const,
-};

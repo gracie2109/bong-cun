@@ -310,6 +310,8 @@ Unit `pickerState` (đổi tỉnh xóa xã; chưa chọn xã thì chưa đủ; l
 
 ## 8. P5: tính phí GHN bằng mã lấy từ cache
 
+> **Cập nhật 2026-10-22 (grace gửi ảnh tài liệu GHN "Calculate Fee"):** API phí GHN đang dùng (`/v2/shipping-order/fee`) chỉ nhận `to_district_id` + `to_ward_code` (3 cấp cũ), không có tham số cho địa chỉ 2 cấp mới. Vì vậy P5 rút gọn: địa chỉ `ghn_legacy` vẫn tính phí GHN như cũ, địa chỉ `vn_2025` dùng phí cố định "ước tính" (đường dự phòng có sẵn). Chỉ xóa phần picker GHN cũ không còn dùng (`GhnLocationPicker`, `useGhnLocationPicker`, `ghnLocations`, `ghnLocationKeys`); route master-data và `services/location.service.ts` giữ lại vì `ProvinceAddress` (form người dùng cũ) còn dùng. Phần thiết kế dưới đây để dành khi GHN có API phí cho địa chỉ mới.
+
 ### 8.1 Phải xác minh trước khi code [CXM]
 
 - Body của `/v2/shipping-order/fee` và `/leadtime` cho **địa chỉ 2 cấp mới**. Theo tài liệu GHN grace đã dán cho phần danh mục: địa chỉ mới gửi `to_province_name`/`to_ward_name` đúng chuỗi `name` của GHN kèm `is_new_to_address: true`; chưa đọc tài liệu "Tính phí" nên chưa biết có nhận `to_ward_code` mới không, và phía gửi (`from_*`) dùng gì. **Bước đầu của P5: xin grace dán tài liệu "Tính phí" và "Thời gian giao dự kiến" (bản đơn vị hành chính mới)**. Môi trường cloud không mở được developer.ghn.vn.
