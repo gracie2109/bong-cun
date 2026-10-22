@@ -416,16 +416,23 @@ CREATE TABLE IF NOT EXISTS "public"."customer_addresses" (
     "phone" "text" NOT NULL,
     "street" "text" NOT NULL,
     "province_name" "text" NOT NULL,
-    "district_name" "text" NOT NULL,
+    "district_name" "text",
     "ward_name" "text" NOT NULL,
-    "ghn_province_id" integer NOT NULL,
-    "ghn_district_id" integer NOT NULL,
-    "ghn_ward_code" "text" NOT NULL,
+    "ghn_province_id" integer,
+    "ghn_district_id" integer,
+    "ghn_ward_code" "text",
     "is_default" boolean DEFAULT false NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "location_model" "text" DEFAULT 'ghn_legacy'::"text" NOT NULL,
+    "province_location_code" "text",
+    "ward_location_code" "text",
+    "province_official_code" "text",
+    "ward_official_code" "text",
     CONSTRAINT "customer_addresses_district_name_check" CHECK (("length"("btrim"("district_name")) > 0)),
     CONSTRAINT "customer_addresses_ghn_ward_code_check" CHECK (("length"("btrim"("ghn_ward_code")) > 0)),
+    CONSTRAINT "customer_addresses_location_fields_check" CHECK (((("location_model" = 'ghn_legacy'::"text") AND ("district_name" IS NOT NULL) AND ("ghn_province_id" IS NOT NULL) AND ("ghn_district_id" IS NOT NULL) AND ("ghn_ward_code" IS NOT NULL)) OR (("location_model" = 'vn_2025'::"text") AND ("ward_location_code" IS NOT NULL) AND ("province_location_code" IS NOT NULL)))),
+    CONSTRAINT "customer_addresses_location_model_check" CHECK (("location_model" = ANY (ARRAY['ghn_legacy'::"text", 'vn_2025'::"text"]))),
     CONSTRAINT "customer_addresses_phone_check" CHECK ((("length"("regexp_replace"("phone", '\D'::"text", ''::"text", 'g'::"text")) >= 8) AND ("length"("regexp_replace"("phone", '\D'::"text", ''::"text", 'g'::"text")) <= 15))),
     CONSTRAINT "customer_addresses_province_name_check" CHECK (("length"("btrim"("province_name")) > 0)),
     CONSTRAINT "customer_addresses_receiver_name_check" CHECK (("length"("btrim"("receiver_name")) > 0)),
@@ -452,7 +459,12 @@ CREATE OR REPLACE FUNCTION "public"."address_json"("a" "public"."customer_addres
     'ghn_province_id', a.ghn_province_id,
     'ghn_district_id', a.ghn_district_id,
     'ghn_ward_code', a.ghn_ward_code,
-    'is_default', a.is_default
+    'is_default', a.is_default,
+    'location_model', a.location_model,
+    'province_location_code', a.province_location_code,
+    'ward_location_code', a.ward_location_code,
+    'province_official_code', a.province_official_code,
+    'ward_official_code', a.ward_official_code
   );
 $$;
 
@@ -7815,12 +7827,18 @@ CREATE TABLE IF NOT EXISTS "public"."shop_orders" (
     "cancelled_at" timestamp with time zone,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "ship_location_model" "text",
+    "ship_ward_location_code" "text",
+    "ship_province_location_code" "text",
+    "ship_ward_official_code" "text",
+    "ship_province_official_code" "text",
     CONSTRAINT "shop_orders_carrier_check" CHECK (("carrier" = 'ghn'::"text")),
-    CONSTRAINT "shop_orders_check" CHECK ((("delivery_method" = 'delivery'::"text") = (("ghn_district_id" IS NOT NULL) AND ("ghn_ward_code" IS NOT NULL)))),
     CONSTRAINT "shop_orders_check1" CHECK ((("delivery_method" = 'pickup'::"text") OR ("length"("btrim"(COALESCE("ship_street", ''::"text"))) > 0))),
     CONSTRAINT "shop_orders_check2" CHECK ((("delivery_method" = 'pickup'::"text") = ("payment_method" = 'pay_at_store'::"text"))),
     CONSTRAINT "shop_orders_check3" CHECK (("total" = ("subtotal" + COALESCE("shipping_fee", "shipping_fee_quote")))),
     CONSTRAINT "shop_orders_delivery_method_check" CHECK (("delivery_method" = ANY (ARRAY['delivery'::"text", 'pickup'::"text"]))),
+    CONSTRAINT "shop_orders_delivery_target_check" CHECK ((("delivery_method" = 'delivery'::"text") = ((("ghn_district_id" IS NOT NULL) AND ("ghn_ward_code" IS NOT NULL)) OR ("ship_ward_location_code" IS NOT NULL)))),
+    CONSTRAINT "shop_orders_location_model_check" CHECK ((("ship_location_model" IS NULL) OR ("ship_location_model" = ANY (ARRAY['ghn_legacy'::"text", 'vn_2025'::"text"])))),
     CONSTRAINT "shop_orders_payment_method_check" CHECK (("payment_method" = ANY (ARRAY['cod'::"text", 'pay_at_store'::"text"]))),
     CONSTRAINT "shop_orders_receiver_name_check" CHECK (("length"("btrim"("receiver_name")) > 0)),
     CONSTRAINT "shop_orders_shipping_fee_check" CHECK (("shipping_fee" >= (0)::numeric)),
@@ -7850,6 +7868,9 @@ CREATE OR REPLACE FUNCTION "public"."my_shop_order_json"("o" "public"."shop_orde
     'ship_ward_name', o.ship_ward_name,
     'ship_district_name', o.ship_district_name,
     'ship_province_name', o.ship_province_name,
+    'ship_location_model', coalesce(o.ship_location_model, case when o.delivery_method = 'delivery' then 'ghn_legacy' end),
+    'ship_ward_location_code', o.ship_ward_location_code,
+    'ship_province_location_code', o.ship_province_location_code,
     'weight_g', o.weight_g,
     'subtotal', o.subtotal,
     'shipping_fee_quote', o.shipping_fee_quote,
@@ -8611,12 +8632,16 @@ begin
     insert into public.shop_orders (
       code, branch_id, user_id, customer_id, delivery_method, payment_method,
       receiver_name, receiver_phone, ship_street, ship_ward_name, ship_district_name, ship_province_name,
-      ghn_district_id, ghn_ward_code, weight_g, subtotal, shipping_fee_quote, total, customer_note, client_ref
+      ghn_district_id, ghn_ward_code, ship_location_model, ship_ward_location_code, ship_province_location_code,
+      ship_ward_official_code, ship_province_official_code,
+      weight_g, subtotal, shipping_fee_quote, total, customer_note, client_ref
     ) values (
       v_code, v_s.online_branch_id, v_uid, v_customer, v_method,
       case when v_method = 'delivery' then 'cod' else 'pay_at_store' end,
       v_name, v_phone, v_addr.street, v_addr.ward_name, v_addr.district_name, v_addr.province_name,
-      v_addr.ghn_district_id, v_addr.ghn_ward_code, v_weight, v_subtotal, v_quote, v_subtotal + v_quote,
+      v_addr.ghn_district_id, v_addr.ghn_ward_code, case when v_method = 'delivery' then v_addr.location_model end,
+      v_addr.ward_location_code, v_addr.province_location_code, v_addr.ward_official_code, v_addr.province_official_code,
+      v_weight, v_subtotal, v_quote, v_subtotal + v_quote,
       left(nullif(btrim(coalesce(p ->> 'note', '')), ''), 300), v_ref
     )
     returning id into v_id;
@@ -10632,6 +10657,10 @@ declare
   v_prov_id int := nullif(p ->> 'ghn_province_id', '')::int;
   v_dist_id int := nullif(p ->> 'ghn_district_id', '')::int;
   v_ward_cd text := btrim(coalesce(p ->> 'ghn_ward_code', ''));
+  v_ward_loc text := nullif(btrim(coalesce(p ->> 'ward_location_code', '')), '');
+  v_model   text := 'ghn_legacy';
+  v_ward_u  public.location_units;
+  v_prov_u  public.location_units;
   v_count   int;
   v_default boolean;
   v_row     public.customer_addresses;
@@ -10645,7 +10674,27 @@ begin
   if length(regexp_replace(v_phone, '\D', '', 'g')) not between 8 and 15 then
     raise exception 'invalid phone number' using errcode = '22023', hint = 'invalid_phone';
   end if;
-  if v_prov = '' or v_dist = '' or v_ward = '' or v_prov_id is null or v_dist_id is null or v_ward_cd = '' then
+  if v_ward_loc is not null then
+    -- Two-level address: the province comes from the commune, so the client sends only the commune.
+    select * into v_ward_u from public.location_units where code = v_ward_loc;
+    if not found then
+      raise exception 'location % not found', v_ward_loc using errcode = 'P0002', hint = 'location_not_found';
+    end if;
+    if v_ward_u.level <> 'commune' then
+      raise exception 'choose a ward or commune' using errcode = '22023', hint = 'address_location';
+    end if;
+    if v_ward_u.status <> 'active' then
+      raise exception 'location % is no longer in force', v_ward_loc using errcode = '22023', hint = 'location_inactive';
+    end if;
+    select * into v_prov_u from public.location_units where code = v_ward_u.parent_code;
+    v_model := 'vn_2025';
+    v_prov := v_prov_u.full_name;
+    v_ward := v_ward_u.full_name;
+    v_dist := null;
+    v_prov_id := null;
+    v_dist_id := null;
+    v_ward_cd := null;
+  elsif v_prov = '' or v_dist = '' or v_ward = '' or v_prov_id is null or v_dist_id is null or v_ward_cd = '' then
     raise exception 'choose province, district and ward' using errcode = '22023', hint = 'address_location';
   end if;
 
@@ -10675,9 +10724,11 @@ begin
   if v_id is null then
     insert into public.customer_addresses (
       user_id, receiver_name, phone, street, province_name, district_name, ward_name,
-      ghn_province_id, ghn_district_id, ghn_ward_code, is_default
+      ghn_province_id, ghn_district_id, ghn_ward_code, is_default,
+      location_model, province_location_code, ward_location_code, province_official_code, ward_official_code
     ) values (
-      v_uid, v_name, v_phone, v_street, v_prov, v_dist, v_ward, v_prov_id, v_dist_id, v_ward_cd, v_default
+      v_uid, v_name, v_phone, v_street, v_prov, v_dist, v_ward, v_prov_id, v_dist_id, v_ward_cd, v_default,
+      v_model, v_prov_u.code, v_ward_u.code, v_prov_u.official_code, v_ward_u.official_code
     )
     returning * into v_row;
   else
@@ -10685,7 +10736,9 @@ begin
     set receiver_name = v_name, phone = v_phone, street = v_street,
         province_name = v_prov, district_name = v_dist, ward_name = v_ward,
         ghn_province_id = v_prov_id, ghn_district_id = v_dist_id, ghn_ward_code = v_ward_cd,
-        is_default = v_default
+        is_default = v_default,
+        location_model = v_model, province_location_code = v_prov_u.code, ward_location_code = v_ward_u.code,
+        province_official_code = v_prov_u.official_code, ward_official_code = v_ward_u.official_code
     where id = v_id and user_id = v_uid
     returning * into v_row;
   end if;
@@ -11541,6 +11594,8 @@ declare
   v_weight int;
   v_flat   numeric;
   v_free   numeric;
+  v_from_loc text;
+  v_from_u public.location_units;
 begin
   select * into v_cur from public.shop_settings where id for update;
   if not found then
@@ -11572,6 +11627,20 @@ begin
     else v_cur.free_ship_from
   end;
 
+  -- The sending ward of the two-level address must be a commune in force.
+  if p ? 'from_ward_location_code' then
+    v_from_loc := nullif(btrim(p ->> 'from_ward_location_code'), '');
+    if v_from_loc is not null then
+      select * into v_from_u from public.location_units where code = v_from_loc;
+      if not found or v_from_u.level <> 'commune' then
+        raise exception 'location % not found', v_from_loc using errcode = 'P0002', hint = 'location_not_found';
+      end if;
+      if v_from_u.status <> 'active' then
+        raise exception 'location % is no longer in force', v_from_loc using errcode = '22023', hint = 'location_inactive';
+      end if;
+    end if;
+  end if;
+
   update public.shop_settings s
   set online_branch_id = v_branch,
       allow_cod = coalesce((p ->> 'allow_cod')::boolean, s.allow_cod),
@@ -11588,6 +11657,9 @@ begin
         then nullif(btrim(p ->> 'ghn_from_ward_code'), '') else s.ghn_from_ward_code end,
       from_address_text = case when p ? 'from_address_text'
         then nullif(btrim(p ->> 'from_address_text'), '') else s.from_address_text end,
+      from_ward_location_code = case when p ? 'from_ward_location_code' then v_from_loc else s.from_ward_location_code end,
+      from_street = case when p ? 'from_street'
+        then nullif(btrim(p ->> 'from_street'), '') else s.from_street end,
       pickup_address = case when p ? 'pickup_address'
         then nullif(btrim(p ->> 'pickup_address'), '') else s.pickup_address end,
       pickup_note = case when p ? 'pickup_note'
@@ -12801,6 +12873,7 @@ CREATE OR REPLACE FUNCTION "public"."shop_public_settings"() RETURNS "jsonb"
       'free_ship_from', s.free_ship_from,
       'ghn_from_district_id', s.ghn_from_district_id,
       'ghn_from_ward_code', s.ghn_from_ward_code,
+      'from_ward_location_code', s.from_ward_location_code,
       'pickup_address', s.pickup_address,
       'pickup_note', s.pickup_note
     )
@@ -13430,6 +13503,11 @@ CREATE OR REPLACE FUNCTION "public"."staff_shop_order_json"("o" "public"."shop_o
     'ship_province_name', o.ship_province_name,
     'ghn_district_id', o.ghn_district_id,
     'ghn_ward_code', o.ghn_ward_code,
+    'ship_location_model', coalesce(o.ship_location_model, case when o.delivery_method = 'delivery' then 'ghn_legacy' end),
+    'ship_ward_location_code', o.ship_ward_location_code,
+    'ship_province_location_code', o.ship_province_location_code,
+    'ship_ward_official_code', o.ship_ward_official_code,
+    'ship_province_official_code', o.ship_province_official_code,
     'weight_g', o.weight_g,
     'subtotal', o.subtotal,
     'shipping_fee_quote', o.shipping_fee_quote,
@@ -15304,6 +15382,8 @@ CREATE TABLE IF NOT EXISTS "public"."shop_settings" (
     "pickup_address" "text",
     "pickup_note" "text",
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "from_ward_location_code" "text",
+    "from_street" "text",
     CONSTRAINT "shop_settings_cod_max_check" CHECK (("cod_max" > (0)::numeric)),
     CONSTRAINT "shop_settings_default_weight_g_check" CHECK (("default_weight_g" > 0)),
     CONSTRAINT "shop_settings_flat_shipping_fee_check" CHECK (("flat_shipping_fee" >= (0)::numeric)),
@@ -17099,7 +17179,17 @@ ALTER TABLE ONLY "public"."combo_species"
 
 
 ALTER TABLE ONLY "public"."customer_addresses"
+    ADD CONSTRAINT "customer_addresses_province_location_code_fkey" FOREIGN KEY ("province_location_code") REFERENCES "public"."location_units"("code");
+
+
+
+ALTER TABLE ONLY "public"."customer_addresses"
     ADD CONSTRAINT "customer_addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."customer_addresses"
+    ADD CONSTRAINT "customer_addresses_ward_location_code_fkey" FOREIGN KEY ("ward_location_code") REFERENCES "public"."location_units"("code");
 
 
 
@@ -17675,6 +17765,11 @@ ALTER TABLE ONLY "public"."shop_orders"
 
 ALTER TABLE ONLY "public"."shop_orders"
     ADD CONSTRAINT "shop_orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."shop_settings"
+    ADD CONSTRAINT "shop_settings_from_ward_location_code_fkey" FOREIGN KEY ("from_ward_location_code") REFERENCES "public"."location_units"("code");
 
 
 

@@ -13,6 +13,8 @@ export type SettingsForm = {
   /** Where GHN collects parcels. Names are not stored, the pickers fill them when a place is picked. */
   from: GhnLocation;
   fromAddressText: string;
+  fromWardLocationCode: string | null;
+  fromStreet: string;
   pickupAddress: string;
   pickupNote: string;
 };
@@ -38,6 +40,8 @@ export const toForm = (settings: ShopSettings): SettingsForm => ({
     wardCode: settings.ghnFromWardCode,
   },
   fromAddressText: settings.fromAddressText ?? "",
+  fromWardLocationCode: settings.fromWardLocationCode,
+  fromStreet: settings.fromStreet ?? "",
   pickupAddress: settings.pickupAddress ?? "",
   pickupNote: settings.pickupNote ?? "",
 });
@@ -54,6 +58,8 @@ export const toSettings = (form: SettingsForm): ShopSettings => ({
   ghnFromDistrictId: form.from.districtId,
   ghnFromWardCode: form.from.wardCode,
   fromAddressText: form.fromAddressText.trim() || null,
+  fromWardLocationCode: form.fromWardLocationCode,
+  fromStreet: form.fromStreet.trim() || null,
   pickupAddress: form.pickupAddress.trim() || null,
   pickupNote: form.pickupNote.trim() || null,
 });

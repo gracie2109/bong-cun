@@ -1,5 +1,5 @@
 // The hints the location RPCs attach to a refusal.
-export const LOCATION_ERROR_HINTS = ["location_not_found", "location_search_too_short", "invalid_input"] as const;
+export const LOCATION_ERROR_HINTS = ["location_not_found", "location_search_too_short", "location_inactive", "invalid_input"] as const;
 export type LocationErrorHint = (typeof LOCATION_ERROR_HINTS)[number];
 
 export const locationErrorHint = (error: unknown): LocationErrorHint | null => {

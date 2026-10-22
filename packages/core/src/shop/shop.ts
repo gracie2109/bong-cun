@@ -12,12 +12,18 @@ export type ShopPublicSettings = {
   freeShipFrom: number | null;
   ghnFromDistrictId: number | null;
   ghnFromWardCode: string | null;
+  /** The sending commune of the two-level address (a `location_units` code). */
+  fromWardLocationCode: string | null;
   pickupAddress: string | null;
   pickupNote: string | null;
 };
 
 /** The staff view: the public fields plus the warehouse address as text. */
-export type ShopSettings = ShopPublicSettings & { ghnFromProvinceId: number | null; fromAddressText: string | null };
+export type ShopSettings = ShopPublicSettings & {
+  ghnFromProvinceId: number | null;
+  fromAddressText: string | null;
+  fromStreet: string | null;
+};
 
 /** A place GHN knows: ids for fees, names for printing. */
 export type GhnLocation = {
@@ -79,23 +85,48 @@ export type CartLineIssue = { kind: "unavailable" } | { kind: "over_stock"; avai
 
 // --------------------------------------------------------------- addresses
 
-/** A delivery address of the signed-in shopper. Names print on the order, ids price the delivery. */
+/** `ghn_legacy`: province, district and ward by GHN ids. `vn_2025`: province and commune from the location cache. */
+export type AddressLocationModel = "ghn_legacy" | "vn_2025";
+
+/**
+ * A delivery address of the signed-in shopper. Names print on the order. A legacy address carries
+ * the GHN ids that price the delivery and a district; a two-level address carries location codes instead.
+ */
 export type Address = {
   id: string;
   receiverName: string;
   phone: string;
   street: string;
   provinceName: string;
-  districtName: string;
+  districtName: string | null;
   wardName: string;
-  ghnProvinceId: number;
-  ghnDistrictId: number;
-  ghnWardCode: string;
+  locationModel: AddressLocationModel;
+  ghnProvinceId: number | null;
+  ghnDistrictId: number | null;
+  ghnWardCode: string | null;
+  provinceLocationCode: string | null;
+  wardLocationCode: string | null;
   isDefault: boolean;
 };
 
-/** An address being saved; without `id` it is a new one. */
-export type AddressInput = Omit<Address, "id" | "isDefault"> & { id?: string; isDefault?: boolean };
+/**
+ * An address being saved; without `id` it is a new one. Give `wardLocationCode` for a two-level
+ * address (the province follows from it), or the GHN fields for a legacy one.
+ */
+export type AddressInput = {
+  id?: string;
+  receiverName: string;
+  phone: string;
+  street: string;
+  isDefault?: boolean;
+  wardLocationCode?: string;
+  provinceName?: string;
+  districtName?: string;
+  wardName?: string;
+  ghnProvinceId?: number;
+  ghnDistrictId?: number;
+  ghnWardCode?: string;
+};
 
 /** Addresses an account may keep. */
 export const MAX_ADDRESSES = 10;

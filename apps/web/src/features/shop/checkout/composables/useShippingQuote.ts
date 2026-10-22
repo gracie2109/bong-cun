@@ -44,6 +44,8 @@ export const useShippingQuote = (options: Options) => {
     const address = options.address.value;
     if (!options.enabled.value || !settings || !address) return null;
     if (!settings.ghnFromDistrictId || !settings.ghnFromWardCode) return null;
+    // A two-level address has no GHN ids yet (P5 prices it); it keeps the flat fee.
+    if (!address.ghnDistrictId || !address.ghnWardCode) return null;
     return {
       fromDistrictId: settings.ghnFromDistrictId,
       fromWardCode: settings.ghnFromWardCode,

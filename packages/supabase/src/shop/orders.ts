@@ -39,6 +39,9 @@ type DetailJson = {
   ship_ward_name: string | null;
   ship_district_name: string | null;
   ship_province_name: string | null;
+  ship_location_model?: ShopOrderDetail["shipLocationModel"];
+  ship_ward_location_code?: string | null;
+  ship_province_location_code?: string | null;
   weight_g: number | string;
   subtotal: number | string;
   shipping_fee_quote: number | string;
@@ -87,6 +90,9 @@ export const toOrderDetail = (row: DetailJson): ShopOrderDetail => ({
   shipWardName: row.ship_ward_name,
   shipDistrictName: row.ship_district_name,
   shipProvinceName: row.ship_province_name,
+  shipLocationModel: row.ship_location_model ?? null,
+  shipWardLocationCode: row.ship_ward_location_code ?? null,
+  shipProvinceLocationCode: row.ship_province_location_code ?? null,
   weightG: Number(row.weight_g),
   subtotal: Number(row.subtotal),
   shippingFeeQuote: Number(row.shipping_fee_quote),
