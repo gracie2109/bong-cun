@@ -27,8 +27,11 @@
 
       <div class="space-y-2">
         <Label>{{ $t("shop.settings.fromAddress") }}</Label>
-        <GhnLocationPicker v-model="form.from" :disabled="disabled" />
-        <Input v-model="form.fromAddressText" :placeholder="$t('shop.settings.fromStreet')" :disabled="disabled" />
+        <LocationCodePicker v-model:code="form.fromWardLocationCode" :disabled="disabled" />
+        <Input v-model="form.fromStreet" :placeholder="$t('shop.settings.fromStreet')" :disabled="disabled" />
+        <p v-if="form.from.districtId" class="text-xs text-muted-foreground">
+          {{ $t("shop.settings.legacyGhn", { district: form.from.districtId, ward: form.from.wardCode }) }}
+        </p>
         <p class="text-xs text-muted-foreground">{{ $t("shop.settings.fromAddressHint") }}</p>
         <ShippingTest :from="form.from" />
         <p v-if="errors.includes('fromAddress')" class="text-xs text-red-600">
@@ -40,9 +43,9 @@
 </template>
 
 <script lang="ts" setup>
-import GhnLocationPicker from "@/components/common/GhnLocationPicker.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LocationCodePicker } from "@/features/shared/locations";
 import type { SettingsForm } from "@bongcun/core/shop";
 import ShippingTest from "./ShippingTest.vue";
 

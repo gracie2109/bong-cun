@@ -14,7 +14,16 @@
       "province": "Tỉnh / Thành phố",
       "district": "Quận / Huyện",
       "ward": "Phường / Xã",
-      "pick": "Chọn"
+      "pick": "Chọn",
+      "searchProvince": "Tìm tỉnh / thành phố",
+      "searchWard": "Tìm phường / xã",
+      "emptyProvince": "Không có tỉnh / thành phố khớp",
+      "emptyWard": "Không có phường / xã khớp",
+      "loading": "Đang tải...",
+      "failed": "Không tải được danh sách.",
+      "retry": "Thử lại",
+      "legacyTitle": "Địa chỉ theo địa giới cũ, vui lòng chọn lại phường / xã.",
+      "legacyOld": "Địa chỉ đã lưu: {place}"
     },
     "settings": {
       "title": "Cài đặt bán online",
@@ -38,6 +47,7 @@
       "freeShipHint": "Để trống nếu không miễn phí ship.",
       "fromAddress": "Địa chỉ kho gửi hàng (GHN)",
       "fromStreet": "Số nhà, đường",
+      "legacyGhn": "Mã GHN cũ (chỉ đọc, dùng tính phí đến khi chuyển sang địa chỉ mới): quận {district}, phường {ward}",
       "fromAddressHint": "GHN lấy hàng ở đây; cần để tính phí ship thật.",
       "pickup": "Nhận tại cửa hàng",
       "pickupHint": "Hiện cho khách khi họ chọn nhận tại cửa hàng.",
