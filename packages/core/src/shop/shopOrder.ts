@@ -1,5 +1,5 @@
 // Shapes of the online shop's orders as the screens use them.
-import type { CartLine } from "./shop";
+import type { AddressLocationModel, CartLine } from "./shop";
 
 export type DeliveryMethod = "delivery" | "pickup";
 export type PaymentMethod = "cod" | "pay_at_store";
@@ -73,6 +73,10 @@ export type ShopOrderDetail = {
   shipWardName: string | null;
   shipDistrictName: string | null;
   shipProvinceName: string | null;
+  /** `ghn_legacy` for a three-level address, `vn_2025` for a two-level one; null for pickup. */
+  shipLocationModel: AddressLocationModel | null;
+  shipWardLocationCode: string | null;
+  shipProvinceLocationCode: string | null;
   weightG: number;
   subtotal: number;
   shippingFeeQuote: number;

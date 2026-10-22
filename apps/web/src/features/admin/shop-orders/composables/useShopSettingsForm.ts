@@ -14,6 +14,8 @@ const blankForm = (): SettingsForm => ({
   freeShipFrom: "",
   from: emptyGhnLocation(),
   fromAddressText: "",
+  fromWardLocationCode: null,
+  fromStreet: "",
   pickupAddress: "",
   pickupNote: "",
 });

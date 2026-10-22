@@ -22,6 +22,7 @@ export const toPublicSettings = (json: SettingsJson): ShopPublicSettings => ({
   freeShipFrom: numOrNull(json.free_ship_from),
   ghnFromDistrictId: numOrNull(json.ghn_from_district_id),
   ghnFromWardCode: textOrNull(json.ghn_from_ward_code),
+  fromWardLocationCode: textOrNull(json.from_ward_location_code),
   pickupAddress: textOrNull(json.pickup_address),
   pickupNote: textOrNull(json.pickup_note),
 });
@@ -30,6 +31,7 @@ export const toSettings = (json: SettingsJson): ShopSettings => ({
   ...toPublicSettings(json),
   ghnFromProvinceId: numOrNull(json.ghn_from_province_id),
   fromAddressText: textOrNull(json.from_address_text),
+  fromStreet: textOrNull(json.from_street),
 });
 
 export const getPublicSettings = async (client: Client): Promise<ShopPublicSettings> =>
@@ -54,6 +56,8 @@ export const saveSettings = async (client: Client, input: ShopSettings): Promise
           ghn_from_district_id: input.ghnFromDistrictId,
           ghn_from_ward_code: input.ghnFromWardCode,
           from_address_text: input.fromAddressText,
+          from_ward_location_code: input.fromWardLocationCode,
+          from_street: input.fromStreet,
           pickup_address: input.pickupAddress,
           pickup_note: input.pickupNote,
         },

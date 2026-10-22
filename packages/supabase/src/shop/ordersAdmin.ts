@@ -43,6 +43,11 @@ type OrderJson = {
   ship_province_name: string | null;
   ghn_district_id: number | null;
   ghn_ward_code: string | null;
+  ship_location_model?: AdminOrder["shipLocationModel"];
+  ship_ward_location_code?: string | null;
+  ship_province_location_code?: string | null;
+  ship_ward_official_code?: string | null;
+  ship_province_official_code?: string | null;
   weight_g: number | string;
   subtotal: number | string;
   shipping_fee_quote: number | string;
@@ -99,6 +104,11 @@ export const toAdminOrder = (row: OrderJson): AdminOrder => ({
   shipProvinceName: row.ship_province_name,
   ghnDistrictId: row.ghn_district_id,
   ghnWardCode: row.ghn_ward_code,
+  shipLocationModel: row.ship_location_model ?? null,
+  shipWardLocationCode: row.ship_ward_location_code ?? null,
+  shipProvinceLocationCode: row.ship_province_location_code ?? null,
+  shipWardOfficialCode: row.ship_ward_official_code ?? null,
+  shipProvinceOfficialCode: row.ship_province_official_code ?? null,
   weightG: Number(row.weight_g),
   subtotal: Number(row.subtotal),
   shippingFeeQuote: Number(row.shipping_fee_quote),

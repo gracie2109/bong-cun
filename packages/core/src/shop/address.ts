@@ -29,7 +29,7 @@ export const addressToForm = (address: Address): AddressForm => ({
     provinceId: address.ghnProvinceId,
     provinceName: address.provinceName,
     districtId: address.ghnDistrictId,
-    districtName: address.districtName,
+    districtName: address.districtName ?? "",
     wardCode: address.ghnWardCode,
     wardName: address.wardName,
   },
@@ -38,7 +38,7 @@ export const addressToForm = (address: Address): AddressForm => ({
 
 /** One line for lists and the order: "12 Le Loi, Phuong 1, Quan 3, TP HCM". */
 export const formatAddress = (
-  address: Pick<Address, "street" | "wardName" | "districtName" | "provinceName">
+  address: Pick<Address, "street" | "wardName" | "provinceName"> & { districtName?: string | null }
 ): string => [address.street, address.wardName, address.districtName, address.provinceName].filter(Boolean).join(", ");
 
 export type AddressErrors = Partial<Record<"receiverName" | "phone" | "street" | "location", true>>;

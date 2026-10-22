@@ -1,4 +1,5 @@
 // Online orders as staff see them (list, detail and the steps that move an order along).
+import type { AddressLocationModel } from "./shop";
 import type { DeliveryMethod, PaymentMethod, ShopOrderStatus } from "./shopOrder";
 
 /** The tabs of the order list: one status, the closed ones (cancelled and returned) or all. */
@@ -62,6 +63,11 @@ export type AdminOrder = {
   shipProvinceName: string | null;
   ghnDistrictId: number | null;
   ghnWardCode: string | null;
+  shipLocationModel: AddressLocationModel | null;
+  shipWardLocationCode: string | null;
+  shipProvinceLocationCode: string | null;
+  shipWardOfficialCode: string | null;
+  shipProvinceOfficialCode: string | null;
   weightG: number;
   subtotal: number;
   shippingFeeQuote: number;

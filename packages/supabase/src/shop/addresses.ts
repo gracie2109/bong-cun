@@ -1,7 +1,7 @@
 // The signed-in shopper's delivery addresses.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@bongcun/supabase/db";
-import type { Address, AddressInput } from "@bongcun/core/shop";
+import type { Address, AddressInput, AddressLocationModel } from "@bongcun/core/shop";
 import { unwrap } from "@bongcun/supabase/shared";
 
 type Client = SupabaseClient<Database>;
@@ -12,11 +12,14 @@ type AddressJson = {
   phone: string;
   street: string;
   province_name: string;
-  district_name: string;
+  district_name: string | null;
   ward_name: string;
-  ghn_province_id: number;
-  ghn_district_id: number;
-  ghn_ward_code: string;
+  ghn_province_id: number | null;
+  ghn_district_id: number | null;
+  ghn_ward_code: string | null;
+  location_model?: AddressLocationModel;
+  province_location_code?: string | null;
+  ward_location_code?: string | null;
   is_default: boolean;
 };
 
@@ -28,9 +31,12 @@ export const toAddress = (row: AddressJson): Address => ({
   provinceName: row.province_name,
   districtName: row.district_name,
   wardName: row.ward_name,
-  ghnProvinceId: Number(row.ghn_province_id),
-  ghnDistrictId: Number(row.ghn_district_id),
-  ghnWardCode: String(row.ghn_ward_code),
+  locationModel: row.location_model ?? "ghn_legacy",
+  ghnProvinceId: row.ghn_province_id === null ? null : Number(row.ghn_province_id),
+  ghnDistrictId: row.ghn_district_id === null ? null : Number(row.ghn_district_id),
+  ghnWardCode: row.ghn_ward_code === null ? null : String(row.ghn_ward_code),
+  provinceLocationCode: row.province_location_code ?? null,
+  wardLocationCode: row.ward_location_code ?? null,
   isDefault: row.is_default,
 });
 
@@ -47,6 +53,7 @@ export const saveMyAddress = async (client: Client, input: AddressInput): Promis
           receiver_name: input.receiverName,
           phone: input.phone,
           street: input.street,
+          ward_location_code: input.wardLocationCode,
           province_name: input.provinceName,
           district_name: input.districtName,
           ward_name: input.wardName,
@@ -74,6 +81,8 @@ export const ADDRESS_ERROR_HINTS = [
   "address_location",
   "address_limit",
   "address_not_found",
+  "location_not_found",
+  "location_inactive",
 ] as const;
 export type AddressErrorHint = (typeof ADDRESS_ERROR_HINTS)[number];
 
