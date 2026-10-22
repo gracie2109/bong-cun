@@ -14,7 +14,16 @@
       "province": "Province / City",
       "district": "District",
       "ward": "Ward",
-      "pick": "Choose"
+      "pick": "Choose",
+      "searchProvince": "Search province / city",
+      "searchWard": "Search commune / ward",
+      "emptyProvince": "No matching province / city",
+      "emptyWard": "No matching commune / ward",
+      "loading": "Loading...",
+      "failed": "Could not load the list.",
+      "retry": "Retry",
+      "legacyTitle": "This address uses the old boundaries, please pick the commune / ward again.",
+      "legacyOld": "Saved address: {place}"
     },
     "settings": {
       "title": "Online shop settings",
@@ -38,6 +47,7 @@
       "freeShipHint": "Leave empty for no free shipping.",
       "fromAddress": "Warehouse address (GHN)",
       "fromStreet": "House number, street",
+      "legacyGhn": "Old GHN codes (read only, used for fees until the new address is priced): district {district}, ward {ward}",
       "fromAddressHint": "GHN collects parcels here; needed for real shipping quotes.",
       "pickup": "In-store pickup",
       "pickupHint": "Shown to customers who choose to collect at the shop.",

@@ -1,14 +1,21 @@
 // Pure helpers for delivery addresses: no Vue, Pinia or network.
-import type { Address, AddressInput, GhnLocation } from "@bongcun/core/shop";
-import { emptyGhnLocation } from "@bongcun/core/shop";
+import type { Address, AddressInput } from "@bongcun/core/shop";
+import type { LocationValue } from "@bongcun/core/locations";
 
-/** What the address form edits: text fields plus the GHN place. */
+/** The place names of an address saved before the 2025 reform, shown while the shopper picks again. */
+export type LegacyPlace = { provinceName: string; districtName: string; wardName: string };
+
+/**
+ * What the address form edits: text fields plus the province and commune. `location` is null until
+ * both are picked; `legacy` is set when an old-model address is being edited, which has to be re-picked.
+ */
 export type AddressForm = {
   id?: string;
   receiverName: string;
   phone: string;
   street: string;
-  location: GhnLocation;
+  location: LocationValue | null;
+  legacy: LegacyPlace | null;
   isDefault: boolean;
 };
 
@@ -16,25 +23,31 @@ export const emptyAddressForm = (): AddressForm => ({
   receiverName: "",
   phone: "",
   street: "",
-  location: emptyGhnLocation(),
+  location: null,
+  legacy: null,
   isDefault: false,
 });
 
-export const addressToForm = (address: Address): AddressForm => ({
-  id: address.id,
-  receiverName: address.receiverName,
-  phone: address.phone,
-  street: address.street,
-  location: {
-    provinceId: address.ghnProvinceId,
-    provinceName: address.provinceName,
-    districtId: address.ghnDistrictId,
-    districtName: address.districtName ?? "",
-    wardCode: address.ghnWardCode,
-    wardName: address.wardName,
-  },
-  isDefault: address.isDefault,
-});
+export const addressToForm = (address: Address): AddressForm => {
+  const base = { id: address.id, receiverName: address.receiverName, phone: address.phone, street: address.street, isDefault: address.isDefault };
+  if (address.locationModel === "vn_2025" && address.provinceLocationCode && address.wardLocationCode) {
+    return {
+      ...base,
+      location: {
+        provinceCode: address.provinceLocationCode,
+        provinceName: address.provinceName,
+        wardCode: address.wardLocationCode,
+        wardName: address.wardName,
+      },
+      legacy: null,
+    };
+  }
+  return {
+    ...base,
+    location: null,
+    legacy: { provinceName: address.provinceName, districtName: address.districtName ?? "", wardName: address.wardName },
+  };
+};
 
 /** One line for lists and the order: "12 Le Loi, Phuong 1, Quan 3, TP HCM". */
 export const formatAddress = (
@@ -51,8 +64,7 @@ export const addressErrors = (form: AddressForm): AddressErrors => {
   const digits = phoneDigits(form.phone).length;
   if (digits < 8 || digits > 15) errors.phone = true;
   if (!form.street.trim()) errors.street = true;
-  const place = form.location;
-  if (!place.provinceId || !place.districtId || !place.wardCode || !place.wardName) errors.location = true;
+  if (!form.location?.wardCode) errors.location = true;
   return errors;
 };
 
@@ -62,11 +74,6 @@ export const formToInput = (form: AddressForm): AddressInput => ({
   receiverName: form.receiverName.trim(),
   phone: form.phone.trim(),
   street: form.street.trim(),
-  provinceName: form.location.provinceName,
-  districtName: form.location.districtName,
-  wardName: form.location.wardName,
-  ghnProvinceId: form.location.provinceId as number,
-  ghnDistrictId: form.location.districtId as number,
-  ghnWardCode: form.location.wardCode as string,
+  wardLocationCode: form.location?.wardCode,
   isDefault: form.isDefault,
 });

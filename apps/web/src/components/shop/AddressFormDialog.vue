@@ -23,7 +23,13 @@
       </div>
 
       <div class="space-y-1.5">
-        <GhnLocationPicker v-model="form.location" />
+        <LegacyAddressNotice
+          v-if="form.legacy && !form.location"
+          :ward-name="form.legacy.wardName"
+          :district-name="form.legacy.districtName"
+          :province-name="form.legacy.provinceName"
+        />
+        <LocationPicker v-model="form.location" required />
         <p v-if="submitted && errors.location" class="text-xs text-red-600">{{ $t("shop.address.errors.address_location") }}</p>
       </div>
 
@@ -43,10 +49,10 @@
 
 <script lang="ts" setup>
 import AppDialog from "@/components/common/AppDialog.vue";
-import GhnLocationPicker from "@/components/common/GhnLocationPicker.vue";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LegacyAddressNotice, LocationPicker } from "@/features/shared/locations";
 import type { AddressErrors, AddressForm } from "@bongcun/core/shop";
 
 defineProps<{
