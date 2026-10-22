@@ -7,6 +7,7 @@ import { INVENTORY_ERROR_HINTS } from "@bongcun/core/inventory";
 import { SPA_ERROR_HINTS } from "@bongcun/core/spa";
 import { BOARDING_ERROR_HINTS } from "@bongcun/core/boarding";
 import { MEDICAL_ERROR_HINTS } from "@bongcun/core/medical";
+import { LOCATION_ERROR_HINTS } from "@bongcun/core/locations";
 
 const supabaseSrc = fileURLToPath(new URL("../../../../packages/supabase/src/", import.meta.url));
 
@@ -44,6 +45,7 @@ export const HINT_MODULES: HintModule[] = [
   { module: "spa", hints: SPA_ERROR_HINTS, functions: rpcsCalledBy("spa").filter((fn) => !NOT_SPA.has(fn)) },
   { module: "boarding", hints: BOARDING_ERROR_HINTS, functions: rpcsCalledBy("boarding") },
   { module: "medical", hints: MEDICAL_ERROR_HINTS, functions: rpcsCalledBy("medical") },
+  { module: "locations", hints: LOCATION_ERROR_HINTS, functions: rpcsCalledBy("locations") },
 ];
 
 // Generic hints every module shares; they have no business code of their own.
