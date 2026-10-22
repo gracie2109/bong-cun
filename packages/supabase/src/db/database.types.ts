@@ -2554,6 +2554,14 @@ export type Database = {
       }
     }
     Functions: {
+      location_catalog: { Args: never; Returns: Json }
+      location_communes: {
+        Args: { p_page?: number; p_page_size?: number; p_province: string; p_search?: string }
+        Returns: Json
+      }
+      location_provinces: { Args: never; Returns: Json }
+      location_search: { Args: { p_page?: number; p_page_size?: number; p_search: string }; Returns: Json }
+      location_unit: { Args: { p_code: string }; Returns: Json }
       can_inventory: { Args: { p_branch?: string; p_method: string }; Returns: boolean }
       cancel_stock_document: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       create_sales_return: { Args: { p: Json }; Returns: Json }

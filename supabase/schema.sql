@@ -6242,6 +6242,165 @@ $$;
 ALTER FUNCTION "public"."list_vaccine_types"("p_search" "text", "p_kind" "text", "p_page" integer, "p_page_size" integer, "p_branch" "uuid", "p_species" "uuid", "p_active_only" boolean) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."location_catalog"() RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select jsonb_build_object(
+           'id', c.id, 'source', c.source, 'effective_on', c.effective_on,
+           'synced_at', c.synced_at, 'record_counts', c.record_counts)
+  from public.location_catalogs c
+  where c.is_current;
+$$;
+
+
+ALTER FUNCTION "public"."location_catalog"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text" DEFAULT NULL::"text", "p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 500) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_size int := coalesce(p_page_size, 500);
+  v_page int := greatest(coalesce(p_page, 1), 1);
+  v_key  text := public.location_search_key(p_search);
+  v_like text;
+  v_total bigint;
+  v_items jsonb;
+begin
+  if v_size < 1 or v_size > 500 then
+    raise exception 'page size out of range' using errcode = '22023', hint = 'invalid_input';
+  end if;
+  if not exists (select 1 from public.location_units where code = p_province and level = 'province' and status = 'active') then
+    raise exception 'not an active province' using errcode = '22023', hint = 'invalid_input';
+  end if;
+  v_like := case when v_key = '' then null
+                 else '%' || replace(replace(replace(v_key, '\', '\\'), '%', '\%'), '_', '\_') || '%' end;
+
+  select count(*) into v_total
+  from public.location_units u
+  where u.parent_code = p_province and u.status = 'active' and (v_like is null or u.search_key like v_like);
+
+  select coalesce(jsonb_agg(row_to_json(x)::jsonb order by x.full_name, x.code), '[]'::jsonb) into v_items
+  from (
+    select u.code, u.official_code, u.name, u.full_name, u.unit_type
+    from public.location_units u
+    where u.parent_code = p_province and u.status = 'active' and (v_like is null or u.search_key like v_like)
+    order by u.full_name, u.code
+    limit v_size offset (v_page - 1) * v_size
+  ) x;
+
+  return jsonb_build_object('items', v_items, 'total', v_total);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."location_provinces"() RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'code', u.code, 'official_code', u.official_code, 'name', u.name,
+           'full_name', u.full_name, 'unit_type', u.unit_type
+         ) order by u.full_name), '[]'::jsonb)
+  from public.location_units u
+  where u.level = 'province' and u.status = 'active';
+$$;
+
+
+ALTER FUNCTION "public"."location_provinces"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."location_search"("p_search" "text", "p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 20) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_size int := coalesce(p_page_size, 20);
+  v_page int := greatest(coalesce(p_page, 1), 1);
+  v_key  text := public.location_search_key(p_search);
+  v_esc  text;
+  v_total bigint;
+  v_items jsonb;
+begin
+  if length(v_key) < 2 then
+    raise exception 'search text too short' using errcode = '22023', hint = 'location_search_too_short';
+  end if;
+  if v_size < 1 or v_size > 500 then
+    raise exception 'page size out of range' using errcode = '22023', hint = 'invalid_input';
+  end if;
+  v_esc := replace(replace(replace(v_key, '\', '\\'), '%', '\%'), '_', '\_');
+
+  select count(*) into v_total
+  from public.location_units u
+  where u.level = 'commune' and u.status = 'active' and u.search_key like '%' || v_esc || '%';
+
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'code', x.code, 'full_name', x.full_name, 'unit_type', x.unit_type,
+           'province', jsonb_build_object('code', x.province_code, 'full_name', x.province_name)
+         ) order by x.rank, x.full_name, x.code), '[]'::jsonb) into v_items
+  from (
+    select u.code, u.full_name, u.unit_type, p.code as province_code, p.full_name as province_name,
+           case when public.location_search_key(u.name) like v_esc || '%' then 0
+                when public.location_search_key(u.full_name) like v_esc || '%' then 1
+                else 2 end as rank
+    from public.location_units u
+    join public.location_units p on p.code = u.parent_code
+    where u.level = 'commune' and u.status = 'active' and u.search_key like '%' || v_esc || '%'
+    order by rank, u.full_name, u.code
+    limit v_size offset (v_page - 1) * v_size
+  ) x;
+
+  return jsonb_build_object('items', v_items, 'total', v_total);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."location_search"("p_search" "text", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."location_search_key"("p_text" "text") RETURNS "text"
+    LANGUAGE "sql" IMMUTABLE PARALLEL SAFE
+    SET "search_path" TO ''
+    AS $$
+  select regexp_replace(lower(public.immutable_unaccent(btrim(coalesce(p_text, '')))), '\s+', ' ', 'g');
+$$;
+
+
+ALTER FUNCTION "public"."location_search_key"("p_text" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."location_unit"("p_code" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_result jsonb;
+begin
+  select jsonb_build_object(
+           'code', u.code, 'level', u.level, 'official_code', u.official_code, 'name', u.name,
+           'full_name', u.full_name, 'unit_type', u.unit_type, 'status', u.status,
+           'province', case when p.code is null then null
+                            else jsonb_build_object('code', p.code, 'full_name', p.full_name) end)
+    into v_result
+  from public.location_units u
+  left join public.location_units p on p.code = u.parent_code
+  where u.code = p_code;
+  if v_result is null then
+    raise exception 'location % not found', p_code using errcode = 'P0002', hint = 'location_not_found';
+  end if;
+  return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."location_unit"("p_code" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -14374,6 +14533,67 @@ CREATE TABLE IF NOT EXISTS "public"."kennels" (
 ALTER TABLE "public"."kennels" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."location_catalogs" (
+    "id" "text" NOT NULL,
+    "source" "text" NOT NULL,
+    "source_ref" "text",
+    "effective_on" "date" NOT NULL,
+    "extracted_at" timestamp with time zone,
+    "checksum" "text",
+    "is_current" boolean DEFAULT false NOT NULL,
+    "record_counts" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "synced_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."location_catalogs" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."location_provider_codes" (
+    "code" "text" NOT NULL,
+    "provider" "text" NOT NULL,
+    "provider_model" "text" NOT NULL,
+    "provider_environment" "text" NOT NULL,
+    "provider_code" "text" NOT NULL,
+    "provider_parent_code" "text",
+    "provider_name" "text" NOT NULL,
+    "match_method" "text" NOT NULL,
+    "verified_at" timestamp with time zone,
+    "active" boolean DEFAULT true NOT NULL,
+    "catalog_id" "text" NOT NULL,
+    CONSTRAINT "location_provider_codes_provider_check" CHECK (("provider" = 'ghn'::"text")),
+    CONSTRAINT "location_provider_codes_provider_environment_check" CHECK (("provider_environment" = ANY (ARRAY['production'::"text", 'test'::"text"]))),
+    CONSTRAINT "location_provider_codes_provider_model_check" CHECK (("provider_model" = 'ghn_v2'::"text"))
+);
+
+
+ALTER TABLE "public"."location_provider_codes" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."location_units" (
+    "code" "text" NOT NULL,
+    "level" "text" NOT NULL,
+    "unit_type" "text" NOT NULL,
+    "official_code" "text",
+    "name" "text" NOT NULL,
+    "full_name" "text" NOT NULL,
+    "parent_code" "text",
+    "status" "text" NOT NULL,
+    "effective_from" "date" NOT NULL,
+    "effective_to" "date",
+    "catalog_id" "text" NOT NULL,
+    "search_key" "text" GENERATED ALWAYS AS ("public"."location_search_key"((("full_name" || ' '::"text") || "name"))) STORED,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "location_units_check" CHECK ((("level" = 'province'::"text") = ("parent_code" IS NULL))),
+    CONSTRAINT "location_units_code_check" CHECK (("code" ~ '^vn_[0-9a-z]{20}$'::"text")),
+    CONSTRAINT "location_units_level_check" CHECK (("level" = ANY (ARRAY['province'::"text", 'commune'::"text"]))),
+    CONSTRAINT "location_units_status_check" CHECK (("status" = ANY (ARRAY['active'::"text", 'retired'::"text"])))
+);
+
+
+ALTER TABLE "public"."location_units" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."medical_addenda" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "visit_id" "uuid" NOT NULL,
@@ -15543,6 +15763,21 @@ ALTER TABLE ONLY "public"."kennels"
 
 
 
+ALTER TABLE ONLY "public"."location_catalogs"
+    ADD CONSTRAINT "location_catalogs_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."location_provider_codes"
+    ADD CONSTRAINT "location_provider_codes_pkey" PRIMARY KEY ("provider", "provider_model", "code");
+
+
+
+ALTER TABLE ONLY "public"."location_units"
+    ADD CONSTRAINT "location_units_pkey" PRIMARY KEY ("code");
+
+
+
 ALTER TABLE ONLY "public"."medical_addenda"
     ADD CONSTRAINT "medical_addenda_pkey" PRIMARY KEY ("id");
 
@@ -16094,6 +16329,18 @@ CREATE UNIQUE INDEX "kennels_branch_code_key" ON "public"."kennels" USING "btree
 
 
 CREATE INDEX "kennels_type_idx" ON "public"."kennels" USING "btree" ("kennel_type_id");
+
+
+
+CREATE UNIQUE INDEX "location_catalogs_current" ON "public"."location_catalogs" USING "btree" ("is_current") WHERE "is_current";
+
+
+
+CREATE INDEX "location_units_parent_active" ON "public"."location_units" USING "btree" ("parent_code") WHERE ("status" = 'active'::"text");
+
+
+
+CREATE INDEX "location_units_search" ON "public"."location_units" USING "gin" ("search_key" "extensions"."gin_trgm_ops");
 
 
 
@@ -17013,6 +17260,26 @@ ALTER TABLE ONLY "public"."kennels"
 
 ALTER TABLE ONLY "public"."kennels"
     ADD CONSTRAINT "kennels_kennel_type_id_fkey" FOREIGN KEY ("kennel_type_id") REFERENCES "public"."kennel_types"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."location_provider_codes"
+    ADD CONSTRAINT "location_provider_codes_catalog_id_fkey" FOREIGN KEY ("catalog_id") REFERENCES "public"."location_catalogs"("id");
+
+
+
+ALTER TABLE ONLY "public"."location_provider_codes"
+    ADD CONSTRAINT "location_provider_codes_code_fkey" FOREIGN KEY ("code") REFERENCES "public"."location_units"("code");
+
+
+
+ALTER TABLE ONLY "public"."location_units"
+    ADD CONSTRAINT "location_units_catalog_id_fkey" FOREIGN KEY ("catalog_id") REFERENCES "public"."location_catalogs"("id");
+
+
+
+ALTER TABLE ONLY "public"."location_units"
+    ADD CONSTRAINT "location_units_parent_code_fkey" FOREIGN KEY ("parent_code") REFERENCES "public"."location_units"("code");
 
 
 
@@ -17992,6 +18259,15 @@ ALTER TABLE "public"."kennel_types" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."kennels" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."location_catalogs" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."location_provider_codes" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."location_units" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "medical read" ON "public"."inpatient_doses" FOR SELECT TO "authenticated" USING (( SELECT "public"."can_medical"('VIEW'::"text") AS "can_medical"));
@@ -19464,6 +19740,47 @@ GRANT ALL ON FUNCTION "public"."list_vaccine_types"("p_search" "text", "p_kind" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."location_catalog"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."location_catalog"() TO "anon";
+GRANT ALL ON FUNCTION "public"."location_catalog"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_catalog"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text", "p_page" integer, "p_page_size" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_communes"("p_province" "text", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."location_provinces"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."location_provinces"() TO "anon";
+GRANT ALL ON FUNCTION "public"."location_provinces"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_provinces"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."location_search"("p_search" "text", "p_page" integer, "p_page_size" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."location_search"("p_search" "text", "p_page" integer, "p_page_size" integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."location_search"("p_search" "text", "p_page" integer, "p_page_size" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_search"("p_search" "text", "p_page" integer, "p_page_size" integer) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."location_search_key"("p_text" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."location_search_key"("p_text" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_search_key"("p_text" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."location_unit"("p_code" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."location_unit"("p_code" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."location_unit"("p_code" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."location_unit"("p_code" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") TO "service_role";
@@ -20504,6 +20821,18 @@ GRANT ALL ON TABLE "public"."kennel_types" TO "service_role";
 
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."kennels" TO "authenticated";
 GRANT ALL ON TABLE "public"."kennels" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."location_catalogs" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."location_provider_codes" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."location_units" TO "service_role";
 
 
 
