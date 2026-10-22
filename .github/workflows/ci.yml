@@ -62,5 +62,6 @@ jobs:
           if ! git diff --quiet -- supabase/schema.sql; then
             echo "::error file=supabase/schema.sql::Out of date. Run 'npm run db:start && npm run db:schema' and commit supabase/schema.sql."
             git diff --stat -- supabase/schema.sql
+            git diff -- supabase/schema.sql | head -300
             exit 1
           fi
