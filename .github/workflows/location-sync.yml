@@ -1,0 +1,85 @@
+name: Location sync
+
+# Brings the location cache (provinces, communes and their GHN codes) up to date with the Location Service.
+# It downloads the snapshot, compares it with supabase/data/locations/state.json and, when something
+# changed, writes a data migration, tests it on an empty database and opens a pull request.
+# Merging that pull request runs the migration through "Supabase migrate". No database secret is used:
+# the only secret is the Location Service API key (LOCATION_SERVICE_KEY); the address is the
+# repository variable LOCATION_SERVICE_URL. docs/ke-hoach-noi-dia-gioi.md section 5.
+on:
+  schedule:
+    - cron: "0 21 * * 0" # Monday 04:00 Vietnam time
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Only print the report; write and open nothing
+        type: boolean
+        default: false
+      allow_count_change:
+        description: Accept a change in the number of provinces or communes, or many retirements at once
+        type: boolean
+        default: false
+
+concurrency: location-sync
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      LOCATION_SERVICE_URL: ${{ vars.LOCATION_SERVICE_URL }}
+      LOCATION_SERVICE_KEY: ${{ secrets.LOCATION_SERVICE_KEY }}
+    steps:
+      - name: Check the settings
+        id: config
+        run: |
+          if [ -z "$LOCATION_SERVICE_URL" ] || [ -z "$LOCATION_SERVICE_KEY" ]; then
+            echo "::warning::Set the repository variable LOCATION_SERVICE_URL and the secret LOCATION_SERVICE_KEY to sync."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.config.outputs.ready == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.config.outputs.ready == 'true'
+        with:
+          node-version: 22
+      - name: Download the snapshot and write the migration
+        id: sync
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          flags=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then flags="$flags --dry-run"; fi
+          if [ "${{ inputs.allow_count_change }}" = "true" ]; then flags="$flags --allow-count-change"; fi
+          node apps/web/scripts/location-sync/run.mjs $flags
+      # A pull request opened with GITHUB_TOKEN does not start CI, so the migration is tested here.
+      - uses: supabase/setup-cli@v1
+        if: steps.sync.outputs.changed == 'true' && steps.sync.outputs.migration != ''
+        with:
+          version: 2.121.0
+      - name: Apply every migration, the new one included, to an empty database
+        if: steps.sync.outputs.changed == 'true' && steps.sync.outputs.migration != ''
+        run: |
+          supabase db start
+          supabase test db
+      - name: Open the pull request
+        if: steps.sync.outputs.changed == 'true' && steps.sync.outputs.migration != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CATALOG_ID: ${{ steps.sync.outputs.catalog_id }}
+        run: |
+          branch="location-sync/${CATALOG_ID}-$(date -u +%Y%m%d%H%M)"
+          git config user.name "gracie2109"
+          git config user.email "thaotp2109@gmail.com"
+          git checkout -b "$branch"
+          git add supabase/migrations supabase/data/locations
+          git commit -m "chore(locations): sync the location cache with catalog ${CATALOG_ID}"
+          git push -u origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "chore(locations): sync the location cache with catalog ${CATALOG_ID}" \
+            --body-file location-sync-report.md \
+          || echo "::warning::Branch $branch is pushed but the pull request could not be opened. Allow GitHub Actions to create pull requests (Settings > Actions > General) or open it by hand."
