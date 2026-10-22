@@ -25,6 +25,7 @@
 | [ke-hoach-don-monorepo-con-lai.md](ke-hoach-don-monorepo-con-lai.md) | Kế hoạch phần còn lại của monorepo: hợp đồng zod và mã lỗi cho kho, spa, lưu trú, y tế; đưa queries/composables vào features có barrel và luật; bỏ vue-multiselect; thứ tự để tránh đụng thread y tế và ảnh thú cưng |
 | [anh-thu-cung.md](anh-thu-cung.md) | Kế hoạch ảnh thú cưng: bucket `pet-photos` công khai, policy theo quyền `pets`, thu nhỏ ảnh trên trình duyệt, RPC đổi/xoá ảnh, hiện ảnh ở admin, POS, spa, lưu trú, y tế và trang khách, sao lưu ảnh |
 | [ke-hoach-app-mobile.md](ke-hoach-app-mobile.md) | Kế hoạch app mobile cho khách: Capacitor bọc phần khách của web thành SPA, Android trước (APK từ GitHub Actions), đăng nhập, proxy GHN, thông báo cục bộ, CI, rủi ro, các bước PR M0 đến M11 |
+| [ke-hoach-noi-dia-gioi.md](ke-hoach-noi-dia-gioi.md) | Kế hoạch nối Pawtiny với Location Service (P1–P5): bảng cache chỉ đọc trong Supabase, workflow sync sinh migration từ snapshot, địa chỉ 2 cấp, mã GHN theo môi trường, test, thứ tự triển khai |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [security-anti-clone.md](security-anti-clone.md) | Chống clone và mạo danh: header bảo mật và CSP, chặn chạy trên domain lạ, canonical, rate limit, báo cáo rà soát Supabase theo mức độ, việc làm tay (Supabase Auth, Cloudflare, theo dõi domain giả) |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
