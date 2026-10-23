@@ -25,4 +25,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (queryState.value) hydrate(queryClient, queryState.value);
     });
   }
+
+  // The auth store clears the cache when the signed-in account changes.
+  return { provide: { queryClient } };
 });
