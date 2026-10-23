@@ -48,6 +48,7 @@ export const useActionItems = (scope: ComputedRef<DashboardScope> = useWidgetSco
       [
         rowOf("pendingOrders", orders, orders.data.value, !!ordersBranch.value),
         rowOf("stockLow", stock, stock.data.value?.low, !!stockBranch.value),
+        rowOf("stockOut", stock, stock.data.value?.out, !!stockBranch.value),
         rowOf("stockExpiring", stock, stock.data.value?.expiring, !!stockBranch.value),
         rowOf("stockExpired", stock, stock.data.value?.expired, !!stockBranch.value),
         rowOf("vaccineOverdue", vaccines, vaccines.data.value?.total, !!medicalBranch.value),

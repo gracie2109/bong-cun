@@ -13661,7 +13661,7 @@ begin
 
   select jsonb_build_object(
     'low',      count(*) filter (where s.min_qty is not null and s.sellable < s.min_qty),
-    'out',      count(*) filter (where s.sellable = 0),
+    'out',      count(*) filter (where (s.sellable = 0 and exists (select 1 from public.stock_lots sl where sl.branch_id = p_branch and sl.product_id = s.product_id))),
     'expiring', count(*) filter (where s.expiring > 0),
     'expired',  count(*) filter (where s.expired > 0)
   ) into v_result
@@ -13729,7 +13729,7 @@ begin
          or s.barcode = v_term)
     and case coalesce(p_status, 'all')
           when 'low' then s.min_qty is not null and s.sellable < s.min_qty
-          when 'out' then s.sellable = 0
+          when 'out' then (s.sellable = 0 and exists (select 1 from public.stock_lots sl where sl.branch_id = p_branch and sl.product_id = s.product_id))
           when 'expiring' then s.expiring > 0
           when 'expired' then s.expired > 0
           else true

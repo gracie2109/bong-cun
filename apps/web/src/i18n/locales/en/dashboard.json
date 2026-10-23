@@ -52,6 +52,7 @@
       "empty": "Nothing needs attention.",
       "pendingOrders": "Online orders to confirm",
       "stockLow": "Products below minimum stock",
+      "stockOut": "Products out of stock",
       "stockExpiring": "Products with lots expiring soon",
       "stockExpired": "Products with expired lots in stock",
       "vaccineOverdue": "Overdue vaccinations",

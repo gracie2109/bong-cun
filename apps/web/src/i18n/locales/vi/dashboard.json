@@ -52,6 +52,7 @@
       "empty": "Không có việc gì cần xử lý.",
       "pendingOrders": "Đơn online chờ xác nhận",
       "stockLow": "Sản phẩm dưới mức tồn tối thiểu",
+      "stockOut": "Sản phẩm đã hết hàng",
       "stockExpiring": "Sản phẩm có lô sắp hết hạn",
       "stockExpired": "Sản phẩm còn lô đã hết hạn",
       "vaccineOverdue": "Mũi tiêm quá hạn",
