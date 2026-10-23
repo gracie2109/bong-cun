@@ -21089,8 +21089,8 @@ GRANT ALL ON TABLE "public"."customers" TO "service_role";
 
 
 
-GRANT SELECT ON TABLE "public"."dashboard_layouts" TO "authenticated";
 GRANT ALL ON TABLE "public"."dashboard_layouts" TO "service_role";
+GRANT SELECT ON TABLE "public"."dashboard_layouts" TO "authenticated";
 
 
 
