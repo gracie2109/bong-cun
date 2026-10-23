@@ -263,6 +263,30 @@ export type Database = {
           },
         ]
       }
+      dashboard_layouts: {
+        Row: {
+          dashboard_key: string
+          layout: Json
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          dashboard_key: string
+          layout: Json
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          dashboard_key?: string
+          layout?: Json
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -2554,6 +2578,11 @@ export type Database = {
       }
     }
     Functions: {
+      save_dashboard_layout: {
+        Args: { p_dashboard: string; p_expected_version: number; p_layout: Json }
+        Returns: number
+      }
+      reset_dashboard_layout: { Args: { p_dashboard: string }; Returns: undefined }
       location_catalog: { Args: never; Returns: Json }
       location_communes: {
         Args: { p_page?: number; p_page_size?: number; p_province: string; p_search?: string }
