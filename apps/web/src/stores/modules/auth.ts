@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", () => {
   const isAdmin = computed(() => isAdminRole(role.value));
   const isStaff = computed(() => isStaffRole(role.value));
 
-  const { adminGrants, loadAdminGrants, can } = createAdminGrants({
+  const { adminGrants, branchGrants, loadAdminGrants, can, canAt } = createAdminGrants({
     supabase,
     session,
     role,
@@ -266,8 +266,10 @@ export const useAuthStore = defineStore("auth", () => {
     isAdmin,
     isStaff,
     adminGrants,
+    branchGrants,
     loadAdminGrants,
     can,
+    canAt,
     init,
     pendingVerificationEmail,
     verifyEmailCode,
