@@ -10,10 +10,15 @@ const FAST_REFRESH_MS = 30_000;
 const BADGE_REFRESH_MS = 60_000;
 
 /** One page of online orders. Read again every 30 seconds so new orders show up. */
-export const useShopOrderList = (page: MaybeRef<PageParams>, filter: MaybeRef<OrderListFilter>) =>
+export const useShopOrderList = (
+  page: MaybeRef<PageParams>,
+  filter: MaybeRef<OrderListFilter>,
+  enabled: MaybeRef<boolean> = true
+) =>
   useQuery({
     queryKey: computed(() => shopKeys.staffOrderList({ ...unref(page) }, { ...unref(filter) })),
     queryFn: () => listShopOrders(supabaseClient(), { ...unref(page) }, { ...unref(filter) }),
+    enabled: computed(() => unref(enabled)),
     placeholderData: keepPreviousData,
     refetchInterval: FAST_REFRESH_MS,
   });

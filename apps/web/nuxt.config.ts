@@ -2,7 +2,7 @@
 
 // Messages are split by area (src/i18n/locales/<locale>/<area>.json) and merged per locale.
 const i18nFiles = (locale: string) =>
-  ["common", "shop", "services", "admin"].map((area) => `${locale}/${area}.json`);
+  ["common", "shop", "services", "admin", "dashboard"].map((area) => `${locale}/${area}.json`);
 
 import { mobileNuxtConfig, resolveAppTarget } from "./config/mobileTarget";
 import { publicApiCacheRules } from "./config/publicApiCache";

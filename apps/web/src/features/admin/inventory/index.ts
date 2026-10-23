@@ -2,3 +2,4 @@
 export { default as ProductPicker } from "./documents/ProductPicker.vue";
 export { useImportPets } from "./queries/dataImports";
 export { useSellableStock } from "./queries/inventory";
+export { useStockAlertCounts } from "./queries/inventory";

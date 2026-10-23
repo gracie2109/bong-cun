@@ -8,14 +8,33 @@
 
   <ContentWrap>
     <div class="space-y-5">
-      <div>
-        <h2 class="text-3xl font-bold tracking-tight">{{ $t("adminNav.welcome", { name: userName }) }}</h2>
-        <p class="text-sm text-muted-foreground">{{ $t("adminNav.welcomeHint") }}</p>
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight">{{ $t("adminNav.welcome", { name: userName }) }}</h2>
+          <p class="text-sm text-muted-foreground">{{ $t("adminNav.welcomeHint") }}</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <DashboardSwitcher :items="visible" :active-key="active?.key" @select="open" />
+          <DashboardScopePicker
+            :scope="activeScope"
+            :branches="branches"
+            :allow-all="canPickAll && !!active?.scopes.includes('all')"
+            @select="select"
+          />
+        </div>
       </div>
 
-      <TodaySalesCard />
-      <BoardingTodayCard />
-      <MedicalTodayCard />
+      <p v-if="!branches.length" class="rounded-xl border bg-white px-4 py-10 text-center text-sm text-muted-foreground">
+        {{ $t("dashboard.noBranch") }}
+      </p>
+      <div v-else-if="active" class="grid gap-4 lg:grid-cols-2">
+        <component
+          :is="widget.component"
+          v-for="widget in active.widgets"
+          :key="`${active.key}-${widget.key}-${activeScope.kind}-${activeScope.branchId}`"
+          :class="widget.span === 2 && 'lg:col-span-2'"
+        />
+      </div>
 
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <router-link
@@ -45,11 +64,20 @@ import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
-import BoardingTodayCard from "./BoardingTodayCard.vue";
-import MedicalTodayCard from "./MedicalTodayCard.vue";
-import TodaySalesCard from "./TodaySalesCard.vue";
+import DashboardScopePicker from "./DashboardScopePicker.vue";
+import DashboardSwitcher from "./DashboardSwitcher.vue";
+import { scopeFor } from "./dashboardRules";
+import { provideWidgetScope } from "./kit/widgetScope";
+import { useDashboardScope } from "./useDashboardScope";
+import { useDashboardSelection } from "./useDashboardSelection";
 
 const auth = useAuthStore();
+const { scope, branches, canPickAll, select } = useDashboardScope();
+const { visible, active, open } = useDashboardSelection(scope);
+
+// "All branches" falls back to the working branch on a dashboard that cannot add branches up.
+const activeScope = computed(() => (active.value ? scopeFor(active.value, scope.value) : scope.value));
+provideWidgetScope(activeScope);
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""
