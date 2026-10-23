@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { isDashboardVisible, pickDashboard, scopeFor, visibleDashboards, widgetAccess } from "@/features/admin/dashboard/dashboardRules";
-import type { DashboardDef, DashboardScope, WidgetDef } from "@/features/admin/dashboard/kit/types";
+import type { DashboardDef, DashboardScope } from "@/features/admin/dashboard/kit/types";
+import type { WidgetTypeMeta } from "@/features/admin/dashboard/widgetTypes/types";
 
 const grants: Record<string, string[]> = { a: ["medical", "reports"], b: ["boarding"] };
 const canAt = (permission: string, branchId: string) => (grants[branchId] ?? []).includes(permission);
-const widget = (permissions: string[], scopes: WidgetDef["scopes"] = ["branch"]) =>
-  ({ key: permissions.join(), component: {}, permissions, scopes }) as WidgetDef;
+type Rule = Pick<WidgetTypeMeta, "permissions" | "scopes">;
+const widget = (permissions: string[], scopes: Rule["scopes"] = ["branch"]): Rule => ({ permissions, scopes });
+// Test dashboards place fake types "m", "b" and "r"; this looks their rules up.
+const rules: Record<string, Rule> = { m: widget(["medical"]), b: widget(["boarding"]), r: widget(["reports"], ["branch", "all"]) };
+const ruleOf = (type: string) => rules[type] ?? null;
+const placed = (...types: string[]) => types.map((type, y) => ({ type, x: 0, y, w: 1, h: 1 }));
 const branchScope = (branchId: string): DashboardScope => ({ kind: "branch", branchId, branchIds: ["a", "b"] });
 const allScope: DashboardScope = { kind: "all", branchId: "a", branchIds: ["a", "b"] };
 
@@ -26,10 +31,10 @@ describe("widgetAccess", () => {
 
 describe("dashboards", () => {
   const today: DashboardDef = {
-    key: "today", titleKey: "t", scopes: ["branch"], widgets: [widget(["medical"]), widget(["boarding"])],
+    key: "today", titleKey: "t", scopes: ["branch"], defaultItems: placed("m", "b"),
   };
   const business: DashboardDef = {
-    key: "business", titleKey: "b", scopes: ["branch", "all"], requires: "reports", widgets: [widget(["reports"], ["branch", "all"])],
+    key: "business", titleKey: "b", scopes: ["branch", "all"], requires: "reports", defaultItems: placed("r"),
   };
 
   it("falls back to the working branch when a dashboard has no all-branch view", () => {
@@ -38,9 +43,9 @@ describe("dashboards", () => {
   });
 
   it("offers a dashboard only with a visible widget and its required permission", () => {
-    expect(visibleDashboards([today, business], branchScope("a"), canAt).map((d) => d.key)).toEqual(["today", "business"]);
-    expect(visibleDashboards([today, business], branchScope("b"), canAt).map((d) => d.key)).toEqual(["today"]);
-    expect(isDashboardVisible(business, { kind: "branch", branchId: "a", branchIds: [] }, canAt)).toBe(false);
+    expect(visibleDashboards([today, business], branchScope("a"), canAt, ruleOf).map((d) => d.key)).toEqual(["today", "business"]);
+    expect(visibleDashboards([today, business], branchScope("b"), canAt, ruleOf).map((d) => d.key)).toEqual(["today"]);
+    expect(isDashboardVisible(business, { kind: "branch", branchId: "a", branchIds: [] }, canAt, ruleOf)).toBe(false);
   });
 
   it("picks the requested dashboard, then the stored one, then the first", () => {

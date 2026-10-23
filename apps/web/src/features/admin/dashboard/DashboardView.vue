@@ -30,8 +30,8 @@
       <div v-else-if="active" class="grid gap-4 lg:grid-cols-2">
         <component
           :is="widget.component"
-          v-for="widget in active.widgets"
-          :key="`${active.key}-${widget.key}-${activeScope.kind}-${activeScope.branchId}`"
+          v-for="widget in widgets"
+          :key="`${active.key}-${widget.id}-${activeScope.kind}-${activeScope.branchId}`"
           :class="widget.span === 2 && 'lg:col-span-2'"
         />
       </div>
@@ -68,6 +68,9 @@ import DashboardScopePicker from "./DashboardScopePicker.vue";
 import DashboardSwitcher from "./DashboardSwitcher.vue";
 import { scopeFor } from "./dashboardRules";
 import { provideWidgetScope } from "./kit/widgetScope";
+import { defaultLayout } from "./layout/layoutCodec";
+import { stackOrder } from "./layout/layoutMath";
+import { widgetType } from "./widgetTypes/registry";
 import { useDashboardScope } from "./useDashboardScope";
 import { useDashboardSelection } from "./useDashboardSelection";
 
@@ -78,6 +81,16 @@ const { visible, active, open } = useDashboardSelection(scope);
 // "All branches" falls back to the working branch on a dashboard that cannot add branches up.
 const activeScope = computed(() => (active.value ? scopeFor(active.value, scope.value) : scope.value));
 provideWidgetScope(activeScope);
+
+// Until the grid arrives (next steps) the default layout is drawn in reading order, wide items across.
+const widgets = computed(() =>
+  active.value
+    ? stackOrder(defaultLayout(active.value)).flatMap((item) => {
+        const type = widgetType(item.type);
+        return type ? [{ id: item.id, component: type.component, span: item.w >= 3 ? 2 : 1 }] : [];
+      })
+    : []
+);
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""
