@@ -3,6 +3,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@bongcun/supabase/db";
 import { unwrap } from "@bongcun/supabase/shared";
+import type { BranchGrants } from "@bongcun/core/auth";
 
 type Client = SupabaseClient<Database>;
 
@@ -70,10 +71,31 @@ export const deletePermission = async (client: Client, id: string): Promise<void
   if (error) throw error;
 };
 
-/** The caller's own grants at every branch they work in, merged per permission code. */
-export const listMyPermissions = async (client: Client): Promise<Record<string, string[]>> => {
-  const rows = unwrap(await client.rpc("my_permissions"));
+type GrantRow = { branch_id: string; permission: string; methods: string[] };
+
+const mergeByPermission = (rows: GrantRow[]): Record<string, string[]> => {
   const grants: Record<string, string[]> = {};
   for (const row of rows) grants[row.permission] = [...new Set([...(grants[row.permission] ?? []), ...row.methods])];
   return grants;
 };
+
+const groupByBranch = (rows: GrantRow[]): BranchGrants => {
+  const byBranch: Record<string, Record<string, string[]>> = {};
+  for (const row of rows) {
+    const branch = (byBranch[row.branch_id] ??= {});
+    branch[row.permission] = [...new Set([...(branch[row.permission] ?? []), ...row.methods])];
+  }
+  return byBranch;
+};
+
+/** The caller's own grants: merged over every branch, and per branch. */
+export const listMyGrants = async (
+  client: Client
+): Promise<{ merged: Record<string, string[]>; byBranch: BranchGrants }> => {
+  const rows = unwrap(await client.rpc("my_permissions"));
+  return { merged: mergeByPermission(rows), byBranch: groupByBranch(rows) };
+};
+
+/** The caller's own grants at every branch they work in, merged per permission code. */
+export const listMyPermissions = async (client: Client): Promise<Record<string, string[]>> =>
+  (await listMyGrants(client)).merged;
