@@ -70,6 +70,9 @@
     "boarding": {
       "title": "Khách sạn hôm nay",
       "unit": "Đếm theo chuồng, không phải theo số thú."
+    },
+    "bell": {
+      "title": "Việc cần xử lý"
     }
   }
 }

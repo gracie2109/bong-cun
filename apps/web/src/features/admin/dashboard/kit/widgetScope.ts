@@ -17,9 +17,12 @@ export const useWidgetScope = (): ComputedRef<DashboardScope> => {
  * What the widget may read for the scope in force: `branchId` is set only when it may ask for one
  * branch, `reportBranchId` is null for "all branches" (the database adds up the allowed ones).
  */
-export const useWidgetAccess = (permissions: readonly string[], scopes: readonly ScopeKind[]) => {
+export const useWidgetAccess = (
+  permissions: readonly string[],
+  scopes: readonly ScopeKind[],
+  scope: ComputedRef<DashboardScope> = useWidgetScope()
+) => {
   const auth = useAuthStore();
-  const scope = useWidgetScope();
   const access = computed(() => widgetAccess({ permissions, scopes }, scope.value, auth.canAt));
   const allowed = computed(() => access.value === "allowed");
   const branchId = computed(() =>
@@ -30,9 +33,8 @@ export const useWidgetAccess = (permissions: readonly string[], scopes: readonly
 };
 
 /** The branch to ask about for one source of a combined widget; undefined while the account lacks the permission there. */
-export const useBranchIfAllowed = (permission: string) => {
+export const useBranchIfAllowed = (permission: string, scope: ComputedRef<DashboardScope> = useWidgetScope()) => {
   const auth = useAuthStore();
-  const scope = useWidgetScope();
   return computed(() => {
     const { kind, branchId } = scope.value;
     return kind === "branch" && branchId && auth.canAt(permission, branchId) ? branchId : undefined;

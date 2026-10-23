@@ -1,3 +1,4 @@
+import { businessDateOf, todayInVietnam } from "@/lib/businessDate";
 import { SLOT_MINUTES, type AppointmentStatus, type TicketStatus } from "@bongcun/supabase/spa";
 
 // The salon works on Vietnam time whatever the device clock says, and Vietnam has no daylight
@@ -7,7 +8,6 @@ const BUSINESS_OFFSET = "+07:00";
 const MINUTES_PER_HOUR = 60;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const dateKeyFormat = new Intl.DateTimeFormat("en-CA", { timeZone: BUSINESS_TZ });
 const timeFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: BUSINESS_TZ,
   hour: "2-digit",
@@ -16,9 +16,9 @@ const timeFormat = new Intl.DateTimeFormat("en-GB", {
 });
 
 /** yyyy-MM-dd of an instant on the salon's calendar. */
-export const dateKeyOf = (date: Date | string): string => dateKeyFormat.format(new Date(date));
+export const dateKeyOf = businessDateOf;
 
-export const todayKey = (): string => dateKeyOf(new Date());
+export const todayKey = (): string => todayInVietnam();
 
 /** HH:mm of an instant on the salon's clock. */
 export const timeOf = (iso: string): string => timeFormat.format(new Date(iso));

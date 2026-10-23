@@ -1,9 +1,10 @@
 import { computed, type ComputedRef, type Ref } from "vue";
+import type { DashboardScope } from "../../kit/types";
 import { useBoardingBoard } from "@/features/admin/boarding";
 import { useStockAlertCounts } from "@/features/admin/inventory";
 import { useMedicalReminders } from "@/features/admin/medical";
 import { useShopOrderBadge } from "@/features/admin/shop-orders";
-import { useBranchIfAllowed, useWidgetAccess } from "../../kit/widgetScope";
+import { useBranchIfAllowed, useWidgetAccess, useWidgetScope } from "../../kit/widgetScope";
 import { resolveWidgetState } from "../../kit/widgetState";
 import { useToday } from "../../useToday";
 import { allClear, ROUTES, sortRows, type ActionRow, type ActionRowKey } from "./actionItems";
@@ -25,16 +26,17 @@ const rowOf = (key: ActionRowKey, source: Source, count: number | undefined, on:
     : null;
 
 /** Everything that needs doing at the branch, one independent source per row (a refused source hides only its own rows). */
-export const useActionItems = () => {
+export const useActionItems = (scope: ComputedRef<DashboardScope> = useWidgetScope()) => {
   const { allowed, needsBranch } = useWidgetAccess(
     ["shop_orders", "inventory", "medical", "boarding"],
-    ["branch"]
+    ["branch"],
+    scope
   );
   const today = useToday();
-  const ordersBranch = useBranchIfAllowed("shop_orders");
-  const stockBranch = useBranchIfAllowed("inventory");
-  const medicalBranch = useBranchIfAllowed("medical");
-  const boardingBranch = useBranchIfAllowed("boarding");
+  const ordersBranch = useBranchIfAllowed("shop_orders", scope);
+  const stockBranch = useBranchIfAllowed("inventory", scope);
+  const medicalBranch = useBranchIfAllowed("medical", scope);
+  const boardingBranch = useBranchIfAllowed("boarding", scope);
 
   const orders = useShopOrderBadge(computed(() => !!ordersBranch.value));
   const stock = useStockAlertCounts(stockBranch, EXPIRY_DAYS);

@@ -13,9 +13,7 @@ const ISO = "yyyy-MM-dd";
 
 export const toIsoDate = (date: Date): string => format(date, ISO);
 
-/** Today's date in Vietnam, whatever the device's time zone. */
-export const todayInVietnam = (now = new Date()): string =>
-  new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(now);
+export { todayInVietnam } from "@/lib/businessDate";
 
 export const isIsoDate = (value: unknown): value is string =>
   typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(parseISO(value).getTime());
