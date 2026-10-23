@@ -4,6 +4,10 @@ import { inRolledBackTransaction, type Session } from "./db";
 
 // A made-up province with two communes, for this test only (the real cache is filled by the sync).
 const addFixture = async (db: Session) => {
+  // The real cache may already be filled by the sync; the fixture needs it empty (rolled back with the test).
+  await db.rows("delete from public.location_provider_codes");
+  await db.rows("delete from public.location_units");
+  await db.rows("delete from public.location_catalogs");
   await db.rows(
     `insert into public.location_catalogs (id, source, effective_on, is_current, record_counts)
      values ('contract-catalog', 'test fixture', '2025-07-01', true, '{"provinces": 1}')`

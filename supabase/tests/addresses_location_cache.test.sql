@@ -4,6 +4,11 @@ begin;
 \ir _helpers/setup.psql
 select plan(21);
 
+-- The real cache may already be filled by the sync; the fixtures below need it empty (rolled back with the test).
+delete from public.location_provider_codes;
+delete from public.location_units;
+delete from public.location_catalogs;
+
 insert into public.location_catalogs (id, source, effective_on, is_current)
 values ('addr-test-catalog', 'test fixture', '2025-07-01', true);
 insert into public.location_units (code, level, unit_type, official_code, name, full_name, parent_code, status, effective_from, catalog_id)
