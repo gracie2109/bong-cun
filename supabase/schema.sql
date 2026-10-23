@@ -3382,7 +3382,7 @@ ALTER FUNCTION "public"."custom_access_token_hook"("event" "jsonb") OWNER TO "po
 CREATE OR REPLACE FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") RETURNS boolean
     LANGUAGE "plpgsql" IMMUTABLE
     SET "search_path" TO ''
-    AS $$
+    AS $_$
 declare
   k text;
   n numeric;
@@ -3403,7 +3403,7 @@ begin
   end if;
   return true;
 end;
-$$;
+$_$;
 
 
 ALTER FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") OWNER TO "postgres";
@@ -10314,7 +10314,7 @@ ALTER FUNCTION "public"."save_branch_hours"("p_branch" "uuid", "p" "jsonb") OWNE
 CREATE OR REPLACE FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
-    AS $$
+    AS $_$
 declare
   v_user uuid := (select auth.uid());
   v_problem text;
@@ -10348,7 +10348,7 @@ begin
   end if;
   return v_version;
 end;
-$$;
+$_$;
 
 
 ALTER FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) OWNER TO "postgres";
