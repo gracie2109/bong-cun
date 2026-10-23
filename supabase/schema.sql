@@ -6834,7 +6834,7 @@ begin
     where o.role = 'primary' and o.to_date is null
   ), shots as (
     select distinct on (v.pet_id, v.vaccine_type_id)
-      v.id, v.pet_id, v.vaccine_type_id, v.given_on, v.next_due_on, v.reminded_at, v.remind_note, v.reminded_by
+      v.id, v.pet_id, v.branch_id, v.vaccine_type_id, v.given_on, v.next_due_on, v.reminded_at, v.remind_note, v.reminded_by
     from public.vaccinations v
     where v.voided_at is null
     order by v.pet_id, v.vaccine_type_id, v.given_on desc, v.created_at desc
@@ -6849,6 +6849,9 @@ begin
     join public.vaccine_types t on t.id = s.vaccine_type_id
     join owner ow on ow.pet_id = p.id
     where s.next_due_on is not null
+      -- The branch that gave the last dose follows it up; doses without a branch (entered before branches
+      -- were tracked) stay visible everywhere.
+      and (s.branch_id = p_branch or s.branch_id is null)
       and ((p_scope = 'overdue' and s.next_due_on < v_today)
         or (p_scope = 'due' and s.next_due_on >= v_today and s.next_due_on <= v_today + v_ahead))
     union all
