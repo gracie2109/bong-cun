@@ -3,6 +3,7 @@ import type { RouteLocationRaw } from "vue-router";
 export type ActionRowKey =
   | "pendingOrders"
   | "stockLow"
+  | "stockOut"
   | "stockExpiring"
   | "stockExpired"
   | "vaccineOverdue"
@@ -19,6 +20,7 @@ export type ActionRow = {
 export const ROUTES: Record<ActionRowKey, string> = {
   pendingOrders: "shopOrders",
   stockLow: "inventoryStock",
+  stockOut: "inventoryStock",
   stockExpiring: "inventoryStock",
   stockExpired: "inventoryStock",
   vaccineOverdue: "medicalReminders",

@@ -52,6 +52,7 @@
       "empty": "Nothing needs attention.",
       "pendingOrders": "Online orders to confirm",
       "stockLow": "Products below minimum stock",
+      "stockOut": "Products out of stock",
       "stockExpiring": "Products with lots expiring soon",
       "stockExpired": "Products with expired lots in stock",
       "vaccineOverdue": "Overdue vaccinations",
@@ -69,7 +70,11 @@
     },
     "boarding": {
       "title": "Boarding today",
-      "unit": "Counted per kennel, not per pet."
+      "unitLabel": "Count by",
+      "unit_kennels": "Kennels",
+      "unit_pets": "Pets",
+      "note_kennels": "Counted per kennel: a big kennel with several pets counts once.",
+      "note_pets": "Counted per pet, including several pets sharing a kennel."
     },
     "bell": {
       "title": "To do"
