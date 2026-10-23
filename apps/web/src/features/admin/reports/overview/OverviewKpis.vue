@@ -4,12 +4,13 @@
       :label="$t('reports.kpi.netRevenue')"
       :value="money(data.netRevenue)"
       :compare="{ current: data.netRevenue, previous: data.previous.netRevenue }"
+      :hint="pendingCodHint"
     />
     <KpiCard
       :label="$t('reports.kpi.invoiceCount')"
       :value="String(data.invoiceCount)"
       :compare="{ current: data.invoiceCount, previous: data.previous.invoiceCount }"
-      :hint="data.cancelledCount ? $t('reports.kpi.cancelled', { n: data.cancelledCount }) : undefined"
+      :hint="invoiceHint"
     />
     <KpiCard
       :label="$t('reports.kpi.avgTicket')"
@@ -34,8 +35,24 @@
 
 <script lang="ts" setup>
 import type { ReportOverview } from "@bongcun/supabase/reports";
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { money } from "../shared/format";
 import KpiCard from "../shared/KpiCard.vue";
 
-defineProps<{ data: ReportOverview }>();
+const props = defineProps<{ data: ReportOverview }>();
+const { t } = useI18n();
+
+const invoiceHint = computed(() => {
+  const parts: string[] = [];
+  if (props.data.cancelledCount) parts.push(t("reports.kpi.cancelled", { n: props.data.cancelledCount }));
+  if (props.data.returnedOnlineCount) parts.push(t("reports.kpi.returnedOnline", { n: props.data.returnedOnlineCount }));
+  return parts.length ? parts.join(" · ") : undefined;
+});
+
+const pendingCodHint = computed(() =>
+  props.data.pendingCod.count
+    ? t("reports.kpi.pendingCod", { amount: money(props.data.pendingCod.amount), n: props.data.pendingCod.count })
+    : undefined,
+);
 </script>

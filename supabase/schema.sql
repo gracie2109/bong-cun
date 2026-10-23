@@ -5434,6 +5434,22 @@ $$;
 ALTER FUNCTION "public"."invoice_line_take_stock"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."invoice_set_paid_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+begin
+  if new.status = 'paid' and new.paid_at is null then
+    new.paid_at := case when tg_op = 'INSERT' then new.created_at else now() end;
+  end if;
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."invoice_set_paid_at"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."is_admin"() RETURNS boolean
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
@@ -9275,6 +9291,13 @@ begin
   v_prev := public.report_overview_core(v_branches, public.report_range(p_from - v_days, p_from - 1));
 
   return v_now || jsonb_build_object(
+    -- Delivery orders packed but not yet paid: cash on delivery still to come, not revenue yet.
+    'pending_cod', (
+      select jsonb_build_object('count', count(*), 'amount', coalesce(round(sum(i.total)), 0))
+      from public.invoices i
+      join public.shop_orders so on so.invoice_id = i.id
+      where i.branch_id = any(v_branches) and i.status = 'unpaid' and so.delivery_method = 'delivery'
+    ),
     'previous', jsonb_build_object(
       'net_revenue',   v_prev -> 'net_revenue',
       'invoice_count', v_prev -> 'invoice_count',
@@ -9298,13 +9321,22 @@ CREATE OR REPLACE FUNCTION "public"."report_overview_core"("p_branches" "uuid"[]
     from public.invoices
     where branch_id = any(p_branches)
       and status = 'paid'
-      and created_at >= lower(p_range) and created_at < upper(p_range)
+      and paid_at >= lower(p_range) and paid_at < upper(p_range)
   ), cancelled as (
-    select total
-    from public.invoices
-    where branch_id = any(p_branches)
-      and status = 'cancelled'
-      and cancelled_at >= lower(p_range) and cancelled_at < upper(p_range)
+    -- An online order that came back from delivery is a return, not a cancellation.
+    select i.total
+    from public.invoices i
+    where i.branch_id = any(p_branches)
+      and i.status = 'cancelled'
+      and i.cancelled_at >= lower(p_range) and i.cancelled_at < upper(p_range)
+      and not exists (select 1 from public.shop_orders so where so.invoice_id = i.id and so.status = 'returned')
+  ), returned_online as (
+    select i.total
+    from public.invoices i
+    where i.branch_id = any(p_branches)
+      and i.status = 'cancelled'
+      and i.cancelled_at >= lower(p_range) and i.cancelled_at < upper(p_range)
+      and exists (select 1 from public.shop_orders so where so.invoice_id = i.id and so.status = 'returned')
   ), pay as (
     select p.method, sum(p.amount) as amount
     from public.payments p
@@ -9331,6 +9363,8 @@ CREATE OR REPLACE FUNCTION "public"."report_overview_core"("p_branches" "uuid"[]
       (select count(*) from inv)                            as invoice_count,
       (select count(*) from cancelled)                      as cancelled_count,
       coalesce((select sum(total) from cancelled), 0)       as cancelled_amount,
+      (select count(*) from returned_online)                as returned_online_count,
+      coalesce((select sum(total) from returned_online), 0) as returned_online_amount,
       (select count(*) from ret)                            as return_count,
       coalesce((select sum(line_net) from lines where segment = 'shop'), 0) as shop,
       coalesce((select sum(line_net) from lines where segment = 'spa'), 0)  as spa,
@@ -9360,6 +9394,8 @@ CREATE OR REPLACE FUNCTION "public"."report_overview_core"("p_branches" "uuid"[]
     'avg_ticket',    case when invoice_count = 0 then 0 else round(net_sales / invoice_count) end,
     'cancelled_count',  cancelled_count,
     'cancelled_amount', round(cancelled_amount),
+    'returned_online_count',  returned_online_count,
+    'returned_online_amount', round(returned_online_amount),
     'return_count',  return_count,
     'segments', jsonb_build_object(
       'shop', round(shop),
@@ -9431,22 +9467,22 @@ begin
            end as bkt
     from generate_series(p_from::timestamp, p_to::timestamp, interval '1 day') d
   ), inv as (
-    select (i.created_at at time zone 'Asia/Ho_Chi_Minh')::date as day,
+    select (i.paid_at at time zone 'Asia/Ho_Chi_Minh')::date as day,
            count(*) as n, sum(i.subtotal) as gross, sum(i.discount_amount) as discount,
            sum(i.total) as net_sales, sum(i.change_amount) as change
     from public.invoices i
     where i.branch_id = any(v_branches) and i.status = 'paid'
-      and i.created_at >= lower(v_range) and i.created_at < upper(v_range)
+      and i.paid_at >= lower(v_range) and i.paid_at < upper(v_range)
     group by 1
   ), pay as (
-    select (i.created_at at time zone 'Asia/Ho_Chi_Minh')::date as day,
+    select (i.paid_at at time zone 'Asia/Ho_Chi_Minh')::date as day,
            sum(p.amount) filter (where p.method = 'cash') as cash,
            sum(p.amount) filter (where p.method = 'transfer') as transfer,
            sum(p.amount) filter (where p.method = 'card') as card
     from public.invoices i
     join public.payments p on p.invoice_id = i.id
     where i.branch_id = any(v_branches) and i.status = 'paid'
-      and i.created_at >= lower(v_range) and i.created_at < upper(v_range)
+      and i.paid_at >= lower(v_range) and i.paid_at < upper(v_range)
     group by 1
   ), ret as (
     select (r.created_at at time zone 'Asia/Ho_Chi_Minh')::date as day, sum(r.refund_amount) as refunds
@@ -9499,7 +9535,7 @@ CREATE OR REPLACE FUNCTION "public"."report_sales_lines"("p_branches" "uuid"[], 
   select
     i.id,
     i.branch_id,
-    (i.created_at at time zone 'Asia/Ho_Chi_Minh')::date,
+    (i.paid_at at time zone 'Asia/Ho_Chi_Minh')::date,
     i.created_by,
     i.cashier_name,
     l.id,
@@ -9527,8 +9563,8 @@ CREATE OR REPLACE FUNCTION "public"."report_sales_lines"("p_branches" "uuid"[], 
   left join public.medical_visit_items mi on mi.invoice_line_id = l.id
   where i.status = 'paid'
     and i.branch_id = any(p_branches)
-    and i.created_at >= p_from
-    and i.created_at < p_to;
+    and i.paid_at >= p_from
+    and i.paid_at < p_to;
 $$;
 
 
@@ -9678,7 +9714,7 @@ begin
     select i.created_by as sid, max(i.cashier_name) as cname, count(*) as n, sum(i.total) as net
     from public.invoices i
     where i.branch_id = any(v_branches) and i.status = 'paid'
-      and i.created_at >= lower(v_range) and i.created_at < upper(v_range)
+      and i.paid_at >= lower(v_range) and i.paid_at < upper(v_range)
     group by 1
   ), ret as (
     select r.created_by as sid, max(r.created_by_name) as cname, sum(r.refund_amount) as amount
@@ -14535,6 +14571,7 @@ CREATE TABLE IF NOT EXISTS "public"."invoices" (
     "cancel_reason" "text",
     "client_ref" "uuid",
     "channel" "text" DEFAULT 'pos'::"text" NOT NULL,
+    "paid_at" timestamp with time zone,
     CONSTRAINT "invoices_change_amount_check" CHECK (("change_amount" >= (0)::numeric)),
     CONSTRAINT "invoices_channel_check" CHECK (("channel" = ANY (ARRAY['pos'::"text", 'online'::"text"]))),
     CONSTRAINT "invoices_check" CHECK (("discount_amount" <= "subtotal")),
@@ -16388,6 +16425,10 @@ CREATE INDEX "invoices_branch_created_idx" ON "public"."invoices" USING "btree" 
 
 
 
+CREATE INDEX "invoices_branch_paid_idx" ON "public"."invoices" USING "btree" ("branch_id", "paid_at") WHERE ("status" = 'paid'::"text");
+
+
+
 CREATE UNIQUE INDEX "invoices_client_ref_key" ON "public"."invoices" USING "btree" ("client_ref") WHERE ("client_ref" IS NOT NULL);
 
 
@@ -16765,6 +16806,10 @@ CREATE OR REPLACE TRIGGER "inpatient_doses_signed_lock" BEFORE INSERT OR DELETE 
 
 
 CREATE OR REPLACE TRIGGER "inpatient_orders_signed_lock" BEFORE INSERT OR DELETE OR UPDATE ON "public"."inpatient_orders" FOR EACH ROW EXECUTE FUNCTION "public"."inpatient_signed_lock"();
+
+
+
+CREATE OR REPLACE TRIGGER "invoices_set_paid_at" BEFORE INSERT OR UPDATE OF "status" ON "public"."invoices" FOR EACH ROW EXECUTE FUNCTION "public"."invoice_set_paid_at"();
 
 
 
@@ -19705,6 +19750,11 @@ GRANT ALL ON FUNCTION "public"."invoice_cancel_restock"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."invoice_line_take_stock"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."invoice_line_take_stock"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."invoice_set_paid_at"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."invoice_set_paid_at"() TO "service_role";
 
 
 

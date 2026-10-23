@@ -1139,6 +1139,8 @@
       "refunds": "Hoàn trả",
       "grossProfit": "Lãi gộp hàng (ước tính)",
       "cancelled": "{n} hóa đơn hủy",
+      "returnedOnline": "{n} đơn online bị trả",
+      "pendingCod": "Chờ thu COD: {amount} ({n} đơn)",
       "returnCount": "{n} phiếu trả",
       "missingCost": "{n} dòng chưa có giá vốn",
       "estimated": "Ước tính theo giá vốn lô"

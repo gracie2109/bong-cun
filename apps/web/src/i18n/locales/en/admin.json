@@ -1139,6 +1139,8 @@
       "refunds": "Refunds",
       "grossProfit": "Gross profit of goods (est.)",
       "cancelled": "{n} cancelled invoices",
+      "returnedOnline": "{n} online orders returned",
+      "pendingCod": "Pending COD: {amount} ({n} orders)",
       "returnCount": "{n} returns",
       "missingCost": "{n} lines without cost",
       "estimated": "Estimated from lot cost"
