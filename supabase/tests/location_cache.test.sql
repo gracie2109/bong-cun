@@ -4,6 +4,11 @@ begin;
 \ir _helpers/setup.psql
 select plan(20);
 
+-- The real cache may already be filled by the sync; the fixtures below need it empty (rolled back with the test).
+delete from public.location_provider_codes;
+delete from public.location_units;
+delete from public.location_catalogs;
+
 select has_table('public', 'location_catalogs', 'catalog table exists');
 select has_table('public', 'location_units', 'units table exists');
 select has_table('public', 'location_provider_codes', 'provider codes table exists');
