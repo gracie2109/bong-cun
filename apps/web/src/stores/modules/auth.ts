@@ -13,6 +13,7 @@ import { isAdminRole, isStaffRole } from "@bongcun/core/auth";
 import { authErrorMessage, hasAuthCode } from "@/lib/auth-errors";
 import { removeStorage, sendMessageToast } from "@/lib/utils";
 import type { IUser, ILoginPayload, IRegisterPayload } from "@bongcun/core/users";
+import { shouldClearQueryCache } from "@/lib/query-cache";
 import { createAdminGrants } from "./auth-parts/adminGrants";
 import { createRecoveryFlow } from "./auth-parts/recovery";
 import { createVerificationFlow } from "./auth-parts/verification";
@@ -73,9 +74,22 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
+  // Cached query data (revenue, stock, visits) belongs to the account that
+  // loaded it; it must not be shown to whoever signs in next on the same device.
+  let cachedUserId: string | null | undefined;
+  function resetCacheOnUserChange(next: AuthSession | null) {
+    const userId = next?.user.id ?? null;
+    const previous = cachedUserId;
+    cachedUserId = userId;
+    if (import.meta.client && shouldClearQueryCache(previous, userId)) {
+      useNuxtApp().$queryClient.clear();
+    }
+  }
+
   function applySession(next: AuthSession | null) {
     const token = next?.access_token ?? null;
     session.value = next;
+    resetCacheOnUserChange(next);
     if (token === appliedToken) return applyPromise;
     appliedToken = token;
     applyPromise = loadUser(next, token);
