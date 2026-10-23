@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// The reports barrel pulls in the data layer; only its pure number formats are needed here.
+vi.mock("@/features/admin/pos/format", () => ({ money: (value: number) => String(value) }));
+vi.mock("@/features/admin/reports", () => import("@/features/admin/reports/shared/format"));
+
 import { changeOf, changeTone, formatFigure } from "@/features/admin/dashboard/widgets/metric/kpiFormat";
 import { resolveMetricConfig } from "@/features/admin/dashboard/widgets/metric/metricConfig";
 import { paramText } from "@/features/admin/dashboard/widgets/metric/paramText";

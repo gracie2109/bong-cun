@@ -2,7 +2,7 @@
 import { addDays, format, parseISO } from "date-fns";
 import type { RangeConfig, RangePreset } from "@bongcun/core/dashboard";
 import { MAX_RANGE_DAYS } from "@bongcun/core/dashboard";
-import { presetRange, rangeDays, rangeProblem, type DateRange } from "@/features/admin/reports/shared/dateRange";
+import { presetRange, rangeDays, rangeProblem, type DateRange } from "@/features/admin/reports";
 
 /** The range of a preset; "last30" is the 30 days up to and including today. */
 export const presetToRange = (preset: RangePreset, today: string): DateRange =>

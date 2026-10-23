@@ -1,4 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// The reports barrel pulls in the data layer; only its date maths is needed here.
+vi.mock("@/features/admin/reports", () => import("@/features/admin/reports/shared/dateRange"));
+
 import { bucketFor, rangeLabel, resolveRange } from "@/features/admin/dashboard/range/widgetRange";
 
 const TODAY = "2026-10-23";
