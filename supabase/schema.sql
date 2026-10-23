@@ -3379,6 +3379,60 @@ $$;
 ALTER FUNCTION "public"."custom_access_token_hook"("event" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") RETURNS boolean
+    LANGUAGE "plpgsql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+declare
+  k text;
+  n numeric;
+begin
+  if jsonb_typeof(i) is distinct from 'object' then return false; end if;
+  if coalesce(i ->> 'id', '') !~ '^[a-z0-9]{8,24}$' then return false; end if;
+  if coalesce(i ->> 'type', '') !~ '^[a-zA-Z][a-zA-Z0-9]{0,31}$' then return false; end if;
+  foreach k in array array['x', 'y', 'w', 'h'] loop
+    if jsonb_typeof(i -> k) is distinct from 'number' then return false; end if;
+    n := (i ->> k)::numeric;
+    if n % 1 <> 0 then return false; end if;
+  end loop;
+  if (i ->> 'x')::numeric not between 0 and 3 or (i ->> 'w')::numeric not between 1 and 4 then return false; end if;
+  if (i ->> 'y')::numeric not between 0 and 199 or (i ->> 'h')::numeric not between 1 and 12 then return false; end if;
+  if (i ->> 'x')::numeric + (i ->> 'w')::numeric > 4 then return false; end if;
+  if i ? 'config' and (jsonb_typeof(i -> 'config') is distinct from 'object' or pg_column_size(i -> 'config') > 2048) then
+    return false;
+  end if;
+  return true;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") RETURNS "text"
+    LANGUAGE "plpgsql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+begin
+  if jsonb_typeof(p_layout) is distinct from 'object' or (p_layout ->> 'v') is distinct from '1' then return 'shape'; end if;
+  if jsonb_typeof(p_layout -> 'items') is distinct from 'array' then return 'shape'; end if;
+  if jsonb_array_length(p_layout -> 'items') > 24 then return 'too_many'; end if;
+  if pg_column_size(p_layout) > 32768 then return 'too_big'; end if;
+  if exists (select 1 from jsonb_array_elements(p_layout -> 'items') i where not public.dashboard_layout_item_ok(i)) then
+    return 'item';
+  end if;
+  if (select count(distinct i ->> 'id') from jsonb_array_elements(p_layout -> 'items') i)
+     <> jsonb_array_length(p_layout -> 'items') then
+    return 'duplicate_id';
+  end if;
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."delete_care_log"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -9882,6 +9936,18 @@ $$;
 ALTER FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") RETURNS "void"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  delete from public.dashboard_layouts
+  where user_id = (select auth.uid()) and dashboard_key = p_dashboard;
+$$;
+
+
+ALTER FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."restore_pet"("p_pet" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -10243,6 +10309,49 @@ $$;
 
 
 ALTER FUNCTION "public"."save_branch_hours"("p_branch" "uuid", "p" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user uuid := (select auth.uid());
+  v_problem text;
+  v_version integer;
+begin
+  if v_user is null or not (select public.is_staff()) then
+    raise exception 'only staff can save a dashboard layout' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_dashboard is null or p_dashboard !~ '^[a-z][a-z0-9_]{0,31}$' then
+    raise exception 'bad dashboard key' using errcode = '22023', hint = 'bad_input';
+  end if;
+  v_problem := public.dashboard_layout_problem(p_layout);
+  if v_problem is not null then
+    raise exception 'invalid dashboard layout: %', v_problem using errcode = '22023', hint = 'layout_invalid';
+  end if;
+
+  if p_expected_version is null or p_expected_version = 0 then
+    insert into public.dashboard_layouts (user_id, dashboard_key, layout)
+    values (v_user, p_dashboard, p_layout)
+    on conflict (user_id, dashboard_key) do nothing
+    returning version into v_version;
+  else
+    update public.dashboard_layouts
+    set layout = p_layout, version = version + 1, updated_at = now()
+    where user_id = v_user and dashboard_key = p_dashboard and version = p_expected_version
+    returning version into v_version;
+  end if;
+
+  if v_version is null then
+    raise exception 'the layout was changed somewhere else' using errcode = 'P0001', hint = 'layout_conflict';
+  end if;
+  return v_version;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."save_diagnosis_term"("p" "jsonb", "p_id" "uuid" DEFAULT NULL::"uuid") RETURNS "uuid"
@@ -14455,6 +14564,19 @@ CREATE TABLE IF NOT EXISTS "public"."customers" (
 ALTER TABLE "public"."customers" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."dashboard_layouts" (
+    "user_id" "uuid" NOT NULL,
+    "dashboard_key" "text" NOT NULL,
+    "layout" "jsonb" NOT NULL,
+    "version" integer DEFAULT 1 NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "dashboard_layouts_dashboard_key_check" CHECK (("dashboard_key" ~ '^[a-z][a-z0-9_]{0,31}$'::"text"))
+);
+
+
+ALTER TABLE "public"."dashboard_layouts" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."diagnosis_terms" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -15810,6 +15932,11 @@ ALTER TABLE ONLY "public"."customers"
 
 ALTER TABLE ONLY "public"."customers"
     ADD CONSTRAINT "customers_user_id_key" UNIQUE ("user_id");
+
+
+
+ALTER TABLE ONLY "public"."dashboard_layouts"
+    ADD CONSTRAINT "dashboard_layouts_pkey" PRIMARY KEY ("user_id", "dashboard_key");
 
 
 
@@ -17251,6 +17378,11 @@ ALTER TABLE ONLY "public"."customers"
 
 
 
+ALTER TABLE ONLY "public"."dashboard_layouts"
+    ADD CONSTRAINT "dashboard_layouts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."doc_sequences"
     ADD CONSTRAINT "doc_sequences_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
 
@@ -18340,6 +18472,9 @@ ALTER TABLE "public"."customer_addresses" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."customers" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."dashboard_layouts" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."diagnosis_terms" ENABLE ROW LEVEL SECURITY;
 
 
@@ -18478,6 +18613,10 @@ ALTER TABLE "public"."orders" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "own addresses read" ON "public"."customer_addresses" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "own layout read" ON "public"."dashboard_layouts" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -19503,6 +19642,18 @@ GRANT ALL ON FUNCTION "public"."custom_access_token_hook"("event" "jsonb") TO "s
 
 
 
+REVOKE ALL ON FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "service_role";
@@ -20366,6 +20517,12 @@ GRANT ALL ON FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "d
 
 
 
+REVOKE ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."restore_pet"("p_pet" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."restore_pet"("p_pet" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."restore_pet"("p_pet" "uuid") TO "service_role";
@@ -20399,6 +20556,12 @@ GRANT ALL ON FUNCTION "public"."save_boarding_stay"("p" "jsonb", "p_id" "uuid") 
 REVOKE ALL ON FUNCTION "public"."save_branch_hours"("p_branch" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."save_branch_hours"("p_branch" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."save_branch_hours"("p_branch" "uuid", "p" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."save_dashboard_layout"("p_dashboard" "text", "p_layout" "jsonb", "p_expected_version" integer) TO "service_role";
 
 
 
@@ -20923,6 +21086,11 @@ GRANT ALL ON TABLE "public"."combo_species" TO "service_role";
 GRANT ALL ON TABLE "public"."customers" TO "anon";
 GRANT ALL ON TABLE "public"."customers" TO "authenticated";
 GRANT ALL ON TABLE "public"."customers" TO "service_role";
+
+
+
+GRANT SELECT ON TABLE "public"."dashboard_layouts" TO "authenticated";
+GRANT ALL ON TABLE "public"."dashboard_layouts" TO "service_role";
 
 
 
