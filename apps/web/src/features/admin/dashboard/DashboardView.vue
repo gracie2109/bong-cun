@@ -27,14 +27,11 @@
       <p v-if="!branches.length" class="rounded-xl border bg-white px-4 py-10 text-center text-sm text-muted-foreground">
         {{ $t("dashboard.noBranch") }}
       </p>
-      <div v-else-if="active" class="grid gap-4 lg:grid-cols-2">
-        <component
-          :is="widget.component"
-          v-for="widget in widgets"
-          :key="`${active.key}-${widget.id}-${activeScope.kind}-${activeScope.branchId}`"
-          :class="widget.span === 2 && 'lg:col-span-2'"
-        />
-      </div>
+      <DashboardItems v-else-if="active" :items="items">
+        <template #default="{ item }">
+          <GridItemFrame :key="`${active.key}-${activeScope.kind}-${activeScope.branchId}`" :item="item" />
+        </template>
+      </DashboardItems>
 
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <router-link
@@ -68,9 +65,9 @@ import DashboardScopePicker from "./DashboardScopePicker.vue";
 import DashboardSwitcher from "./DashboardSwitcher.vue";
 import { scopeFor } from "./dashboardRules";
 import { provideWidgetScope } from "./kit/widgetScope";
-import { defaultLayout } from "./layout/layoutCodec";
-import { stackOrder } from "./layout/layoutMath";
-import { widgetType } from "./widgetTypes/registry";
+import DashboardItems from "./layout/DashboardItems.vue";
+import GridItemFrame from "./layout/GridItemFrame.vue";
+import { useDashboardLayout } from "./layout/useDashboardLayout";
 import { useDashboardScope } from "./useDashboardScope";
 import { useDashboardSelection } from "./useDashboardSelection";
 
@@ -82,15 +79,7 @@ const { visible, active, open } = useDashboardSelection(scope);
 const activeScope = computed(() => (active.value ? scopeFor(active.value, scope.value) : scope.value));
 provideWidgetScope(activeScope);
 
-// Until the grid arrives (next steps) the default layout is drawn in reading order, wide items across.
-const widgets = computed(() =>
-  active.value
-    ? stackOrder(defaultLayout(active.value)).flatMap((item) => {
-        const type = widgetType(item.type);
-        return type ? [{ id: item.id, component: type.component, span: item.w >= 3 ? 2 : 1 }] : [];
-      })
-    : []
-);
+const { items } = useDashboardLayout(active);
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""

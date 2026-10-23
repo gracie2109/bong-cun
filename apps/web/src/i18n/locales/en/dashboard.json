@@ -78,6 +78,9 @@
     },
     "bell": {
       "title": "To do"
+    },
+    "layout": {
+      "unknownWidget": "This item is no longer available."
     }
   }
 }

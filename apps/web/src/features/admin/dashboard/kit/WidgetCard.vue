@@ -1,5 +1,5 @@
 <template>
-  <section v-if="state !== 'hidden'" class="flex flex-col rounded-xl border bg-white p-4" :aria-busy="state === 'loading'">
+  <section v-if="state !== 'hidden'" class="flex h-full min-h-0 flex-col rounded-xl border bg-white p-4" :aria-busy="state === 'loading'">
     <header class="mb-3 flex flex-wrap items-center justify-between gap-2">
       <h3 class="flex items-center gap-2 text-sm font-semibold">
         <component :is="icon" v-if="icon" class="size-4 text-primary" />
@@ -21,7 +21,7 @@
       <button type="button" class="font-semibold text-primary hover:underline" @click="emit('retry')">{{ $t("dashboard.state.retry") }}</button>
     </div>
     <p v-else-if="state === 'empty'" class="text-sm text-muted-foreground">{{ emptyText || $t("dashboard.state.empty") }}</p>
-    <slot v-else />
+    <div v-else class="min-h-0 flex-1 overflow-auto"><slot /></div>
   </section>
 </template>
 

@@ -78,6 +78,9 @@
     },
     "bell": {
       "title": "Việc cần xử lý"
+    },
+    "layout": {
+      "unknownWidget": "Mục này không còn dùng được."
     }
   }
 }

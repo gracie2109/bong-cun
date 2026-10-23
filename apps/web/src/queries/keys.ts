@@ -277,3 +277,10 @@ export const boardingWebKeys = {
   catalog: () => ["boarding-web", "catalog"] as const,
 };
 
+
+/** Personal dashboard layouts; the key carries the user so another account never reads a cached layout. */
+export const dashboardKeys = {
+  all: ["dashboard"] as const,
+  layout: (userId: string | undefined, dashboardKey: string) =>
+    [...dashboardKeys.all, "layout", userId ?? "anonymous", dashboardKey] as const,
+};
