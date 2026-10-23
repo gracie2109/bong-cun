@@ -1,6 +1,12 @@
 <template>
   <div class="relative h-full" :class="editing && 'rounded-xl outline-dashed outline-2 outline-offset-2 outline-primary/50'">
-    <component :is="type.component" v-if="type" class="h-full" :class="editing && 'pointer-events-none select-none'" />
+    <component
+      :is="type.component"
+      v-if="type"
+      v-bind="type.byMetric ? { config: item.config } : {}"
+      class="h-full"
+      :class="editing && 'pointer-events-none select-none'"
+    />
     <section v-else class="flex h-full flex-col justify-center gap-2 rounded-xl border border-dashed bg-white p-4 text-sm text-muted-foreground">
       {{ $t("dashboard.layout.unknownWidget") }}
     </section>

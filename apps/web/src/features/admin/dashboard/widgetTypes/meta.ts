@@ -40,6 +40,18 @@ export const WIDGET_META = {
     key: "onlineOrders", permissions: ["shop_orders"], scopes: ["branch", "all"],
     defaultSize: size(2, 3), minSize: size(1, 2), maxSize: size(4, 4),
   },
+  kpi: {
+    key: "kpi", permissions: [], scopes: [], byMetric: true, multiple: true,
+    defaultSize: size(1, 2), minSize: size(1, 2), maxSize: size(2, 2),
+  },
+  barChart: {
+    key: "barChart", permissions: [], scopes: [], byMetric: true, multiple: true,
+    defaultSize: size(2, 4), minSize: size(2, 3), maxSize: size(4, 6),
+  },
+  list: {
+    key: "list", permissions: [], scopes: [], byMetric: true, multiple: true,
+    defaultSize: size(2, 4), minSize: size(1, 3), maxSize: size(4, 8),
+  },
 } as const satisfies Record<string, WidgetTypeMeta>;
 
 export type WidgetTypeKey = keyof typeof WIDGET_META;

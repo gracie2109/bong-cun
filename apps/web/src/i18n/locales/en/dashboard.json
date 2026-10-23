@@ -107,6 +107,90 @@
         "medium": "Medium",
         "large": "Large"
       }
+    },
+    "metric": {
+      "revenue": {
+        "net": "Revenue",
+        "invoiceCount": "Invoices",
+        "avgTicket": "Average per invoice",
+        "refunds": "Refunds",
+        "pendingCod": "COD pending",
+        "grossProfit": "Gross profit on goods",
+        "series": "Revenue over time",
+        "topItems": "Top sellers"
+      },
+      "stock": {
+        "low": "Low stock",
+        "out": "Out of stock",
+        "expiring": "Expiring soon",
+        "expired": "Expired"
+      },
+      "orders": {
+        "pending": "Online orders to handle"
+      },
+      "spa": {
+        "today": "Spa today"
+      },
+      "boarding": {
+        "today": "Boarding today"
+      },
+      "medical": {
+        "queue": "Exam queue",
+        "vaccineOverdue": "Overdue vaccines"
+      }
+    },
+    "metricGroup": {
+      "revenue": "Revenue",
+      "stock": "Stock",
+      "orders": "Online orders",
+      "spa": "Spa",
+      "boarding": "Boarding",
+      "medical": "Medical"
+    },
+    "range": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month"
+    },
+    "param": {
+      "segment": {
+        "all": "All",
+        "shop": "Shop",
+        "spa": "Spa",
+        "boarding": "Boarding",
+        "medical": "Medical"
+      },
+      "kind": {
+        "product": "Goods",
+        "service": "Services",
+        "all": "All"
+      },
+      "sort": {
+        "revenue": "By revenue",
+        "qty": "By quantity",
+        "profit": "By profit"
+      },
+      "status": {
+        "total": "Total",
+        "waiting": "Waiting",
+        "inProgress": "In progress",
+        "done": "Done"
+      },
+      "count": {
+        "occupied": "Staying",
+        "arriving": "Arriving",
+        "departing": "Leaving",
+        "overdue": "Overdue"
+      },
+      "unit": {
+        "kennels": "By kennel",
+        "pets": "By pet"
+      },
+      "days": "Expiring within {n} days",
+      "limit": "Top {n}"
     }
   }
 }

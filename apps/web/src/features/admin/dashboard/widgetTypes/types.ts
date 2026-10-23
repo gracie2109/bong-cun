@@ -13,6 +13,10 @@ export type WidgetTypeMeta = {
   defaultSize: WidgetSize;
   minSize: WidgetSize;
   maxSize: WidgetSize;
+  /** True for the types that show a catalogue metric: permission and scopes come from the metric. */
+  byMetric?: boolean;
+  /** Whether the same type may be placed more than once (a fixed widget may not). */
+  multiple?: boolean;
 };
 
 export type WidgetTypeDef = WidgetTypeMeta & { component: Component };

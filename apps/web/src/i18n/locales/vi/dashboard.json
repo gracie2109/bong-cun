@@ -107,6 +107,90 @@
         "medium": "Vừa",
         "large": "Lớn"
       }
+    },
+    "metric": {
+      "revenue": {
+        "net": "Doanh thu",
+        "invoiceCount": "Số hóa đơn",
+        "avgTicket": "Trung bình mỗi hóa đơn",
+        "refunds": "Tiền hoàn trả",
+        "pendingCod": "COD chờ nhận",
+        "grossProfit": "Lãi gộp hàng hóa",
+        "series": "Doanh thu theo thời gian",
+        "topItems": "Bán chạy nhất"
+      },
+      "stock": {
+        "low": "Hàng sắp hết",
+        "out": "Hàng đã hết",
+        "expiring": "Hàng sắp hết hạn",
+        "expired": "Hàng đã hết hạn"
+      },
+      "orders": {
+        "pending": "Đơn online chờ xử lý"
+      },
+      "spa": {
+        "today": "Lịch spa hôm nay"
+      },
+      "boarding": {
+        "today": "Khách sạn hôm nay"
+      },
+      "medical": {
+        "queue": "Hàng chờ khám",
+        "vaccineOverdue": "Mũi tiêm quá hạn"
+      }
+    },
+    "metricGroup": {
+      "revenue": "Doanh thu",
+      "stock": "Kho",
+      "orders": "Đơn online",
+      "spa": "Spa",
+      "boarding": "Lưu trú",
+      "medical": "Y tế"
+    },
+    "range": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "last7": "7 ngày qua",
+      "last30": "30 ngày qua",
+      "thisMonth": "Tháng này",
+      "lastMonth": "Tháng trước"
+    },
+    "param": {
+      "segment": {
+        "all": "Tất cả",
+        "shop": "Bán hàng",
+        "spa": "Spa",
+        "boarding": "Lưu trú",
+        "medical": "Khám chữa bệnh"
+      },
+      "kind": {
+        "product": "Hàng hóa",
+        "service": "Dịch vụ",
+        "all": "Tất cả"
+      },
+      "sort": {
+        "revenue": "Theo doanh thu",
+        "qty": "Theo số lượng",
+        "profit": "Theo lãi"
+      },
+      "status": {
+        "total": "Tổng",
+        "waiting": "Đang chờ",
+        "inProgress": "Đang làm",
+        "done": "Xong"
+      },
+      "count": {
+        "occupied": "Đang ở",
+        "arriving": "Sắp đến",
+        "departing": "Sắp đi",
+        "overdue": "Quá hạn"
+      },
+      "unit": {
+        "kennels": "Theo chuồng",
+        "pets": "Theo thú"
+      },
+      "days": "Hạn dùng {n} ngày tới",
+      "limit": "Top {n}"
     }
   }
 }

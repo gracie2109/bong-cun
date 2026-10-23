@@ -3,6 +3,8 @@ import type { SavedItem } from "@bongcun/core/dashboard";
 import { useAuthStore } from "@/stores";
 import { widgetAccess } from "../dashboardRules";
 import type { DashboardScope } from "../kit/types";
+import { metricAccess } from "../metrics/metricAccess";
+import { resolveMetricConfig } from "../widgets/metric/metricConfig";
 import { metaOf } from "../widgetTypes/meta";
 
 /**
@@ -15,7 +17,12 @@ export const useVisibleItems = (items: Ref<SavedItem[]>, scope: Ref<DashboardSco
   const visible = computed(() =>
     items.value.filter((item) => {
       const meta = metaOf(item.type);
-      return !meta || widgetAccess(meta, scope.value, auth.canAt) !== "hidden";
+      if (!meta) return true;
+      if (meta.byMetric) {
+        const resolved = resolveMetricConfig(item.config);
+        return !resolved || metricAccess(resolved.def, scope.value, auth.canAt) !== "hidden";
+      }
+      return widgetAccess(meta, scope.value, auth.canAt) !== "hidden";
     })
   );
   /** Puts positions reported for the visible items back into the full list. */
