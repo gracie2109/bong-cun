@@ -21,6 +21,7 @@ export const toOverview = (json: Json | null): ReportOverview => {
   const raw = asObj(json);
   const segments = asObj(raw.segments);
   const payments = asObj(raw.payments);
+  const pendingCod = asObj(raw.pending_cod);
   return {
     gross: num(raw.gross),
     discount: num(raw.discount),
@@ -32,6 +33,9 @@ export const toOverview = (json: Json | null): ReportOverview => {
     cancelledCount: num(raw.cancelled_count),
     cancelledAmount: num(raw.cancelled_amount),
     returnCount: num(raw.return_count),
+    returnedOnlineCount: num(raw.returned_online_count),
+    returnedOnlineAmount: num(raw.returned_online_amount),
+    pendingCod: { count: num(pendingCod.count), amount: num(pendingCod.amount) },
     segments: {
       shop: num(segments.shop),
       spa: num(segments.spa),

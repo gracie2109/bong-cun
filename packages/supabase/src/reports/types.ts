@@ -35,6 +35,11 @@ export type ReportOverview = {
   cancelledCount: number;
   cancelledAmount: number;
   returnCount: number;
+  /** Online orders sent back by the courier (their invoice is cancelled, not counted in cancelled*). */
+  returnedOnlineCount: number;
+  returnedOnlineAmount: number;
+  /** Unpaid COD delivery invoices: money still with the courier, not revenue yet. */
+  pendingCod: { count: number; amount: number };
   segments: { shop: number; spa: number; spaAppointment: number; spaWalkIn: number; boarding: number; medical: number };
   /** `cod` is cash collected by couriers; it is not in the till. */
   payments: { cash: number; transfer: number; card: number; cod: number; refundCash: number; refundTransfer: number };
