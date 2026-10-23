@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "switcher": "Choose a dashboard",
+    "open": "See more",
+    "allBranches": "All branches",
+    "noBranch": "This account has no branch yet. Ask an administrator for access.",
+    "views": {
+      "today": "Today",
+      "business": "Business"
+    },
+    "state": {
+      "needsBranch": "Pick a branch to see this.",
+      "forbidden": "You may not view this at the selected branch.",
+      "error": "Could not load the data.",
+      "retry": "Try again",
+      "empty": "No data yet."
+    },
+    "sales": {
+      "title": "Revenue",
+      "today": "Revenue today",
+      "open": "Open report",
+      "noInvoices": "No invoices in this period yet.",
+      "periods": {
+        "today": "Today",
+        "last7": "7 days",
+        "thisMonth": "This month"
+      }
+    },
+    "trend": {
+      "title": "Revenue by day",
+      "days": "{n} days",
+      "empty": "No revenue in this range yet."
+    },
+    "top": {
+      "title": "Best-selling products this month",
+      "qty": "Qty {n}",
+      "empty": "No product sold this month yet."
+    },
+    "online": {
+      "title": "Online orders",
+      "open": "Open online orders",
+      "empty": "No online order is waiting.",
+      "status": {
+        "pending": "To confirm",
+        "confirmed": "Confirmed",
+        "packed": "Packed",
+        "shipping": "Shipping"
+      }
+    },
+    "actions": {
+      "title": "To do",
+      "empty": "Nothing needs attention.",
+      "pendingOrders": "Online orders to confirm",
+      "stockLow": "Products below minimum stock",
+      "stockExpiring": "Products with lots expiring soon",
+      "stockExpired": "Products with expired lots in stock",
+      "vaccineOverdue": "Overdue vaccinations",
+      "boardingOverdue": "Kennels past check-out time"
+    },
+    "spa": {
+      "title": "Spa today",
+      "open": "Open spa board",
+      "waiting": "Waiting",
+      "inProgress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled",
+      "closed": "The spa is closed today.",
+      "empty": "No spa booking today."
+    },
+    "boarding": {
+      "title": "Boarding today",
+      "unit": "Counted per kennel, not per pet."
+    }
+  }
+}
