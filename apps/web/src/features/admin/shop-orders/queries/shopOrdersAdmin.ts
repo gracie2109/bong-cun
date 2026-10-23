@@ -4,7 +4,7 @@ import { supabaseClient } from "@/lib/supabase";
 import { getShopOrder, getShopOrderBadge, listShopOrders, runOrderStep, type OrderStepCall } from "@bongcun/supabase/shop";
 import type { PageParams } from "@bongcun/supabase/shared";
 import type { OrderListFilter } from "@bongcun/core/shop";
-import { shopKeys } from "@/queries/keys";
+import { inventoryKeys, reportKeys, shopKeys } from "@/queries/keys";
 
 const FAST_REFRESH_MS = 30_000;
 const BADGE_REFRESH_MS = 60_000;
@@ -53,6 +53,12 @@ export const useOrderStep = () => {
       await queryClient.invalidateQueries({ queryKey: shopKeys.staffOrders() });
       // The stock a packed or cancelled order took or gave back changes what can be sold.
       await queryClient.invalidateQueries({ queryKey: [...shopKeys.all, "cart"] });
+      // Packing takes stock and delivering turns the invoice paid, so the stock alerts and revenue
+      // reports behind the dashboard change too.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: inventoryKeys.all }),
+        queryClient.invalidateQueries({ queryKey: reportKeys.all }),
+      ]);
     },
   });
 };

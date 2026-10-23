@@ -70,6 +70,9 @@
     "boarding": {
       "title": "Boarding today",
       "unit": "Counted per kennel, not per pet."
+    },
+    "bell": {
+      "title": "To do"
     }
   }
 }

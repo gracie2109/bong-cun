@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Notification } from "@/components/common";
 import BaseAvatar from "@/components/common/BaseAvatar.vue";
 import SwitchLang from "@/components/common/SwitchLang.vue";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardBell } from "@/features/admin/dashboard";
 </script>
 
 <template>
@@ -16,7 +16,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
       <slot />
     </div>
     <div class="flex items-center gap-4">
-      <Notification />
+      <DashboardBell />
       <SwitchLang />
       <BaseAvatar />
     </div>
