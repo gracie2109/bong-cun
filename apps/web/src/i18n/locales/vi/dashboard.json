@@ -70,7 +70,11 @@
     },
     "boarding": {
       "title": "Khách sạn hôm nay",
-      "unit": "Đếm theo chuồng, không phải theo số thú."
+      "unitLabel": "Đơn vị đếm",
+      "unit_kennels": "Chuồng",
+      "unit_pets": "Thú",
+      "note_kennels": "Đếm theo chuồng: một chuồng lớn có nhiều bé vẫn tính một.",
+      "note_pets": "Đếm từng bé, kể cả nhiều bé chung một chuồng."
     },
     "bell": {
       "title": "Việc cần xử lý"
