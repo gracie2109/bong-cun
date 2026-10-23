@@ -15,6 +15,18 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <DashboardSwitcher :items="visible" :active-key="active?.key" @select="open" />
+          <DashboardToolbar
+            v-if="active"
+            :editing="editor.editing.value"
+            :is-dirty="editor.isDirty.value"
+            :saving="editor.saving.value"
+            :can-edit="branches.length > 0"
+            :saved-at="savedAt"
+            @start="editor.start"
+            @save="editor.persist"
+            @cancel="editor.cancel"
+            @reset="editor.restoreDefault"
+          />
           <DashboardScopePicker
             :scope="activeScope"
             :branches="branches"
@@ -27,11 +39,19 @@
       <p v-if="!branches.length" class="rounded-xl border bg-white px-4 py-10 text-center text-sm text-muted-foreground">
         {{ $t("dashboard.noBranch") }}
       </p>
-      <DashboardItems v-else-if="active" :items="items">
+      <DashboardItems v-else-if="active" :items="visibleItems" :editing="editor.editing.value" @update:items="onItems">
         <template #default="{ item }">
-          <GridItemFrame :key="`${active.key}-${activeScope.kind}-${activeScope.branchId}`" :item="item" />
+          <GridItemFrame
+            :key="`${active.key}-${activeScope.kind}-${activeScope.branchId}`"
+            :item="item"
+            :editing="editor.editing.value"
+            @move="(step) => actions.move(item.id, step)"
+            @resize="(preset) => actions.resize(item.id, preset)"
+            @remove="actions.remove(item.id)"
+          />
         </template>
       </DashboardItems>
+      <LayoutConflictDialog :open="editor.conflict.value" @overwrite="editor.overwrite" @reload="editor.reload" />
 
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <router-link
@@ -55,6 +75,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { format } from "date-fns";
+import type { SavedItem } from "@bongcun/core/dashboard";
 import { Icon } from "@iconify/vue";
 import { LayoutDashboard } from "lucide-vue-next";
 import { canOpenAdminRoute } from "@bongcun/core/auth";
@@ -66,8 +88,15 @@ import DashboardSwitcher from "./DashboardSwitcher.vue";
 import { scopeFor } from "./dashboardRules";
 import { provideWidgetScope } from "./kit/widgetScope";
 import DashboardItems from "./layout/DashboardItems.vue";
+import DashboardToolbar from "./layout/DashboardToolbar.vue";
 import GridItemFrame from "./layout/GridItemFrame.vue";
+import LayoutConflictDialog from "./layout/LayoutConflictDialog.vue";
 import { useDashboardLayout } from "./layout/useDashboardLayout";
+import { useItemActions } from "./layout/useItemActions";
+import { useLayoutEditor } from "./layout/useLayoutEditor";
+import { useEditEscape } from "./layout/useEditEscape";
+import { useUnsavedGuard } from "./layout/useUnsavedGuard";
+import { useVisibleItems } from "./layout/useVisibleItems";
 import { useDashboardScope } from "./useDashboardScope";
 import { useDashboardSelection } from "./useDashboardSelection";
 
@@ -79,7 +108,14 @@ const { visible, active, open } = useDashboardSelection(scope);
 const activeScope = computed(() => (active.value ? scopeFor(active.value, scope.value) : scope.value));
 provideWidgetScope(activeScope);
 
-const { items } = useDashboardLayout(active);
+const saved = useDashboardLayout(active);
+const editor = useLayoutEditor(computed(() => active.value?.key ?? null), saved);
+const { visible: visibleItems, merge } = useVisibleItems(editor.items, activeScope);
+const actions = useItemActions(editor.items, editor.update);
+const onItems = (changed: SavedItem[]) => editor.update(merge(changed));
+useUnsavedGuard(editor.isDirty);
+useEditEscape(editor);
+const savedAt = computed(() => (saved.updatedAt.value ? format(new Date(saved.updatedAt.value), "HH:mm dd/MM") : ""));
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""

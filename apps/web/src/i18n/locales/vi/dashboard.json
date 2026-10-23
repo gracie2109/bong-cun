@@ -80,7 +80,33 @@
       "title": "Việc cần xử lý"
     },
     "layout": {
-      "unknownWidget": "Mục này không còn dùng được."
+      "unknownWidget": "Mục này không còn dùng được.",
+      "customize": "Tùy chỉnh",
+      "save": "Lưu",
+      "reset": "Về mặc định",
+      "unsaved": "Chưa lưu",
+      "discard": "Bỏ thay đổi",
+      "discardAsk": "Bỏ các thay đổi chưa lưu?",
+      "resetAsk": "Về bố cục mặc định?",
+      "resetDesc": "Bố cục bạn đã lưu cho bảng này sẽ bị xóa.",
+      "saved": "Đã lưu bố cục",
+      "resetDone": "Đã về bố cục mặc định",
+      "saveFailed": "Không lưu được bố cục.",
+      "savedAt": "Đã lưu lúc {time}",
+      "conflictTitle": "Bố cục đã đổi ở nơi khác",
+      "conflictDesc": "Bố cục này vừa được lưu từ thiết bị hoặc tab khác. Ghi đè bằng bản của bạn, hay tải bản mới?",
+      "overwrite": "Ghi đè bằng bản của tôi",
+      "reload": "Tải bản mới",
+      "dragHandle": "Kéo để đổi chỗ",
+      "itemMenu": "Tùy chọn mục",
+      "moveUp": "Lên",
+      "moveDown": "Xuống",
+      "remove": "Xóa khỏi bảng",
+      "size": {
+        "small": "Nhỏ",
+        "medium": "Vừa",
+        "large": "Lớn"
+      }
     }
   }
 }

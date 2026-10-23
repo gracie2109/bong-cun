@@ -8,6 +8,7 @@
     :is-resizable="editing"
     :use-css-transforms="true"
     :vertical-compact="true"
+    :class="editing && 'dashboard-grid--editing'"
     @update:layout="onLayout"
   >
     <GridItem
@@ -55,3 +56,17 @@ const onLayout = (next: GridEntry[]) => {
   if (!same) emit("update:items", changed);
 };
 </script>
+
+<style>
+/* Bigger touch targets while editing: the resize corner is 44px, the drop target is tinted. */
+.dashboard-grid--editing {
+  --vgl-resizer-size: 44px;
+  --vgl-resizer-border-color: hsl(var(--primary));
+  --vgl-resizer-border-width: 3px;
+  --vgl-placeholder-bg: hsl(var(--primary));
+  --vgl-placeholder-opacity: 15%;
+}
+.dashboard-grid--editing .vgl-item {
+  touch-action: pan-y;
+}
+</style>

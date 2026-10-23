@@ -25,3 +25,10 @@ export const resolveLayout = (stored: ParsedLayout | null, dashboard: Pick<Dashb
 /** What the grid draws: sizes kept inside their type's limits, then pulled up. Not saved by itself. */
 export const toDisplayItems = (items: readonly SavedItem[]): SavedItem[] =>
   compactLayout(items.map((item) => clampItem(item, metaOf(item.type))));
+
+/** True when two layouts place the same items the same way (order of the list does not matter). */
+export const sameLayout = (a: readonly SavedItem[], b: readonly SavedItem[]): boolean => {
+  if (a.length !== b.length) return false;
+  const byId = new Map(b.map((item) => [item.id, JSON.stringify(item)]));
+  return a.every((item) => byId.get(item.id) === JSON.stringify(item));
+};

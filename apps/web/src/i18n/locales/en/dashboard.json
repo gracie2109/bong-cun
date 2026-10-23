@@ -80,7 +80,33 @@
       "title": "To do"
     },
     "layout": {
-      "unknownWidget": "This item is no longer available."
+      "unknownWidget": "This item is no longer available.",
+      "customize": "Customize",
+      "save": "Save",
+      "reset": "Reset to default",
+      "unsaved": "Unsaved",
+      "discard": "Discard changes",
+      "discardAsk": "Discard unsaved changes?",
+      "resetAsk": "Reset to the default layout?",
+      "resetDesc": "The layout you saved for this dashboard will be deleted.",
+      "saved": "Layout saved",
+      "resetDone": "Back to the default layout",
+      "saveFailed": "Could not save the layout.",
+      "savedAt": "Saved at {time}",
+      "conflictTitle": "The layout changed elsewhere",
+      "conflictDesc": "This layout was just saved from another device or tab. Overwrite it with yours, or load the new one?",
+      "overwrite": "Overwrite with mine",
+      "reload": "Load the new one",
+      "dragHandle": "Drag to move",
+      "itemMenu": "Item options",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove from dashboard",
+      "size": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      }
     }
   }
 }
