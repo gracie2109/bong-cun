@@ -78,6 +78,165 @@
     },
     "bell": {
       "title": "To do"
+    },
+    "layout": {
+      "unknownWidget": "This item is no longer available.",
+      "customize": "Customize",
+      "save": "Save",
+      "reset": "Reset to default",
+      "unsaved": "Unsaved",
+      "discard": "Discard changes",
+      "discardAsk": "Discard unsaved changes?",
+      "resetAsk": "Reset to the default layout?",
+      "resetDesc": "The layout you saved for this dashboard will be deleted.",
+      "saved": "Layout saved",
+      "resetDone": "Back to the default layout",
+      "saveFailed": "Could not save the layout.",
+      "savedAt": "Saved at {time}",
+      "conflictTitle": "The layout changed elsewhere",
+      "conflictDesc": "This layout was just saved from another device or tab. Overwrite it with yours, or load the new one?",
+      "overwrite": "Overwrite with mine",
+      "reload": "Load the new one",
+      "dragHandle": "Drag to move",
+      "itemMenu": "Item options",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove from dashboard",
+      "size": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "settings": "Settings"
+    },
+    "metric": {
+      "revenue": {
+        "net": "Revenue",
+        "invoiceCount": "Invoices",
+        "avgTicket": "Average per invoice",
+        "refunds": "Refunds",
+        "pendingCod": "COD pending",
+        "grossProfit": "Gross profit on goods",
+        "series": "Revenue over time",
+        "topItems": "Top sellers"
+      },
+      "stock": {
+        "low": "Low stock",
+        "out": "Out of stock",
+        "expiring": "Expiring soon",
+        "expired": "Expired"
+      },
+      "orders": {
+        "pending": "Online orders to handle"
+      },
+      "spa": {
+        "today": "Spa today"
+      },
+      "boarding": {
+        "today": "Boarding today"
+      },
+      "medical": {
+        "queue": "Exam queue",
+        "vaccineOverdue": "Overdue vaccines"
+      }
+    },
+    "metricGroup": {
+      "revenue": "Revenue",
+      "stock": "Stock",
+      "orders": "Online orders",
+      "spa": "Spa",
+      "boarding": "Boarding",
+      "medical": "Medical"
+    },
+    "range": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month"
+    },
+    "param": {
+      "segment": {
+        "all": "All",
+        "shop": "Shop",
+        "spa": "Spa",
+        "boarding": "Boarding",
+        "medical": "Medical"
+      },
+      "kind": {
+        "product": "Goods",
+        "service": "Services",
+        "all": "All"
+      },
+      "sort": {
+        "revenue": "By revenue",
+        "qty": "By quantity",
+        "profit": "By profit"
+      },
+      "status": {
+        "total": "Total",
+        "waiting": "Waiting",
+        "inProgress": "In progress",
+        "done": "Done"
+      },
+      "count": {
+        "occupied": "Staying",
+        "arriving": "Arriving",
+        "departing": "Leaving",
+        "overdue": "Overdue"
+      },
+      "unit": {
+        "kennels": "By kennel",
+        "pets": "By pet"
+      },
+      "days": "Expiring within {n} days",
+      "limit": "Top {n}"
+    },
+    "add": {
+      "button": "Add widget",
+      "full": "The dashboard is full.",
+      "dialogTitle": "Add to dashboard",
+      "search": "Search metrics...",
+      "fixed": "Built-in widgets",
+      "none": "Nothing matches.",
+      "otherBranch": "only shown at a branch where you have access",
+      "add": "Add",
+      "back": "Back",
+      "apply": "Apply",
+      "view": "Display",
+      "title": "Title",
+      "compare": "Compare with the previous period",
+      "views": {
+        "kpi": "Number card",
+        "barChart": "Bar chart",
+        "list": "List"
+      },
+      "param": {
+        "segment": "Revenue line",
+        "kind": "Item type",
+        "sort": "Sort",
+        "limit": "Rows",
+        "days": "Expiry window",
+        "status": "Status",
+        "count": "Figure",
+        "unit": "Counting unit"
+      },
+      "fixedTypes": {
+        "actions": "Things to do",
+        "salesToday": "Today's revenue",
+        "spaToday": "Spa today",
+        "boardingToday": "Boarding today",
+        "medicalToday": "Medical today",
+        "salesPeriod": "Revenue by period",
+        "trend": "Revenue trend",
+        "topProducts": "Top products",
+        "onlineOrders": "Online orders"
+      },
+      "range": "Date range",
+      "rangeDefault": "Default ({range})",
+      "rangeFixed": "Fixed dates",
+      "rangeInvalid": "Invalid range (from ≤ to, at most 366 days). The default will be used."
     }
   }
 }

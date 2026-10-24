@@ -1,9 +1,13 @@
-import type { DashboardDef, DashboardKey, DashboardScope, ScopeKind, WidgetDef } from "./kit/types";
+import type { DashboardDef, DashboardKey, DashboardScope, ScopeKind } from "./kit/types";
+import { metaOf } from "./widgetTypes/meta";
+import type { WidgetTypeMeta } from "./widgetTypes/types";
 
 export type CanAt = (permission: string, branchId: string) => boolean;
 export type WidgetAccess = "hidden" | "needsBranch" | "allowed";
 
-type WidgetRule = Pick<WidgetDef, "permissions" | "scopes">;
+type WidgetRule = Pick<WidgetTypeMeta, "permissions" | "scopes">;
+/** Finds the rule of a widget type; the default knows the types of this build. */
+export type RuleOf = (type: string) => WidgetRule | null;
 
 const holdsAt = (permissions: readonly string[], branchId: string, canAt: CanAt) =>
   permissions.some((permission) => canAt(permission, branchId));
@@ -26,17 +30,26 @@ export const scopeFor = (dashboard: Pick<DashboardDef, "scopes">, scope: Dashboa
   dashboard.scopes.includes(scope.kind) ? scope : { ...scope, kind: "branch" };
 
 /** A dashboard is offered when its required permission is held somewhere and a widget is visible. */
-export const isDashboardVisible = (dashboard: DashboardDef, scope: DashboardScope, canAt: CanAt): boolean => {
+export const isDashboardVisible = (
+  dashboard: DashboardDef,
+  scope: DashboardScope,
+  canAt: CanAt,
+  ruleOf: RuleOf = metaOf
+): boolean => {
   if (dashboard.requires && !scope.branchIds.some((id) => canAt(dashboard.requires as string, id))) return false;
   const used = scopeFor(dashboard, scope);
-  return dashboard.widgets.some((widget) => widgetAccess(widget, used, canAt) !== "hidden");
+  return dashboard.defaultItems.some((item) => {
+    const rule = ruleOf(item.type);
+    return rule !== null && widgetAccess(rule, used, canAt) !== "hidden";
+  });
 };
 
 export const visibleDashboards = (
   dashboards: readonly DashboardDef[],
   scope: DashboardScope,
-  canAt: CanAt
-): DashboardDef[] => dashboards.filter((dashboard) => isDashboardVisible(dashboard, scope, canAt));
+  canAt: CanAt,
+  ruleOf: RuleOf = metaOf
+): DashboardDef[] => dashboards.filter((dashboard) => isDashboardVisible(dashboard, scope, canAt, ruleOf));
 
 /** The dashboard to open: the one in the URL, else the last used, else the first on offer. */
 export const pickDashboard = (

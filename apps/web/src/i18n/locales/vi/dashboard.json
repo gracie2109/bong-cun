@@ -78,6 +78,165 @@
     },
     "bell": {
       "title": "Việc cần xử lý"
+    },
+    "layout": {
+      "unknownWidget": "Mục này không còn dùng được.",
+      "customize": "Tùy chỉnh",
+      "save": "Lưu",
+      "reset": "Về mặc định",
+      "unsaved": "Chưa lưu",
+      "discard": "Bỏ thay đổi",
+      "discardAsk": "Bỏ các thay đổi chưa lưu?",
+      "resetAsk": "Về bố cục mặc định?",
+      "resetDesc": "Bố cục bạn đã lưu cho bảng này sẽ bị xóa.",
+      "saved": "Đã lưu bố cục",
+      "resetDone": "Đã về bố cục mặc định",
+      "saveFailed": "Không lưu được bố cục.",
+      "savedAt": "Đã lưu lúc {time}",
+      "conflictTitle": "Bố cục đã đổi ở nơi khác",
+      "conflictDesc": "Bố cục này vừa được lưu từ thiết bị hoặc tab khác. Ghi đè bằng bản của bạn, hay tải bản mới?",
+      "overwrite": "Ghi đè bằng bản của tôi",
+      "reload": "Tải bản mới",
+      "dragHandle": "Kéo để đổi chỗ",
+      "itemMenu": "Tùy chọn mục",
+      "moveUp": "Lên",
+      "moveDown": "Xuống",
+      "remove": "Xóa khỏi bảng",
+      "size": {
+        "small": "Nhỏ",
+        "medium": "Vừa",
+        "large": "Lớn"
+      },
+      "settings": "Cài đặt"
+    },
+    "metric": {
+      "revenue": {
+        "net": "Doanh thu",
+        "invoiceCount": "Số hóa đơn",
+        "avgTicket": "Trung bình mỗi hóa đơn",
+        "refunds": "Tiền hoàn trả",
+        "pendingCod": "COD chờ nhận",
+        "grossProfit": "Lãi gộp hàng hóa",
+        "series": "Doanh thu theo thời gian",
+        "topItems": "Bán chạy nhất"
+      },
+      "stock": {
+        "low": "Hàng sắp hết",
+        "out": "Hàng đã hết",
+        "expiring": "Hàng sắp hết hạn",
+        "expired": "Hàng đã hết hạn"
+      },
+      "orders": {
+        "pending": "Đơn online chờ xử lý"
+      },
+      "spa": {
+        "today": "Lịch spa hôm nay"
+      },
+      "boarding": {
+        "today": "Khách sạn hôm nay"
+      },
+      "medical": {
+        "queue": "Hàng chờ khám",
+        "vaccineOverdue": "Mũi tiêm quá hạn"
+      }
+    },
+    "metricGroup": {
+      "revenue": "Doanh thu",
+      "stock": "Kho",
+      "orders": "Đơn online",
+      "spa": "Spa",
+      "boarding": "Lưu trú",
+      "medical": "Y tế"
+    },
+    "range": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "last7": "7 ngày qua",
+      "last30": "30 ngày qua",
+      "thisMonth": "Tháng này",
+      "lastMonth": "Tháng trước"
+    },
+    "param": {
+      "segment": {
+        "all": "Tất cả",
+        "shop": "Bán hàng",
+        "spa": "Spa",
+        "boarding": "Lưu trú",
+        "medical": "Khám chữa bệnh"
+      },
+      "kind": {
+        "product": "Hàng hóa",
+        "service": "Dịch vụ",
+        "all": "Tất cả"
+      },
+      "sort": {
+        "revenue": "Theo doanh thu",
+        "qty": "Theo số lượng",
+        "profit": "Theo lãi"
+      },
+      "status": {
+        "total": "Tổng",
+        "waiting": "Đang chờ",
+        "inProgress": "Đang làm",
+        "done": "Xong"
+      },
+      "count": {
+        "occupied": "Đang ở",
+        "arriving": "Sắp đến",
+        "departing": "Sắp đi",
+        "overdue": "Quá hạn"
+      },
+      "unit": {
+        "kennels": "Theo chuồng",
+        "pets": "Theo thú"
+      },
+      "days": "Hạn dùng {n} ngày tới",
+      "limit": "Top {n}"
+    },
+    "add": {
+      "button": "Thêm widget",
+      "full": "Đã đủ số widget tối đa.",
+      "dialogTitle": "Thêm vào bảng",
+      "search": "Tìm số liệu...",
+      "fixed": "Widget có sẵn",
+      "none": "Không có mục nào phù hợp.",
+      "otherBranch": "chỉ hiện ở chi nhánh có quyền",
+      "add": "Thêm",
+      "back": "Quay lại",
+      "apply": "Áp dụng",
+      "view": "Kiểu hiển thị",
+      "title": "Tên hiển thị",
+      "compare": "So với kỳ trước",
+      "views": {
+        "kpi": "Thẻ số",
+        "barChart": "Biểu đồ cột",
+        "list": "Danh sách"
+      },
+      "param": {
+        "segment": "Nhóm doanh thu",
+        "kind": "Loại hàng",
+        "sort": "Sắp xếp",
+        "limit": "Số dòng",
+        "days": "Hạn dùng",
+        "status": "Trạng thái",
+        "count": "Chỉ số",
+        "unit": "Đơn vị đếm"
+      },
+      "fixedTypes": {
+        "actions": "Việc cần xử lý",
+        "salesToday": "Doanh thu hôm nay",
+        "spaToday": "Spa hôm nay",
+        "boardingToday": "Khách sạn hôm nay",
+        "medicalToday": "Y tế hôm nay",
+        "salesPeriod": "Doanh thu theo kỳ",
+        "trend": "Xu hướng doanh thu",
+        "topProducts": "Hàng bán chạy",
+        "onlineOrders": "Đơn online"
+      },
+      "range": "Khoảng ngày",
+      "rangeDefault": "Mặc định ({range})",
+      "rangeFixed": "Chọn khoảng cố định",
+      "rangeInvalid": "Khoảng ngày không hợp lệ (từ ≤ đến, tối đa 366 ngày). Sẽ dùng mặc định."
     }
   }
 }
