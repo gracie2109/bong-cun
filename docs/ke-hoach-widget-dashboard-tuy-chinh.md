@@ -1,6 +1,6 @@
 # Kế hoạch: widget dashboard tùy chỉnh
 
-Ngày: 2026-10-23. Trạng thái: kế hoạch đã duyệt (tự duyệt theo quy ước dự án), chưa code.
+Ngày: 2026-10-23. Trạng thái: đã code xong D1 đến D8 (xem mục 15), chờ grace test tay trên trình duyệt/iPad.
 
 Tài liệu nền: [audit Multi-Dashboard](audit-multi-dashboard.md), bản nghiên cứu `pet-care-plan/nghien-cuu-dashboard-widget.md`, và bộ kit đã merge ở `apps/web/src/features/admin/dashboard` (PR #225 đến #228).
 
@@ -488,3 +488,29 @@ D1 và D2 làm song song được. D5 có thể bắt đầu sau D2 (không cầ
 | 1 | `20261103010000_dashboard_layouts.sql`: bảng `dashboard_layouts` + RLS chỉ đọc dòng của mình, hàm `dashboard_layout_problem`, RPC `save_dashboard_layout`, `reset_dashboard_layout` | Workflow "Supabase migrate" tự chạy khi merge; bản sao để dán tay ở `pet-care-plan/migration-dashboard-layouts.sql` |
 | 2 | Không có | |
 | 3 | Không có | |
+
+## 15. Đã làm
+
+| PR | Nội dung |
+| --- | --- |
+| #230 (D1) | Migration `20261103010000_dashboard_layouts.sql` (bảng, RLS, `save_dashboard_layout`, `reset_dashboard_layout`), pgTAP `dashboard_layouts.test.sql`, hợp đồng zod `packages/core/dashboard`, `packages/supabase/dashboard`. Migrate đã chạy khi merge |
+| #231 (D2 đến D8) | Kiểu widget và toán bố cục, lưới 4 cột (`grid-layout-plus@1.1.1`), chế độ Tùy chỉnh, danh mục số liệu, widget KPI / cột / danh sách, hộp Thêm widget và Cài đặt, khoảng ngày riêng từng widget |
+
+Khác với kế hoạch:
+
+- D2 và D3 gộp chung một PR; D4 đến D8 cùng nằm trong PR #231 (nhiều commit, mỗi bước một commit).
+- Giữ nguyên khóa kiểu widget cố định đang có (`salesToday`, `salesPeriod`, `trend`...), không gộp thành `salesPanel`.
+- `last30` xử lý trong `range/widgetRange.ts`, không thêm vào `presetRange` của báo cáo (tránh hiện thêm nút ở màn Báo cáo).
+- Tùy chọn "So với kỳ trước" chỉ có với số liệu doanh thu, hóa đơn, TB mỗi hóa đơn, hoàn trả; riêng doanh thu chỉ khi chọn nhóm "Tất cả" (báo cáo chỉ trả kỳ trước cho tổng).
+- Widget cố định đã xóa khỏi bảng thì thêm lại ở mục "Widget có sẵn" trong hộp Thêm widget.
+
+Chưa làm: biểu đồ đường, bố cục mặc định theo vai trò (mục 12 vẫn đúng).
+
+### Test tay cho grace
+
+1. Trên iPad mở Dashboard, bấm **Tùy chỉnh**: kéo tay nắm (góc trái trên) đổi chỗ hai thẻ, kéo góc phải dưới đổi cỡ, vuốt trong thẻ vẫn cuộn trang. Bấm **Lưu**, tải lại: bố cục còn.
+2. **Thêm widget**: thêm 2 thẻ "Doanh thu", một chọn nhóm Spa + Tháng này, một chọn Bán hàng + Hôm nay. Lưu, tải lại.
+3. Menu ⋯ của thẻ: Lên / Xuống / Nhỏ / Vừa / Lớn / Cài đặt / Xóa.
+4. Mở hai tab, sửa ở tab 1 và lưu, rồi lưu ở tab 2: phải hiện hộp "Bố cục đã đổi ở nơi khác".
+5. Đổi chi nhánh sang chi nhánh không có quyền xem một số liệu: thẻ đó ẩn đi, đổi lại thì hiện.
+6. **Về mặc định** đưa bảng về như cũ. Điện thoại (dưới 768px): các thẻ xếp một cột, vẫn dùng menu ⋯ để đổi thứ tự.

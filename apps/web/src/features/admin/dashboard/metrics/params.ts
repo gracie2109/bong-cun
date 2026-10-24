@@ -19,3 +19,9 @@ export const resolveParams = (def: MetricDef, saved: Record<string, unknown> | u
   }
   return resolved;
 };
+
+const COMPARABLE_PICKS = ["net", "invoiceCount", "avgTicket", "refunds"];
+
+/** Whether the metric can show the change against the period before (the overview report returns it). */
+export const supportsCompare = (def: Pick<MetricDef, "source" | "pick" | "params">, params: MetricParams): boolean =>
+  def.source === "overview" && COMPARABLE_PICKS.includes(def.pick) && (def.pick !== "net" || params.segment === "all");

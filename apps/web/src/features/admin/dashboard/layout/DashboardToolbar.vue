@@ -6,6 +6,9 @@
       </Button>
     </template>
     <template v-else>
+      <Button variant="outline" size="sm" :disabled="saving || !canAdd" :title="canAdd ? undefined : $t('dashboard.add.full')" @click="emit('add')">
+        <Plus class="mr-1.5 size-4" />{{ $t("dashboard.add.button") }}
+      </Button>
       <span v-if="isDirty" class="text-xs text-amber-600">{{ $t("dashboard.layout.unsaved") }}</span>
       <Button variant="ghost" size="sm" :disabled="saving" @click="askReset = true">
         <RotateCcw class="mr-1.5 size-4" />{{ $t("dashboard.layout.reset") }}
@@ -39,7 +42,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { LayoutGrid, RotateCcw, Save } from "lucide-vue-next";
+import { LayoutGrid, Plus, RotateCcw, Save } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
 
@@ -48,10 +51,12 @@ const props = defineProps<{
   isDirty: boolean;
   saving: boolean;
   canEdit: boolean;
+  /** False once the dashboard holds the most widgets it may. */
+  canAdd: boolean;
   /** Already formatted time of the last save, or empty. */
   savedAt?: string;
 }>();
-const emit = defineEmits<{ start: []; save: []; cancel: []; reset: [] }>();
+const emit = defineEmits<{ start: []; save: []; cancel: []; reset: []; add: [] }>();
 
 const askReset = ref(false);
 const askCancel = ref(false);

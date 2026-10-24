@@ -22,6 +22,8 @@
       </button>
       <div class="absolute right-1 top-1 z-10">
         <ItemEditMenu
+          :configurable="!!type?.byMetric"
+          @settings="emit('settings')"
           @move="(step) => emit('move', step)"
           @resize="(preset) => emit('resize', preset)"
           @remove="emit('remove')"
@@ -40,7 +42,7 @@ import ItemEditMenu from "./ItemEditMenu.vue";
 import type { SizePreset } from "./useItemActions";
 
 const props = defineProps<{ item: SavedItem; editing?: boolean }>();
-const emit = defineEmits<{ move: [step: -1 | 1]; resize: [preset: SizePreset]; remove: [] }>();
+const emit = defineEmits<{ move: [step: -1 | 1]; resize: [preset: SizePreset]; remove: []; settings: [] }>();
 
 const type = computed(() => widgetType(props.item.type));
 </script>

@@ -21,7 +21,9 @@
             :is-dirty="editor.isDirty.value"
             :saving="editor.saving.value"
             :can-edit="branches.length > 0"
+            :can-add="dialogs.canAdd.value"
             :saved-at="savedAt"
+            @add="dialogs.addOpen.value = true"
             @start="editor.start"
             @save="editor.persist"
             @cancel="editor.cancel"
@@ -48,9 +50,19 @@
             @move="(step) => actions.move(item.id, step)"
             @resize="(preset) => actions.resize(item.id, preset)"
             @remove="actions.remove(item.id)"
+            @settings="dialogs.settingsId.value = item.id"
           />
         </template>
       </DashboardItems>
+      <AddWidgetDialog
+        :open="dialogs.addOpen.value"
+        :scope="activeScope"
+        :missing-fixed="dialogs.missingFixed.value"
+        @close="dialogs.addOpen.value = false"
+        @add-metric="dialogs.addMetric"
+        @add-fixed="dialogs.addFixed"
+      />
+      <WidgetSettingsDialog :item="dialogs.settingsItem.value" @close="dialogs.settingsId.value = null" @apply="dialogs.applyToSettingsItem" />
       <LayoutConflictDialog :open="editor.conflict.value" @overwrite="editor.overwrite" @reload="editor.reload" />
 
       <div v-if="shortcuts.length" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -87,6 +99,9 @@ import DashboardScopePicker from "./DashboardScopePicker.vue";
 import DashboardSwitcher from "./DashboardSwitcher.vue";
 import { scopeFor } from "./dashboardRules";
 import { provideWidgetScope } from "./kit/widgetScope";
+import AddWidgetDialog from "./addWidget/AddWidgetDialog.vue";
+import WidgetSettingsDialog from "./addWidget/WidgetSettingsDialog.vue";
+import { useWidgetDialogs } from "./addWidget/useWidgetDialogs";
 import DashboardItems from "./layout/DashboardItems.vue";
 import DashboardToolbar from "./layout/DashboardToolbar.vue";
 import GridItemFrame from "./layout/GridItemFrame.vue";
@@ -113,6 +128,7 @@ const editor = useLayoutEditor(computed(() => active.value?.key ?? null), saved)
 const { visible: visibleItems, merge } = useVisibleItems(editor.items, activeScope);
 const actions = useItemActions(editor.items, editor.update);
 const onItems = (changed: SavedItem[]) => editor.update(merge(changed));
+const dialogs = useWidgetDialogs({ items: editor.items, update: editor.update }, active, activeScope);
 useUnsavedGuard(editor.isDirty);
 useEditEscape(editor);
 const savedAt = computed(() => (saved.updatedAt.value ? format(new Date(saved.updatedAt.value), "HH:mm dd/MM") : ""));

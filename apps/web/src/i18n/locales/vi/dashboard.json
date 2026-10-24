@@ -106,7 +106,8 @@
         "small": "Nhỏ",
         "medium": "Vừa",
         "large": "Lớn"
-      }
+      },
+      "settings": "Cài đặt"
     },
     "metric": {
       "revenue": {
@@ -191,6 +192,51 @@
       },
       "days": "Hạn dùng {n} ngày tới",
       "limit": "Top {n}"
+    },
+    "add": {
+      "button": "Thêm widget",
+      "full": "Đã đủ số widget tối đa.",
+      "dialogTitle": "Thêm vào bảng",
+      "search": "Tìm số liệu...",
+      "fixed": "Widget có sẵn",
+      "none": "Không có mục nào phù hợp.",
+      "otherBranch": "chỉ hiện ở chi nhánh có quyền",
+      "add": "Thêm",
+      "back": "Quay lại",
+      "apply": "Áp dụng",
+      "view": "Kiểu hiển thị",
+      "title": "Tên hiển thị",
+      "compare": "So với kỳ trước",
+      "views": {
+        "kpi": "Thẻ số",
+        "barChart": "Biểu đồ cột",
+        "list": "Danh sách"
+      },
+      "param": {
+        "segment": "Nhóm doanh thu",
+        "kind": "Loại hàng",
+        "sort": "Sắp xếp",
+        "limit": "Số dòng",
+        "days": "Hạn dùng",
+        "status": "Trạng thái",
+        "count": "Chỉ số",
+        "unit": "Đơn vị đếm"
+      },
+      "fixedTypes": {
+        "actions": "Việc cần xử lý",
+        "salesToday": "Doanh thu hôm nay",
+        "spaToday": "Spa hôm nay",
+        "boardingToday": "Khách sạn hôm nay",
+        "medicalToday": "Y tế hôm nay",
+        "salesPeriod": "Doanh thu theo kỳ",
+        "trend": "Xu hướng doanh thu",
+        "topProducts": "Hàng bán chạy",
+        "onlineOrders": "Đơn online"
+      },
+      "range": "Khoảng ngày",
+      "rangeDefault": "Mặc định ({range})",
+      "rangeFixed": "Chọn khoảng cố định",
+      "rangeInvalid": "Khoảng ngày không hợp lệ (từ ≤ đến, tối đa 366 ngày). Sẽ dùng mặc định."
     }
   }
 }

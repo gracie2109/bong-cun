@@ -106,7 +106,8 @@
         "small": "Small",
         "medium": "Medium",
         "large": "Large"
-      }
+      },
+      "settings": "Settings"
     },
     "metric": {
       "revenue": {
@@ -191,6 +192,51 @@
       },
       "days": "Expiring within {n} days",
       "limit": "Top {n}"
+    },
+    "add": {
+      "button": "Add widget",
+      "full": "The dashboard is full.",
+      "dialogTitle": "Add to dashboard",
+      "search": "Search metrics...",
+      "fixed": "Built-in widgets",
+      "none": "Nothing matches.",
+      "otherBranch": "only shown at a branch where you have access",
+      "add": "Add",
+      "back": "Back",
+      "apply": "Apply",
+      "view": "Display",
+      "title": "Title",
+      "compare": "Compare with the previous period",
+      "views": {
+        "kpi": "Number card",
+        "barChart": "Bar chart",
+        "list": "List"
+      },
+      "param": {
+        "segment": "Revenue line",
+        "kind": "Item type",
+        "sort": "Sort",
+        "limit": "Rows",
+        "days": "Expiry window",
+        "status": "Status",
+        "count": "Figure",
+        "unit": "Counting unit"
+      },
+      "fixedTypes": {
+        "actions": "Things to do",
+        "salesToday": "Today's revenue",
+        "spaToday": "Spa today",
+        "boardingToday": "Boarding today",
+        "medicalToday": "Medical today",
+        "salesPeriod": "Revenue by period",
+        "trend": "Revenue trend",
+        "topProducts": "Top products",
+        "onlineOrders": "Online orders"
+      },
+      "range": "Date range",
+      "rangeDefault": "Default ({range})",
+      "rangeFixed": "Fixed dates",
+      "rangeInvalid": "Invalid range (from ≤ to, at most 366 days). The default will be used."
     }
   }
 }

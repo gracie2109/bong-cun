@@ -10,6 +10,9 @@
       </button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" class="w-44">
+      <DropdownMenuItem v-if="configurable" @select="emit('settings')">
+        <Settings2 class="mr-2 size-4" />{{ $t("dashboard.layout.settings") }}
+      </DropdownMenuItem>
       <DropdownMenuItem @select="emit('move', -1)"><ArrowUp class="mr-2 size-4" />{{ $t("dashboard.layout.moveUp") }}</DropdownMenuItem>
       <DropdownMenuItem @select="emit('move', 1)"><ArrowDown class="mr-2 size-4" />{{ $t("dashboard.layout.moveDown") }}</DropdownMenuItem>
       <DropdownMenuSeparator />
@@ -25,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ArrowDown, ArrowUp, Maximize2, MoreHorizontal, Trash2 } from "lucide-vue-next";
+import { ArrowDown, ArrowUp, Maximize2, MoreHorizontal, Settings2, Trash2 } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,5 +39,6 @@ import {
 import type { SizePreset } from "./useItemActions";
 
 const presets: SizePreset[] = ["small", "medium", "large"];
-const emit = defineEmits<{ move: [step: -1 | 1]; resize: [preset: SizePreset]; remove: [] }>();
+defineProps<{ configurable?: boolean }>();
+const emit = defineEmits<{ move: [step: -1 | 1]; resize: [preset: SizePreset]; remove: []; settings: [] }>();
 </script>
