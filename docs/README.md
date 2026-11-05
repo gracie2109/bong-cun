@@ -28,6 +28,7 @@
 | [ke-hoach-noi-dia-gioi.md](ke-hoach-noi-dia-gioi.md) | Kế hoạch nối Pawtiny với Location Service (P1–P5): bảng cache chỉ đọc trong Supabase, workflow sync sinh migration từ snapshot, địa chỉ 2 cấp, mã GHN theo môi trường, test, thứ tự triển khai |
 | [audit-multi-dashboard.md](audit-multi-dashboard.md) | Audit kiến trúc Multi-Dashboard: phạm vi chi nhánh và quyền, 2 dashboard (Hôm nay, Kinh doanh), data contract từng widget, rủi ro R1–R17 có bằng chứng, câu hỏi cho chủ sản phẩm, kế hoạch theo phase |
 | [ke-hoach-widget-dashboard-tuy-chinh.md](ke-hoach-widget-dashboard-tuy-chinh.md) | Kế hoạch dashboard tùy chỉnh: kéo thả và đổi cỡ widget, lưu bố cục theo người (`dashboard_layouts`), danh mục số liệu cố định trong code và hộp Thêm widget, khoảng ngày riêng từng widget, PR D1 đến D9 |
+| [ke-hoach-cham-cong.md](ke-hoach-cham-cong.md) | Kế hoạch module chấm công: ca mẫu và lịch ca theo chi nhánh, vào/ra ca, sửa giờ có nhật ký, nghỉ phép và phép năm, bảng công tháng, quyền `attendance`, migration và PR A1 đến A10 |
 | [sao-luu-du-lieu.md](sao-luu-du-lieu.md) | Sao lưu database hằng tuần (gói Free không có backup): workflow mã hóa, nơi lấy bản backup, cách khôi phục |
 | [security-anti-clone.md](security-anti-clone.md) | Chống clone và mạo danh: header bảo mật và CSP, chặn chạy trên domain lạ, canonical, rate limit, báo cáo rà soát Supabase theo mức độ, việc làm tay (Supabase Auth, Cloudflare, theo dõi domain giả) |
 | [supabase-setup.md](supabase-setup.md) | Cài đặt Supabase |
