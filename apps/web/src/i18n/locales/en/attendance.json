@@ -158,7 +158,9 @@
       "clockedIn": "Clocked in.",
       "clockedOut": "Clocked out, worked {minutes} min.",
       "lateWarning": "You are {minutes} min late.",
-      "onLeaveWarning": "You have approved leave today."
+      "onLeaveWarning": "You have approved leave today.",
+      "reminder": "You have not clocked in yet.",
+      "reminderAction": "Clock in now"
     },
     "status": {
       "leave": "On leave",

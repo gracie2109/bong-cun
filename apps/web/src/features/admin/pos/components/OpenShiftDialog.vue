@@ -9,6 +9,7 @@
     @update:open="emit('update:open', $event)"
   >
     <form id="open-shift-form" class="space-y-4" @submit.prevent="submit">
+      <ClockReminder :branch-id="branchId" />
       <div class="space-y-2">
         <Label for="opening-cash">{{ $t("pos.shift.openingCash") }}</Label>
         <Input id="opening-cash" v-model="openingCash" inputmode="numeric" placeholder="0" />
@@ -27,6 +28,7 @@ import { ref, watch } from "vue";
 import AppDialog from "@/components/common/AppDialog.vue";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ClockReminder } from "@/features/admin/attendance";
 import { useOpenShift } from "@/features/admin/pos/queries/pos";
 import { money, parseAmount } from "../format";
 

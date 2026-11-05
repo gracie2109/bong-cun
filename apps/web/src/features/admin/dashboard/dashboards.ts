@@ -16,6 +16,8 @@ export const DASHBOARDS: readonly DashboardDef[] = [
       { type: "spaToday", x: 0, y: 4, w: 2, h: 3 },
       { type: "boardingToday", x: 2, y: 4, w: 2, h: 3 },
       { type: "medicalToday", x: 0, y: 7, w: 2, h: 3 },
+      { type: "staffToday", x: 2, y: 7, w: 2, h: 3 },
+      { type: "myShifts", x: 0, y: 10, w: 2, h: 3 },
     ],
   },
   {

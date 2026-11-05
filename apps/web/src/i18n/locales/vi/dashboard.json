@@ -228,6 +228,8 @@
         "spaToday": "Spa hôm nay",
         "boardingToday": "Khách sạn hôm nay",
         "medicalToday": "Y tế hôm nay",
+        "staffToday": "Nhân sự hôm nay",
+        "myShifts": "Ca của tôi",
         "salesPeriod": "Doanh thu theo kỳ",
         "trend": "Xu hướng doanh thu",
         "topProducts": "Hàng bán chạy",
@@ -237,6 +239,20 @@
       "rangeDefault": "Mặc định ({range})",
       "rangeFixed": "Chọn khoảng cố định",
       "rangeInvalid": "Khoảng ngày không hợp lệ (từ ≤ đến, tối đa 366 ngày). Sẽ dùng mặc định."
+    },
+    "staff": {
+      "title": "Nhân sự hôm nay",
+      "open": "Mở chấm công",
+      "working": "Đang làm",
+      "notIn": "Chưa vào ca",
+      "upcoming": "Sắp vào ca",
+      "leave": "Nghỉ phép"
+    },
+    "myShifts": {
+      "title": "Ca của tôi",
+      "open": "Mở của tôi",
+      "empty": "Hôm nay bạn không có ca.",
+      "working": "Đang làm"
     }
   }
 }
