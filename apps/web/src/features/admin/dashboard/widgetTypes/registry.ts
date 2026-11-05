@@ -1,5 +1,7 @@
 import ActionItemsWidget from "../widgets/actionItems/ActionItemsWidget.vue";
 import BoardingTodayWidget from "../widgets/boarding/BoardingTodayWidget.vue";
+import MyShiftsWidget from "../widgets/attendance/MyShiftsWidget.vue";
+import StaffTodayWidget from "../widgets/attendance/StaffTodayWidget.vue";
 import MedicalTodayWidget from "../widgets/medical/MedicalTodayWidget.vue";
 import OnlineOrdersWidget from "../widgets/onlineOrders/OnlineOrdersWidget.vue";
 import SalesPeriodWidget from "../widgets/sales/SalesPeriodWidget.vue";
@@ -17,6 +19,8 @@ const COMPONENTS = {
   spaToday: SpaTodayWidget,
   boardingToday: BoardingTodayWidget,
   medicalToday: MedicalTodayWidget,
+  staffToday: StaffTodayWidget,
+  myShifts: MyShiftsWidget,
   salesPeriod: SalesPeriodWidget,
   trend: RevenueTrendWidget,
   topProducts: TopProductsWidget,

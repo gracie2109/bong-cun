@@ -1,3 +1,6 @@
 // Public surface of admin/attendance: what other features may import. Everything else stays private.
-export { usePendingLeaveCount, useShiftTemplates } from "./queries";
+export { useAttendanceToday, useMySchedule, usePendingLeaveCount, useShiftTemplates } from "./queries";
+export { buildStaffLines, summarize } from "./today/todayBoard";
 export { default as ClockButton } from "./clock/ClockButton.vue";
+export { default as ClockReminder } from "./clock/ClockReminder.vue";
+export { timeOf } from "./shared/attendanceFormat";

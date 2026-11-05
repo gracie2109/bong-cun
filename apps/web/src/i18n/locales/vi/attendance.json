@@ -158,7 +158,9 @@
       "clockedIn": "Đã vào ca.",
       "clockedOut": "Đã ra ca, làm {minutes} phút.",
       "lateWarning": "Bạn vào muộn {minutes} phút.",
-      "onLeaveWarning": "Hôm nay bạn đang có đơn nghỉ được duyệt."
+      "onLeaveWarning": "Hôm nay bạn đang có đơn nghỉ được duyệt.",
+      "reminder": "Bạn chưa chấm công vào ca hôm nay.",
+      "reminderAction": "Vào ca luôn"
     },
     "status": {
       "leave": "Nghỉ phép",

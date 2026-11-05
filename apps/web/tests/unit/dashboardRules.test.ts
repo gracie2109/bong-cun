@@ -5,7 +5,7 @@ import type { WidgetTypeMeta } from "@/features/admin/dashboard/widgetTypes/type
 
 const grants: Record<string, string[]> = { a: ["medical", "reports"], b: ["boarding"] };
 const canAt = (permission: string, branchId: string) => (grants[branchId] ?? []).includes(permission);
-type Rule = Pick<WidgetTypeMeta, "permissions" | "scopes">;
+type Rule = Pick<WidgetTypeMeta, "permissions" | "scopes" | "anyStaff">;
 const widget = (permissions: string[], scopes: Rule["scopes"] = ["branch"]): Rule => ({ permissions, scopes });
 // Test dashboards place fake types "m", "b" and "r"; this looks their rules up.
 const rules: Record<string, Rule> = { m: widget(["medical"]), b: widget(["boarding"]), r: widget(["reports"], ["branch", "all"]) };
@@ -26,6 +26,19 @@ describe("widgetAccess", () => {
     expect(widgetAccess(widget(["medical"]), allScope, canAt)).toBe("needsBranch");
     expect(widgetAccess(widget(["reports"], ["branch", "all"]), allScope, canAt)).toBe("allowed");
     expect(widgetAccess(widget(["pos"], ["branch", "all"]), allScope, canAt)).toBe("hidden");
+  });
+});
+
+describe("widgets of the account's own data", () => {
+  const own: Rule = { permissions: [], scopes: ["branch"], anyStaff: true };
+
+  it("show at any branch the account works at, without a permission", () => {
+    expect(widgetAccess(own, branchScope("b"), canAt)).toBe("allowed");
+    expect(widgetAccess(own, { ...branchScope("a"), branchId: undefined }, canAt)).toBe("hidden");
+  });
+
+  it("ask for one branch when the dashboard covers them all", () => {
+    expect(widgetAccess(own, allScope, canAt)).toBe("needsBranch");
   });
 });
 

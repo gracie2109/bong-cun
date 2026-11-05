@@ -228,6 +228,8 @@
         "spaToday": "Spa today",
         "boardingToday": "Boarding today",
         "medicalToday": "Medical today",
+        "staffToday": "Staff today",
+        "myShifts": "My shifts",
         "salesPeriod": "Revenue by period",
         "trend": "Revenue trend",
         "topProducts": "Top products",
@@ -237,6 +239,20 @@
       "rangeDefault": "Default ({range})",
       "rangeFixed": "Fixed dates",
       "rangeInvalid": "Invalid range (from ≤ to, at most 366 days). The default will be used."
+    },
+    "staff": {
+      "title": "Staff today",
+      "open": "Open attendance",
+      "working": "Working",
+      "notIn": "Not in",
+      "upcoming": "Upcoming",
+      "leave": "On leave"
+    },
+    "myShifts": {
+      "title": "My shifts",
+      "open": "Open mine",
+      "empty": "No shift today.",
+      "working": "Clocked in"
     }
   }
 }

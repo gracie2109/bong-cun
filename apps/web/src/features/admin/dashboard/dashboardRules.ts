@@ -5,12 +5,12 @@ import type { WidgetTypeMeta } from "./widgetTypes/types";
 export type CanAt = (permission: string, branchId: string) => boolean;
 export type WidgetAccess = "hidden" | "needsBranch" | "allowed";
 
-type WidgetRule = Pick<WidgetTypeMeta, "permissions" | "scopes">;
+type WidgetRule = Pick<WidgetTypeMeta, "permissions" | "scopes" | "anyStaff">;
 /** Finds the rule of a widget type; the default knows the types of this build. */
 export type RuleOf = (type: string) => WidgetRule | null;
 
-const holdsAt = (permissions: readonly string[], branchId: string, canAt: CanAt) =>
-  permissions.some((permission) => canAt(permission, branchId));
+const holdsAt = (widget: WidgetRule, branchId: string, canAt: CanAt) =>
+  widget.anyStaff === true || widget.permissions.some((permission) => canAt(permission, branchId));
 
 /**
  * Whether a widget is shown for the scope. The permission is checked at the branch being viewed
@@ -18,9 +18,9 @@ const holdsAt = (permissions: readonly string[], branchId: string, canAt: CanAt)
  */
 export const widgetAccess = (widget: WidgetRule, scope: DashboardScope, canAt: CanAt): WidgetAccess => {
   if (scope.kind === "branch") {
-    return scope.branchId && holdsAt(widget.permissions, scope.branchId, canAt) ? "allowed" : "hidden";
+    return scope.branchId && holdsAt(widget, scope.branchId, canAt) ? "allowed" : "hidden";
   }
-  const somewhere = scope.branchIds.some((id) => holdsAt(widget.permissions, id, canAt));
+  const somewhere = scope.branchIds.some((id) => holdsAt(widget, id, canAt));
   if (!somewhere) return "hidden";
   return widget.scopes.includes("all") ? "allowed" : "needsBranch";
 };

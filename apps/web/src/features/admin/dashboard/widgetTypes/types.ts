@@ -13,6 +13,8 @@ export type WidgetTypeMeta = {
   defaultSize: WidgetSize;
   minSize: WidgetSize;
   maxSize: WidgetSize;
+  /** True when the widget shows the account's own data, so any role at the branch is enough. */
+  anyStaff?: boolean;
   /** True for the types that show a catalogue metric: permission and scopes come from the metric. */
   byMetric?: boolean;
   /** Whether the same type may be placed more than once (a fixed widget may not). */
