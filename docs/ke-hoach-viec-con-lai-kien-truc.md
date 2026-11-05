@@ -24,7 +24,7 @@ Việc thật đầu tiên cần chạy nền: đơn online `pending` giữ hàn
 - Migration `20261022010000_auto_cancel_stale_shop_orders.sql`: hàm `auto_cancel_stale_shop_orders(p_hours)` (mặc định 48) hủy đơn còn `pending`, chưa có hóa đơn, đặt quá `p_hours` giờ; ghi lý do "Tự hủy: quá N giờ chưa được xác nhận" và một dòng nhật ký đơn do "Hệ thống". Đơn đã xác nhận không bị đụng. Hàm chỉ cấp cho `service_role` (đã có test: người đăng nhập gọi bị 42501). Job `auto-cancel-stale-shop-orders` chạy 02:00 giờ Việt Nam mỗi đêm.
 - Test: `shop_order_auto_cancel.test.sql` (8 ca: hủy đơn cũ, giữ đơn mới, không đụng đơn đã xác nhận, ghi nhật ký, chạy lại không đổi gì, không ai ngoài `service_role` gọi được).
 - grace chọn 48 giờ (2026-10-16), giống mức 1 đến 2 ngày người bán trên sàn phải xử lý đơn COD. Muốn đổi, sửa lệnh trong `cron.schedule` ở một migration mới.
-- Việc chạy nền khác (nhắc lịch tiêm, cảnh báo lô sắp hết hạn) chưa làm: hiện đã có danh sách gọi điện trên màn hình, chỉ cần job khi có kênh gửi tin.
+- Việc chạy nền khác (nhắc lịch tiêm, cảnh báo lô sắp hết hạn): **chủ ý không làm job** (2026-11-05). Danh sách gọi điện, chuông trên đầu trang, widget "việc cần làm" và huy hiệu sidebar (Nhắc lịch, Tồn kho) đều đọc thẳng RPC `medical_reminders` / `stock_alert_counts`, luôn đúng và không tốn gì; job đêm chỉ ghi lại số mà chưa ai đọc. Làm job khi có kênh gửi tin (Zalo/email), khi đó job đọc cùng hai RPC đó. Không có migration.
 
 ## 4.7 Bảng tổng hợp báo cáo (đã đo, chưa cần)
 

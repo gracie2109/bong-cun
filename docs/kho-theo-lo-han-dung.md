@@ -72,6 +72,8 @@ Migration chạy trên Postgres 16 local cùng mọi migration trước, chạy 
 
 ## 9. Chưa làm
 
+> Cảnh báo lô sắp hết hạn: màn Tồn kho, chuông đầu trang, widget "việc cần làm" và huy hiệu sidebar "Tồn kho" (lô sắp hết hạn trong 60 ngày + đã hết hạn). Chưa có job nền vì chưa có kênh gửi tin ([ke-hoach-viec-con-lai-kien-truc.md](ke-hoach-viec-con-lai-kien-truc.md) mục 4.6).
+
 - Quy đổi đơn vị (thùng → hộp → viên).
 - Trừ kho cho đơn online (`create_order`).
 - Chuyển kho giữa chi nhánh.

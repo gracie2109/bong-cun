@@ -393,7 +393,7 @@ Việc đầu tiên sau bước 1: vào **Y tế → Cài đặt**, thêm vài c
 - Thanh toán chỉ sau khi ký, qua POS; thuốc và vắc-xin trừ kho lúc thanh toán, vắc-xin đúng lô đã tiêm.
 - Dịch vụ y tế dùng chung danh mục dịch vụ có nhóm, giá theo loài / cân như spa.
 - Phác đồ tiêm ở mức "số mũi cơ bản + khoảng cách + nhắc lại"; ngày nhắc sửa được.
-- Nhắc lịch là danh sách để gọi điện; không gửi tin tự động.
+- Nhắc lịch là danh sách để gọi điện; không gửi tin tự động. Từ 2026-11-05 có thêm dòng "Mũi tiêm sắp đến hạn" ở chuông/widget và huy hiệu sidebar trên "Nhắc lịch" (quá hạn + sắp đến hạn); không có job nền.
 - Lễ tân (thu ngân) tiếp nhận được; chỉ người có `medical: UPDATE` (vai trò `vet`) ghi bệnh án và ký.
 - Khách chỉ xem sổ tiêm và phần tóm tắt (chẩn đoán, lời dặn, thuốc mang về), không xem SOAP, không đặt lịch khám trên web.
 - Nội trú dùng lại lượt lưu trú và chuồng `purpose = medical / isolation`, không tạm ứng.
