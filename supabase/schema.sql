@@ -2089,9 +2089,9 @@ ALTER FUNCTION "public"."book_my_appointment"("p" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") RETURNS "jsonb"
-    LANGUAGE "sql" STABLE
+    LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
-    AS $$ select '[]'::jsonb; $$;
+    AS $$ select public.roster_leaves(p_branch, p_date, p_date); $$;
 
 
 ALTER FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") OWNER TO "postgres";
@@ -2254,6 +2254,20 @@ $$;
 ALTER FUNCTION "public"."can_shop_orders"("p_method" "text", "p_branch" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."can_view_staff"("p_user" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select p_user = (select auth.uid()) or exists (
+    select 1 from public.staff_branches sb
+    where sb.user_id = p_user and public.can_attendance('VIEW', sb.branch_id)
+  );
+$$;
+
+
+ALTER FUNCTION "public"."can_view_staff"("p_user" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."cancel_appointment"("p_id" "uuid", "p_reason" "text" DEFAULT NULL::"text") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -2397,6 +2411,28 @@ $$;
 
 
 ALTER FUNCTION "public"."cancel_invoice"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."cancel_leave"("p_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v public.leave_requests;
+begin
+  select * into v from public.leave_requests where id = p_id for update;
+  if not found or v.user_id <> (select auth.uid()) then
+    raise exception 'request not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if not (v.status = 'pending' or (v.status = 'approved' and v.from_date > public.boarding_local_date(now()))) then
+    raise exception 'this request can no longer be cancelled' using errcode = 'P0001', hint = 'not_cancellable';
+  end if;
+  update public.leave_requests set status = 'cancelled' where id = p_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."cancel_leave"("p_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."cancel_medical_visit"("p_id" "uuid", "p_reason" "text" DEFAULT NULL::"text") RETURNS "void"
@@ -2993,6 +3029,25 @@ $$;
 
 
 ALTER FUNCTION "public"."check_in_medical_visit"("p" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."check_leave_input"("p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") RETURNS "void"
+    LANGUAGE "plpgsql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_type is null or p_type not in ('annual', 'sick', 'unpaid', 'other')
+     or p_part is null or p_part not in ('full', 'am', 'pm')
+     or p_from is null or p_to is null or p_to < p_from or p_to - p_from > 60
+     or (p_part <> 'full' and p_from <> p_to)
+     or length(btrim(coalesce(p_reason, ''))) not between 1 and 500 then
+    raise exception 'invalid leave request' using errcode = '22023', hint = 'bad_input';
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."check_leave_input"("p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."check_out_boarding"("p_id" "uuid", "p_returned" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
@@ -4034,6 +4089,54 @@ $$;
 
 
 ALTER FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text" DEFAULT NULL::"text", "p_type" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v         public.leave_requests;
+  v_type    text;
+  v_days    numeric;
+  v_uid     uuid := (select auth.uid());
+  v_warning text;
+begin
+  select * into v from public.leave_requests where id = p_id for update;
+  if not found then
+    raise exception 'request not found' using errcode = 'P0002', hint = 'not_found';
+  end if;
+  if not public.can_attendance('UPDATE', v.branch_id) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if v.status <> 'pending' then
+    raise exception 'the request was already decided' using errcode = 'P0001', hint = 'not_pending';
+  end if;
+  if v.user_id = v_uid and not coalesce((select public.is_super_admin()), false) then
+    raise exception 'you cannot decide your own request' using errcode = 'P0001', hint = 'own_request';
+  end if;
+  v_type := coalesce(p_type, v.leave_type);
+  if v_type not in ('annual', 'sick', 'unpaid', 'other') or length(coalesce(p_note, '')) > 500 then
+    raise exception 'invalid decision' using errcode = '22023', hint = 'bad_input';
+  end if;
+  v_days := public.leave_days(v.branch_id, v.from_date, v.to_date, v.part);
+
+  update public.leave_requests
+  set status = case when p_approve then 'approved' else 'rejected' end,
+      leave_type = v_type, days = v_days, decision_note = nullif(btrim(coalesce(p_note, '')), ''),
+      decided_by = v_uid, decided_by_name = public.staff_display_name(v_uid), decided_at = now()
+  where id = p_id;
+
+  if p_approve and v_type = 'annual'
+     and (public.leave_balance(v.user_id, extract(year from v.from_date)::int) ->> 'remaining')::numeric < 0 then
+    v_warning := 'over_allowance';
+  end if;
+  return jsonb_build_object('status', case when p_approve then 'approved' else 'rejected' end, 'days', v_days, 'warning', v_warning);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text", "p_type" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."delete_care_log"("p_id" "uuid") RETURNS "void"
@@ -6097,6 +6200,41 @@ $$;
 ALTER FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "date") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."insert_leave"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text", "p_status" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_days numeric := public.leave_days(p_branch, p_from, p_to, p_part);
+  v_id   uuid;
+  v_uid  uuid := (select auth.uid());
+begin
+  if v_days <= 0 then
+    raise exception 'the branch is closed on those days' using errcode = '22023', hint = 'no_working_days';
+  end if;
+  begin
+    insert into public.leave_requests (user_id, user_name, branch_id, leave_type, from_date, to_date, part, days, reason, status,
+                                       decided_by, decided_by_name, decided_at, created_by)
+    values (p_user, coalesce(public.staff_display_name(p_user), ''), p_branch, p_type, p_from, p_to, p_part, v_days, btrim(p_reason), p_status,
+            case when p_status = 'approved' then v_uid end,
+            case when p_status = 'approved' then public.staff_display_name(v_uid) end,
+            case when p_status = 'approved' then now() end,
+            v_uid)
+    returning id into v_id;
+  exception when exclusion_violation then
+    raise exception 'those days overlap another request' using errcode = 'P0001', hint = 'leave_overlap';
+  end;
+  return jsonb_build_object('id', v_id, 'days', v_days,
+    'warning', case when p_type = 'annual'
+      and (select (b ->> 'remaining')::numeric - (b ->> 'pending')::numeric < 0
+           from (select public.leave_balance(p_user, extract(year from p_from)::int) as b) x) then 'over_allowance' end);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."insert_leave"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text", "p_status" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."invoice_cancel_restock"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -6296,10 +6434,117 @@ $$;
 ALTER FUNCTION "public"."kennel_night_price"("p_type" "uuid", "p_branch" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) RETURNS "text"
+CREATE OR REPLACE FUNCTION "public"."leave_allowance_days"("p_user" "uuid", "p_year" integer) RETURNS numeric
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce((select a.annual_days from public.leave_allowances a where a.user_id = p_user and a.year = p_year), 12);
+$$;
+
+
+ALTER FUNCTION "public"."leave_allowance_days"("p_user" "uuid", "p_year" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."leave_balance"("p_user" "uuid", "p_year" integer) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_allowance numeric := public.leave_allowance_days(p_user, p_year);
+  v_used      numeric;
+  v_pending   numeric;
+begin
+  if (select auth.uid()) is null or not public.can_view_staff(p_user) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  select coalesce(sum(days) filter (where status = 'approved'), 0), coalesce(sum(days) filter (where status = 'pending'), 0)
+    into v_used, v_pending
+  from public.leave_requests
+  where user_id = p_user and leave_type = 'annual' and extract(year from from_date) = p_year;
+  return jsonb_build_object('allowance', v_allowance, 'used', v_used, 'pending', v_pending,
+                            'remaining', v_allowance - v_used);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."leave_balance"("p_user" "uuid", "p_year" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."leave_days"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_part" "text") RETURNS numeric
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select case when p_part = 'full' then count(*)::numeric else count(*) * 0.5 end
+  from generate_series(p_from, p_to, interval '1 day') as d(day)
+  left join public.branch_hours h on h.branch_id = p_branch and h.weekday = extract(isodow from d.day)::int
+  where not coalesce(h.is_closed, false);
+$$;
+
+
+ALTER FUNCTION "public"."leave_days"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_part" "text") OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."leave_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "user_name" "text" DEFAULT ''::"text" NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "leave_type" "text" NOT NULL,
+    "from_date" "date" NOT NULL,
+    "to_date" "date" NOT NULL,
+    "part" "text" DEFAULT 'full'::"text" NOT NULL,
+    "days" numeric(5,1) NOT NULL,
+    "reason" "text" NOT NULL,
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "decided_by" "uuid",
+    "decided_by_name" "text",
+    "decided_at" timestamp with time zone,
+    "decision_note" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "leave_requests_days_check" CHECK (("days" >= (0)::numeric)),
+    CONSTRAINT "leave_requests_decision_note_check" CHECK ((("decision_note" IS NULL) OR ("length"("decision_note") <= 500))),
+    CONSTRAINT "leave_requests_half_day" CHECK ((("part" = 'full'::"text") OR ("from_date" = "to_date"))),
+    CONSTRAINT "leave_requests_leave_type_check" CHECK (("leave_type" = ANY (ARRAY['annual'::"text", 'sick'::"text", 'unpaid'::"text", 'other'::"text"]))),
+    CONSTRAINT "leave_requests_part_check" CHECK (("part" = ANY (ARRAY['full'::"text", 'am'::"text", 'pm'::"text"]))),
+    CONSTRAINT "leave_requests_range" CHECK ((("to_date" >= "from_date") AND (("to_date" - "from_date") <= 60))),
+    CONSTRAINT "leave_requests_reason_check" CHECK ((("length"("btrim"("reason")) >= 1) AND ("length"("btrim"("reason")) <= 500))),
+    CONSTRAINT "leave_requests_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"])))
+);
+
+
+ALTER TABLE "public"."leave_requests" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."leave_row"("r" "public"."leave_requests", "p_branch_name" "text") RETURNS "jsonb"
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
-    AS $$ select null::text; $$;
+    AS $$
+  select jsonb_build_object(
+    'id', r.id, 'user_id', r.user_id, 'user_name', r.user_name, 'branch_id', r.branch_id, 'branch_name', p_branch_name,
+    'leave_type', r.leave_type, 'from_date', r.from_date, 'to_date', r.to_date, 'part', r.part, 'days', r.days,
+    'reason', r.reason, 'status', r.status, 'decided_by_name', r.decided_by_name, 'decided_at', r.decided_at,
+    'decision_note', r.decision_note, 'created_by_self', r.created_by = r.user_id, 'created_at', r.created_at);
+$$;
+
+
+ALTER FUNCTION "public"."leave_row"("r" "public"."leave_requests", "p_branch_name" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) RETURNS "text"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select r.leave_type
+  from public.leave_requests r
+  where r.user_id = p_user and r.status = 'approved'
+    and public.boarding_local_date(p_start_at) between r.from_date and r.to_date
+    and (r.part = 'full'
+         or (r.part = 'am' and (p_start_at at time zone 'Asia/Ho_Chi_Minh')::time < time '12:00')
+         or (r.part = 'pm' and (p_start_at at time zone 'Asia/Ho_Chi_Minh')::time >= time '12:00'))
+  limit 1;
+$$;
 
 
 ALTER FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) OWNER TO "postgres";
@@ -6686,6 +6931,47 @@ $$;
 
 
 ALTER FUNCTION "public"."list_kennels"("p_branch" "uuid", "p_search" "text", "p_type" "uuid", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."list_leave_requests"("p_branch" "uuid" DEFAULT NULL::"uuid", "p_status" "text" DEFAULT 'pending'::"text", "p_from" "date" DEFAULT NULL::"date", "p_to" "date" DEFAULT NULL::"date", "p_search" "text" DEFAULT NULL::"text", "p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 20) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_branches uuid[] := public.attendance_branch_ids(p_branch, 'VIEW');
+  v_size     integer := least(greatest(coalesce(p_page_size, 20), 1), 100);
+  v_offset   integer := (greatest(coalesce(p_page, 1), 1) - 1) * v_size;
+  v_total    integer;
+  v_rows     jsonb;
+begin
+  if p_status is not null and p_status not in ('all', 'pending', 'approved', 'rejected', 'cancelled') then
+    raise exception 'invalid status' using errcode = '22023', hint = 'bad_input';
+  end if;
+
+  with picked as (
+    select r.id, r.from_date, r.created_at
+    from public.leave_requests r
+    where r.branch_id = any (v_branches)
+      and (p_status is null or p_status = 'all' or r.status = p_status)
+      and (p_from is null or r.to_date >= p_from)
+      and (p_to is null or r.from_date <= p_to)
+      and (nullif(btrim(coalesce(p_search, '')), '') is null or r.user_name ilike '%' || btrim(p_search) || '%')
+  ),
+  page as (
+    select id from picked order by from_date desc, created_at desc limit v_size offset v_offset
+  )
+  select (select count(*) from picked),
+         coalesce((select jsonb_agg(public.leave_row(r, b.name) order by r.from_date desc, r.created_at desc)
+                   from public.leave_requests r
+                   join public.branches b on b.id = r.branch_id
+                   where r.id in (select id from page)), '[]'::jsonb)
+    into v_total, v_rows;
+  return jsonb_build_object('rows', v_rows, 'total', v_total);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."list_leave_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."list_medical_attachments"("p_visit" "uuid") RETURNS "jsonb"
@@ -8376,10 +8662,41 @@ $$;
 ALTER FUNCTION "public"."my_customer_id"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") RETURNS "jsonb"
-    LANGUAGE "sql" STABLE
+CREATE OR REPLACE FUNCTION "public"."my_leave_requests"("p_year" integer DEFAULT NULL::integer) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
-    AS $$ select '[]'::jsonb; $$;
+    AS $$
+declare
+  v_uid  uuid := (select auth.uid());
+  v_year integer := coalesce(p_year, extract(year from public.boarding_local_date(now()))::int);
+begin
+  if v_uid is null then
+    raise exception 'not signed in' using errcode = '42501', hint = 'not_signed_in';
+  end if;
+  return jsonb_build_object(
+    'year', v_year,
+    'requests', coalesce((
+      select jsonb_agg(public.leave_row(r, b.name) order by r.from_date desc)
+      from public.leave_requests r join public.branches b on b.id = r.branch_id
+      where r.user_id = v_uid and extract(year from r.from_date) = v_year), '[]'::jsonb),
+    'balance', public.leave_balance(v_uid, v_year));
+end;
+$$;
+
+
+ALTER FUNCTION "public"."my_leave_requests"("p_year" integer) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'user_id', r.user_id, 'from_date', r.from_date, 'to_date', r.to_date, 'part', r.part, 'leave_type', r.leave_type)
+    order by r.from_date), '[]'::jsonb)
+  from public.leave_requests r
+  where r.user_id = (select auth.uid()) and r.status = 'approved' and r.from_date <= p_to and r.to_date >= p_from;
+$$;
 
 
 ALTER FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") OWNER TO "postgres";
@@ -8979,6 +9296,21 @@ $$;
 
 
 ALTER FUNCTION "public"."pay_pickup_shop_order"("p_id" "uuid", "p_payments" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."pending_leave_count"("p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS integer
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select count(*)::int
+  from public.leave_requests r
+  where r.status = 'pending' and r.user_id <> (select auth.uid())
+    and public.can_attendance('UPDATE', r.branch_id)
+    and (p_branch is null or r.branch_id = p_branch);
+$$;
+
+
+ALTER FUNCTION "public"."pending_leave_count"("p_branch" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."pet_deceased_cleanup"("p_pet" "uuid") RETURNS "void"
@@ -10762,6 +11094,50 @@ $$;
 ALTER FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if (select auth.uid()) is null or not public.is_branch_staff(p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  perform public.check_leave_input(p_type, p_from, p_to, p_part, p_reason);
+  -- A week of grace so sick leave can be filed afterwards.
+  if p_from < public.boarding_local_date(now()) - 7 then
+    raise exception 'that date is too far in the past' using errcode = '22023', hint = 'too_old';
+  end if;
+  return public.insert_leave((select auth.uid()), p_branch, p_type, p_from, p_to, p_part, p_reason, 'pending');
+end;
+$$;
+
+
+ALTER FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."request_leave_for"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not public.can_attendance('UPDATE', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_user = (select auth.uid()) and not coalesce((select public.is_super_admin()), false) then
+    raise exception 'you cannot approve your own leave' using errcode = 'P0001', hint = 'own_request';
+  end if;
+  if not exists (select 1 from public.staff_branches where user_id = p_user and branch_id = p_branch) then
+    raise exception 'not staff of this branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  perform public.check_leave_input(p_type, p_from, p_to, p_part, p_reason);
+  return public.insert_leave(p_user, p_branch, p_type, p_from, p_to, p_part, p_reason, 'approved');
+end;
+$$;
+
+
+ALTER FUNCTION "public"."request_leave_for"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") RETURNS "void"
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -10820,6 +11196,22 @@ $$;
 
 
 ALTER FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'user_id', r.user_id, 'from_date', r.from_date, 'to_date', r.to_date, 'part', r.part, 'leave_type', r.leave_type)
+    order by r.from_date, r.user_id), '[]'::jsonb)
+  from public.leave_requests r
+  where r.status = 'approved' and r.from_date <= p_to and r.to_date >= p_from
+    and exists (select 1 from public.staff_branches sb where sb.user_id = r.user_id and sb.branch_id = p_branch);
+$$;
+
+
+ALTER FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."save_appointment"("p" "jsonb", "p_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
@@ -11536,6 +11928,29 @@ $$;
 
 
 ALTER FUNCTION "public"."save_kennel_type"("p" "jsonb", "p_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."save_leave_allowance"("p_user" "uuid", "p_year" integer, "p_days" numeric) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not exists (
+    select 1 from public.staff_branches sb where sb.user_id = p_user and public.can_attendance('SETTING', sb.branch_id)
+  ) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_year is null or p_year not between 2020 and 2100 or p_days is null or p_days not between 0 and 60 then
+    raise exception 'invalid allowance' using errcode = '22023', hint = 'bad_input';
+  end if;
+  insert into public.leave_allowances (user_id, year, annual_days, updated_by)
+  values (p_user, p_year, p_days, (select auth.uid()))
+  on conflict (user_id, year) do update set annual_days = excluded.annual_days, updated_by = excluded.updated_by, updated_at = now();
+end;
+$$;
+
+
+ALTER FUNCTION "public"."save_leave_allowance"("p_user" "uuid", "p_year" integer, "p_days" numeric) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."save_medical_record"("p_id" "uuid", "p" "jsonb") RETURNS timestamp with time zone
@@ -13709,7 +14124,7 @@ begin
       from public.shift_assignments a
       left join public.shift_templates t on t.id = a.template_id
       where a.branch_id = p_branch and a.work_date between p_from and p_to), '[]'::jsonb),
-    'leaves', '[]'::jsonb
+    'leaves', public.roster_leaves(p_branch, p_from, p_to)
   );
 end;
 $$;
@@ -16002,6 +16417,20 @@ CREATE TABLE IF NOT EXISTS "public"."kennels" (
 ALTER TABLE "public"."kennels" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."leave_allowances" (
+    "user_id" "uuid" NOT NULL,
+    "year" integer NOT NULL,
+    "annual_days" numeric(4,1) NOT NULL,
+    "updated_by" "uuid",
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "leave_allowances_annual_days_check" CHECK ((("annual_days" >= (0)::numeric) AND ("annual_days" <= (60)::numeric))),
+    CONSTRAINT "leave_allowances_year_check" CHECK ((("year" >= 2020) AND ("year" <= 2100)))
+);
+
+
+ALTER TABLE "public"."leave_allowances" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."location_catalogs" (
     "id" "text" NOT NULL,
     "source" "text" NOT NULL,
@@ -17310,6 +17739,21 @@ ALTER TABLE ONLY "public"."kennels"
 
 
 
+ALTER TABLE ONLY "public"."leave_allowances"
+    ADD CONSTRAINT "leave_allowances_pkey" PRIMARY KEY ("user_id", "year");
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_no_overlap" EXCLUDE USING "gist" ("user_id" WITH =, "daterange"("from_date", "to_date", '[]'::"text") WITH &&) WHERE (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text"])));
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."location_catalogs"
     ADD CONSTRAINT "location_catalogs_pkey" PRIMARY KEY ("id");
 
@@ -17908,6 +18352,14 @@ CREATE INDEX "kennels_type_idx" ON "public"."kennels" USING "btree" ("kennel_typ
 
 
 
+CREATE INDEX "leave_requests_branch_status_idx" ON "public"."leave_requests" USING "btree" ("branch_id", "status", "from_date");
+
+
+
+CREATE INDEX "leave_requests_user_idx" ON "public"."leave_requests" USING "btree" ("user_id", "from_date");
+
+
+
 CREATE UNIQUE INDEX "location_catalogs_current" ON "public"."location_catalogs" USING "btree" ("is_current") WHERE "is_current";
 
 
@@ -18305,6 +18757,10 @@ CREATE OR REPLACE TRIGGER "inpatient_orders_signed_lock" BEFORE INSERT OR DELETE
 
 
 CREATE OR REPLACE TRIGGER "invoices_set_paid_at" BEFORE INSERT OR UPDATE OF "status" ON "public"."invoices" FOR EACH ROW EXECUTE FUNCTION "public"."invoice_set_paid_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "leave_requests_updated_at" BEFORE UPDATE ON "public"."leave_requests" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
 
@@ -18921,6 +19377,36 @@ ALTER TABLE ONLY "public"."kennels"
 
 ALTER TABLE ONLY "public"."kennels"
     ADD CONSTRAINT "kennels_kennel_type_id_fkey" FOREIGN KEY ("kennel_type_id") REFERENCES "public"."kennel_types"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."leave_allowances"
+    ADD CONSTRAINT "leave_allowances_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."leave_allowances"
+    ADD CONSTRAINT "leave_allowances_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_decided_by_fkey" FOREIGN KEY ("decided_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."leave_requests"
+    ADD CONSTRAINT "leave_requests_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT;
 
 
 
@@ -19985,6 +20471,20 @@ ALTER TABLE "public"."kennel_types" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."kennels" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "leave allowances read" ON "public"."leave_allowances" FOR SELECT TO "authenticated" USING (( SELECT "public"."can_view_staff"("leave_allowances"."user_id") AS "can_view_staff"));
+
+
+
+CREATE POLICY "leave requests read" ON "public"."leave_requests" FOR SELECT TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) OR ( SELECT "public"."can_attendance"('VIEW'::"text", "leave_requests"."branch_id") AS "can_attendance")));
+
+
+
+ALTER TABLE "public"."leave_allowances" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."leave_requests" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."location_catalogs" ENABLE ROW LEVEL SECURITY;
@@ -21059,6 +21559,11 @@ GRANT ALL ON FUNCTION "public"."can_shop_orders"("p_method" "text", "p_branch" "
 
 
 
+REVOKE ALL ON FUNCTION "public"."can_view_staff"("p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_view_staff"("p_user" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."cancel_appointment"("p_id" "uuid", "p_reason" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cancel_appointment"("p_id" "uuid", "p_reason" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."cancel_appointment"("p_id" "uuid", "p_reason" "text") TO "service_role";
@@ -21074,6 +21579,12 @@ GRANT ALL ON FUNCTION "public"."cancel_boarding_stay"("p_id" "uuid", "p_reason" 
 REVOKE ALL ON FUNCTION "public"."cancel_invoice"("p_id" "uuid", "p_reason" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cancel_invoice"("p_id" "uuid", "p_reason" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."cancel_invoice"("p_id" "uuid", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."cancel_leave"("p_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."cancel_leave"("p_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."cancel_leave"("p_id" "uuid") TO "service_role";
 
 
 
@@ -21143,6 +21654,11 @@ GRANT ALL ON FUNCTION "public"."check_in_boarding"("p_id" "uuid", "p_pets" "json
 REVOKE ALL ON FUNCTION "public"."check_in_medical_visit"("p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."check_in_medical_visit"("p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."check_in_medical_visit"("p" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."check_leave_input"("p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."check_leave_input"("p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") TO "service_role";
 
 
 
@@ -21226,6 +21742,12 @@ GRANT ALL ON FUNCTION "public"."dashboard_layout_item_ok"("i" "jsonb") TO "servi
 REVOKE ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."dashboard_layout_problem"("p_layout" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text", "p_type" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text", "p_type" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text", "p_type" "text") TO "service_role";
 
 
 
@@ -21484,6 +22006,11 @@ GRANT ALL ON FUNCTION "public"."inpatient_ward"("p_branch" "uuid", "p_date" "dat
 
 
 
+REVOKE ALL ON FUNCTION "public"."insert_leave"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text", "p_status" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."insert_leave"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text", "p_status" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."invoice_cancel_restock"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."invoice_cancel_restock"() TO "service_role";
 
@@ -21545,6 +22072,32 @@ GRANT ALL ON FUNCTION "public"."kennel_night_price"("p_type" "uuid", "p_branch" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."leave_allowance_days"("p_user" "uuid", "p_year" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."leave_allowance_days"("p_user" "uuid", "p_year" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."leave_balance"("p_user" "uuid", "p_year" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."leave_balance"("p_user" "uuid", "p_year" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."leave_balance"("p_user" "uuid", "p_year" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."leave_days"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_part" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."leave_days"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_part" "text") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."leave_requests" TO "service_role";
+GRANT SELECT ON TABLE "public"."leave_requests" TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."leave_row"("r" "public"."leave_requests", "p_branch_name" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."leave_row"("r" "public"."leave_requests", "p_branch_name" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) TO "service_role";
 
@@ -21589,6 +22142,12 @@ GRANT ALL ON FUNCTION "public"."list_kennel_types"("p_branch" "uuid", "p_search"
 REVOKE ALL ON FUNCTION "public"."list_kennels"("p_branch" "uuid", "p_search" "text", "p_type" "uuid", "p_page" integer, "p_page_size" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."list_kennels"("p_branch" "uuid", "p_search" "text", "p_type" "uuid", "p_page" integer, "p_page_size" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."list_kennels"("p_branch" "uuid", "p_search" "text", "p_type" "uuid", "p_page" integer, "p_page_size" integer) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."list_leave_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."list_leave_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."list_leave_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "service_role";
 
 
 
@@ -21886,6 +22445,12 @@ GRANT ALL ON FUNCTION "public"."my_customer_id"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."my_leave_requests"("p_year" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_leave_requests"("p_year" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."my_leave_requests"("p_year" integer) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") TO "service_role";
 
@@ -21963,6 +22528,12 @@ GRANT ALL ON FUNCTION "public"."pack_shop_order"("p_id" "uuid") TO "service_role
 REVOKE ALL ON FUNCTION "public"."pay_pickup_shop_order"("p_id" "uuid", "p_payments" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."pay_pickup_shop_order"("p_id" "uuid", "p_payments" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."pay_pickup_shop_order"("p_id" "uuid", "p_payments" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") TO "service_role";
 
 
 
@@ -22154,6 +22725,18 @@ GRANT ALL ON FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "d
 
 
 
+REVOKE ALL ON FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."request_leave_for"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."request_leave_for"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."request_leave_for"("p_user" "uuid", "p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."reset_dashboard_layout"("p_dashboard" "text") TO "service_role";
@@ -22169,6 +22752,11 @@ GRANT ALL ON FUNCTION "public"."restore_pet"("p_pet" "uuid") TO "service_role";
 REVOKE ALL ON FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") TO "service_role";
 
 
 
@@ -22229,6 +22817,12 @@ GRANT ALL ON FUNCTION "public"."save_kennel"("p" "jsonb", "p_id" "uuid") TO "ser
 REVOKE ALL ON FUNCTION "public"."save_kennel_type"("p" "jsonb", "p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."save_kennel_type"("p" "jsonb", "p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."save_kennel_type"("p" "jsonb", "p_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."save_leave_allowance"("p_user" "uuid", "p_year" integer, "p_days" numeric) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."save_leave_allowance"("p_user" "uuid", "p_year" integer, "p_days" numeric) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."save_leave_allowance"("p_user" "uuid", "p_year" integer, "p_days" numeric) TO "service_role";
 
 
 
@@ -22851,6 +23445,11 @@ GRANT ALL ON TABLE "public"."kennel_types" TO "service_role";
 
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."kennels" TO "authenticated";
 GRANT ALL ON TABLE "public"."kennels" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."leave_allowances" TO "service_role";
+GRANT SELECT ON TABLE "public"."leave_allowances" TO "authenticated";
 
 
 

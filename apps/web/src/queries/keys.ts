@@ -202,6 +202,10 @@ export const attendanceKeys = {
   today: (branchId: string, date: string) => [...attendanceKeys.all, "today", branchId, date] as const,
   mine: (from: string, to: string) => [...attendanceKeys.all, "mine", from, to] as const,
   history: (entryId: string) => [...attendanceKeys.all, "history", entryId] as const,
+  leaveList: (filter: unknown, page: number) => [...attendanceKeys.all, "leave", "list", filter, page] as const,
+  myLeave: (year: number | undefined) => [...attendanceKeys.all, "leave", "mine", year ?? "now"] as const,
+  balance: (userId: string, year: number) => [...attendanceKeys.all, "leave", "balance", userId, year] as const,
+  pendingLeave: (branchId: string | undefined) => [...attendanceKeys.all, "leave", "pending", branchId ?? "all"] as const,
 };
 
 export const boardingKeys = {

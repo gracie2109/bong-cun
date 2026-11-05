@@ -26,6 +26,7 @@ const auth = useAuthStore();
 const tabs = [
   { name: "attendanceToday", icon: "lucide:clipboard-check", label: "attendance.nav.today", method: "VIEW" },
   { name: "attendanceRoster", icon: "lucide:calendar-range", label: "attendance.nav.roster", method: "VIEW" },
+  { name: "attendanceLeave", icon: "lucide:calendar-off", label: "attendance.nav.leave", method: "VIEW" },
   { name: "attendanceSettings", icon: "lucide:settings-2", label: "attendance.nav.settings", method: "VIEW" },
   { name: "attendanceMe", icon: "lucide:user-round", label: "attendance.nav.me", method: null },
 ];

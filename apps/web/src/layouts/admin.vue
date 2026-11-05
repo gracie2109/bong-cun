@@ -18,6 +18,7 @@ import Nav from "@/components/layout/admin/Nav.vue";
 import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useShopOrderBadge } from "@/features/admin/shop-orders/queries/shopOrdersAdmin";
+import { usePendingLeaveCount } from "@/features/admin/attendance";
 import { useAppStore, useAuthStore } from "@/stores";
 import { initials } from "@/features/admin/pets/format";
 
@@ -40,7 +41,10 @@ const sections = computed(() => {
 // Online orders waiting for confirmation, on the "Đơn online" item (only asked when it can be seen).
 const canSeeOrders = computed(() => canOpenAdminRoute(auth.adminGrants ?? {}, "shopOrders"));
 const orderBadge = useShopOrderBadge(canSeeOrders);
-const badges = computed(() => ({ shopOrders: orderBadge.data.value ?? 0 }));
+// Leave requests waiting for a decision, on the "Đơn nghỉ" item.
+const canSeeLeave = computed(() => canOpenAdminRoute(auth.adminGrants ?? {}, "attendanceLeave"));
+const leaveBadge = usePendingLeaveCount(canSeeLeave);
+const badges = computed(() => ({ shopOrders: orderBadge.data.value ?? 0, attendanceLeave: leaveBadge.data.value ?? 0 }));
 
 const userName = computed(
   () => auth.currentUser?.fullName || auth.currentUser?.displayName || auth.currentUser?.email || ""

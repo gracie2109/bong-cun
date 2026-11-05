@@ -2611,6 +2611,7 @@ export type Database = {
         Args: { p_branch: string; p_method: string }
         Returns: boolean
       }
+      cancel_leave: { Args: { p_id: string }; Returns: undefined }
       clock_in: {
         Args: { p_branch: string; p_note?: string; p_unscheduled_ok?: boolean }
         Returns: Json
@@ -2623,6 +2624,15 @@ export type Database = {
           p_from_monday: string
           p_overwrite?: boolean
           p_to_monday: string
+        }
+        Returns: Json
+      }
+      decide_leave: {
+        Args: {
+          p_approve: boolean
+          p_id: string
+          p_note?: string
+          p_type?: string
         }
         Returns: Json
       }
@@ -2641,13 +2651,51 @@ export type Database = {
         Returns: undefined
       }
       is_branch_staff: { Args: { p_branch: string }; Returns: boolean }
+      leave_balance: { Args: { p_user: string; p_year: number }; Returns: Json }
+      list_leave_requests: {
+        Args: {
+          p_branch?: string | null
+          p_from?: string | null
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+          p_status?: string
+          p_to?: string | null
+        }
+        Returns: Json
+      }
       list_shift_templates: {
         Args: { p_branch: string; p_include_inactive?: boolean }
         Returns: Json[]
       }
       mark_entry_reviewed: { Args: { p_id: string }; Returns: undefined }
+      my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
+      pending_leave_count: { Args: { p_branch?: string }; Returns: number }
       remove_shift_assignment: { Args: { p_id: string }; Returns: undefined }
+      request_leave: {
+        Args: {
+          p_branch: string
+          p_from: string
+          p_part: string
+          p_reason: string
+          p_to: string
+          p_type: string
+        }
+        Returns: Json
+      }
+      request_leave_for: {
+        Args: {
+          p_branch: string
+          p_from: string
+          p_part: string
+          p_reason: string
+          p_to: string
+          p_type: string
+          p_user: string
+        }
+        Returns: Json
+      }
       save_attendance_settings: {
         Args: { p: Json; p_branch: string }
         Returns: Json
@@ -2669,6 +2717,10 @@ export type Database = {
       cancel_stock_document: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       create_sales_return: { Args: { p: Json }; Returns: Json }
       post_stock_document: { Args: { p_id: string }; Returns: undefined }
+      save_leave_allowance: {
+        Args: { p_days: number; p_user: string; p_year: number }
+        Returns: undefined
+      }
       save_shift_template: {
         Args: { p: Json; p_branch: string }
         Returns: string

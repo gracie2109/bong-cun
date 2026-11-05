@@ -79,7 +79,14 @@
       "confirm_unscheduled": "You have no shift right now.",
       "reason_required": "Please give a reason.",
       "own_entry": "You cannot edit your own time entry.",
-      "future_time": "The time cannot be in the future."
+      "future_time": "The time cannot be in the future.",
+      "leave_overlap": "These days overlap another request.",
+      "too_old": "You can only ask for leave up to 7 days back.",
+      "no_working_days": "The branch is closed on these days.",
+      "not_pending": "This request was already decided.",
+      "own_request": "You cannot decide your own request.",
+      "not_cancellable": "This request can no longer be withdrawn.",
+      "not_signed_in": "You are not signed in."
     },
     "roster": {
       "title": "Roster",
@@ -220,6 +227,59 @@
       "noShifts": "No shifts in the next 2 weeks.",
       "entries": "This month's entries",
       "noEntries": "No entries this month."
+    },
+    "leave": {
+      "title": "Leave requests",
+      "tabs": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled",
+        "all": "All"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      },
+      "search": "Search by name",
+      "empty": "No requests.",
+      "days": "days",
+      "review": "Review",
+      "fileFor": "File for staff",
+      "fileForHint": "A request filed for staff is approved at once.",
+      "request": "Request leave",
+      "send": "Send request",
+      "staff": "Staff member",
+      "pickStaff": "Choose a person",
+      "approver": "Send to branch",
+      "type": "Type",
+      "from": "From",
+      "to": "To",
+      "part": "Part of the day",
+      "reason": "Reason",
+      "errors": {
+        "dates_required": "Please pick the dates.",
+        "range_invalid": "The end date must not be before the start.",
+        "reason_required": "Please give a reason.",
+        "staff_required": "Please choose a person.",
+        "branch_required": "No branch to send the request to."
+      },
+      "decideTitle": "Decide leave request",
+      "changeTypeHint": "You can change the type when approving, e.g. to unpaid when the allowance is spent.",
+      "note": "Note (optional)",
+      "approve": "Approve",
+      "reject": "Reject",
+      "balance": "Annual leave left: {remaining} of {allowance} days ({pending} pending).",
+      "usedOf": "used {used}, pending {pending}",
+      "decidedBy": "Decided by {name}",
+      "overAllowance": "This request is over the annual allowance.",
+      "allowancesTitle": "Annual leave days {year}",
+      "allowancesHint": "12 days each by default. Going over only shows a warning.",
+      "myTitle": "My leave {year}",
+      "noneMine": "You have no leave requests.",
+      "cancel": "Withdraw"
     }
   }
 }
