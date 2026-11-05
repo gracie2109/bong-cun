@@ -6,3 +6,4 @@ export * from "./shifts";
 export * from "./clock";
 export * from "./entries";
 export * from "./leave";
+export * from "./reports";

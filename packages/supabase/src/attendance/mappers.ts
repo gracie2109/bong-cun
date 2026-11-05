@@ -1,6 +1,12 @@
 // Rows from the attendance functions -> domain types. Pure: no client, no Vue.
 import type { z } from "zod";
 import type {
+  MyTimesheet,
+  MyTimesheetRow,
+  TimesheetGrid,
+  TimesheetGridRow,
+  TimesheetList,
+  TimesheetListRow,
   LeaveBalance,
   LeaveList,
   LeaveRequest,
@@ -185,4 +191,71 @@ export const toMyLeave = (row: z.infer<typeof myLeaveSchema>): MyLeave => ({
   year: row.year,
   requests: row.requests.map(toLeaveRequest),
   balance: toLeaveBalance(row.balance),
+});
+
+// ------------------------------------------------------------ timesheet
+export const toTimesheetList = (row: TimesheetListRow): TimesheetList => ({
+  total: row.total,
+  rows: row.rows.map((r) => ({
+    userId: r.user_id,
+    name: r.name,
+    branchCodes: r.branch_codes ?? "",
+    shiftsScheduled: r.shifts_scheduled,
+    shiftsWorked: r.shifts_worked,
+    scheduledMinutes: r.scheduled_minutes,
+    workedMinutes: r.worked_minutes,
+    lateCount: r.late_count,
+    lateMinutes: r.late_minutes,
+    earlyCount: r.early_count,
+    earlyMinutes: r.early_minutes,
+    overtimeMinutes: r.overtime_minutes,
+    absentCount: r.absent_count,
+    unscheduledCount: r.unscheduled_count,
+    missingCheckoutCount: r.missing_checkout_count,
+    leaveAnnual: r.leave_annual,
+    leaveSick: r.leave_sick,
+    leaveUnpaid: r.leave_unpaid,
+    leaveOther: r.leave_other,
+  })),
+});
+
+export const toTimesheetGrid = (row: TimesheetGridRow): TimesheetGrid => ({
+  days: row.days,
+  staff: row.staff.map((s) => ({
+    userId: s.user_id,
+    name: s.name,
+    cells: s.cells.map((c) => ({
+      date: c.date,
+      code: c.code,
+      minutes: c.minutes,
+      detail: c.detail.map((d) => ({
+        shiftName: d.shift_name,
+        status: d.status,
+        checkInAt: d.check_in_at,
+        checkOutAt: d.check_out_at,
+        workedMinutes: d.worked_minutes,
+      })),
+    })),
+    totals: {
+      daysWorked: s.totals.days_worked,
+      lateCount: s.totals.late_count,
+      absentCount: s.totals.absent_count,
+      uncheckedCount: s.totals.unchecked_count,
+      leaveDays: s.totals.leave_days,
+      workedMinutes: s.totals.worked_minutes,
+    },
+  })),
+});
+
+export const toMyTimesheet = (row: MyTimesheetRow): MyTimesheet => ({
+  rows: row.rows.map(toAttendanceRow),
+  totals: {
+    scheduledMinutes: row.totals.scheduled_minutes,
+    workedMinutes: row.totals.worked_minutes,
+    lateCount: row.totals.late_count,
+    lateMinutes: row.totals.late_minutes,
+    earlyMinutes: row.totals.early_minutes,
+    overtimeMinutes: row.totals.overtime_minutes,
+    absentCount: row.totals.absent_count,
+  },
 });
