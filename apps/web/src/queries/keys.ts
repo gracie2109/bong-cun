@@ -193,6 +193,13 @@ export const spaKeys = {
   board: (branchId: string, date: string) => [...spaKeys.all, "board", branchId, date] as const,
 };
 
+export const attendanceKeys = {
+  all: ["attendance"] as const,
+  rules: (branchId: string) => [...attendanceKeys.all, "rules", branchId] as const,
+  templates: (branchId: string, includeInactive: boolean) => [...attendanceKeys.all, "templates", branchId, includeInactive] as const,
+  roster: (branchId: string, from: string, to: string) => [...attendanceKeys.all, "roster", branchId, from, to] as const,
+};
+
 export const boardingKeys = {
   all: ["boarding"] as const,
   kennelTypes: (branchId: string, page: PageParams, filter: KennelTypeFilter) =>

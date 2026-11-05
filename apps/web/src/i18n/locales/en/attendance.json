@@ -1,0 +1,132 @@
+{
+  "attendance": {
+    "nav": {
+      "today": "Today",
+      "roster": "Roster",
+      "leave": "Leave",
+      "timesheet": "Timesheet",
+      "settings": "Settings",
+      "me": "Mine"
+    },
+    "settings": {
+      "title": "Attendance settings",
+      "readOnly": "You can only view these settings. Editing needs \"Staff: Settings\"."
+    },
+    "colors": {
+      "teal": "Teal",
+      "sky": "Sky",
+      "amber": "Amber",
+      "rose": "Rose",
+      "violet": "Violet",
+      "slate": "Slate"
+    },
+    "templates": {
+      "title": "Shift templates",
+      "hint": "Ready-made hours for quick scheduling. Editing a template does not change shifts already scheduled.",
+      "add": "Add shift template",
+      "edit": "Edit shift template",
+      "name": "Name",
+      "namePlaceholder": "For example: Morning",
+      "start": "Starts",
+      "end": "Ends",
+      "breakMinutes": "Break (minutes)",
+      "breakShort": "{n} min break",
+      "color": "Colour",
+      "overnight": "Overnight",
+      "overnightHint": "The shift ends the next morning.",
+      "sameDayHint": "The shift starts and ends on the same day.",
+      "showInactive": "Show hidden",
+      "empty": "No shift templates yet. Add \"Morning\", \"Afternoon\"... to build the roster.",
+      "errors": {
+        "name": "The name must be 1 to 40 characters.",
+        "times": "The time is not valid.",
+        "same": "Start and end must differ.",
+        "long": "A shift can last 16 hours at most.",
+        "break": "The break must be shorter than the shift.",
+        "color": "Pick a colour."
+      }
+    },
+    "rules": {
+      "title": "Attendance rules",
+      "hint": "Applies to the selected branch.",
+      "unavailable": "The rules could not be read.",
+      "lateGraceMinutes": "Late grace (minutes)",
+      "lateGraceMinutesHint": "Clocking in within these minutes is not late.",
+      "earlyGraceMinutes": "Early-leave grace (minutes)",
+      "earlyGraceMinutesHint": "Clocking out within these minutes is not early.",
+      "checkinEarlyMinutes": "Earliest clock-in (minutes)",
+      "checkinEarlyMinutesHint": "How long before the start a clock-in still joins the scheduled shift.",
+      "overtimeMinMinutes": "Minimum overtime (minutes)",
+      "overtimeMinMinutesHint": "Staying less than this after the end is not overtime.",
+      "reviewAfterHours": "Auto-close after (hours)",
+      "reviewAfterHoursHint": "A forgotten clock-out is closed with 0 minutes after this many hours, for a manager to fix.",
+      "allowUnscheduled": "Allow unscheduled clock-in",
+      "allowUnscheduledHint": "When off, staff can only clock in with a scheduled shift."
+    },
+    "errors": {
+      "forbidden": "You are not allowed to do this.",
+      "bad_input": "Some information is not valid.",
+      "not_found": "Not found, it may have been deleted.",
+      "name_taken": "A template with this name already exists at this branch.",
+      "not_branch_staff": "This person does not work at the selected branch.",
+      "shift_overlap": "This person already has a shift at that time (even at another branch).",
+      "has_entry": "Someone already clocked in on this shift, so it cannot be changed or removed.",
+      "invalid_range": "The date range is not valid.",
+      "range_too_long": "The date range is too long."
+    },
+    "roster": {
+      "title": "Roster",
+      "previousWeek": "Previous week",
+      "nextWeek": "Next week",
+      "thisWeek": "This week",
+      "copyWeek": "Copy week",
+      "staff": "Staff",
+      "shiftCount": "{n} shifts",
+      "noStaff": "No staff belong to this branch yet. Assign them in Roles.",
+      "noTemplates": "No shift templates yet. Create them in",
+      "addShift": "Add shift",
+      "editShift": "Edit shift",
+      "removeShift": "Remove shift",
+      "template": "Template",
+      "custom": "Custom",
+      "break": "Break (min)",
+      "note": "Note",
+      "hasEntry": "Someone already clocked in on this shift, so only the note can change.",
+      "onLeaveWarning": "This person has approved leave during this shift.",
+      "copyTitle": "Copy the roster",
+      "copyHint": "Copies week {from} to week {to}.",
+      "copyFrom": "Copy from week (Monday)",
+      "copyOk": "Copy",
+      "overwrite": "Overwrite",
+      "overwriteHint": "Replaces shifts already in the target week (not yet clocked).",
+      "copyDone": "Copied {copied} shifts, skipped {skipped}.",
+      "errors": {
+        "times": "The time is not valid.",
+        "same": "Start and end must differ.",
+        "long": "A shift can last 16 hours at most.",
+        "break": "The break must be shorter than the shift.",
+        "monday": "The date must be a Monday."
+      }
+    },
+    "weekday": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    },
+    "leaveType": {
+      "annual": "Annual leave",
+      "sick": "Sick leave",
+      "unpaid": "Unpaid",
+      "other": "Other"
+    },
+    "leavePart": {
+      "full": "Full day",
+      "am": "Morning",
+      "pm": "Afternoon"
+    }
+  }
+}

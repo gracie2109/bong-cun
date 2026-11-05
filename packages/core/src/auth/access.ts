@@ -83,6 +83,8 @@ export const ADMIN_ROUTE_PERMISSIONS: Record<string, string> = {
   medicalReminders: "medical",
   medicalWard: "medical",
   medicalSettings: "medical",
+  attendanceRoster: "attendance",
+  attendanceSettings: "attendance",
   settings: "settings",
   permissions: "settings",
   permissionMatrix: "settings",

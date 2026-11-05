@@ -526,6 +526,9 @@
     "eyebrow": "Security & access"
   },
   "adminNav": {
+    "staff": "Staff",
+    "attendanceRoster": "Roster",
+    "attendanceSettings": "Attendance settings",
     "overview": "Overview",
     "dashboard": "Dashboard",
     "scheduling": "Scheduling",
