@@ -3,14 +3,18 @@ import { useQuery } from "@tanstack/vue-query";
 import { fetchLayout } from "@bongcun/supabase/dashboard";
 import { dashboardKeys } from "@/queries/keys";
 import { supabaseClient } from "@/lib/supabase";
+import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useAuthStore } from "@/stores";
 import type { DashboardDef } from "../kit/types";
 import { resolveLayout } from "./layoutCodec";
+import { defaultItemsFor } from "./roleDefaults";
 
 /** The saved layout of the signed-in person for a dashboard, or the dashboard's default. */
-export const useDashboardLayout = (dashboard: Ref<Pick<DashboardDef, "key" | "defaultItems"> | null>) => {
+export const useDashboardLayout = (dashboard: Ref<Pick<DashboardDef, "key" | "defaultItems" | "roleDefaults"> | null>) => {
   const auth = useAuthStore();
   const userId = computed(() => auth.currentUser?.id);
+  const { branches } = useCurrentBranch();
+  const holds = (permission: string) => branches.value.some((branch) => auth.canAt(permission, branch.id));
 
   const query = useQuery({
     queryKey: computed(() => dashboardKeys.layout(userId.value, dashboard.value?.key ?? "")),
@@ -19,7 +23,7 @@ export const useDashboardLayout = (dashboard: Ref<Pick<DashboardDef, "key" | "de
   });
 
   const resolved = computed(() =>
-    dashboard.value ? resolveLayout(query.data.value?.layout ?? null, dashboard.value) : null
+    dashboard.value ? resolveLayout(query.data.value?.layout ?? null, { defaultItems: defaultItemsFor(dashboard.value, holds) }) : null
   );
   return {
     items: computed(() => resolved.value?.items ?? []),

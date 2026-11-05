@@ -24,7 +24,7 @@ export const metricConfigSchema = z.object({
   /** KPI only: show the change against the period before. */
   compare: z.boolean().optional(),
   /** How the metric is drawn: a KPI card, a bar chart or a list. */
-  view: z.enum(["kpi", "barChart", "list"]).optional(),
+  view: z.enum(["kpi", "barChart", "lineChart", "list"]).optional(),
 });
 export type MetricConfig = z.infer<typeof metricConfigSchema>;
 

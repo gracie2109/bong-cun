@@ -27,6 +27,7 @@ const COMPONENTS = {
   onlineOrders: OnlineOrdersWidget,
   kpi: MetricWidget,
   barChart: MetricWidget,
+  lineChart: MetricWidget,
   list: MetricWidget,
 } as const satisfies Record<WidgetTypeKey, WidgetTypeDef["component"]>;
 

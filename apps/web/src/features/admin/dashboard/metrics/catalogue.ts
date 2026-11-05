@@ -28,7 +28,7 @@ export const METRIC_LIST: readonly MetricDef[] = [
   overview("revenue.grossProfit", "grossProfit"),
   {
     ...overview("revenue.series", "net", { params: { segment: SEGMENTS }, defaultRange: "last7" }),
-    shape: "series", views: ["barChart"], source: "series",
+    shape: "series", views: ["barChart", "lineChart"], source: "series",
   },
   {
     ...overview("revenue.topItems", "revenue", {
