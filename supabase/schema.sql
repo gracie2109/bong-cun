@@ -404,6 +404,39 @@ $$;
 
 ALTER FUNCTION "public"."add_medical_item"("p_visit" "uuid", "p" "jsonb") OWNER TO "postgres";
 
+
+CREATE OR REPLACE FUNCTION "public"."add_time_entry"("p_branch" "uuid", "p_user" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_id uuid;
+  v_row public.time_entries;
+begin
+  perform public.check_entry_edit(p_branch, p_user, 'UPDATE', p_reason);
+  if not exists (select 1 from public.staff_branches where user_id = p_user and branch_id = p_branch) then
+    raise exception 'this person does not work at the branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  perform public.check_entry_times(p_in, p_out);
+  perform public.check_entry_shift(p_assignment, p_branch, p_user, null);
+
+  begin
+    insert into public.time_entries (branch_id, user_id, user_name, assignment_id, check_in_at, check_out_at, in_source, out_source)
+    values (p_branch, p_user, coalesce(public.staff_display_name(p_user), ''), p_assignment, p_in, p_out, 'manager',
+            case when p_out is null then null else 'manager' end)
+    returning * into v_row;
+  exception when unique_violation then
+    raise exception 'this person is already clocked in' using errcode = 'P0001', hint = 'already_in';
+  end;
+  v_id := v_row.id;
+  perform public.log_time_entry_change(v_id, p_branch, p_user, 'create', null, public.time_entry_snapshot(v_row), p_reason);
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."add_time_entry"("p_branch" "uuid", "p_user" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") OWNER TO "postgres";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
@@ -663,9 +696,9 @@ ALTER FUNCTION "public"."assign_shift"("p_branch" "uuid", "p_user" "uuid", "p_da
 
 
 CREATE OR REPLACE FUNCTION "public"."assignment_has_entry"("p_assignment" "uuid") RETURNS boolean
-    LANGUAGE "sql" STABLE
+    LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
-    AS $$ select false; $$;
+    AS $$ select exists (select 1 from public.time_entries where assignment_id = p_assignment); $$;
 
 
 ALTER FUNCTION "public"."assignment_has_entry"("p_assignment" "uuid") OWNER TO "postgres";
@@ -698,6 +731,67 @@ $$;
 
 
 ALTER FUNCTION "public"."attendance_branch_ids"("p_branch" "uuid", "p_method" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."attendance_rows"("p_branch_ids" "uuid"[], "p_from" "date", "p_to" "date", "p_user" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("branch_id" "uuid", "user_id" "uuid", "user_name" "text", "work_date" "date", "assignment_id" "uuid", "entry_id" "uuid", "shift_name" "text", "start_at" timestamp with time zone, "end_at" timestamp with time zone, "check_in_at" timestamp with time zone, "check_out_at" timestamp with time zone, "scheduled_minutes" integer, "worked_minutes" integer, "late_minutes" integer, "early_minutes" integer, "overtime_minutes" integer, "status" "text", "leave_type" "text", "review_reason" "text", "reviewed" boolean)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  with base as (
+    select a.branch_id, a.user_id, a.work_date, a.id as assignment_id, a.name as shift_name, a.start_at, a.end_at,
+           a.break_minutes, e.id as entry_id, e.check_in_at, e.check_out_at, e.review_reason, e.reviewed_at
+    from public.shift_assignments a
+    left join public.time_entries e on e.assignment_id = a.id
+    where a.branch_id = any (p_branch_ids) and a.work_date between p_from and p_to
+      and (p_user is null or a.user_id = p_user)
+    union all
+    select e.branch_id, e.user_id, e.work_date, null, null, null, null, 0,
+           e.id, e.check_in_at, e.check_out_at, e.review_reason, e.reviewed_at
+    from public.time_entries e
+    where e.assignment_id is null and e.branch_id = any (p_branch_ids) and e.work_date between p_from and p_to
+      and (p_user is null or e.user_id = p_user)
+  ), step as (
+    select b.*, public.attendance_rules_raw(b.branch_id) as rules,
+           public.leave_type_on(b.user_id, coalesce(b.start_at, b.check_in_at)) as leave_type
+    from base b
+  ), calc as (
+    select s.*,
+      case when s.start_at is null then 0 else greatest(0, public.minutes_between(s.start_at, s.end_at) - s.break_minutes) end as scheduled_minutes,
+      case when s.check_out_at is null then 0
+           else greatest(0, public.minutes_between(s.check_in_at, s.check_out_at) - s.break_minutes) end as worked_minutes,
+      case when s.start_at is null or s.check_in_at is null then 0
+           when public.minutes_between(s.start_at, s.check_in_at) > (s.rules ->> 'late_grace_minutes')::int
+             then public.minutes_between(s.start_at, s.check_in_at) else 0 end as late_minutes,
+      case when s.end_at is null or s.check_out_at is null or s.review_reason = 'missing_checkout' then 0
+           when public.minutes_between(s.check_out_at, s.end_at) > (s.rules ->> 'early_grace_minutes')::int
+             then public.minutes_between(s.check_out_at, s.end_at) else 0 end as early_minutes,
+      case when s.end_at is null or s.check_out_at is null or s.review_reason = 'missing_checkout' then 0
+           when public.minutes_between(s.end_at, s.check_out_at) >= greatest(1, (s.rules ->> 'overtime_min_minutes')::int)
+             then public.minutes_between(s.end_at, s.check_out_at) else 0 end as overtime_minutes
+    from step s
+  )
+  select c.branch_id, c.user_id, public.staff_display_name(c.user_id), c.work_date, c.assignment_id, c.entry_id,
+         c.shift_name, c.start_at, c.end_at, c.check_in_at, c.check_out_at,
+         c.scheduled_minutes, c.worked_minutes, c.late_minutes, c.early_minutes, c.overtime_minutes,
+         case
+           when c.leave_type is not null then 'leave'
+           when c.review_reason = 'missing_checkout' then 'missing_checkout'
+           when c.entry_id is not null and c.check_out_at is null then 'working'
+           when c.entry_id is not null and c.assignment_id is null then 'unscheduled'
+           when c.entry_id is not null and c.late_minutes > 0 and c.early_minutes > 0 then 'late_early'
+           when c.entry_id is not null and c.late_minutes > 0 then 'late'
+           when c.entry_id is not null and c.early_minutes > 0 then 'early'
+           when c.entry_id is not null then 'present'
+           when c.end_at < now() then 'absent'
+           when c.start_at <= now() then 'not_in'
+           else 'upcoming'
+         end,
+         c.leave_type, c.review_reason, c.reviewed_at is not null
+  from calc c;
+$$;
+
+
+ALTER FUNCTION "public"."attendance_rows"("p_branch_ids" "uuid"[], "p_from" "date", "p_to" "date", "p_user" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."attendance_rules"("p_branch" "uuid") RETURNS "jsonb"
@@ -734,6 +828,46 @@ $$;
 
 
 ALTER FUNCTION "public"."attendance_rules_raw"("p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."attendance_today"("p_branch" "uuid", "p_date" "date" DEFAULT NULL::"date") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_date date := coalesce(p_date, public.boarding_local_date(now()));
+begin
+  if not public.can_attendance('VIEW', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+
+  return jsonb_build_object(
+    'date', v_date,
+    'staff', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'user_id', sb.user_id, 'name', public.staff_display_name(sb.user_id), 'role', sb.role, 'photo_url', u.photo_url)
+        order by public.staff_display_name(sb.user_id))
+      from public.staff_branches sb join public.users u on u.id = sb.user_id
+      where sb.branch_id = p_branch), '[]'::jsonb),
+    'rows', coalesce((
+      select jsonb_agg(to_jsonb(r) order by r.start_at nulls last, r.check_in_at)
+      from public.attendance_rows(array[p_branch], v_date, v_date) r), '[]'::jsonb),
+    'leaves', public.branch_leaves_on(p_branch, v_date),
+    'review', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'entry_id', e.id, 'user_id', e.user_id, 'user_name', e.user_name, 'work_date', e.work_date,
+        'check_in_at', e.check_in_at, 'check_out_at', e.check_out_at, 'review_reason', e.review_reason)
+        order by e.check_in_at desc)
+      from (select * from public.time_entries
+            where branch_id = p_branch and review_reason is not null and reviewed_at is null
+              and work_date >= v_date - 30
+            order by check_in_at desc limit 50) e), '[]'::jsonb)
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."attendance_today"("p_branch" "uuid", "p_date" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."auto_cancel_expired_bookings"("p_grace_minutes" integer DEFAULT 60) RETURNS "jsonb"
@@ -1954,6 +2088,15 @@ $$;
 ALTER FUNCTION "public"."book_my_appointment"("p" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$ select '[]'::jsonb; $$;
+
+
+ALTER FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" "uuid"[]) RETURNS TABLE("product_id" "uuid", "price" numeric)
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
@@ -2498,6 +2641,64 @@ $$;
 ALTER FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."check_entry_edit"("p_branch" "uuid", "p_user" "uuid", "p_method" "text", "p_reason" "text") RETURNS "void"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not public.can_attendance(p_method, p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if length(btrim(coalesce(p_reason, ''))) = 0 then
+    raise exception 'a reason is required' using errcode = '22023', hint = 'reason_required';
+  end if;
+  if p_user = (select auth.uid()) and not coalesce((select public.is_super_admin()), false) then
+    raise exception 'you cannot change your own time entry' using errcode = 'P0001', hint = 'own_entry';
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."check_entry_edit"("p_branch" "uuid", "p_user" "uuid", "p_method" "text", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."check_entry_shift"("p_assignment" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_entry" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_assignment is null then return; end if;
+  if not exists (select 1 from public.shift_assignments where id = p_assignment and branch_id = p_branch and user_id = p_user) then
+    raise exception 'shift not found' using errcode = 'P0001', hint = 'not_found';
+  end if;
+  if exists (select 1 from public.time_entries where assignment_id = p_assignment and id is distinct from p_entry) then
+    raise exception 'this shift already has a clock-in' using errcode = 'P0001', hint = 'has_entry';
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."check_entry_shift"("p_assignment" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_entry" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."check_entry_times"("p_in" timestamp with time zone, "p_out" timestamp with time zone) RETURNS "void"
+    LANGUAGE "plpgsql" STABLE
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_in is null or (p_out is not null and p_out < p_in) or p_in > now() or (p_out is not null and p_out > now()) then
+    raise exception 'times must be in the past and in order' using errcode = '22023', hint = 'future_time';
+  end if;
+  if p_out is not null and p_out - p_in > interval '24 hours' then
+    raise exception 'an entry lasts 24 hours at most' using errcode = '22023', hint = 'bad_input';
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."check_entry_times"("p_in" timestamp with time zone, "p_out" timestamp with time zone) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."check_in_appointment"("p_id" "uuid", "p_weights" "jsonb" DEFAULT '[]'::"jsonb") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -2853,6 +3054,162 @@ $$;
 ALTER FUNCTION "public"."check_out_boarding"("p_id" "uuid", "p_returned" "uuid"[]) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text" DEFAULT NULL::"text", "p_unscheduled_ok" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user   uuid := (select auth.uid());
+  v_rules  jsonb;
+  v_shift  public.shift_assignments;
+  v_id     uuid;
+  v_late   integer := 0;
+  v_start  timestamptz;
+begin
+  if v_user is null then
+    raise exception 'not signed in' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if not public.is_branch_staff(p_branch) or not exists (select 1 from public.branches where id = p_branch and is_active) then
+    raise exception 'you do not work at this branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+
+  perform public.close_stale_entries(v_user);
+  if exists (select 1 from public.time_entries where user_id = v_user and check_out_at is null) then
+    raise exception 'already clocked in' using errcode = 'P0001', hint = 'already_in';
+  end if;
+
+  v_rules := public.attendance_rules_raw(p_branch);
+  select a.* into v_shift
+  from public.shift_assignments a
+  where a.user_id = v_user and a.branch_id = p_branch
+    and now() >= a.start_at - make_interval(mins => (v_rules ->> 'checkin_early_minutes')::int)
+    and now() < a.end_at
+    and not exists (select 1 from public.time_entries e where e.assignment_id = a.id)
+  order by a.start_at
+  limit 1;
+
+  if v_shift.id is null then
+    if not (v_rules ->> 'allow_unscheduled')::boolean then
+      raise exception 'no shift is scheduled now' using errcode = 'P0001', hint = 'no_shift';
+    end if;
+    if not coalesce(p_unscheduled_ok, false) then
+      raise exception 'no shift is scheduled now' using errcode = 'P0001', hint = 'confirm_unscheduled';
+    end if;
+  else
+    v_late := greatest(0, public.minutes_between(v_shift.start_at, now()));
+    if v_late <= (v_rules ->> 'late_grace_minutes')::int then v_late := 0; end if;
+  end if;
+  v_start := coalesce(v_shift.start_at, now());
+
+  begin
+    insert into public.time_entries (branch_id, user_id, user_name, assignment_id, check_in_at, in_source, review_reason, note)
+    values (p_branch, v_user, coalesce(public.staff_display_name(v_user), ''), v_shift.id, now(), 'self',
+            case when v_shift.id is null then 'unscheduled' end, nullif(btrim(p_note), ''))
+    returning id into v_id;
+  exception when unique_violation then
+    raise exception 'already clocked in' using errcode = 'P0001', hint = 'already_in';
+  end;
+
+  return jsonb_strip_nulls(jsonb_build_object(
+    'entry_id', v_id, 'assignment_id', v_shift.id, 'shift_name', v_shift.name, 'late_minutes', v_late,
+    'warning', case when public.shift_on_leave(v_user, v_start) then 'on_leave' end));
+end;
+$$;
+
+
+ALTER FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."clock_out"("p_note" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user  uuid := (select auth.uid());
+  v_entry public.time_entries;
+  v_shift public.shift_assignments;
+  v_rules jsonb;
+  v_worked integer;
+  v_early  integer := 0;
+  v_over   integer := 0;
+begin
+  if v_user is null then
+    raise exception 'not signed in' using errcode = '42501', hint = 'forbidden';
+  end if;
+  perform public.close_stale_entries(v_user);
+
+  select * into v_entry from public.time_entries where user_id = v_user and check_out_at is null for update;
+  if not found then
+    raise exception 'not clocked in' using errcode = 'P0001', hint = 'not_in';
+  end if;
+
+  update public.time_entries
+  set check_out_at = greatest(now(), check_in_at), out_source = 'self',
+      note = coalesce(nullif(btrim(p_note), ''), note)
+  where id = v_entry.id
+  returning * into v_entry;
+
+  v_rules := public.attendance_rules_raw(v_entry.branch_id);
+  select * into v_shift from public.shift_assignments where id = v_entry.assignment_id;
+  v_worked := greatest(0, public.minutes_between(v_entry.check_in_at, v_entry.check_out_at) - coalesce(v_shift.break_minutes, 0));
+  if v_shift.id is not null then
+    v_early := greatest(0, public.minutes_between(v_entry.check_out_at, v_shift.end_at));
+    if v_early <= (v_rules ->> 'early_grace_minutes')::int then v_early := 0; end if;
+    v_over := greatest(0, public.minutes_between(v_shift.end_at, v_entry.check_out_at));
+    if v_over < (v_rules ->> 'overtime_min_minutes')::int then v_over := 0; end if;
+  end if;
+
+  return jsonb_build_object('entry_id', v_entry.id, 'worked_minutes', v_worked,
+                            'early_minutes', v_early, 'overtime_minutes', v_over);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."clock_out"("p_note" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."clock_status"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user uuid := (select auth.uid());
+begin
+  if v_user is null then
+    raise exception 'not signed in' using errcode = '42501', hint = 'forbidden';
+  end if;
+  perform public.close_stale_entries(v_user);
+
+  return jsonb_build_object(
+    'now', now(),
+    'branches', coalesce((
+      select jsonb_agg(jsonb_build_object('id', b.id, 'code', b.code, 'name', b.name) order by b.name)
+      from public.staff_branches sb join public.branches b on b.id = sb.branch_id
+      where sb.user_id = v_user and b.is_active), '[]'::jsonb),
+    'open_entry', (
+      select jsonb_build_object(
+        'id', e.id, 'branch_id', e.branch_id, 'branch_name', b.name, 'check_in_at', e.check_in_at,
+        'assignment_id', e.assignment_id, 'shift_name', a.name, 'shift_end_at', a.end_at)
+      from public.time_entries e
+      join public.branches b on b.id = e.branch_id
+      left join public.shift_assignments a on a.id = e.assignment_id
+      where e.user_id = v_user and e.check_out_at is null),
+    'shifts', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', a.id, 'branch_id', a.branch_id, 'branch_name', b.name, 'name', a.name,
+        'start_at', a.start_at, 'end_at', a.end_at) order by a.start_at)
+      from public.shift_assignments a
+      join public.branches b on b.id = a.branch_id
+      where a.user_id = v_user and a.end_at > now() and a.start_at < now() + interval '24 hours'
+        and not exists (select 1 from public.time_entries e where e.assignment_id = a.id)), '[]'::jsonb)
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."clock_status"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."close_cash_shift"("p_shift" "uuid", "p_counted_cash" numeric, "p_note" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -2896,6 +3253,37 @@ $$;
 
 
 ALTER FUNCTION "public"."close_cash_shift"("p_shift" "uuid", "p_counted_cash" numeric, "p_note" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."close_stale_entries"("p_user" "uuid" DEFAULT NULL::"uuid") RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  r   public.time_entries;
+  v_n integer := 0;
+begin
+  for r in
+    select e.* from public.time_entries e
+    where e.check_out_at is null
+      and (p_user is null or e.user_id = p_user)
+      and e.check_in_at < now() - make_interval(hours => (public.attendance_rules_raw(e.branch_id) ->> 'review_after_hours')::int)
+    for update skip locked
+  loop
+    update public.time_entries
+    set check_out_at = check_in_at, out_source = 'auto', review_reason = 'missing_checkout'
+    where id = r.id;
+    insert into public.time_entry_changes (entry_id, branch_id, user_id, action, "before", "after")
+    values (r.id, r.branch_id, r.user_id, 'auto_close', public.time_entry_snapshot(r),
+            jsonb_build_object('check_out_at', r.check_in_at, 'review_reason', 'missing_checkout'));
+    v_n := v_n + 1;
+  end loop;
+  return v_n;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."close_stale_entries"("p_user" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."confirm_shop_order"("p_id" "uuid", "p_shipping_fee" numeric DEFAULT NULL::numeric) RETURNS "jsonb"
@@ -3820,6 +4208,28 @@ $$;
 ALTER FUNCTION "public"."delete_product_groups"("p_groups" "uuid"[]) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."delete_time_entry"("p_id" "uuid", "p_reason" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_old public.time_entries;
+begin
+  select * into v_old from public.time_entries where id = p_id for update;
+  if not found then
+    raise exception 'time entry not found' using errcode = 'P0001', hint = 'not_found';
+  end if;
+  perform public.check_entry_edit(v_old.branch_id, v_old.user_id, 'DELETE', p_reason);
+  delete from public.time_entries where id = p_id;
+  perform public.log_time_entry_change(p_id, v_old.branch_id, v_old.user_id, 'delete',
+                                       public.time_entry_snapshot(v_old), null, p_reason);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."delete_time_entry"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."deliver_shop_order"("p_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -3898,6 +4308,41 @@ $$;
 
 
 ALTER FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_old public.time_entries;
+  v_new public.time_entries;
+begin
+  select * into v_old from public.time_entries where id = p_id for update;
+  if not found then
+    raise exception 'time entry not found' using errcode = 'P0001', hint = 'not_found';
+  end if;
+  perform public.check_entry_edit(v_old.branch_id, v_old.user_id, 'UPDATE', p_reason);
+  perform public.check_entry_times(p_in, p_out);
+  perform public.check_entry_shift(p_assignment, v_old.branch_id, v_old.user_id, p_id);
+
+  begin
+    update public.time_entries
+    set check_in_at = p_in, check_out_at = p_out, assignment_id = p_assignment,
+        out_source = case when p_out is null then null else 'manager' end,
+        review_reason = null, reviewed_by = null, reviewed_at = null
+    where id = p_id
+    returning * into v_new;
+  exception when unique_violation then
+    raise exception 'this person is already clocked in' using errcode = 'P0001', hint = 'already_in';
+  end;
+  perform public.log_time_entry_change(p_id, v_old.branch_id, v_old.user_id, 'update',
+                                       public.time_entry_snapshot(v_old), public.time_entry_snapshot(v_new), p_reason);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."expired_booking_reason"() RETURNS "text"
@@ -5851,6 +6296,15 @@ $$;
 ALTER FUNCTION "public"."kennel_night_price"("p_type" "uuid", "p_branch" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) RETURNS "text"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$ select null::text; $$;
+
+
+ALTER FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."link_customer_account"("p_customer" "uuid", "p_user" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -6736,6 +7190,19 @@ $$;
 ALTER FUNCTION "public"."location_unit"("p_code" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."log_time_entry_change"("p_entry" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") RETURNS "void"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  insert into public.time_entry_changes (entry_id, branch_id, user_id, action, "before", "after", reason, changed_by, changed_by_name)
+  values (p_entry, p_branch, p_user, p_action, p_before, p_after, nullif(btrim(p_reason), ''),
+          (select auth.uid()), case when (select auth.uid()) is null then null else public.staff_display_name((select auth.uid())) end);
+$$;
+
+
+ALTER FUNCTION "public"."log_time_entry_change"("p_entry" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -6763,6 +7230,28 @@ $$;
 
 
 ALTER FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."mark_entry_reviewed"("p_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_branch uuid;
+begin
+  select branch_id into v_branch from public.time_entries where id = p_id;
+  if v_branch is null then
+    raise exception 'time entry not found' using errcode = 'P0001', hint = 'not_found';
+  end if;
+  if not public.can_attendance('UPDATE', v_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  update public.time_entries set reviewed_by = (select auth.uid()), reviewed_at = now() where id = p_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."mark_entry_reviewed"("p_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."mark_medical_no_show"("p_id" "uuid") RETURNS "void"
@@ -7436,6 +7925,15 @@ $$;
 ALTER FUNCTION "public"."medical_visits_lock"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."minutes_between"("p_from" timestamp with time zone, "p_to" timestamp with time zone) RETURNS integer
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$ select floor(extract(epoch from (p_to - p_from)) / 60)::int; $$;
+
+
+ALTER FUNCTION "public"."minutes_between"("p_from" timestamp with time zone, "p_to" timestamp with time zone) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."move_boarding_pet"("p_stay_pet" "uuid", "p_kennel" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -7878,6 +8376,15 @@ $$;
 ALTER FUNCTION "public"."my_customer_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$ select '[]'::jsonb; $$;
+
+
+ALTER FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."my_permissions"("p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("branch_id" "uuid", "role" "text", "permission" "text", "methods" "text"[])
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -8092,6 +8599,47 @@ $$;
 
 
 ALTER FUNCTION "public"."my_profile"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."my_schedule"("p_from" "date", "p_to" "date") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_user uuid := (select auth.uid());
+begin
+  if v_user is null then
+    raise exception 'not signed in' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_from is null or p_to is null or p_to < p_from then
+    raise exception 'invalid date range' using errcode = '22023', hint = 'invalid_range';
+  end if;
+  if p_to - p_from + 1 > 93 then
+    raise exception 'date range is longer than 93 days' using errcode = '22023', hint = 'range_too_long';
+  end if;
+
+  return jsonb_build_object(
+    'assignments', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', a.id, 'branch_id', a.branch_id, 'branch_name', b.name, 'work_date', a.work_date, 'name', a.name,
+        'start_at', a.start_at, 'end_at', a.end_at, 'break_minutes', a.break_minutes, 'note', a.note,
+        'has_entry', public.assignment_has_entry(a.id)) order by a.start_at)
+      from public.shift_assignments a join public.branches b on b.id = a.branch_id
+      where a.user_id = v_user and a.work_date between p_from and p_to), '[]'::jsonb),
+    'entries', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', e.id, 'branch_id', e.branch_id, 'branch_name', b.name, 'work_date', e.work_date,
+        'assignment_id', e.assignment_id, 'check_in_at', e.check_in_at, 'check_out_at', e.check_out_at,
+        'review_reason', e.review_reason) order by e.check_in_at)
+      from public.time_entries e join public.branches b on b.id = e.branch_id
+      where e.user_id = v_user and e.work_date between p_from and p_to), '[]'::jsonb),
+    'leaves', public.my_leaves(p_from, p_to)
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."my_schedule"("p_from" "date", "p_to" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."my_shop_order"("p_code" "text") RETURNS "jsonb"
@@ -13114,7 +13662,7 @@ ALTER FUNCTION "public"."shift_minutes"("p_start" time without time zone, "p_end
 CREATE OR REPLACE FUNCTION "public"."shift_on_leave"("p_user" "uuid", "p_start_at" timestamp with time zone) RETURNS boolean
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
-    AS $$ select false; $$;
+    AS $$ select public.leave_type_on(p_user, p_start_at) is not null; $$;
 
 
 ALTER FUNCTION "public"."shift_on_leave"("p_user" "uuid", "p_start_at" timestamp with time zone) OWNER TO "postgres";
@@ -14485,6 +15033,81 @@ $$;
 
 
 ALTER FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_product" "uuid", "p_qty" numeric, "p_lot" "uuid", "p_invoice" "uuid", "p_invoice_line" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."time_entries_set_work_date"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+begin
+  new.work_date := public.boarding_local_date(new.check_in_at);
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."time_entries_set_work_date"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."time_entry_history"("p_id" "uuid") RETURNS SETOF "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  return query
+    select jsonb_build_object(
+      'id', c.id, 'action', c.action, 'before', c."before", 'after', c."after", 'reason', c.reason,
+      'changed_by_name', c.changed_by_name, 'changed_at', c.changed_at)
+    from public.time_entry_changes c
+    where c.entry_id = p_id
+      and (c.user_id = (select auth.uid()) or public.can_attendance('VIEW', c.branch_id))
+    order by c.changed_at desc, c.id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."time_entry_history"("p_id" "uuid") OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."time_entries" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "user_name" "text" NOT NULL,
+    "assignment_id" "uuid",
+    "work_date" "date" NOT NULL,
+    "check_in_at" timestamp with time zone NOT NULL,
+    "check_out_at" timestamp with time zone,
+    "in_source" "text" DEFAULT 'self'::"text" NOT NULL,
+    "out_source" "text",
+    "review_reason" "text",
+    "reviewed_by" "uuid",
+    "reviewed_at" timestamp with time zone,
+    "note" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "time_entries_in_source_check" CHECK (("in_source" = ANY (ARRAY['self'::"text", 'manager'::"text", 'auto'::"text"]))),
+    CONSTRAINT "time_entries_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 300))),
+    CONSTRAINT "time_entries_out_after_in" CHECK ((("check_out_at" IS NULL) OR ("check_out_at" >= "check_in_at"))),
+    CONSTRAINT "time_entries_out_source_check" CHECK ((("out_source" IS NULL) OR ("out_source" = ANY (ARRAY['self'::"text", 'manager'::"text", 'auto'::"text"])))),
+    CONSTRAINT "time_entries_review_reason_check" CHECK ((("review_reason" IS NULL) OR ("review_reason" = ANY (ARRAY['missing_checkout'::"text", 'unscheduled'::"text"])))),
+    CONSTRAINT "time_entries_within_a_day" CHECK ((("check_out_at" IS NULL) OR (("check_out_at" - "check_in_at") <= '24:00:00'::interval)))
+);
+
+
+ALTER TABLE "public"."time_entries" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") RETURNS "jsonb"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+  select jsonb_build_object('check_in_at', e.check_in_at, 'check_out_at', e.check_out_at,
+                            'assignment_id', e.assignment_id, 'review_reason', e.review_reason, 'note', e.note);
+$$;
+
+
+ALTER FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") RETURNS "jsonb"
@@ -16370,6 +16993,26 @@ CREATE TABLE IF NOT EXISTS "public"."suppliers" (
 ALTER TABLE "public"."suppliers" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."time_entry_changes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "entry_id" "uuid" NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "action" "text" NOT NULL,
+    "before" "jsonb",
+    "after" "jsonb",
+    "reason" "text",
+    "changed_by" "uuid",
+    "changed_by_name" "text",
+    "changed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "time_entry_changes_action_check" CHECK (("action" = ANY (ARRAY['create'::"text", 'update'::"text", 'delete'::"text", 'auto_close'::"text"]))),
+    CONSTRAINT "time_entry_changes_reason" CHECK ((("action" = 'auto_close'::"text") OR ("length"("btrim"(COALESCE("reason", ''::"text"))) > 0)))
+);
+
+
+ALTER TABLE "public"."time_entry_changes" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
     "email" "text",
@@ -17032,6 +17675,16 @@ ALTER TABLE ONLY "public"."suppliers"
 
 
 
+ALTER TABLE ONLY "public"."time_entries"
+    ADD CONSTRAINT "time_entries_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."time_entry_changes"
+    ADD CONSTRAINT "time_entry_changes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_display_name_key" UNIQUE ("display_name");
 
@@ -17571,6 +18224,30 @@ CREATE INDEX "stock_movements_return_reason_idx" ON "public"."stock_movements" U
 
 
 
+CREATE INDEX "time_entries_branch_date_idx" ON "public"."time_entries" USING "btree" ("branch_id", "work_date");
+
+
+
+CREATE UNIQUE INDEX "time_entries_one_open_idx" ON "public"."time_entries" USING "btree" ("user_id") WHERE ("check_out_at" IS NULL);
+
+
+
+CREATE UNIQUE INDEX "time_entries_one_per_shift_idx" ON "public"."time_entries" USING "btree" ("assignment_id") WHERE ("assignment_id" IS NOT NULL);
+
+
+
+CREATE INDEX "time_entries_user_date_idx" ON "public"."time_entries" USING "btree" ("user_id", "work_date");
+
+
+
+CREATE INDEX "time_entry_changes_branch_idx" ON "public"."time_entry_changes" USING "btree" ("branch_id", "changed_at");
+
+
+
+CREATE INDEX "time_entry_changes_entry_idx" ON "public"."time_entry_changes" USING "btree" ("entry_id", "changed_at");
+
+
+
 CREATE INDEX "users_role_idx" ON "public"."users" USING "btree" ("role");
 
 
@@ -17836,6 +18513,14 @@ CREATE OR REPLACE TRIGGER "shop_orders_throttle" BEFORE INSERT ON "public"."shop
 
 
 CREATE OR REPLACE TRIGGER "take_stock" AFTER INSERT ON "public"."invoice_lines" FOR EACH ROW WHEN (("new"."item_type" = 'product'::"text")) EXECUTE FUNCTION "public"."invoice_line_take_stock"();
+
+
+
+CREATE OR REPLACE TRIGGER "time_entries_updated_at" BEFORE UPDATE ON "public"."time_entries" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "time_entries_work_date" BEFORE INSERT OR UPDATE OF "check_in_at" ON "public"."time_entries" FOR EACH ROW EXECUTE FUNCTION "public"."time_entries_set_work_date"();
 
 
 
@@ -18816,6 +19501,31 @@ ALTER TABLE ONLY "public"."stock_thresholds"
 
 ALTER TABLE ONLY "public"."stock_thresholds"
     ADD CONSTRAINT "stock_thresholds_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."time_entries"
+    ADD CONSTRAINT "time_entries_assignment_id_fkey" FOREIGN KEY ("assignment_id") REFERENCES "public"."shift_assignments"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."time_entries"
+    ADD CONSTRAINT "time_entries_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."time_entries"
+    ADD CONSTRAINT "time_entries_reviewed_by_fkey" FOREIGN KEY ("reviewed_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."time_entries"
+    ADD CONSTRAINT "time_entries_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."time_entry_changes"
+    ADD CONSTRAINT "time_entry_changes_changed_by_fkey" FOREIGN KEY ("changed_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
 
 
 
@@ -20011,6 +20721,20 @@ CREATE POLICY "super admin update" ON "public"."staff_branches" FOR UPDATE TO "a
 ALTER TABLE "public"."suppliers" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "time entries read" ON "public"."time_entries" FOR SELECT TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) OR ( SELECT "public"."can_attendance"('VIEW'::"text", "time_entries"."branch_id") AS "can_attendance")));
+
+
+
+CREATE POLICY "time entry changes read" ON "public"."time_entry_changes" FOR SELECT TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) OR ( SELECT "public"."can_attendance"('VIEW'::"text", "time_entry_changes"."branch_id") AS "can_attendance")));
+
+
+
+ALTER TABLE "public"."time_entries" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."time_entry_changes" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
 
 
@@ -20073,6 +20797,12 @@ GRANT ALL ON FUNCTION "public"."add_medical_item"("p_visit" "uuid", "p" "jsonb")
 
 
 
+REVOKE ALL ON FUNCTION "public"."add_time_entry"("p_branch" "uuid", "p_user" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."add_time_entry"("p_branch" "uuid", "p_user" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."add_time_entry"("p_branch" "uuid", "p_user" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") TO "service_role";
+
+
+
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."customer_addresses" TO "authenticated";
 GRANT ALL ON TABLE "public"."customer_addresses" TO "service_role";
 
@@ -20111,6 +20841,11 @@ GRANT ALL ON FUNCTION "public"."attendance_branch_ids"("p_branch" "uuid", "p_met
 
 
 
+REVOKE ALL ON FUNCTION "public"."attendance_rows"("p_branch_ids" "uuid"[], "p_from" "date", "p_to" "date", "p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."attendance_rows"("p_branch_ids" "uuid"[], "p_from" "date", "p_to" "date", "p_user" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."attendance_rules"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."attendance_rules"("p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."attendance_rules"("p_branch" "uuid") TO "service_role";
@@ -20119,6 +20854,12 @@ GRANT ALL ON FUNCTION "public"."attendance_rules"("p_branch" "uuid") TO "service
 
 REVOKE ALL ON FUNCTION "public"."attendance_rules_raw"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."attendance_rules_raw"("p_branch" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."attendance_today"("p_branch" "uuid", "p_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."attendance_today"("p_branch" "uuid", "p_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."attendance_today"("p_branch" "uuid", "p_date" "date") TO "service_role";
 
 
 
@@ -20231,6 +20972,11 @@ GRANT ALL ON FUNCTION "public"."boarding_timeline"("p_branch" "uuid", "p_from" "
 REVOKE ALL ON FUNCTION "public"."book_my_appointment"("p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."book_my_appointment"("p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."book_my_appointment"("p" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."branch_leaves_on"("p_branch" "uuid", "p_date" "date") TO "service_role";
 
 
 
@@ -20367,6 +21113,21 @@ GRANT ALL ON FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") TO "servic
 
 
 
+REVOKE ALL ON FUNCTION "public"."check_entry_edit"("p_branch" "uuid", "p_user" "uuid", "p_method" "text", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."check_entry_edit"("p_branch" "uuid", "p_user" "uuid", "p_method" "text", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."check_entry_shift"("p_assignment" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_entry" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."check_entry_shift"("p_assignment" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_entry" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."check_entry_times"("p_in" timestamp with time zone, "p_out" timestamp with time zone) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."check_entry_times"("p_in" timestamp with time zone, "p_out" timestamp with time zone) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."check_in_appointment"("p_id" "uuid", "p_weights" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."check_in_appointment"("p_id" "uuid", "p_weights" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."check_in_appointment"("p_id" "uuid", "p_weights" "jsonb") TO "service_role";
@@ -20391,9 +21152,32 @@ GRANT ALL ON FUNCTION "public"."check_out_boarding"("p_id" "uuid", "p_returned" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."clock_out"("p_note" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."clock_out"("p_note" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."clock_out"("p_note" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."clock_status"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."clock_status"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."clock_status"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."close_cash_shift"("p_shift" "uuid", "p_counted_cash" numeric, "p_note" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."close_cash_shift"("p_shift" "uuid", "p_counted_cash" numeric, "p_note" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."close_cash_shift"("p_shift" "uuid", "p_counted_cash" numeric, "p_note" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."close_stale_entries"("p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."close_stale_entries"("p_user" "uuid") TO "service_role";
 
 
 
@@ -20475,6 +21259,12 @@ GRANT ALL ON FUNCTION "public"."delete_product_groups"("p_groups" "uuid"[]) TO "
 
 
 
+REVOKE ALL ON FUNCTION "public"."delete_time_entry"("p_id" "uuid", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."delete_time_entry"("p_id" "uuid", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."delete_time_entry"("p_id" "uuid", "p_reason" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") TO "service_role";
@@ -20484,6 +21274,12 @@ GRANT ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") TO "service_r
 REVOKE ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") TO "service_role";
 
 
 
@@ -20749,6 +21545,11 @@ GRANT ALL ON FUNCTION "public"."kennel_night_price"("p_type" "uuid", "p_branch" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."leave_type_on"("p_user" "uuid", "p_start_at" timestamp with time zone) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."link_customer_account"("p_customer" "uuid", "p_user" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."link_customer_account"("p_customer" "uuid", "p_user" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."link_customer_account"("p_customer" "uuid", "p_user" "uuid") TO "service_role";
@@ -20883,9 +21684,20 @@ GRANT ALL ON FUNCTION "public"."location_unit"("p_code" "text") TO "service_role
 
 
 
+REVOKE ALL ON FUNCTION "public"."log_time_entry_change"("p_entry" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."log_time_entry_change"("p_entry" "uuid", "p_branch" "uuid", "p_user" "uuid", "p_action" "text", "p_before" "jsonb", "p_after" "jsonb", "p_reason" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mark_boarding_no_show"("p_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."mark_entry_reviewed"("p_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."mark_entry_reviewed"("p_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."mark_entry_reviewed"("p_id" "uuid") TO "service_role";
 
 
 
@@ -21012,6 +21824,11 @@ GRANT ALL ON FUNCTION "public"."medical_visits_lock"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."minutes_between"("p_from" timestamp with time zone, "p_to" timestamp with time zone) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."minutes_between"("p_from" timestamp with time zone, "p_to" timestamp with time zone) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."move_boarding_pet"("p_stay_pet" "uuid", "p_kennel" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."move_boarding_pet"("p_stay_pet" "uuid", "p_kennel" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."move_boarding_pet"("p_stay_pet" "uuid", "p_kennel" "uuid") TO "service_role";
@@ -21069,6 +21886,11 @@ GRANT ALL ON FUNCTION "public"."my_customer_id"() TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") TO "service_role";
@@ -21090,6 +21912,12 @@ GRANT ALL ON FUNCTION "public"."my_pets"() TO "service_role";
 REVOKE ALL ON FUNCTION "public"."my_profile"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_profile"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."my_profile"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."my_schedule"("p_from" "date", "p_to" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_schedule"("p_from" "date", "p_to" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."my_schedule"("p_from" "date", "p_to" "date") TO "service_role";
 
 
 
@@ -21842,6 +22670,28 @@ GRANT ALL ON FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_prod
 
 
 
+GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "anon";
+GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."time_entry_history"("p_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."time_entry_history"("p_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."time_entry_history"("p_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."time_entries" TO "service_role";
+GRANT SELECT ON TABLE "public"."time_entries" TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "service_role";
@@ -22293,6 +23143,11 @@ GRANT ALL ON TABLE "public"."stock_thresholds" TO "service_role";
 
 GRANT SELECT,INSERT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "public"."suppliers" TO "authenticated";
 GRANT ALL ON TABLE "public"."suppliers" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."time_entry_changes" TO "service_role";
+GRANT SELECT ON TABLE "public"."time_entry_changes" TO "authenticated";
 
 
 

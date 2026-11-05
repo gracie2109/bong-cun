@@ -55,3 +55,110 @@ export type Roster = {
   assignments: RosterAssignment[];
   leaves: RosterLeave[];
 };
+
+// ---------------------------------------------------------------- clock
+export type ClockBranch = { id: string; code: string; name: string };
+
+export type OpenEntry = {
+  id: string;
+  branchId: string;
+  branchName: string;
+  checkInAt: string;
+  assignmentId: string | null;
+  shiftName: string | null;
+  shiftEndAt: string | null;
+};
+
+export type ClockShift = { id: string; branchId: string; branchName: string; name: string; startAt: string; endAt: string };
+
+export type ClockStatus = { now: string; branches: ClockBranch[]; openEntry: OpenEntry | null; shifts: ClockShift[] };
+
+export type ClockInResult = { entryId: string; assignmentId: string | null; shiftName: string | null; lateMinutes: number; onLeave: boolean };
+export type ClockOutResult = { entryId: string; workedMinutes: number; earlyMinutes: number; overtimeMinutes: number };
+
+// ------------------------------------------------------- attendance rows
+export type AttendanceStatus =
+  | "leave"
+  | "missing_checkout"
+  | "working"
+  | "unscheduled"
+  | "late_early"
+  | "late"
+  | "early"
+  | "present"
+  | "absent"
+  | "not_in"
+  | "upcoming";
+
+export type ReviewReason = "missing_checkout" | "unscheduled";
+
+export type AttendanceRow = {
+  branchId: string;
+  userId: string;
+  userName: string;
+  workDate: string;
+  assignmentId: string | null;
+  entryId: string | null;
+  shiftName: string | null;
+  startAt: string | null;
+  endAt: string | null;
+  checkInAt: string | null;
+  checkOutAt: string | null;
+  scheduledMinutes: number;
+  workedMinutes: number;
+  lateMinutes: number;
+  earlyMinutes: number;
+  overtimeMinutes: number;
+  status: AttendanceStatus;
+  leaveType: LeaveType | null;
+  reviewReason: ReviewReason | null;
+  reviewed: boolean;
+};
+
+export type ReviewItem = {
+  entryId: string;
+  userId: string;
+  userName: string;
+  workDate: string;
+  checkInAt: string;
+  checkOutAt: string | null;
+  reason: ReviewReason;
+};
+
+export type TodayBoard = { date: string; staff: RosterStaff[]; rows: AttendanceRow[]; leaves: RosterLeave[]; review: ReviewItem[] };
+
+export type EntryChange = {
+  id: string;
+  action: "create" | "update" | "delete" | "auto_close";
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  reason: string | null;
+  changedByName: string | null;
+  changedAt: string;
+};
+
+export type MyShift = {
+  id: string;
+  branchId: string;
+  branchName: string;
+  workDate: string;
+  name: string;
+  startAt: string;
+  endAt: string;
+  breakMinutes: number;
+  note: string | null;
+  hasEntry: boolean;
+};
+
+export type MyEntry = {
+  id: string;
+  branchId: string;
+  branchName: string;
+  workDate: string;
+  assignmentId: string | null;
+  checkInAt: string;
+  checkOutAt: string | null;
+  reviewReason: ReviewReason | null;
+};
+
+export type MySchedule = { assignments: MyShift[]; entries: MyEntry[]; leaves: RosterLeave[] };
