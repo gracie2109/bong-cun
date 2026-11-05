@@ -1,7 +1,7 @@
 -- Attendance step 1: shift templates, roster, settings and branch scope.
 begin;
 \ir _helpers/setup.psql
-select plan(24);
+select plan(23);
 
 insert into public.roles (name) values ('t_hr');
 insert into public.role_permissions (role, permission, methods)
