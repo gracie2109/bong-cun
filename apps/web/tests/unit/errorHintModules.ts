@@ -8,6 +8,7 @@ import { SPA_ERROR_HINTS } from "@bongcun/core/spa";
 import { BOARDING_ERROR_HINTS } from "@bongcun/core/boarding";
 import { MEDICAL_ERROR_HINTS } from "@bongcun/core/medical";
 import { LOCATION_ERROR_HINTS } from "@bongcun/core/locations";
+import { ATTENDANCE_ERROR_HINTS } from "@bongcun/core/attendance";
 
 const supabaseSrc = fileURLToPath(new URL("../../../../packages/supabase/src/", import.meta.url));
 
@@ -46,6 +47,7 @@ export const HINT_MODULES: HintModule[] = [
   { module: "boarding", hints: BOARDING_ERROR_HINTS, functions: rpcsCalledBy("boarding") },
   { module: "medical", hints: MEDICAL_ERROR_HINTS, functions: rpcsCalledBy("medical") },
   { module: "locations", hints: LOCATION_ERROR_HINTS, functions: rpcsCalledBy("locations") },
+  { module: "attendance", hints: ATTENDANCE_ERROR_HINTS, functions: rpcsCalledBy("attendance") },
 ];
 
 // Generic hints every module shares; they have no business code of their own.
