@@ -12,6 +12,7 @@ import { allClear, ROUTES, sortRows, type ActionRow, type ActionRowKey } from ".
 const EXPIRY_DAYS = 60;
 const ONE_ROW = { pageIndex: 1, pageSize: 1 };
 const OVERDUE = { scope: "overdue" } as const;
+const DUE_SOON = { scope: "due" } as const;
 
 type Source = { isError: Ref<boolean>; isPending: Ref<boolean>; isPlaceholderData?: Ref<boolean> };
 
@@ -41,6 +42,7 @@ export const useActionItems = (scope: ComputedRef<DashboardScope> = useWidgetSco
   const orders = useShopOrderBadge(computed(() => !!ordersBranch.value));
   const stock = useStockAlertCounts(stockBranch, EXPIRY_DAYS);
   const vaccines = useMedicalReminders(medicalBranch, ONE_ROW, OVERDUE);
+  const vaccinesDue = useMedicalReminders(medicalBranch, ONE_ROW, DUE_SOON);
   const boarding = useBoardingBoard(boardingBranch, today);
 
   const rows: ComputedRef<ActionRow[]> = computed(() =>
@@ -52,12 +54,13 @@ export const useActionItems = (scope: ComputedRef<DashboardScope> = useWidgetSco
         rowOf("stockExpiring", stock, stock.data.value?.expiring, !!stockBranch.value),
         rowOf("stockExpired", stock, stock.data.value?.expired, !!stockBranch.value),
         rowOf("vaccineOverdue", vaccines, vaccines.data.value?.total, !!medicalBranch.value),
+        rowOf("vaccineDue", vaccinesDue, vaccinesDue.data.value?.total, !!medicalBranch.value),
         rowOf("boardingOverdue", boarding, boarding.data.value?.counts.overdue, !!boardingBranch.value),
       ].filter((row): row is ActionRow => row !== null)
     )
   );
 
-  const sources = [orders, stock, vaccines, boarding];
+  const sources = [orders, stock, vaccines, vaccinesDue, boarding];
   const state = computed(() => {
     if (!allowed.value || needsBranch.value) {
       return resolveWidgetState({ allowed: allowed.value, needsBranch: needsBranch.value, query: { isPending: false, isError: false }, isEmpty: false });

@@ -56,6 +56,7 @@
       "stockExpiring": "Products with lots expiring soon",
       "stockExpired": "Products with expired lots in stock",
       "vaccineOverdue": "Overdue vaccinations",
+      "vaccineDue": "Vaccinations due soon",
       "boardingOverdue": "Kennels past check-out time"
     },
     "spa": {

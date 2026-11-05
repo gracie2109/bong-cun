@@ -19,4 +19,5 @@ export const petsExportColumns = (): ExportColumn<PetListItem>[] => [
   { header: "Dị ứng", value: (row) => row.allergies, width: 24 },
   { header: "Lưu ý hành vi", value: (row) => row.behaviorNotes, width: 24 },
   { header: "Trạng thái", value: (row) => STATUS_TEXT[row.status] },
+  { header: "Ngày mất", value: (row) => row.deceasedOn, kind: "date" },
 ];

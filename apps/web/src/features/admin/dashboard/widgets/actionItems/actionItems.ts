@@ -7,6 +7,7 @@ export type ActionRowKey =
   | "stockExpiring"
   | "stockExpired"
   | "vaccineOverdue"
+  | "vaccineDue"
   | "boardingOverdue";
 
 /** One thing that needs attention. `count` is null while it loads or when its source failed. */
@@ -24,6 +25,7 @@ export const ROUTES: Record<ActionRowKey, string> = {
   stockExpiring: "inventoryStock",
   stockExpired: "inventoryStock",
   vaccineOverdue: "medicalReminders",
+  vaccineDue: "medicalReminders",
   boardingOverdue: "boardingBoard",
 };
 
