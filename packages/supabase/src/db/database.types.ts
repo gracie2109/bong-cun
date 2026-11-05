@@ -2578,6 +2578,17 @@ export type Database = {
       }
     }
     Functions: {
+      add_time_entry: {
+        Args: {
+          p_assignment: string | null
+          p_branch: string
+          p_in: string
+          p_out: string | null
+          p_reason: string
+          p_user: string
+        }
+        Returns: string
+      }
       assign_shift: {
         Args: {
           p_branch: string
@@ -2592,10 +2603,20 @@ export type Database = {
         Returns: Json
       }
       attendance_rules: { Args: { p_branch: string }; Returns: Json }
+      attendance_today: {
+        Args: { p_branch: string; p_date?: string }
+        Returns: Json
+      }
       can_attendance: {
         Args: { p_branch: string; p_method: string }
         Returns: boolean
       }
+      clock_in: {
+        Args: { p_branch: string; p_note?: string; p_unscheduled_ok?: boolean }
+        Returns: Json
+      }
+      clock_out: { Args: { p_note?: string }; Returns: Json }
+      clock_status: { Args: Record<PropertyKey, never>; Returns: Json }
       copy_roster_week: {
         Args: {
           p_branch: string
@@ -2605,11 +2626,27 @@ export type Database = {
         }
         Returns: Json
       }
+      delete_time_entry: {
+        Args: { p_id: string; p_reason: string }
+        Returns: undefined
+      }
+      edit_time_entry: {
+        Args: {
+          p_assignment: string | null
+          p_id: string
+          p_in: string
+          p_out: string | null
+          p_reason: string
+        }
+        Returns: undefined
+      }
       is_branch_staff: { Args: { p_branch: string }; Returns: boolean }
       list_shift_templates: {
         Args: { p_branch: string; p_include_inactive?: boolean }
         Returns: Json[]
       }
+      mark_entry_reviewed: { Args: { p_id: string }; Returns: undefined }
+      my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
       remove_shift_assignment: { Args: { p_id: string }; Returns: undefined }
       save_attendance_settings: {
         Args: { p: Json; p_branch: string }
@@ -2948,6 +2985,7 @@ export type Database = {
       pet_medical_history: { Args: { p_page?: number; p_page_size?: number; p_pet: string }; Returns: Json }
       medical_vets: { Args: { p_branch: string }; Returns: Json }
       add_medical_item: { Args: { p: Json; p_visit: string }; Returns: Json }
+      time_entry_history: { Args: { p_id: string }; Returns: Json[] }
       update_medical_item: { Args: { p: Json; p_id: string }; Returns: Json }
       remove_medical_item: { Args: { p_id: string }; Returns: undefined }
       update_shift_assignment: {

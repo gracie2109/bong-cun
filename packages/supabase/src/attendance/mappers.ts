@@ -1,5 +1,21 @@
 // Rows from the attendance functions -> domain types. Pure: no client, no Vue.
-import type { AttendanceRules, AttendanceRulesRow, Roster, RosterRow, ShiftTemplate, ShiftTemplateRow } from "@bongcun/core/attendance";
+import type { z } from "zod";
+import type {
+  AttendanceRow,
+  AttendanceRowRecord,
+  AttendanceRules,
+  AttendanceRulesRow,
+  ClockStatus,
+  MySchedule,
+  MyScheduleRow,
+  Roster,
+  RosterRow,
+  ShiftTemplate,
+  ShiftTemplateRow,
+  TodayBoard,
+  TodayBoardRow,
+  clockStatusSchema,
+} from "@bongcun/core/attendance";
 
 export const toShiftTemplate = (row: ShiftTemplateRow): ShiftTemplate => ({
   id: row.id,
@@ -46,4 +62,88 @@ export const toRoster = (row: RosterRow): Roster => ({
     part: l.part,
     leaveType: l.leave_type,
   })),
+});
+
+// ---------------------------------------------------------------- clock
+export const toClockStatus = (row: z.infer<typeof clockStatusSchema>): ClockStatus => ({
+  now: row.now,
+  branches: row.branches,
+  openEntry: row.open_entry && {
+    id: row.open_entry.id,
+    branchId: row.open_entry.branch_id,
+    branchName: row.open_entry.branch_name,
+    checkInAt: row.open_entry.check_in_at,
+    assignmentId: row.open_entry.assignment_id,
+    shiftName: row.open_entry.shift_name,
+    shiftEndAt: row.open_entry.shift_end_at,
+  },
+  shifts: row.shifts.map((s) => ({ id: s.id, branchId: s.branch_id, branchName: s.branch_name, name: s.name, startAt: s.start_at, endAt: s.end_at })),
+});
+
+export const toAttendanceRow = (row: AttendanceRowRecord): AttendanceRow => ({
+  branchId: row.branch_id,
+  userId: row.user_id,
+  userName: row.user_name ?? "",
+  workDate: row.work_date,
+  assignmentId: row.assignment_id,
+  entryId: row.entry_id,
+  shiftName: row.shift_name,
+  startAt: row.start_at,
+  endAt: row.end_at,
+  checkInAt: row.check_in_at,
+  checkOutAt: row.check_out_at,
+  scheduledMinutes: row.scheduled_minutes,
+  workedMinutes: row.worked_minutes,
+  lateMinutes: row.late_minutes,
+  earlyMinutes: row.early_minutes,
+  overtimeMinutes: row.overtime_minutes,
+  status: row.status,
+  leaveType: row.leave_type,
+  reviewReason: row.review_reason,
+  reviewed: row.reviewed,
+});
+
+type LeaveRow = TodayBoardRow["leaves"][number];
+const toLeave = (l: LeaveRow) => ({ userId: l.user_id, fromDate: l.from_date, toDate: l.to_date, part: l.part, leaveType: l.leave_type });
+
+export const toTodayBoard = (row: TodayBoardRow): TodayBoard => ({
+  date: row.date,
+  staff: row.staff.map((s) => ({ userId: s.user_id, name: s.name, role: s.role, photoUrl: s.photo_url })),
+  rows: row.rows.map(toAttendanceRow),
+  leaves: row.leaves.map(toLeave),
+  review: row.review.map((r) => ({
+    entryId: r.entry_id,
+    userId: r.user_id,
+    userName: r.user_name,
+    workDate: r.work_date,
+    checkInAt: r.check_in_at,
+    checkOutAt: r.check_out_at,
+    reason: r.review_reason,
+  })),
+});
+
+export const toMySchedule = (row: MyScheduleRow): MySchedule => ({
+  assignments: row.assignments.map((a) => ({
+    id: a.id,
+    branchId: a.branch_id,
+    branchName: a.branch_name,
+    workDate: a.work_date,
+    name: a.name,
+    startAt: a.start_at,
+    endAt: a.end_at,
+    breakMinutes: a.break_minutes,
+    note: a.note,
+    hasEntry: a.has_entry,
+  })),
+  entries: row.entries.map((e) => ({
+    id: e.id,
+    branchId: e.branch_id,
+    branchName: e.branch_name,
+    workDate: e.work_date,
+    assignmentId: e.assignment_id,
+    checkInAt: e.check_in_at,
+    checkOutAt: e.check_out_at,
+    reviewReason: e.review_reason,
+  })),
+  leaves: row.leaves.map(toLeave),
 });

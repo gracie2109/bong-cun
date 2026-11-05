@@ -9,6 +9,13 @@ export const ATTENDANCE_ERROR_HINTS = [
   "has_entry",
   "invalid_range",
   "range_too_long",
+  "already_in",
+  "not_in",
+  "no_shift",
+  "confirm_unscheduled",
+  "reason_required",
+  "own_entry",
+  "future_time",
 ] as const;
 export type AttendanceErrorHint = (typeof ATTENDANCE_ERROR_HINTS)[number];
 
