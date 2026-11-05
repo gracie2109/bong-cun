@@ -22670,8 +22670,8 @@ GRANT ALL ON FUNCTION "public"."take_stock_lot_first"("p_branch" "uuid", "p_prod
 
 
 
-GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "anon";
+GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."time_entries_set_work_date"() TO "service_role";
 
 
