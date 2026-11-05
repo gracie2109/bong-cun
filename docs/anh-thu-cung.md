@@ -204,7 +204,7 @@ tay ở mục 7.
 | 1 | #161 | Migration `20261024010000`. Lỗi đã gặp: trong policy upload, `name` trần bị hiểu là cột `name` của bảng `pets` nên phải viết `objects.name`. |
 | 2 | #163 | `compressImage` đã chuyển sang `lib/images` (có tham số). `PetInput` không còn `photoUrl`. |
 | 3 | #164 | `PetAvatar`, `PetPhotoButton`, `PetPhotoField`, `usePetPhoto`, `useRegisterPhoto`. |
-| 4 | #165 | Migration `20261024020000`: chín hàm (`list_boarding_stays` và `list_medical_visits` nhận ảnh qua `boarding_stay_json`, `medical_visit_json`). Ảnh hiện ở kho/kennel, danh sách và chi tiết lưu trú, nội trú, hàng đợi và danh sách khám, vé spa, phiếu spa/khám trong POS. Chưa hiện ở khối lịch spa (ô nhỏ) và phiếu lưu trú trong POS (dữ liệu đã có `petPhotoUrl`, chưa vẽ). |
+| 4 | #165 | Migration `20261024020000`: chín hàm (`list_boarding_stays` và `list_medical_visits` nhận ảnh qua `boarding_stay_json`, `medical_visit_json`). Ảnh hiện ở kho/kennel, danh sách và chi tiết lưu trú, nội trú, hàng đợi và danh sách khám, vé spa, phiếu spa/khám trong POS. Khối lịch spa (ô nhỏ trên `schedule/board`) và phiếu lưu trú trong POS (`BoardingChargesPanel`) vẽ ảnh sau đó, không cần migration mới. |
 | 5 | #167 | Migration `20261024030000`. Ảnh ở thẻ thú cưng, sổ sức khoẻ, lịch hẹn, lưu trú của khách. |
 | 6 | xem PR backup | Workflow backup tải thêm bucket `pet-photos` vào cùng file mã hoá. |
 

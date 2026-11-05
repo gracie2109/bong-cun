@@ -32,6 +32,7 @@ export type PetListItem = {
   allergies: string | null;
   behaviorNotes: string | null;
   status: PetStatus;
+  deceasedOn: string | null;
   weightKg: number | null;
   weightMeasuredAt: string | null;
   bracketId: string | null;
@@ -113,6 +114,7 @@ export const toPetListItem = (row: OverviewRow): PetListItem => ({
   allergies: row.allergies,
   behaviorNotes: row.behavior_notes,
   status: toStatus(row.status ?? ""),
+  deceasedOn: row.deceased_on,
   weightKg: row.weight_kg,
   weightMeasuredAt: row.weight_measured_at,
   bracketId: row.bracket_id,

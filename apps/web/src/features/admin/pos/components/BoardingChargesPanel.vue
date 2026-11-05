@@ -4,6 +4,14 @@
     <ul class="space-y-1">
       <li v-for="stay in stays" :key="stay.stayId" class="flex items-center justify-between gap-2 text-xs">
         <span class="min-w-0 truncate">
+          <PetAvatar
+            v-for="pet in petsOf(stay)"
+            :key="pet.name"
+            :name="pet.name"
+            :photo-url="pet.photoUrl"
+            :title="pet.name"
+            class="mr-1 inline-flex size-5 align-middle text-[9px]"
+          />
           <span class="font-medium">{{ stay.code }}</span>
           <span class="text-muted-foreground">· {{ $t("pos.boardingCharges.charges", { count: stay.charges.length }) }}</span>
         </span>
@@ -20,6 +28,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import { useBillableBoarding } from "@/features/admin/boarding";
 import type { BillableBoardingStay } from "@bongcun/core/boarding";
@@ -38,6 +47,15 @@ const staysQuery = useBillableBoarding(
   computed(() => props.customerId)
 );
 const stays = computed(() => staysQuery.data.value ?? []);
+
+/** The distinct pets on a stay's charges, for their avatars. */
+const petsOf = (stay: BillableBoardingStay) => {
+  const pets = new Map<string, { name: string; photoUrl: string | null }>();
+  for (const charge of stay.charges) {
+    if (charge.petName && !pets.has(charge.petName)) pets.set(charge.petName, { name: charge.petName, photoUrl: charge.petPhotoUrl });
+  }
+  return [...pets.values()];
+};
 
 const isAdded = (stay: BillableBoardingStay) => stay.charges.every((charge) => props.added.has(charge.id));
 </script>
