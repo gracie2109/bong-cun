@@ -56,6 +56,7 @@
       "stockExpiring": "Sản phẩm có lô sắp hết hạn",
       "stockExpired": "Sản phẩm còn lô đã hết hạn",
       "vaccineOverdue": "Mũi tiêm quá hạn",
+      "vaccineDue": "Mũi tiêm sắp đến hạn",
       "boardingOverdue": "Chuồng quá giờ trả"
     },
     "spa": {
