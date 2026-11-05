@@ -2578,6 +2578,43 @@ export type Database = {
       }
     }
     Functions: {
+      assign_shift: {
+        Args: {
+          p_branch: string
+          p_break?: number
+          p_date: string
+          p_end?: string
+          p_note?: string
+          p_start?: string
+          p_template?: string
+          p_user: string
+        }
+        Returns: Json
+      }
+      attendance_rules: { Args: { p_branch: string }; Returns: Json }
+      can_attendance: {
+        Args: { p_branch: string; p_method: string }
+        Returns: boolean
+      }
+      copy_roster_week: {
+        Args: {
+          p_branch: string
+          p_from_monday: string
+          p_overwrite?: boolean
+          p_to_monday: string
+        }
+        Returns: Json
+      }
+      is_branch_staff: { Args: { p_branch: string }; Returns: boolean }
+      list_shift_templates: {
+        Args: { p_branch: string; p_include_inactive?: boolean }
+        Returns: Json[]
+      }
+      remove_shift_assignment: { Args: { p_id: string }; Returns: undefined }
+      save_attendance_settings: {
+        Args: { p: Json; p_branch: string }
+        Returns: Json
+      }
       save_dashboard_layout: {
         Args: { p_dashboard: string; p_expected_version: number; p_layout: Json }
         Returns: number
@@ -2595,6 +2632,10 @@ export type Database = {
       cancel_stock_document: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       create_sales_return: { Args: { p: Json }; Returns: Json }
       post_stock_document: { Args: { p_id: string }; Returns: undefined }
+      save_shift_template: {
+        Args: { p: Json; p_branch: string }
+        Returns: string
+      }
       save_stock_document: { Args: { p: Json }; Returns: string }
       sellable_stock: {
         Args: { p_branch: string; p_products: string[] }
@@ -2638,6 +2679,14 @@ export type Database = {
       save_my_address: { Args: { p: Json }; Returns: Json }
       set_default_my_address: { Args: { p_id: string }; Returns: undefined }
       delete_my_address: { Args: { p_id: string }; Returns: undefined }
+      set_shift_template_active: {
+        Args: { p_active: boolean; p_id: string }
+        Returns: undefined
+      }
+      shift_roster: {
+        Args: { p_branch: string; p_from: string; p_to: string }
+        Returns: Json
+      }
       shop_cart_lines: { Args: { p_lines: Json }; Returns: Json }
       shop_product_groups: {
         Args: { p_search?: string; p_category?: string; p_brand?: string; p_sort?: string; p_limit?: number; p_offset?: number }
@@ -2901,6 +2950,10 @@ export type Database = {
       add_medical_item: { Args: { p: Json; p_visit: string }; Returns: Json }
       update_medical_item: { Args: { p: Json; p_id: string }; Returns: Json }
       remove_medical_item: { Args: { p_id: string }; Returns: undefined }
+      update_shift_assignment: {
+        Args: { p: Json; p_id: string }
+        Returns: undefined
+      }
       vaccine_lots: { Args: { p_branch: string; p_vaccine_type: string }; Returns: Json }
       give_vaccination: { Args: { p: Json; p_visit: string }; Returns: Json }
       add_external_vaccination: { Args: { p: Json; p_pet: string }; Returns: string }

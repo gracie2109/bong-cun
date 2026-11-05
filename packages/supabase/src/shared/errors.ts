@@ -9,6 +9,7 @@ import { boardingErrorHint, type BoardingErrorHint } from "@bongcun/core/boardin
 import { medicalErrorHint, type MedicalErrorHint } from "@bongcun/core/medical";
 import { locationErrorHint, type LocationErrorHint } from "@bongcun/core/locations";
 import { dashboardErrorHint, type DashboardErrorHint } from "@bongcun/core/dashboard";
+import { attendanceErrorHint, type AttendanceErrorHint } from "@bongcun/core/attendance";
 
 // Postgres error codes surfaced by PostgREST.
 export const PG_UNIQUE_VIOLATION = "23505";
@@ -25,7 +26,8 @@ export type DbErrorCode =
   | BoardingErrorHint
   | MedicalErrorHint
   | LocationErrorHint
-  | DashboardErrorHint;
+  | DashboardErrorHint
+  | AttendanceErrorHint;
 
 // The first module that names the hint wins; a hint two modules share is the same string either way.
 const hintOf = (error: unknown): DbErrorCode | null =>
@@ -36,7 +38,8 @@ const hintOf = (error: unknown): DbErrorCode | null =>
   boardingErrorHint(error) ??
   medicalErrorHint(error) ??
   locationErrorHint(error) ??
-  dashboardErrorHint(error);
+  dashboardErrorHint(error) ??
+  attendanceErrorHint(error);
 
 const PG_TO_APP: Record<string, AppErrorCode> = {
   [PG_UNIQUE_VIOLATION]: "conflict",
