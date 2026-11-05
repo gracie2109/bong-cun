@@ -1,6 +1,11 @@
 // Rows from the attendance functions -> domain types. Pure: no client, no Vue.
 import type { z } from "zod";
 import type {
+  LeaveBalance,
+  LeaveList,
+  LeaveRequest,
+  LeaveRowRecord,
+  MyLeave,
   AttendanceRow,
   AttendanceRowRecord,
   AttendanceRules,
@@ -15,6 +20,9 @@ import type {
   TodayBoard,
   TodayBoardRow,
   clockStatusSchema,
+  leaveBalanceSchema,
+  leaveListSchema,
+  myLeaveSchema,
 } from "@bongcun/core/attendance";
 
 export const toShiftTemplate = (row: ShiftTemplateRow): ShiftTemplate => ({
@@ -146,4 +154,35 @@ export const toMySchedule = (row: MyScheduleRow): MySchedule => ({
     reviewReason: e.review_reason,
   })),
   leaves: row.leaves.map(toLeave),
+});
+
+// ---------------------------------------------------------------- leave
+export const toLeaveRequest = (row: LeaveRowRecord): LeaveRequest => ({
+  id: row.id,
+  userId: row.user_id,
+  userName: row.user_name,
+  branchId: row.branch_id,
+  branchName: row.branch_name,
+  leaveType: row.leave_type,
+  fromDate: row.from_date,
+  toDate: row.to_date,
+  part: row.part,
+  days: row.days,
+  reason: row.reason,
+  status: row.status,
+  decidedByName: row.decided_by_name,
+  decidedAt: row.decided_at,
+  decisionNote: row.decision_note,
+  createdBySelf: row.created_by_self ?? true,
+  createdAt: row.created_at,
+});
+
+export const toLeaveBalance = (row: z.infer<typeof leaveBalanceSchema>): LeaveBalance => ({ ...row });
+
+export const toLeaveList = (row: z.infer<typeof leaveListSchema>): LeaveList => ({ rows: row.rows.map(toLeaveRequest), total: row.total });
+
+export const toMyLeave = (row: z.infer<typeof myLeaveSchema>): MyLeave => ({
+  year: row.year,
+  requests: row.requests.map(toLeaveRequest),
+  balance: toLeaveBalance(row.balance),
 });

@@ -162,3 +162,32 @@ export type MyEntry = {
 };
 
 export type MySchedule = { assignments: MyShift[]; entries: MyEntry[]; leaves: RosterLeave[] };
+
+// ---------------------------------------------------------------- leave
+export type LeaveStatus = "pending" | "approved" | "rejected" | "cancelled";
+
+export type LeaveRequest = {
+  id: string;
+  userId: string;
+  userName: string;
+  branchId: string;
+  branchName: string;
+  leaveType: LeaveType;
+  fromDate: string;
+  toDate: string;
+  part: LeavePart;
+  days: number;
+  reason: string;
+  status: LeaveStatus;
+  decidedByName: string | null;
+  decidedAt: string | null;
+  decisionNote: string | null;
+  /** False when a manager filed it for the person. */
+  createdBySelf: boolean;
+  createdAt: string;
+};
+
+export type LeaveBalance = { allowance: number; used: number; pending: number; remaining: number };
+export type LeaveList = { rows: LeaveRequest[]; total: number };
+export type MyLeave = { year: number; requests: LeaveRequest[]; balance: LeaveBalance };
+export type LeaveResult = { id?: string; days: number; warning: "over_allowance" | null };

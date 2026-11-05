@@ -16,6 +16,13 @@ export const ATTENDANCE_ERROR_HINTS = [
   "reason_required",
   "own_entry",
   "future_time",
+  "leave_overlap",
+  "too_old",
+  "no_working_days",
+  "not_pending",
+  "own_request",
+  "not_cancellable",
+  "not_signed_in",
 ] as const;
 export type AttendanceErrorHint = (typeof ATTENDANCE_ERROR_HINTS)[number];
 

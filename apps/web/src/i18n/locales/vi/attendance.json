@@ -79,7 +79,14 @@
       "confirm_unscheduled": "Bạn không có ca lúc này.",
       "reason_required": "Hãy nhập lý do.",
       "own_entry": "Bạn không được sửa lượt chấm công của chính mình.",
-      "future_time": "Giờ không được ở tương lai."
+      "future_time": "Giờ không được ở tương lai.",
+      "leave_overlap": "Các ngày này trùng với một đơn nghỉ khác.",
+      "too_old": "Chỉ xin nghỉ trong vòng 7 ngày trở lại.",
+      "no_working_days": "Cơ sở đóng cửa các ngày này nên không cần nghỉ.",
+      "not_pending": "Đơn này đã được xử lý.",
+      "own_request": "Bạn không được duyệt đơn của chính mình.",
+      "not_cancellable": "Đơn này không hủy được nữa.",
+      "not_signed_in": "Bạn chưa đăng nhập."
     },
     "roster": {
       "title": "Lịch ca",
@@ -220,6 +227,59 @@
       "noShifts": "Chưa có ca nào trong 2 tuần tới.",
       "entries": "Lượt chấm công tháng này",
       "noEntries": "Chưa có lượt chấm công nào trong tháng."
+    },
+    "leave": {
+      "title": "Đơn nghỉ",
+      "tabs": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối",
+        "cancelled": "Đã hủy",
+        "all": "Tất cả"
+      },
+      "status": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối",
+        "cancelled": "Đã hủy"
+      },
+      "search": "Tìm theo tên",
+      "empty": "Không có đơn nào.",
+      "days": "ngày",
+      "review": "Xem xét",
+      "fileFor": "Nhập đơn hộ",
+      "fileForHint": "Đơn nhập hộ được duyệt ngay.",
+      "request": "Xin nghỉ",
+      "send": "Gửi đơn",
+      "staff": "Nhân viên",
+      "pickStaff": "Chọn nhân viên",
+      "approver": "Gửi cho cơ sở",
+      "type": "Loại nghỉ",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "part": "Buổi",
+      "reason": "Lý do",
+      "errors": {
+        "dates_required": "Hãy chọn ngày.",
+        "range_invalid": "Ngày kết thúc phải sau ngày bắt đầu.",
+        "reason_required": "Hãy nhập lý do.",
+        "staff_required": "Hãy chọn nhân viên.",
+        "branch_required": "Chưa có cơ sở để gửi đơn."
+      },
+      "decideTitle": "Duyệt đơn nghỉ",
+      "changeTypeHint": "Có thể đổi loại khi duyệt, ví dụ sang không lương khi hết phép.",
+      "note": "Ghi chú (không bắt buộc)",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "balance": "Phép năm còn {remaining} / {allowance} ngày (đang chờ duyệt {pending} ngày).",
+      "usedOf": "đã dùng {used}, chờ {pending}",
+      "decidedBy": "Xử lý bởi {name}",
+      "overAllowance": "Đơn này vượt số ngày phép năm.",
+      "allowancesTitle": "Số ngày phép năm {year}",
+      "allowancesHint": "Mặc định 12 ngày mỗi người. Vượt số này hệ thống chỉ cảnh báo.",
+      "myTitle": "Nghỉ phép của tôi {year}",
+      "noneMine": "Bạn chưa có đơn nghỉ nào.",
+      "cancel": "Hủy đơn"
     }
   }
 }
