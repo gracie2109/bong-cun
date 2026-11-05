@@ -527,6 +527,8 @@
   },
   "adminNav": {
     "staff": "Staff",
+    "attendanceToday": "Today's attendance",
+    "attendanceMe": "My attendance",
     "attendanceRoster": "Roster",
     "attendanceSettings": "Attendance settings",
     "overview": "Overview",

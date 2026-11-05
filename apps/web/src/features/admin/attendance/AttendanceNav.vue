@@ -22,10 +22,12 @@ import { useAuthStore } from "@/stores";
 const route = useRoute();
 const auth = useAuthStore();
 
-// Screens for managers need "attendance: VIEW"; later steps add the other tabs here.
+// Screens for managers need "attendance: VIEW"; "mine" is for every staff member (no method).
 const tabs = [
+  { name: "attendanceToday", icon: "lucide:clipboard-check", label: "attendance.nav.today", method: "VIEW" },
   { name: "attendanceRoster", icon: "lucide:calendar-range", label: "attendance.nav.roster", method: "VIEW" },
   { name: "attendanceSettings", icon: "lucide:settings-2", label: "attendance.nav.settings", method: "VIEW" },
+  { name: "attendanceMe", icon: "lucide:user-round", label: "attendance.nav.me", method: null },
 ];
-const visibleTabs = computed(() => tabs.filter((tab) => auth.can("attendance", tab.method)));
+const visibleTabs = computed(() => tabs.filter((tab) => tab.method === null || auth.can("attendance", tab.method)));
 </script>

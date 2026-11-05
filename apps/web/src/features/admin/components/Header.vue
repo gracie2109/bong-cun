@@ -2,6 +2,7 @@
 import BaseAvatar from "@/components/common/BaseAvatar.vue";
 import SwitchLang from "@/components/common/SwitchLang.vue";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ClockButton } from "@/features/admin/attendance";
 import { DashboardBell } from "@/features/admin/dashboard";
 </script>
 
@@ -16,6 +17,7 @@ import { DashboardBell } from "@/features/admin/dashboard";
       <slot />
     </div>
     <div class="flex items-center gap-4">
+      <ClockButton />
       <DashboardBell />
       <SwitchLang />
       <BaseAvatar />

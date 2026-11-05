@@ -198,6 +198,10 @@ export const attendanceKeys = {
   rules: (branchId: string) => [...attendanceKeys.all, "rules", branchId] as const,
   templates: (branchId: string, includeInactive: boolean) => [...attendanceKeys.all, "templates", branchId, includeInactive] as const,
   roster: (branchId: string, from: string, to: string) => [...attendanceKeys.all, "roster", branchId, from, to] as const,
+  clock: () => [...attendanceKeys.all, "clock"] as const,
+  today: (branchId: string, date: string) => [...attendanceKeys.all, "today", branchId, date] as const,
+  mine: (from: string, to: string) => [...attendanceKeys.all, "mine", from, to] as const,
+  history: (entryId: string) => [...attendanceKeys.all, "history", entryId] as const,
 };
 
 export const boardingKeys = {
