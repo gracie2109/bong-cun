@@ -37,3 +37,33 @@ export const barGeometry = ({ values, index, max, plotHeight, slot, gap }: BarIn
   });
   return { x: index * slot + gap / 2, width, segments, top: plotHeight - filled };
 };
+
+/** One dot of the line chart. */
+export type LinePoint = { key: string; label: string; title: string; value: number };
+
+export type LineDot = { x: number; y: number };
+
+type LineInput = { values: number[]; max: number; plotHeight: number; slot: number };
+
+/** One dot per value, centred in its slot; the first value sits left, the highest value nearest the top. */
+export const lineDots = ({ values, max, plotHeight, slot }: LineInput): LineDot[] =>
+  values.map((value, index) => ({
+    x: index * slot + slot / 2,
+    y: max > 0 ? plotHeight - (Math.max(value, 0) / max) * plotHeight : plotHeight,
+  }));
+
+const fixed = (value: number): string => String(Math.round(value * 10) / 10);
+
+/** SVG path through the dots ("" for none); a single dot gives a zero-length segment so it still draws. */
+export const linePath = (dots: LineDot[]): string =>
+  dots.map((dot, index) => `${index === 0 ? "M" : "L"}${fixed(dot.x)} ${fixed(dot.y)}`).join(" ") +
+  (dots.length === 1 ? " h0" : "");
+
+/** The same path closed down to the baseline, to fill the area under the line. */
+export const areaPath = (dots: LineDot[], plotHeight: number): string => {
+  const first = dots[0];
+  const last = dots[dots.length - 1];
+  return first && last && dots.length > 1
+    ? `${linePath(dots)} L${fixed(last.x)} ${fixed(plotHeight)} L${fixed(first.x)} ${fixed(plotHeight)} Z`
+    : "";
+};

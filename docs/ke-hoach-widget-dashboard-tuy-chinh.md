@@ -1,6 +1,6 @@
 # Kế hoạch: widget dashboard tùy chỉnh
 
-Ngày: 2026-10-23. Trạng thái: đã code xong D1 đến D8 (xem mục 15), chờ grace test tay trên trình duyệt/iPad.
+Ngày: 2026-10-23. Trạng thái: đã code xong D1 đến D8, biểu đồ đường và bố cục theo vai trò (xem mục 15), chờ grace test tay trên trình duyệt/iPad.
 
 Tài liệu nền: [audit Multi-Dashboard](audit-multi-dashboard.md), bản nghiên cứu `pet-care-plan/nghien-cuu-dashboard-widget.md`, và bộ kit đã merge ở `apps/web/src/features/admin/dashboard` (PR #225 đến #228).
 
@@ -504,7 +504,14 @@ Khác với kế hoạch:
 - Tùy chọn "So với kỳ trước" chỉ có với số liệu doanh thu, hóa đơn, TB mỗi hóa đơn, hoàn trả; riêng doanh thu chỉ khi chọn nhóm "Tất cả" (báo cáo chỉ trả kỳ trước cho tổng).
 - Widget cố định đã xóa khỏi bảng thì thêm lại ở mục "Widget có sẵn" trong hộp Thêm widget.
 
-Chưa làm: biểu đồ đường, bố cục mặc định theo vai trò (mục 12 vẫn đúng).
+Làm thêm sau đó (không cần migration):
+
+| Nội dung | Chi tiết |
+| --- | --- |
+| Biểu đồ đường | Kiểu hiển thị mới `lineChart` cho số liệu `revenue.series` (chọn "Biểu đồ đường" hoặc "Biểu đồ cột" trong Thêm widget / Cài đặt). Component `reports/shared/LineChart.vue`, hình học thuần trong `chartScale.ts`. DB không đổi vì kiểu widget chỉ là chuỗi trong JSON bố cục |
+| Bố cục mặc định theo vai trò | Viết trong code, `roleDefaults` của dashboard "Hôm nay" (`dashboards.ts`): **clinic** (có quyền Y tế, không có Báo cáo: lượt khám lên đầu, rộng hết hàng), **spa** (có Lịch hẹn, không có Báo cáo và Y tế), **front** (Đơn online / Kho / Lưu trú / Chấm công, không có Báo cáo, Y tế, Lịch hẹn). Ai có quyền Báo cáo, hoặc không khớp vai nào, thấy bố cục gốc. Chọn theo quyền giữ ở ít nhất một chi nhánh (`layout/roleDefaults.ts`), chỉ áp dụng khi người đó chưa lưu bố cục riêng; "Về mặc định" đưa về đúng bố cục của vai |
+
+Mục 12 vẫn đúng ở phần còn lại: admin chưa đặt được bố cục mặc định cho người khác (không có bảng `dashboard_role_defaults`), chưa có biểu đồ tròn.
 
 ### Test tay cho grace
 

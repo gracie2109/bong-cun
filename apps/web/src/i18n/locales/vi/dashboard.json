@@ -210,6 +210,7 @@
       "views": {
         "kpi": "Thẻ số",
         "barChart": "Biểu đồ cột",
+        "lineChart": "Biểu đồ đường",
         "list": "Danh sách"
       },
       "param": {

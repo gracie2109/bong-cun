@@ -16,6 +16,14 @@
       </p>
     </template>
 
+    <LineChart
+      v-else-if="value?.kind === 'series' && isLine"
+      :points="linePoints"
+      :format-y="compactMoney"
+      :format-value="money"
+      :label="title"
+    />
+
     <StackedBarChart
       v-else-if="value?.kind === 'series'"
       :points="chartPoints"
@@ -38,7 +46,7 @@
 <script lang="ts" setup>
 import { computed, toRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { compactMoney, formatDay, money, percent, StackedBarChart, type ChartPoint, type ChartSeries } from "@/features/admin/reports";
+import { compactMoney, formatDay, LineChart, money, percent, StackedBarChart, type ChartPoint, type ChartSeries, type LinePoint } from "@/features/admin/reports";
 import WidgetCard from "../../kit/WidgetCard.vue";
 import { rangeLabel } from "../../range/widgetRange";
 import { GROUP_ICONS } from "./groupIcons";
@@ -67,6 +75,10 @@ const rangeText = computed(() => {
   return [params, days].filter(Boolean).join(" · ");
 });
 
+const isLine = computed(() => props.resolved.view === "lineChart");
+const linePoints = computed<LinePoint[]>(() =>
+  value.value?.kind === "series" ? value.value.points.map((point) => ({ key: point.key, label: point.label, title: point.label, value: point.value })) : []
+);
 const chartSeries = computed<ChartSeries[]>(() => [{ key: "v", label: title.value, color: "#0F766E" }]);
 const chartPoints = computed<ChartPoint[]>(() =>
   value.value?.kind === "series"

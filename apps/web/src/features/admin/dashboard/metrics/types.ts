@@ -5,7 +5,7 @@ export type MetricGroup = "revenue" | "stock" | "orders" | "spa" | "boarding" | 
 /** What a metric yields: one figure, bars over time, or a ranked list. */
 export type MetricShape = "number" | "series" | "list";
 export type MetricFormat = "money" | "count";
-export type MetricView = "kpi" | "barChart" | "list";
+export type MetricView = "kpi" | "barChart" | "lineChart" | "list";
 /** Which reader (see metrics/sources) fetches the metric. */
 export type SourceKey = "overview" | "series" | "topItems" | "stock" | "orders" | "spa" | "boarding" | "medical";
 
