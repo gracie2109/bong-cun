@@ -492,7 +492,26 @@ Phụ thuộc: A2, A3 cần A1; A5 cần A4; A6 cần A1 (và A3 để hiện ng
 
 ## 16. Đã làm
 
-(Thread coding cập nhật mục này ở PR A10.)
+Xong ngày 2026-11-05. Migration `20261110010000`-`040000` đã chạy tự động qua workflow "Supabase migrate" (bản gộp để tham khảo: `pet-care-plan/migration-cham-cong-gop.sql`).
+
+| PR | Nội dung |
+| --- | --- |
+| #233 | A1: ca mẫu, lịch ca, quyền `attendance` |
+| #234 | A2+A3 gộp một PR: màn cài đặt và lưới lịch ca tuần |
+| #235 | A4: vào/ra ca, sửa giờ có nhật ký, cron tự đóng ca quên ra |
+| #236 | A5: nút chấm công trên header, màn Hôm nay, trang Của tôi |
+| #237 | A6: đơn nghỉ, phép năm, badge đơn chờ duyệt |
+| #238 | A7: bảng công (tổng hợp + lưới tháng), xuất Excel/CSV/PDF, công của tôi |
+| #239 | A8: nhắc chấm công khi mở ca POS, widget "Nhân sự hôm nay" và "Ca của tôi" |
+
+Khác với kế hoạch:
+
+- A2 và A3 gộp một PR; hàm `attendance_rows` nằm trong migration 2 (không phải migration 4).
+- Hàm danh sách/báo cáo ở A7 trả `jsonb {rows, total}` thay vì `RETURNS TABLE`.
+- Workflow migrate ghim Supabase CLI 2.121.0.
+- Widget dashboard có cờ `anyStaff` (hiện cho mọi vai trò tại chi nhánh) cho widget chỉ xem dữ liệu của chính mình.
+- **Chưa làm A9** (giới hạn IP chi nhánh, tùy chọn).
+- Giao diện mới chỉ qua typecheck/build/test, chưa bấm thử trên trình duyệt.
 
 ### Test tay cho grace (sau khi xong)
 
@@ -503,3 +522,5 @@ Phụ thuộc: A2, A3 cần A1; A5 cần A4; A6 cần A1 (và A3 để hiện ng
 5. Gửi đơn nghỉ nửa ngày; đăng nhập quản lý duyệt; xem ô trên lịch ca đổi màu.
 6. Sửa giờ một lượt chấm (bắt nhập lý do), mở lịch sử sửa.
 7. Bảng công tháng: kiểm ký hiệu X/M/S/V/P, xuất Excel.
+8. Mở ca ở POS khi chưa chấm công: thấy nhắc và nút "Vào ca luôn"; mở ca vẫn được.
+9. Bảng điều khiển "Hôm nay": hai widget "Nhân sự hôm nay" (cần quyền Nhân sự) và "Ca của tôi".
