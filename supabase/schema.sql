@@ -16993,7 +16993,8 @@ CREATE OR REPLACE VIEW "public"."pet_overview" WITH ("security_invoker"='true') 
     "c"."phone" AS "owner_phone",
     ( SELECT "count"(*) AS "count"
            FROM "public"."pet_owners" "po"
-          WHERE (("po"."pet_id" = "p"."id") AND ("po"."to_date" IS NULL))) AS "owner_count"
+          WHERE (("po"."pet_id" = "p"."id") AND ("po"."to_date" IS NULL))) AS "owner_count",
+    "p"."deceased_on"
    FROM ((((("public"."pets" "p"
      JOIN "public"."species" "s" ON (("s"."id" = "p"."species_id")))
      LEFT JOIN LATERAL ( SELECT "l"."weight_kg",

@@ -2558,6 +2558,7 @@ export type Database = {
           bracket_label: string | null
           breed: string | null
           created_at: string | null
+          deceased_on: string | null
           id: string | null
           name: string | null
           neutered: boolean | null

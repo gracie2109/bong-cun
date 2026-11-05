@@ -92,6 +92,7 @@
                 @click="openTicket(item.ticket)"
               >
                 <span class="block truncate font-semibold">
+                  <PetAvatar v-if="item.ticket.petName" :name="item.ticket.petName" :photo-url="item.ticket.petPhotoUrl" class="mr-1 inline-flex size-4 align-middle text-[8px]" />
                   <template v-if="item.ticket.source === 'web'">[{{ $t("spa.source.web") }}] </template>{{ item.ticket.petName ?? item.ticket.customerName }} · {{ item.ticket.name }}
                 </span>
                 <span class="block truncate opacity-80">{{ timeOf(item.ticket.startAt) }}–{{ timeOf(item.ticket.endAt) }} · {{ item.ticket.customerName }}</span>
@@ -111,6 +112,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, UserRound } from "lucide-vue-next";
+import PetAvatar from "@/components/common/PetAvatar.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
