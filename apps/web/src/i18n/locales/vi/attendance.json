@@ -280,6 +280,59 @@
       "myTitle": "Nghỉ phép của tôi {year}",
       "noneMine": "Bạn chưa có đơn nghỉ nào.",
       "cancel": "Hủy đơn"
+    },
+    "timesheet": {
+      "title": "Bảng công",
+      "tabs": {
+        "summary": "Tổng hợp",
+        "grid": "Bảng theo tháng"
+      },
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "search": "Tìm nhân viên",
+      "rangeInvalid": "Chọn khoảng ngày hợp lệ, tối đa {days} ngày.",
+      "empty": "Chưa có dữ liệu chấm công trong khoảng này.",
+      "loading": "Đang tải…",
+      "prevMonth": "Tháng trước",
+      "nextMonth": "Tháng sau",
+      "thisMonth": "Tháng này",
+      "monthLabel": "Tháng {month}/{year}",
+      "cols": {
+        "name": "Nhân viên",
+        "shifts": "Ca (làm/xếp)",
+        "worked": "Giờ làm",
+        "late": "Đi trễ",
+        "early": "Về sớm",
+        "overtime": "Tăng ca",
+        "absent": "Vắng",
+        "missing": "Quên chấm ra",
+        "annual": "Phép năm",
+        "sick": "Nghỉ ốm",
+        "otherLeave": "Nghỉ khác",
+        "daysWorked": "Ngày công",
+        "hours": "Giờ"
+      },
+      "codes": {
+        "X": "Đi làm đủ",
+        "X+": "Làm ngoài lịch",
+        "M": "Đi trễ",
+        "S": "Về sớm",
+        "P": "Phép năm",
+        "Ô": "Nghỉ ốm",
+        "K": "Nghỉ không lương",
+        "N": "Nghỉ khác",
+        "V": "Vắng không phép",
+        "?": "Quên chấm ra"
+      },
+      "myTitle": "Công tháng này của tôi",
+      "mine": {
+        "scheduled": "Giờ xếp",
+        "worked": "Giờ làm",
+        "overtime": "Tăng ca",
+        "late": "Đi trễ (lần · phút)",
+        "early": "Về sớm",
+        "absent": "Ca vắng"
+      }
     }
   }
 }

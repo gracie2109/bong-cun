@@ -2671,8 +2671,24 @@ export type Database = {
       mark_entry_reviewed: { Args: { p_id: string }; Returns: undefined }
       my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
+      my_timesheet: { Args: { p_from: string; p_to: string }; Returns: Json }
       pending_leave_count: { Args: { p_branch?: string }; Returns: number }
       remove_shift_assignment: { Args: { p_id: string }; Returns: undefined }
+      report_timesheet: {
+        Args: {
+          p_branch?: string | null
+          p_from: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string | null
+          p_to: string
+        }
+        Returns: Json
+      }
+      report_timesheet_grid: {
+        Args: { p_branch: string; p_month: string }
+        Returns: Json
+      }
       request_leave: {
         Args: {
           p_branch: string

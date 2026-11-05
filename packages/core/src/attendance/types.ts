@@ -191,3 +191,61 @@ export type LeaveBalance = { allowance: number; used: number; pending: number; r
 export type LeaveList = { rows: LeaveRequest[]; total: number };
 export type MyLeave = { year: number; requests: LeaveRequest[]; balance: LeaveBalance };
 export type LeaveResult = { id?: string; days: number; warning: "over_allowance" | null };
+
+// ------------------------------------------------------------ timesheet
+export type TimesheetRow = {
+  userId: string;
+  name: string;
+  branchCodes: string;
+  shiftsScheduled: number;
+  shiftsWorked: number;
+  scheduledMinutes: number;
+  workedMinutes: number;
+  lateCount: number;
+  lateMinutes: number;
+  earlyCount: number;
+  earlyMinutes: number;
+  overtimeMinutes: number;
+  absentCount: number;
+  unscheduledCount: number;
+  missingCheckoutCount: number;
+  leaveAnnual: number;
+  leaveSick: number;
+  leaveUnpaid: number;
+  leaveOther: number;
+};
+
+export type TimesheetList = { rows: TimesheetRow[]; total: number };
+
+export type GridCode = "" | "P" | "Ô" | "K" | "N" | "V" | "?" | "M" | "S" | "X" | "X+";
+
+export type GridCell = {
+  date: string;
+  code: GridCode;
+  minutes: number;
+  detail: { shiftName: string | null; status: AttendanceStatus; checkInAt: string | null; checkOutAt: string | null; workedMinutes: number }[];
+};
+
+export type GridTotals = {
+  daysWorked: number;
+  lateCount: number;
+  absentCount: number;
+  uncheckedCount: number;
+  leaveDays: number;
+  workedMinutes: number;
+};
+
+export type TimesheetGrid = { days: string[]; staff: { userId: string; name: string; cells: GridCell[]; totals: GridTotals }[] };
+
+export type MyTimesheet = {
+  rows: AttendanceRow[];
+  totals: {
+    scheduledMinutes: number;
+    workedMinutes: number;
+    lateCount: number;
+    lateMinutes: number;
+    earlyMinutes: number;
+    overtimeMinutes: number;
+    absentCount: number;
+  };
+};

@@ -280,6 +280,59 @@
       "myTitle": "My leave {year}",
       "noneMine": "You have no leave requests.",
       "cancel": "Withdraw"
+    },
+    "timesheet": {
+      "title": "Timesheet",
+      "tabs": {
+        "summary": "Summary",
+        "grid": "Monthly grid"
+      },
+      "from": "From",
+      "to": "To",
+      "search": "Search staff",
+      "rangeInvalid": "Pick a valid date range of at most {days} days.",
+      "empty": "No attendance in this range.",
+      "loading": "Loading…",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "thisMonth": "This month",
+      "monthLabel": "{month}/{year}",
+      "cols": {
+        "name": "Staff",
+        "shifts": "Shifts (worked/planned)",
+        "worked": "Hours",
+        "late": "Late",
+        "early": "Left early",
+        "overtime": "Overtime",
+        "absent": "Absent",
+        "missing": "No clock-out",
+        "annual": "Annual leave",
+        "sick": "Sick leave",
+        "otherLeave": "Other leave",
+        "daysWorked": "Days",
+        "hours": "Hours"
+      },
+      "codes": {
+        "X": "Worked",
+        "X+": "Worked off-roster",
+        "M": "Late",
+        "S": "Left early",
+        "P": "Annual leave",
+        "Ô": "Sick leave",
+        "K": "Unpaid leave",
+        "N": "Other leave",
+        "V": "Absent",
+        "?": "Forgot to clock out"
+      },
+      "myTitle": "My hours this month",
+      "mine": {
+        "scheduled": "Scheduled",
+        "worked": "Worked",
+        "overtime": "Overtime",
+        "late": "Late (times · min)",
+        "early": "Left early",
+        "absent": "Absent shifts"
+      }
     }
   }
 }

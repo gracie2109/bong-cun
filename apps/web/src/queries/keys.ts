@@ -206,6 +206,9 @@ export const attendanceKeys = {
   myLeave: (year: number | undefined) => [...attendanceKeys.all, "leave", "mine", year ?? "now"] as const,
   balance: (userId: string, year: number) => [...attendanceKeys.all, "leave", "balance", userId, year] as const,
   pendingLeave: (branchId: string | undefined) => [...attendanceKeys.all, "leave", "pending", branchId ?? "all"] as const,
+  timesheet: (filter: unknown, page: number) => [...attendanceKeys.all, "timesheet", "summary", filter, page] as const,
+  timesheetGrid: (branchId: string, month: string) => [...attendanceKeys.all, "timesheet", "grid", branchId, month] as const,
+  myTimesheet: (from: string, to: string) => [...attendanceKeys.all, "timesheet", "mine", from, to] as const,
 };
 
 export const boardingKeys = {
