@@ -72,7 +72,14 @@
       "shift_overlap": "This person already has a shift at that time (even at another branch).",
       "has_entry": "Someone already clocked in on this shift, so it cannot be changed or removed.",
       "invalid_range": "The date range is not valid.",
-      "range_too_long": "The date range is too long."
+      "range_too_long": "The date range is too long.",
+      "already_in": "You are already clocked in.",
+      "not_in": "You are not clocked in.",
+      "no_shift": "No shift is scheduled for you right now.",
+      "confirm_unscheduled": "You have no shift right now.",
+      "reason_required": "Please give a reason.",
+      "own_entry": "You cannot edit your own time entry.",
+      "future_time": "The time cannot be in the future."
     },
     "roster": {
       "title": "Roster",
@@ -127,6 +134,92 @@
       "full": "Full day",
       "am": "Morning",
       "pm": "Afternoon"
+    },
+    "clock": {
+      "in": "Clock in",
+      "out": "Clock out",
+      "inTitle": "Clock in",
+      "outTitle": "Clock out",
+      "inAnyway": "Clock in anyway",
+      "working": "On shift {time}",
+      "branch": "Branch",
+      "noShift": "Unscheduled",
+      "noShiftToday": "You have no shift today.",
+      "unscheduledAsk": "You have no shift right now. Clock in anyway?",
+      "note": "Note (optional)",
+      "since": "In at {time} · worked {worked}",
+      "clockedIn": "Clocked in.",
+      "clockedOut": "Clocked out, worked {minutes} min.",
+      "lateWarning": "You are {minutes} min late.",
+      "onLeaveWarning": "You have approved leave today."
+    },
+    "status": {
+      "leave": "On leave",
+      "missing_checkout": "Forgot to clock out",
+      "working": "Working",
+      "unscheduled": "Unscheduled",
+      "late_early": "Late, left early",
+      "late": "Late",
+      "early": "Left early",
+      "present": "Full hours",
+      "absent": "Absent",
+      "not_in": "Not in yet",
+      "upcoming": "Upcoming"
+    },
+    "today": {
+      "title": "Today's attendance",
+      "previousDay": "Previous day",
+      "nextDay": "Next day",
+      "backToToday": "Back to today",
+      "empty": "No staff at this branch yet.",
+      "noShift": "No shift",
+      "unscheduled": "Unscheduled",
+      "in": "In",
+      "out": "Out",
+      "late": "{minutes}m late",
+      "early": "{minutes}m early",
+      "overtime": "{minutes}m overtime",
+      "fix": "Fix hours",
+      "record": "Record hours",
+      "summary": {
+        "working": "Working",
+        "notIn": "Not in",
+        "upcoming": "Upcoming",
+        "done": "Done",
+        "leave": "On leave"
+      },
+      "reviewTitle": "{count} entries to review",
+      "markReviewed": "Reviewed",
+      "reason_missing_checkout": "Forgot to clock out (closed by system)",
+      "reason_unscheduled": "Clocked in without a shift",
+      "addEntry": "Record hours",
+      "editEntry": "Edit hours",
+      "checkIn": "Clock in",
+      "checkOut": "Clock out",
+      "reason": "Reason",
+      "reasonHint": "e.g. forgot to clock out",
+      "deleteEntry": "Delete entry",
+      "errors": {
+        "reason_required": "Please give a reason.",
+        "times_required": "Please enter the clock-in time.",
+        "out_before_in": "Clock-out must be after clock-in."
+      },
+      "history": "Change history",
+      "noHistory": "No changes yet.",
+      "system": "System",
+      "action": {
+        "create": "Created",
+        "update": "Edited",
+        "delete": "Deleted",
+        "auto_close": "Auto-closed"
+      }
+    },
+    "me": {
+      "title": "My attendance",
+      "upcoming": "Upcoming shifts",
+      "noShifts": "No shifts in the next 2 weeks.",
+      "entries": "This month's entries",
+      "noEntries": "No entries this month."
     }
   }
 }

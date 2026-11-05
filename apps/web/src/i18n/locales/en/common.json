@@ -111,6 +111,8 @@
     "spa": "Spa services",
     "spaBook": "Book a spa visit",
     "accountAppointments": "My appointments",
+    "attendanceToday": "Today's attendance",
+    "attendanceMe": "My attendance",
     "attendanceRoster": "Roster",
     "attendanceSettings": "Attendance settings",
     "boardingSettings": "Boarding settings",

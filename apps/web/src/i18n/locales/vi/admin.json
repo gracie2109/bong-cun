@@ -527,6 +527,8 @@
   },
   "adminNav": {
     "staff": "Nhân sự",
+    "attendanceToday": "Chấm công hôm nay",
+    "attendanceMe": "Chấm công của tôi",
     "attendanceRoster": "Lịch ca",
     "attendanceSettings": "Cài đặt chấm công",
     "overview": "Tổng quan",

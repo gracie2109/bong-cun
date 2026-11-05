@@ -72,7 +72,14 @@
       "shift_overlap": "Người này đã có ca trùng giờ (kể cả ở cơ sở khác).",
       "has_entry": "Ca này đã có người chấm công nên không sửa hoặc xóa được.",
       "invalid_range": "Khoảng ngày không hợp lệ.",
-      "range_too_long": "Khoảng ngày quá dài."
+      "range_too_long": "Khoảng ngày quá dài.",
+      "already_in": "Bạn đang trong ca rồi.",
+      "not_in": "Bạn chưa vào ca.",
+      "no_shift": "Hiện không có ca nào được xếp cho bạn.",
+      "confirm_unscheduled": "Bạn không có ca lúc này.",
+      "reason_required": "Hãy nhập lý do.",
+      "own_entry": "Bạn không được sửa lượt chấm công của chính mình.",
+      "future_time": "Giờ không được ở tương lai."
     },
     "roster": {
       "title": "Lịch ca",
@@ -127,6 +134,92 @@
       "full": "Cả ngày",
       "am": "Sáng",
       "pm": "Chiều"
+    },
+    "clock": {
+      "in": "Vào ca",
+      "out": "Ra ca",
+      "inTitle": "Vào ca",
+      "outTitle": "Ra ca",
+      "inAnyway": "Vẫn vào ca",
+      "working": "Đang trong ca {time}",
+      "branch": "Cơ sở",
+      "noShift": "Ngoài lịch",
+      "noShiftToday": "Hôm nay bạn chưa có ca nào.",
+      "unscheduledAsk": "Bạn không có ca lúc này. Vẫn vào ca?",
+      "note": "Ghi chú (không bắt buộc)",
+      "since": "Vào lúc {time} · đã làm {worked}",
+      "clockedIn": "Đã vào ca.",
+      "clockedOut": "Đã ra ca, làm {minutes} phút.",
+      "lateWarning": "Bạn vào muộn {minutes} phút.",
+      "onLeaveWarning": "Hôm nay bạn đang có đơn nghỉ được duyệt."
+    },
+    "status": {
+      "leave": "Nghỉ phép",
+      "missing_checkout": "Quên ra ca",
+      "working": "Đang làm",
+      "unscheduled": "Ngoài lịch",
+      "late_early": "Muộn, về sớm",
+      "late": "Đi muộn",
+      "early": "Về sớm",
+      "present": "Đủ giờ",
+      "absent": "Vắng",
+      "not_in": "Chưa vào ca",
+      "upcoming": "Sắp tới"
+    },
+    "today": {
+      "title": "Chấm công hôm nay",
+      "previousDay": "Ngày trước",
+      "nextDay": "Ngày sau",
+      "backToToday": "Về hôm nay",
+      "empty": "Chưa có nhân viên nào ở cơ sở này.",
+      "noShift": "Không có ca",
+      "unscheduled": "Ngoài lịch",
+      "in": "Vào",
+      "out": "Ra",
+      "late": "muộn {minutes}p",
+      "early": "sớm {minutes}p",
+      "overtime": "tăng ca {minutes}p",
+      "fix": "Sửa giờ",
+      "record": "Ghi giờ",
+      "summary": {
+        "working": "Đang làm",
+        "notIn": "Chưa vào",
+        "upcoming": "Sắp tới",
+        "done": "Đã xong",
+        "leave": "Nghỉ"
+      },
+      "reviewTitle": "{count} lượt cần xem lại",
+      "markReviewed": "Đã xem",
+      "reason_missing_checkout": "Quên ra ca (hệ thống tự đóng)",
+      "reason_unscheduled": "Vào ca ngoài lịch",
+      "addEntry": "Ghi giờ làm",
+      "editEntry": "Sửa giờ làm",
+      "checkIn": "Giờ vào",
+      "checkOut": "Giờ ra",
+      "reason": "Lý do",
+      "reasonHint": "Ví dụ: quên bấm ra ca",
+      "deleteEntry": "Xóa lượt chấm công",
+      "errors": {
+        "reason_required": "Hãy nhập lý do.",
+        "times_required": "Hãy nhập giờ vào.",
+        "out_before_in": "Giờ ra phải sau giờ vào."
+      },
+      "history": "Lịch sử sửa",
+      "noHistory": "Chưa có thay đổi nào.",
+      "system": "Hệ thống",
+      "action": {
+        "create": "Tạo",
+        "update": "Sửa",
+        "delete": "Xóa",
+        "auto_close": "Tự đóng"
+      }
+    },
+    "me": {
+      "title": "Chấm công của tôi",
+      "upcoming": "Ca sắp tới",
+      "noShifts": "Chưa có ca nào trong 2 tuần tới.",
+      "entries": "Lượt chấm công tháng này",
+      "noEntries": "Chưa có lượt chấm công nào trong tháng."
     }
   }
 }
