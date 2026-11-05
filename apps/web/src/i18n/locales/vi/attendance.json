@@ -1,0 +1,132 @@
+{
+  "attendance": {
+    "nav": {
+      "today": "Hôm nay",
+      "roster": "Lịch ca",
+      "leave": "Đơn nghỉ",
+      "timesheet": "Bảng công",
+      "settings": "Cài đặt",
+      "me": "Của tôi"
+    },
+    "settings": {
+      "title": "Cài đặt chấm công",
+      "readOnly": "Bạn chỉ xem được cài đặt. Cần quyền \"Nhân sự: Cài đặt\" để sửa."
+    },
+    "colors": {
+      "teal": "Xanh ngọc",
+      "sky": "Xanh trời",
+      "amber": "Vàng",
+      "rose": "Hồng",
+      "violet": "Tím",
+      "slate": "Xám"
+    },
+    "templates": {
+      "title": "Ca mẫu",
+      "hint": "Giờ làm có sẵn để xếp lịch nhanh. Sửa ca mẫu không đổi các ca đã xếp.",
+      "add": "Thêm ca mẫu",
+      "edit": "Sửa ca mẫu",
+      "name": "Tên ca",
+      "namePlaceholder": "Ví dụ: Ca sáng",
+      "start": "Bắt đầu",
+      "end": "Kết thúc",
+      "breakMinutes": "Nghỉ giữa ca (phút)",
+      "breakShort": "Nghỉ {n} phút",
+      "color": "Màu",
+      "overnight": "Qua đêm",
+      "overnightHint": "Ca kết thúc vào sáng hôm sau.",
+      "sameDayHint": "Ca bắt đầu và kết thúc trong cùng một ngày.",
+      "showInactive": "Hiện ca đã ẩn",
+      "empty": "Chưa có ca mẫu nào. Thêm \"Ca sáng\", \"Ca chiều\"... để xếp lịch.",
+      "errors": {
+        "name": "Tên ca từ 1 đến 40 ký tự.",
+        "times": "Giờ chưa hợp lệ.",
+        "same": "Giờ bắt đầu và kết thúc phải khác nhau.",
+        "long": "Một ca dài tối đa 16 giờ.",
+        "break": "Giờ nghỉ phải nhỏ hơn độ dài ca.",
+        "color": "Chọn một màu."
+      }
+    },
+    "rules": {
+      "title": "Quy tắc chấm công",
+      "hint": "Áp dụng cho cơ sở đang chọn.",
+      "unavailable": "Không đọc được quy tắc.",
+      "lateGraceMinutes": "Ân hạn đi muộn (phút)",
+      "lateGraceMinutesHint": "Vào trễ trong số phút này không bị tính muộn.",
+      "earlyGraceMinutes": "Ân hạn về sớm (phút)",
+      "earlyGraceMinutesHint": "Ra sớm trong số phút này không bị tính về sớm.",
+      "checkinEarlyMinutes": "Vào ca sớm tối đa (phút)",
+      "checkinEarlyMinutesHint": "Bấm \"Vào ca\" sớm hơn giờ bắt đầu bao lâu thì vẫn gắn vào ca đã xếp.",
+      "overtimeMinMinutes": "Tăng ca tối thiểu (phút)",
+      "overtimeMinMinutesHint": "Ra muộn ít hơn số phút này không tính tăng ca.",
+      "reviewAfterHours": "Tự đóng lượt sau (giờ)",
+      "reviewAfterHoursHint": "Lượt quên \"Ra ca\" quá số giờ này bị đóng với 0 phút làm để quản lý sửa.",
+      "allowUnscheduled": "Cho vào ca ngoài lịch",
+      "allowUnscheduledHint": "Tắt thì nhân viên chỉ vào ca được khi đã được xếp ca."
+    },
+    "errors": {
+      "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+      "bad_input": "Thông tin chưa hợp lệ.",
+      "not_found": "Không tìm thấy dữ liệu, có thể đã bị xóa.",
+      "name_taken": "Đã có ca mẫu cùng tên ở cơ sở này.",
+      "not_branch_staff": "Người này không thuộc cơ sở đang chọn.",
+      "shift_overlap": "Người này đã có ca trùng giờ (kể cả ở cơ sở khác).",
+      "has_entry": "Ca này đã có người chấm công nên không sửa hoặc xóa được.",
+      "invalid_range": "Khoảng ngày không hợp lệ.",
+      "range_too_long": "Khoảng ngày quá dài."
+    },
+    "roster": {
+      "title": "Lịch ca",
+      "previousWeek": "Tuần trước",
+      "nextWeek": "Tuần sau",
+      "thisWeek": "Tuần này",
+      "copyWeek": "Chép tuần",
+      "staff": "Nhân viên",
+      "shiftCount": "{n} ca",
+      "noStaff": "Chưa có nhân viên nào thuộc cơ sở này. Gán nhân viên ở màn Vai trò.",
+      "noTemplates": "Chưa có ca mẫu. Tạo ở",
+      "addShift": "Xếp ca",
+      "editShift": "Sửa ca",
+      "removeShift": "Xóa ca",
+      "template": "Ca mẫu",
+      "custom": "Tùy chỉnh",
+      "break": "Nghỉ (phút)",
+      "note": "Ghi chú",
+      "hasEntry": "Ca này đã có người chấm công nên chỉ sửa được ghi chú.",
+      "onLeaveWarning": "Người này có đơn nghỉ đã duyệt trong ca này.",
+      "copyTitle": "Chép lịch ca",
+      "copyHint": "Chép từ tuần {from} sang tuần {to}.",
+      "copyFrom": "Chép từ tuần (thứ Hai)",
+      "copyOk": "Chép",
+      "overwrite": "Ghi đè",
+      "overwriteHint": "Thay các ca đã có (chưa chấm công) trong tuần đích.",
+      "copyDone": "Đã chép {copied} ca, bỏ qua {skipped}.",
+      "errors": {
+        "times": "Giờ chưa hợp lệ.",
+        "same": "Giờ bắt đầu và kết thúc phải khác nhau.",
+        "long": "Một ca dài tối đa 16 giờ.",
+        "break": "Giờ nghỉ phải nhỏ hơn độ dài ca.",
+        "monday": "Ngày chọn phải là thứ Hai."
+      }
+    },
+    "weekday": {
+      "1": "T2",
+      "2": "T3",
+      "3": "T4",
+      "4": "T5",
+      "5": "T6",
+      "6": "T7",
+      "7": "CN"
+    },
+    "leaveType": {
+      "annual": "Phép năm",
+      "sick": "Nghỉ ốm",
+      "unpaid": "Không lương",
+      "other": "Nghỉ khác"
+    },
+    "leavePart": {
+      "full": "Cả ngày",
+      "am": "Sáng",
+      "pm": "Chiều"
+    }
+  }
+}

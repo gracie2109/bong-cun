@@ -526,6 +526,9 @@
     "eyebrow": "Bảo mật & kiểm soát"
   },
   "adminNav": {
+    "staff": "Nhân sự",
+    "attendanceRoster": "Lịch ca",
+    "attendanceSettings": "Cài đặt chấm công",
     "overview": "Tổng quan",
     "dashboard": "Bảng điều khiển",
     "scheduling": "Quản lý lịch",
