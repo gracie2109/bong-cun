@@ -4,4 +4,5 @@ export * from "./errors";
 export * from "./week";
 export * from "./rules";
 export * from "./availability";
+export * from "./registrationTypes";
 export * from "./contract";
