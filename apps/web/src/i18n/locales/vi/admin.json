@@ -528,6 +528,7 @@
   "adminNav": {
     "staff": "Nhân sự",
     "attendanceToday": "Chấm công hôm nay",
+    "attendanceMySchedule": "Lịch của tôi",
     "attendanceMe": "Chấm công của tôi",
     "attendanceRegister": "Đăng ký ca",
     "attendanceRequests": "Duyệt đăng ký ca",

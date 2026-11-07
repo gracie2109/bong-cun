@@ -528,6 +528,7 @@
   "adminNav": {
     "staff": "Staff",
     "attendanceToday": "Today's attendance",
+    "attendanceMySchedule": "My schedule",
     "attendanceMe": "My attendance",
     "attendanceRegister": "Register shifts",
     "attendanceRequests": "Review shift requests",

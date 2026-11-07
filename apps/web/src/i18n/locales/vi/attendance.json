@@ -7,6 +7,7 @@
       "timesheet": "Bảng công",
       "settings": "Cài đặt",
       "me": "Của tôi",
+      "mySchedule": "Lịch của tôi",
       "register": "Đăng ký ca",
       "requests": "Duyệt đăng ký",
       "history": "Lịch sử"
@@ -258,6 +259,13 @@
         "delete": "Xóa",
         "auto_close": "Tự đóng"
       }
+    },
+    "mySchedule": {
+      "title": "Lịch của tôi",
+      "today": "Hôm nay",
+      "off": "Không có ca",
+      "count": "{n} ca trong tuần",
+      "empty": "Chưa có ca nào trong tuần này. Nếu lịch chưa được phát hành thì ca sẽ hiện sau khi quản lý phát hành."
     },
     "me": {
       "title": "Chấm công của tôi",

@@ -7,6 +7,7 @@
       "timesheet": "Timesheet",
       "settings": "Settings",
       "me": "Mine",
+      "mySchedule": "My schedule",
       "register": "Register shifts",
       "requests": "Review requests",
       "history": "History"
@@ -258,6 +259,13 @@
         "delete": "Deleted",
         "auto_close": "Auto-closed"
       }
+    },
+    "mySchedule": {
+      "title": "My schedule",
+      "today": "Today",
+      "off": "No shift",
+      "count": "{n} shifts this week",
+      "empty": "No shifts this week. If the schedule is not published yet, shifts appear once the manager publishes it."
     },
     "me": {
       "title": "My attendance",
