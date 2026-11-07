@@ -7,7 +7,8 @@
       "timesheet": "Timesheet",
       "settings": "Settings",
       "me": "Mine",
-      "register": "Register shifts"
+      "register": "Register shifts",
+      "requests": "Review requests"
     },
     "settings": {
       "title": "Attendance settings",
@@ -128,7 +129,12 @@
         "long": "A shift can last 16 hours at most.",
         "break": "The break must be shorter than the shift.",
         "monday": "The date must be a Monday."
-      }
+      },
+      "requestTitle": "Request waiting for a decision",
+      "pending": "Pending",
+      "pendingRequests": "{count} requests to review",
+      "blockedDay": "Unavailable all day (availability)",
+      "availabilityOf": "{name}'s availability"
     },
     "weekday": {
       "1": "Mon",
@@ -236,7 +242,10 @@
       "upcoming": "Upcoming shifts",
       "noShifts": "No shifts in the next 2 weeks.",
       "entries": "This month's entries",
-      "noEntries": "No entries this month."
+      "noEntries": "No entries this month.",
+      "requestsTitle": "My shift requests",
+      "requestsHint": "Shifts you asked for in the next 4 weeks.",
+      "noRequests": "You have not requested any shift."
     },
     "leave": {
       "title": "Leave requests",
@@ -410,6 +419,26 @@
       "maxShiftsHint": "Counts pending requests and shifts already on the roster.",
       "staffNote": "Message for staff",
       "staffNoteHint": "Shown on the registration page, e.g. Weekends need at least 2 people."
+    },
+    "requests": {
+      "title": "Review shift requests",
+      "empty": "No requests.",
+      "from": "From date",
+      "to": "To date",
+      "select": "Select {name}'s request",
+      "selectAll": "Select all",
+      "selected": "{count} selected",
+      "decide": "Approve / Reject",
+      "decideTitle": "Decide {count} request(s)",
+      "note": "Note (optional)",
+      "flags": {
+        "expired": "Expired",
+        "onLeave": "On leave",
+        "unavailable": "Marked unavailable",
+        "preferred": "Prefers this shift",
+        "overlap": "Overlaps another shift",
+        "removed": "Removed from the roster"
+      }
     }
   }
 }

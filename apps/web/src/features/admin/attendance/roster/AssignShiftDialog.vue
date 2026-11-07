@@ -10,6 +10,7 @@
     @update:open="emit('update:open', $event)"
   >
     <form id="assign-shift-form" class="space-y-4" @submit.prevent="submit">
+      <AvailabilityHint :availability="availability" :user-id="staff?.userId" :date="date" :name="staff?.name ?? ''" />
       <p v-if="locked" class="rounded-lg border border-dashed px-3 py-2 text-sm text-muted-foreground">{{ $t("attendance.roster.hasEntry") }}</p>
 
       <div class="space-y-1">
@@ -77,7 +78,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAssignShift, useRemoveShift, useUpdateShift } from "@/features/admin/attendance/queries";
 import { SHIFT_COLOR_CLASS } from "@/features/admin/attendance/shared/shiftColors";
-import type { RosterAssignment, RosterStaff, ShiftTemplate } from "@bongcun/core/attendance";
+import type { RosterAssignment, RosterAvailability, RosterStaff, ShiftTemplate } from "@bongcun/core/attendance";
+import AvailabilityHint from "./AvailabilityHint.vue";
 import { applyTemplate, assignDraftError, assignInputFromDraft, draftFromAssignment, emptyAssignDraft, updateInputFromDraft } from "./assignDraft";
 
 const props = defineProps<{
@@ -88,6 +90,7 @@ const props = defineProps<{
   assignment: RosterAssignment | null;
   templates: ShiftTemplate[];
   canDelete: boolean;
+  availability: RosterAvailability[];
 }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 

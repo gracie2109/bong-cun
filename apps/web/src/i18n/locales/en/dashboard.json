@@ -232,6 +232,7 @@
         "medicalToday": "Medical today",
         "staffToday": "Staff today",
         "myShifts": "My shifts",
+        "shiftRequests": "Shift requests to review",
         "salesPeriod": "Revenue by period",
         "trend": "Revenue trend",
         "topProducts": "Top products",
@@ -255,6 +256,12 @@
       "open": "Open mine",
       "empty": "No shift today.",
       "working": "Clocked in"
+    },
+    "shiftRequests": {
+      "title": "Shift requests to review",
+      "open": "Open review",
+      "empty": "No requests waiting.",
+      "hint": "requests waiting for your decision"
     }
   }
 }

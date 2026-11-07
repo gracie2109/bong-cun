@@ -18,6 +18,7 @@ export const DASHBOARDS: readonly DashboardDef[] = [
       { type: "medicalToday", x: 0, y: 7, w: 2, h: 3 },
       { type: "staffToday", x: 2, y: 7, w: 2, h: 3 },
       { type: "myShifts", x: 0, y: 10, w: 2, h: 3 },
+      { type: "shiftRequests", x: 2, y: 10, w: 2, h: 2 },
     ],
     roleDefaults: [
       {

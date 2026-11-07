@@ -9,6 +9,8 @@ const EMPTY: Roster = { staff: [], templates: [], assignments: [], leaves: [], r
 export const useRoster = (branchId: Ref<string | undefined>, monday: Ref<string>, sunday: Ref<string>, days: Ref<string[]>) => {
   const query = useShiftRoster(branchId, monday, sunday);
   const roster = computed(() => query.data.value ?? EMPTY);
+  const requests = computed(() => roster.value.requests);
+  const availability = computed(() => roster.value.availability);
   const rows = computed(() => buildRosterGrid(roster.value, days.value));
-  return { query, roster, rows, templates: computed(() => roster.value.templates) };
+  return { query, roster, rows, templates: computed(() => roster.value.templates), requests, availability };
 };

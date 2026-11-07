@@ -86,6 +86,7 @@ export const ADMIN_ROUTE_PERMISSIONS: Record<string, string> = {
   attendanceToday: "attendance",
   attendanceRoster: "attendance",
   attendanceLeave: "attendance",
+  attendanceRequests: "attendance",
   attendanceTimesheet: "attendance",
   attendanceSettings: "attendance",
   settings: "settings",

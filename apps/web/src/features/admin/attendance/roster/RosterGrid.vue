@@ -18,7 +18,8 @@
         </tr>
         <tr v-for="row in rows" :key="row.staff.userId" class="border-t">
           <th class="sticky left-0 z-10 bg-white px-4 py-2 text-left font-normal">
-            <span class="block font-semibold">{{ row.staff.name }}</span>
+            <button v-if="canOpen" type="button" class="block text-left font-semibold hover:underline" :title="$t('attendance.availability.edit')" @click="emit('availability', row.staff)">{{ row.staff.name }}</button>
+            <span v-else class="block font-semibold">{{ row.staff.name }}</span>
             <span class="block text-xs text-muted-foreground">{{ row.staff.role }} · {{ $t("attendance.roster.shiftCount", { n: row.shiftCount }) }}</span>
           </th>
           <RosterCell
@@ -28,6 +29,8 @@
             :is-today="cell.date === today"
             :can-create="canCreate"
             :can-open="canOpen"
+            :can-decide="canDecide"
+            @decide="emit('decide', $event)"
             @add="emit('add', row.staff, cell.date)"
             @edit="emit('edit', row.staff, cell.date, $event)"
           />
@@ -40,12 +43,17 @@
 <script lang="ts" setup>
 import { todayInVietnam } from "@/lib/businessDate";
 import { isoWeekday } from "@bongcun/core/attendance";
-import type { RosterAssignment, RosterStaff } from "@bongcun/core/attendance";
+import type { RosterAssignment, RosterRequest, RosterStaff } from "@bongcun/core/attendance";
 import RosterCell from "./RosterCell.vue";
 import type { RosterRowData } from "./rosterGrid";
 
-defineProps<{ rows: RosterRowData[]; days: string[]; canCreate: boolean; canOpen: boolean }>();
-const emit = defineEmits<{ add: [staff: RosterStaff, date: string]; edit: [staff: RosterStaff, date: string, assignment: RosterAssignment] }>();
+defineProps<{ rows: RosterRowData[]; days: string[]; canCreate: boolean; canOpen: boolean; canDecide: boolean }>();
+const emit = defineEmits<{
+  add: [staff: RosterStaff, date: string];
+  edit: [staff: RosterStaff, date: string, assignment: RosterAssignment];
+  decide: [request: RosterRequest];
+  availability: [staff: RosterStaff];
+}>();
 
 const today = todayInVietnam();
 </script>

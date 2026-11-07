@@ -369,7 +369,9 @@ Phụ thuộc: R2 cần R1 (cảnh báo báo bận); R3 cần R2; R4 cần R2; R
 
 ## 15. Đã làm
 
-(Cập nhật ở PR R6.)
+- R1 (#245) lịch rảnh; R2 (#246) cửa sổ đăng ký + gửi đơn; R3 (#247) trang đăng ký + cài đặt; R4 (#248) duyệt đơn + roster; R5/R6 trang duyệt đơn, chip chờ duyệt trên lịch ca, "Đơn của tôi", widget dashboard.
+- Migration đã chạy tự động qua workflow Supabase migrate: 20261112010000, 20261112020000, 20261112030000.
+- Chưa làm: R7 (nhu cầu nhân sự). UI mới chỉ typecheck/build, chưa bấm thử trên trình duyệt.
 
 ### Test tay cho grace (sau khi xong)
 

@@ -232,6 +232,7 @@
         "medicalToday": "Y tế hôm nay",
         "staffToday": "Nhân sự hôm nay",
         "myShifts": "Ca của tôi",
+        "shiftRequests": "Đăng ký ca chờ duyệt",
         "salesPeriod": "Doanh thu theo kỳ",
         "trend": "Xu hướng doanh thu",
         "topProducts": "Hàng bán chạy",
@@ -255,6 +256,12 @@
       "open": "Mở của tôi",
       "empty": "Hôm nay bạn không có ca.",
       "working": "Đang làm"
+    },
+    "shiftRequests": {
+      "title": "Đăng ký ca chờ duyệt",
+      "open": "Mở duyệt đăng ký",
+      "empty": "Không có đăng ký nào chờ duyệt.",
+      "hint": "đăng ký đang chờ bạn duyệt"
     }
   }
 }
