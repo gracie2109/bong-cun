@@ -950,6 +950,46 @@ $$;
 ALTER FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."availability_conflict"("p_user" "uuid", "p_start_at" timestamp with time zone, "p_end_at" timestamp with time zone) RETURNS "text"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  with s as (select (p_start_at at time zone 'Asia/Ho_Chi_Minh')::date as d),
+  hit as (
+    select a.kind
+    from public.staff_availability a, s
+    where a.user_id = p_user
+      and a.weekday = extract(isodow from s.d)::int
+      and (a.start_time is null
+           or (public.shift_start_at(s.d, a.start_time) < p_end_at
+               and public.shift_end_at(s.d, a.start_time, a.end_time) > p_start_at))
+  )
+  select case
+    when exists (select 1 from hit where kind = 'unavailable') then 'unavailable'
+    when exists (select 1 from hit where kind = 'preferred') then 'preferred'
+  end;
+$$;
+
+
+ALTER FUNCTION "public"."availability_conflict"("p_user" "uuid", "p_start_at" timestamp with time zone, "p_end_at" timestamp with time zone) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."availability_rows"("p_user" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'id', a.id, 'weekday', a.weekday, 'kind', a.kind,
+    'start_time', to_char(a.start_time, 'HH24:MI'), 'end_time', to_char(a.end_time, 'HH24:MI'),
+    'note', a.note) order by a.weekday, a.start_time nulls first, a.kind), '[]'::jsonb)
+  from public.staff_availability a
+  where a.user_id = p_user;
+$$;
+
+
+ALTER FUNCTION "public"."availability_rows"("p_user" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."billable_appointment_items"("p_branch" "uuid", "p_customer" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -2675,6 +2715,45 @@ $$;
 
 
 ALTER FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."check_availability_items"("p_items" "jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $_$
+declare
+  v_item jsonb;
+  v_start time;
+  v_end time;
+begin
+  if p_items is null or jsonb_typeof(p_items) <> 'array' then
+    raise exception 'items must be a list' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if jsonb_array_length(p_items) > 21 then
+    raise exception 'too many availability rows' using errcode = 'P0001', hint = 'too_many';
+  end if;
+  for v_item in select * from jsonb_array_elements(p_items) loop
+    if jsonb_typeof(v_item) <> 'object'
+       or coalesce(v_item ->> 'weekday', '') !~ '^[1-7]$'
+       or coalesce(v_item ->> 'kind', '') not in ('unavailable', 'preferred')
+       or length(coalesce(v_item ->> 'note', '')) > 200 then
+      raise exception 'invalid availability row' using errcode = '22023', hint = 'bad_input';
+    end if;
+    begin
+      v_start := nullif(v_item ->> 'start_time', '')::time;
+      v_end := nullif(v_item ->> 'end_time', '')::time;
+    exception when others then
+      raise exception 'invalid time' using errcode = '22023', hint = 'bad_input';
+    end;
+    if (v_start is null) <> (v_end is null) or v_start = v_end then
+      raise exception 'invalid time range' using errcode = '22023', hint = 'bad_input';
+    end if;
+  end loop;
+end;
+$_$;
+
+
+ALTER FUNCTION "public"."check_availability_items"("p_items" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."check_entry_edit"("p_branch" "uuid", "p_user" "uuid", "p_method" "text", "p_reason" "text") RETURNS "void"
@@ -8488,6 +8567,22 @@ $$;
 ALTER FUNCTION "public"."my_appointments"("p_scope" "text", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."my_availability"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if (select auth.uid()) is null then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  return public.availability_rows((select auth.uid()));
+end;
+$$;
+
+
+ALTER FUNCTION "public"."my_availability"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."my_boarding_stay"("p_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -10381,6 +10476,25 @@ $$;
 ALTER FUNCTION "public"."remove_shift_assignment"("p_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."replace_availability"("p_user" "uuid", "p_items" "jsonb") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  perform public.check_availability_items(p_items);
+  delete from public.staff_availability where user_id = p_user;
+  insert into public.staff_availability (user_id, weekday, kind, start_time, end_time, note, updated_by)
+  select p_user, (i ->> 'weekday')::smallint, i ->> 'kind',
+         nullif(i ->> 'start_time', '')::time, nullif(i ->> 'end_time', '')::time,
+         nullif(btrim(i ->> 'note'), ''), (select auth.uid())
+  from jsonb_array_elements(p_items) i;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."replace_availability"("p_user" "uuid", "p_items" "jsonb") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") RETURNS "uuid"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -11404,6 +11518,22 @@ $$;
 ALTER FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."roster_availability"("p_branch" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'user_id', a.user_id, 'weekday', a.weekday, 'kind', a.kind,
+    'start_time', to_char(a.start_time, 'HH24:MI'), 'end_time', to_char(a.end_time, 'HH24:MI'))
+    order by a.user_id, a.weekday, a.start_time nulls first), '[]'::jsonb)
+  from public.staff_availability a
+  where exists (select 1 from public.staff_branches sb where sb.user_id = a.user_id and sb.branch_id = p_branch);
+$$;
+
+
+ALTER FUNCTION "public"."roster_availability"("p_branch" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -12392,6 +12522,25 @@ $$;
 
 
 ALTER FUNCTION "public"."save_my_address"("p" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."save_my_availability"("p_items" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me uuid := (select auth.uid());
+begin
+  if v_me is null or not exists (select 1 from public.staff_branches where user_id = v_me) then
+    raise exception 'you do not work at any branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  perform public.replace_availability(v_me, p_items);
+  return public.availability_rows(v_me);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."save_my_availability"("p_items" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."save_my_profile"("p" "jsonb") RETURNS "jsonb"
@@ -13459,6 +13608,26 @@ $$;
 
 
 ALTER FUNCTION "public"."save_species"("p" "jsonb", "p_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."save_staff_availability"("p_user" "uuid", "p_items" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_user is null or not exists (
+    select 1 from public.staff_branches sb
+    where sb.user_id = p_user and public.can_attendance('UPDATE', sb.branch_id)
+  ) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  perform public.replace_availability(p_user, p_items);
+  return public.availability_rows(p_user);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."save_staff_availability"("p_user" "uuid", "p_items" "jsonb") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."save_staff_branches"("p_user" "uuid", "p" "jsonb") RETURNS "void"
@@ -15287,6 +15456,22 @@ $$;
 
 
 ALTER FUNCTION "public"."spa_week_hours"("p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."staff_availability_of"("p_user" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_user is null or not public.can_view_staff(p_user) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  return public.availability_rows(p_user);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."staff_availability_of"("p_user" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."staff_display_name"("p_user" "uuid") RETURNS "text"
@@ -17483,6 +17668,26 @@ CREATE TABLE IF NOT EXISTS "public"."spa_resources" (
 ALTER TABLE "public"."spa_resources" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."staff_availability" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "weekday" smallint NOT NULL,
+    "kind" "text" NOT NULL,
+    "start_time" time without time zone,
+    "end_time" time without time zone,
+    "note" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_by" "uuid",
+    CONSTRAINT "staff_availability_kind_check" CHECK (("kind" = ANY (ARRAY['unavailable'::"text", 'preferred'::"text"]))),
+    CONSTRAINT "staff_availability_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 200))),
+    CONSTRAINT "staff_availability_range" CHECK (((("start_time" IS NULL) AND ("end_time" IS NULL)) OR (("start_time" IS NOT NULL) AND ("end_time" IS NOT NULL) AND ("end_time" <> "start_time")))),
+    CONSTRAINT "staff_availability_weekday_check" CHECK ((("weekday" >= 1) AND ("weekday" <= 7)))
+);
+
+
+ALTER TABLE "public"."staff_availability" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."staff_branches" (
     "user_id" "uuid" NOT NULL,
     "branch_id" "uuid" NOT NULL,
@@ -18276,6 +18481,11 @@ ALTER TABLE ONLY "public"."species"
 
 
 
+ALTER TABLE ONLY "public"."staff_availability"
+    ADD CONSTRAINT "staff_availability_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."staff_branches"
     ADD CONSTRAINT "staff_branches_pkey" PRIMARY KEY ("user_id", "branch_id");
 
@@ -18820,6 +19030,10 @@ CREATE INDEX "shop_orders_branch_status_idx" ON "public"."shop_orders" USING "bt
 
 
 CREATE INDEX "shop_orders_user_idx" ON "public"."shop_orders" USING "btree" ("user_id", "placed_at" DESC);
+
+
+
+CREATE INDEX "staff_availability_user_idx" ON "public"."staff_availability" USING "btree" ("user_id", "weekday");
 
 
 
@@ -20069,6 +20283,16 @@ ALTER TABLE ONLY "public"."shop_settings"
 
 ALTER TABLE ONLY "public"."spa_resources"
     ADD CONSTRAINT "spa_resources_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."staff_availability"
+    ADD CONSTRAINT "staff_availability_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."staff_availability"
+    ADD CONSTRAINT "staff_availability_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -21343,6 +21567,10 @@ ALTER TABLE "public"."spa_resources" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."species" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "staff availability read" ON "public"."staff_availability" FOR SELECT TO "authenticated" USING (( SELECT "public"."can_view_staff"("staff_availability"."user_id") AS "can_view_staff"));
+
+
+
 CREATE POLICY "staff read" ON "public"."diagnosis_terms" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_staff"() AS "is_staff"));
 
 
@@ -21357,6 +21585,9 @@ CREATE POLICY "staff read" ON "public"."kennel_types" FOR SELECT TO "authenticat
 
 CREATE POLICY "staff read" ON "public"."vaccine_types" FOR SELECT TO "authenticated" USING (( SELECT "public"."is_staff"() AS "is_staff"));
 
+
+
+ALTER TABLE "public"."staff_availability" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."staff_branches" ENABLE ROW LEVEL SECURITY;
@@ -21580,6 +21811,16 @@ GRANT ALL ON FUNCTION "public"."auto_cancel_stale_shop_orders"("p_hours" integer
 
 
 
+REVOKE ALL ON FUNCTION "public"."availability_conflict"("p_user" "uuid", "p_start_at" timestamp with time zone, "p_end_at" timestamp with time zone) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."availability_conflict"("p_user" "uuid", "p_start_at" timestamp with time zone, "p_end_at" timestamp with time zone) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."availability_rows"("p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."availability_rows"("p_user" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."billable_appointment_items"("p_branch" "uuid", "p_customer" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."billable_appointment_items"("p_branch" "uuid", "p_customer" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."billable_appointment_items"("p_branch" "uuid", "p_customer" "uuid") TO "service_role";
@@ -21768,6 +22009,7 @@ GRANT ALL ON FUNCTION "public"."can_shop_orders"("p_method" "text", "p_branch" "
 
 REVOKE ALL ON FUNCTION "public"."can_view_staff"("p_user" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."can_view_staff"("p_user" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."can_view_staff"("p_user" "uuid") TO "authenticated";
 
 
 
@@ -21828,6 +22070,11 @@ GRANT ALL ON FUNCTION "public"."cancel_stock_document"("p_id" "uuid", "p_reason"
 REVOKE ALL ON FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."cash_shift_summary"("p_shift" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."check_availability_items"("p_items" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."check_availability_items"("p_items" "jsonb") TO "service_role";
 
 
 
@@ -22624,6 +22871,12 @@ GRANT ALL ON FUNCTION "public"."my_appointments"("p_scope" "text", "p_page" inte
 
 
 
+REVOKE ALL ON FUNCTION "public"."my_availability"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_availability"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."my_availability"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."my_boarding_stay"("p_id" "uuid") TO "service_role";
@@ -22871,6 +23124,11 @@ GRANT ALL ON FUNCTION "public"."remove_shift_assignment"("p_id" "uuid") TO "serv
 
 
 
+REVOKE ALL ON FUNCTION "public"."replace_availability"("p_user" "uuid", "p_items" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."replace_availability"("p_user" "uuid", "p_items" "jsonb") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."replace_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "service_role";
@@ -22980,6 +23238,11 @@ GRANT ALL ON FUNCTION "public"."return_shop_order"("p_id" "uuid", "p_reason" "te
 
 
 
+REVOKE ALL ON FUNCTION "public"."roster_availability"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."roster_availability"("p_branch" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."roster_leaves"("p_branch" "uuid", "p_from" "date", "p_to" "date") TO "service_role";
 
@@ -23069,6 +23332,12 @@ GRANT ALL ON FUNCTION "public"."save_my_address"("p" "jsonb") TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."save_my_availability"("p_items" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."save_my_availability"("p_items" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."save_my_availability"("p_items" "jsonb") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."save_my_profile"("p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."save_my_profile"("p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."save_my_profile"("p" "jsonb") TO "service_role";
@@ -23143,6 +23412,12 @@ GRANT ALL ON FUNCTION "public"."save_spa_resource"("p" "jsonb", "p_id" "uuid") T
 REVOKE ALL ON FUNCTION "public"."save_species"("p" "jsonb", "p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."save_species"("p" "jsonb", "p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."save_species"("p" "jsonb", "p_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."save_staff_availability"("p_user" "uuid", "p_items" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."save_staff_availability"("p_user" "uuid", "p_items" "jsonb") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."save_staff_availability"("p_user" "uuid", "p_items" "jsonb") TO "service_role";
 
 
 
@@ -23432,6 +23707,12 @@ GRANT ALL ON FUNCTION "public"."spa_web_slots"("p_branch" "uuid", "p_date" "date
 REVOKE ALL ON FUNCTION "public"."spa_week_hours"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."spa_week_hours"("p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."spa_week_hours"("p_branch" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."staff_availability_of"("p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."staff_availability_of"("p_user" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."staff_availability_of"("p_user" "uuid") TO "service_role";
 
 
 
@@ -23930,6 +24211,11 @@ GRANT ALL ON TABLE "public"."shop_settings" TO "service_role";
 
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."spa_resources" TO "authenticated";
 GRANT ALL ON TABLE "public"."spa_resources" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."staff_availability" TO "service_role";
+GRANT SELECT ON TABLE "public"."staff_availability" TO "authenticated";
 
 
 

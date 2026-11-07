@@ -23,6 +23,7 @@ export const ATTENDANCE_ERROR_HINTS = [
   "own_request",
   "not_cancellable",
   "not_signed_in",
+  "too_many",
 ] as const;
 export type AttendanceErrorHint = (typeof ATTENDANCE_ERROR_HINTS)[number];
 
