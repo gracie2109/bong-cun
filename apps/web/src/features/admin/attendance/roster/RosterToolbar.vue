@@ -10,7 +10,8 @@
       </Button>
     </div>
     <Button variant="outline" :disabled="isThisWeek" @click="emit('today')">{{ $t("attendance.roster.thisWeek") }}</Button>
-    <Button v-if="canCreate" variant="outline" class="ml-auto" @click="emit('copy')">
+    <RosterPendingButton :count="pendingCount" class="ml-auto" />
+    <Button v-if="canCreate" variant="outline" @click="emit('copy')">
       <Copy class="mr-1 size-4" />
       {{ $t("attendance.roster.copyWeek") }}
     </Button>
@@ -20,7 +21,8 @@
 <script lang="ts" setup>
 import { ChevronLeft, ChevronRight, Copy } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
+import RosterPendingButton from "./RosterPendingButton.vue";
 
-defineProps<{ label: string; isThisWeek: boolean; canCreate: boolean }>();
+defineProps<{ label: string; isThisWeek: boolean; canCreate: boolean; pendingCount: number }>();
 const emit = defineEmits<{ previous: []; next: []; today: []; copy: [] }>();
 </script>

@@ -18,7 +18,7 @@ import Nav from "@/components/layout/admin/Nav.vue";
 import { canOpenAdminRoute } from "@bongcun/core/auth";
 import { ADMIN_NAV_SECTIONS } from "@/lib/navigations";
 import { useShopOrderBadge } from "@/features/admin/shop-orders/queries/shopOrdersAdmin";
-import { usePendingLeaveCount } from "@/features/admin/attendance";
+import { usePendingLeaveCount, usePendingShiftRequestCount } from "@/features/admin/attendance";
 import { useAttentionBadges } from "@/features/admin/dashboard";
 import { useAppStore, useAuthStore } from "@/stores";
 import { initials } from "@/features/admin/pets/format";
@@ -45,12 +45,16 @@ const orderBadge = useShopOrderBadge(canSeeOrders);
 // Leave requests waiting for a decision, on the "Đơn nghỉ" item.
 const canSeeLeave = computed(() => canOpenAdminRoute(auth.adminGrants ?? {}, "attendanceLeave"));
 const leaveBadge = usePendingLeaveCount(canSeeLeave);
+// Shift registration requests waiting for a decision, on the "Duyệt đăng ký ca" item.
+const canSeeRequests = computed(() => canOpenAdminRoute(auth.adminGrants ?? {}, "attendanceRequests"));
+const requestBadge = usePendingShiftRequestCount(canSeeRequests);
 // Vaccines due and lots expiring, on "Nhắc lịch" and "Tồn kho".
 const attentionBadge = useAttentionBadges();
 const badges = computed(() => ({
   ...attentionBadge.value,
   shopOrders: orderBadge.data.value ?? 0,
   attendanceLeave: leaveBadge.data.value ?? 0,
+  attendanceRequests: requestBadge.data.value ?? 0,
 }));
 
 const userName = computed(

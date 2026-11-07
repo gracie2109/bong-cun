@@ -28,6 +28,10 @@ export const WIDGET_META = {
     key: "staffToday", permissions: ["attendance"], scopes: ["branch"],
     defaultSize: size(2, 3), minSize: size(1, 3), maxSize: size(4, 5),
   },
+  shiftRequests: {
+    key: "shiftRequests", permissions: ["attendance"], scopes: ["branch"],
+    defaultSize: size(2, 2), minSize: size(1, 2), maxSize: size(2, 3),
+  },
   myShifts: {
     key: "myShifts", permissions: [], anyStaff: true, scopes: ["branch"],
     defaultSize: size(2, 3), minSize: size(1, 2), maxSize: size(4, 5),

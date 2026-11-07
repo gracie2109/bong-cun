@@ -15,6 +15,7 @@
         <MyTimesheetCard />
         <MyLeaveCard />
         <MyAvailabilityCard />
+        <MyShiftRequestsCard />
       </div>
     </div>
   </ContentWrap>
@@ -28,6 +29,7 @@ import MyAvailabilityCard from "./MyAvailabilityCard.vue";
 import MyEntriesTable from "./MyEntriesTable.vue";
 import MyLeaveCard from "./MyLeaveCard.vue";
 import MyTimesheetCard from "./MyTimesheetCard.vue";
+import MyShiftRequestsCard from "./MyShiftRequestsCard.vue";
 import MyScheduleList from "./MyScheduleList.vue";
 import { useMyAttendance } from "./useMySchedule";
 

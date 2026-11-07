@@ -7,7 +7,8 @@
       "timesheet": "Bảng công",
       "settings": "Cài đặt",
       "me": "Của tôi",
-      "register": "Đăng ký ca"
+      "register": "Đăng ký ca",
+      "requests": "Duyệt đăng ký"
     },
     "settings": {
       "title": "Cài đặt chấm công",
@@ -128,7 +129,12 @@
         "long": "Một ca dài tối đa 16 giờ.",
         "break": "Giờ nghỉ phải nhỏ hơn độ dài ca.",
         "monday": "Ngày chọn phải là thứ Hai."
-      }
+      },
+      "requestTitle": "Đăng ký đang chờ duyệt",
+      "pending": "Chờ duyệt",
+      "pendingRequests": "{count} đăng ký chờ duyệt",
+      "blockedDay": "Bận cả ngày (lịch rảnh)",
+      "availabilityOf": "Lịch rảnh của {name}"
     },
     "weekday": {
       "1": "T2",
@@ -236,7 +242,10 @@
       "upcoming": "Ca sắp tới",
       "noShifts": "Chưa có ca nào trong 2 tuần tới.",
       "entries": "Lượt chấm công tháng này",
-      "noEntries": "Chưa có lượt chấm công nào trong tháng."
+      "noEntries": "Chưa có lượt chấm công nào trong tháng.",
+      "requestsTitle": "Đăng ký ca của tôi",
+      "requestsHint": "Các ca bạn đã đăng ký trong 4 tuần tới.",
+      "noRequests": "Bạn chưa đăng ký ca nào."
     },
     "leave": {
       "title": "Đơn nghỉ",
@@ -410,6 +419,26 @@
       "maxShiftsHint": "Tính cả đơn chờ duyệt và ca đã xếp.",
       "staffNote": "Lời nhắn cho nhân viên",
       "staffNoteHint": "Hiện trên trang đăng ký, ví dụ: Cuối tuần cần ít nhất 2 người."
+    },
+    "requests": {
+      "title": "Duyệt đăng ký ca",
+      "empty": "Không có đăng ký nào.",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "select": "Chọn đăng ký của {name}",
+      "selectAll": "Chọn tất cả",
+      "selected": "Đã chọn {count}",
+      "decide": "Duyệt / Từ chối",
+      "decideTitle": "Xử lý {count} đăng ký",
+      "note": "Ghi chú (tùy chọn)",
+      "flags": {
+        "expired": "Quá hạn",
+        "onLeave": "Có đơn nghỉ",
+        "unavailable": "Báo bận",
+        "preferred": "Thích ca này",
+        "overlap": "Trùng ca khác",
+        "removed": "Đã gỡ khỏi lịch"
+      }
     }
   }
 }

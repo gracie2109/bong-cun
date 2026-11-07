@@ -16,6 +16,13 @@ const roster: Roster = {
     shift("c", "u2", "2026-11-03", "2026-11-03T01:00:00Z"),
   ],
   leaves: [{ userId: "u2", fromDate: "2026-11-02", toDate: "2026-11-02", part: "am", leaveType: "sick" }],
+  requests: [
+    { id: "r1", userId: "u1", workDate: "2026-11-03", templateId: null, name: "Day", color: "teal", startAt: "2026-11-03T01:00:00Z", endAt: "2026-11-03T05:00:00Z", note: null, expired: false, availability: null, onLeave: false },
+  ],
+  availability: [
+    { userId: "u1", weekday: 2, kind: "unavailable", startTime: null, endTime: null },
+    { userId: "u2", weekday: 1, kind: "preferred", startTime: "08:00", endTime: "12:00" },
+  ],
 };
 const days = ["2026-11-02", "2026-11-03"];
 
@@ -30,6 +37,14 @@ describe("buildRosterGrid", () => {
   it("puts the shifts of a day in time order", () => {
     expect(rows[0]!.cells[0]!.assignments.map((item) => item.id)).toEqual(["a", "b"]);
     expect(rows[0]!.shiftCount).toBe(2);
+  });
+
+  it("draws pending requests and blocked days on the right cell", () => {
+    expect(rows[0]!.cells[1]!.requests.map((item) => item.id)).toEqual(["r1"]);
+    expect(rows[0]!.cells[0]!.requests).toEqual([]);
+    expect(rows[0]!.cells[1]!.blocked).toBe(true);
+    expect(rows[1]!.cells[0]!.blocked).toBe(false);
+    expect(rows[1]!.cells[0]!.availability[0]!.kind).toBe("preferred");
   });
 
   it("shows leave on the days it covers only", () => {
