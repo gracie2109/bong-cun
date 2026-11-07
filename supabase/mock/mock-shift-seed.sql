@@ -1,12 +1,16 @@
--- Mock data to try shift registration (availability, requests, approval, roster).
+-- Mock data to try shift registration with realistic volume (availability, requests, approval, roster).
 --
 -- Not a migration: nothing runs it automatically. Paste it into the Supabase SQL editor, or
 --   psql "$DATABASE_URL" -f supabase/mock/mock-shift-seed.sql
 --
 -- Everything is tagged so mock-shift-cleanup.sql removes exactly it:
---   * a branch with code 'MOCKCA' (shifts, templates, requests and settings hang off it),
---   * five staff accounts mock-ca-1..5@mock.invalid (no password, nobody can sign in as them).
+--   * a branch with code 'MOCKCA' (templates, shifts, requests and settings hang off it),
+--   * ten staff accounts mock-ca-1..10@mock.invalid (no password, nobody can sign in as them).
 -- It never changes an existing row. Admins see the branch in the branch picker.
+-- Contents: registration open; ten staff with Vietnamese names and availability; shifts for last
+-- week and this week (about 4 days each, never on a day the person blocked); requests for next
+-- week (pending, approved, rejected, cancelled) and the week after (pending). Some pending
+-- requests land on blocked days on purpose so the warnings show.
 -- One transaction; running it twice is refused.
 begin;
 
@@ -16,13 +20,22 @@ declare
   v_admin   uuid;
   v_tpl     uuid[] := '{}';
   v_staff   uuid[] := '{}';
-  v_names   text[] := array['An', 'Bình', 'Chi', 'Dũng', 'Hà'];
+  v_names   text[] := array['Nguyễn Minh Anh', 'Trần Quốc Bảo', 'Lê Thu Hà', 'Phạm Gia Huy', 'Võ Ngọc Lan',
+                            'Đặng Hoàng Nam', 'Bùi Thanh Tâm', 'Hoàng Mỹ Linh', 'Phan Đức Trí', 'Đỗ Khánh Vy'];
+  -- Weekday (1 = Monday) each person cannot work; 0 = none.
+  v_off     int[] := array[2, 0, 5, 0, 7, 3, 0, 6, 0, 4];
   v_monday  date := date_trunc('week', current_date)::date;
   v_next    date := date_trunc('week', current_date)::date + 7;
+  v_tname   text[] := array['Ca sáng', 'Ca chiều', 'Ca tối'];
+  v_tstart  time[] := array[time '07:30', time '12:00', time '16:30'];
+  v_tend    time[] := array[time '12:00', time '16:30', time '21:00'];
   v_id      uuid;
   v_asg     uuid;
+  v_day     date;
+  v_tp      int;
+  v_status  text;
   i         int;
-  t         record;
+  d         int;
 begin
   if exists (select 1 from public.branches where code = 'MOCKCA') then
     raise exception 'The MOCKCA branch already exists. Run mock-shift-cleanup.sql first.';
@@ -32,85 +45,85 @@ begin
 
   insert into public.branches (code, name) values ('MOCKCA', 'Chi nhánh mẫu ca làm (MOCKCA)') returning id into v_branch;
 
-  -- Registration is open: 3 weeks ahead, closes 1 day before Monday, 5 shifts a week.
   insert into public.shift_registration_settings (branch_id, is_open, weeks_ahead, close_days_before, max_shifts_per_week, staff_note, updated_by)
-  values (v_branch, true, 3, 1, 5, 'Cuối tuần cần ít nhất 2 người', v_admin);
+  values (v_branch, true, 3, 1, 5, 'Cuối tuần cần ít nhất 3 người. Đăng ký trước 0h ngày Chủ nhật.', v_admin);
 
-  for t in select * from (values
-    ('Ca sáng', time '08:00', time '12:00', 'teal', 1),
-    ('Ca chiều', time '13:00', time '17:00', 'sky', 2),
-    ('Ca tối', time '17:00', time '21:00', 'violet', 3)) v(name, s, e, color, ord)
-  loop
+  for i in 1..3 loop
     insert into public.shift_templates (branch_id, name, start_time, end_time, color, sort_order)
-    values (v_branch, t.name, t.s, t.e, t.color, t.ord) returning id into v_id;
+    values (v_branch, v_tname[i], v_tstart[i], v_tend[i], (array['teal', 'sky', 'violet'])[i], i) returning id into v_id;
     v_tpl := v_tpl || v_id;
   end loop;
 
-  -- Staff: auth account (the trigger creates public.users) plus a role at the mock branch.
-  for i in 1..5 loop
+  for i in 1..10 loop
     v_id := gen_random_uuid();
     insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data, created_at, updated_at)
     values (v_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-            'mock-ca-' || i || '@mock.invalid', jsonb_build_object('full_name', '[MOCK] ' || v_names[i]), now(), now());
+            'mock-ca-' || i || '@mock.invalid', jsonb_build_object('full_name', v_names[i]), now(), now());
     update public.users set role = 'cashier' where id = v_id;
     insert into public.staff_branches (user_id, branch_id, role) values (v_id, v_branch, 'cashier');
     v_staff := v_staff || v_id;
   end loop;
 
-  -- Availability: An cannot work Tuesdays, Bình prefers Saturday mornings, Chi is out Friday evenings.
+  -- Availability: a blocked weekday, a few time-range blocks and some preferred slots.
+  for i in 1..10 loop
+    if v_off[i] > 0 then
+      insert into public.staff_availability (user_id, weekday, kind, note)
+      values (v_staff[i], v_off[i], 'unavailable',
+              (array['Đi học cả ngày', null, 'Việc gia đình', 'Học thêm', 'Đi làm thêm', 'Về quê'])[1 + i % 6]);
+    end if;
+  end loop;
   insert into public.staff_availability (user_id, weekday, kind, start_time, end_time, note) values
-    (v_staff[1], 2, 'unavailable', null, null, 'Đi học cả ngày'),
-    (v_staff[2], 6, 'preferred', '08:00', '12:00', null),
-    (v_staff[3], 5, 'unavailable', '17:00', '21:00', 'Bận việc nhà'),
-    (v_staff[4], 7, 'preferred', null, null, null);
+    (v_staff[2], 3, 'unavailable', '16:30', '21:00', 'Học buổi tối'),
+    (v_staff[4], 1, 'unavailable', '07:30', '12:00', 'Có lớp sáng thứ Hai'),
+    (v_staff[7], 5, 'unavailable', '12:00', '16:30', null),
+    (v_staff[9], 4, 'unavailable', '16:30', '21:00', 'Đón em'),
+    (v_staff[1], 6, 'preferred', '07:30', '12:00', 'Thích ca sáng cuối tuần'),
+    (v_staff[3], 7, 'preferred', null, null, null),
+    (v_staff[5], 6, 'preferred', '12:00', '21:00', null),
+    (v_staff[6], 2, 'preferred', '07:30', '12:00', null),
+    (v_staff[8], 1, 'preferred', '16:30', '21:00', null),
+    (v_staff[10], 7, 'preferred', '07:30', '16:30', null);
 
-  -- Shifts already on the roster this week and the next (made by hand).
-  for i in 0..4 loop
-    foreach v_id in array v_staff[1:3] loop
-      continue when i = 1 and v_id = v_staff[1];
+  -- Roster: last week and this week, about four days each, never on a day the person blocked.
+  for i in 1..10 loop
+    for d in -7..6 loop
+      v_day := v_monday + d;
+      continue when ((i * 2 + d + 14) % 7) >= 4;
+      continue when extract(isodow from v_day)::int = v_off[i];
+      v_tp := ((i + d + 14) % 3) + 1;
       insert into public.shift_assignments (branch_id, user_id, work_date, template_id, name, start_at, end_at, created_by)
-      select v_branch, v_id, v_monday + i, v_tpl[1], 'Ca sáng',
-             public.shift_start_at(v_monday + i, time '08:00'), public.shift_end_at(v_monday + i, time '08:00', time '12:00'), v_admin;
+      values (v_branch, v_staff[i], v_day, v_tpl[v_tp], v_tname[v_tp],
+              public.shift_start_at(v_day, v_tstart[v_tp]), public.shift_end_at(v_day, v_tstart[v_tp], v_tend[v_tp]), v_admin);
     end loop;
   end loop;
 
-  -- Requests for next week. staff, day offset, template, status, note.
-  -- Pending: a clean one; one on An's blocked Tuesday; one on Chi's blocked Friday evening;
-  -- one on Bình's preferred Saturday morning. Decided: Dũng approved (and put on the roster),
-  -- Hà rejected, Dũng cancelled one.
-  for t in select * from (values
-    (4, 0, 1, 'pending',   null),
-    (1, 1, 1, 'pending',   'Xin đổi ca nếu được'),
-    (3, 4, 3, 'pending',   null),
-    (2, 5, 1, 'pending',   'Thích ca sáng thứ Bảy'),
-    (4, 2, 2, 'approved',  null),
-    (5, 3, 2, 'rejected',  'Đủ người ca chiều'),
-    (4, 6, 3, 'cancelled', null)) v(ix, d, tp, status, note)
-  loop
-    declare
-      v_s time := (select start_time from public.shift_templates where id = v_tpl[t.tp]);
-      v_e time := (select end_time from public.shift_templates where id = v_tpl[t.tp]);
-      v_n text := (select name from public.shift_templates where id = v_tpl[t.tp]);
-    begin
+  -- Requests: next week (mixed outcomes) and the week after (all pending).
+  for i in 1..10 loop
+    for d in 7..20 loop
+      v_day := v_monday + d;
+      continue when ((i * 3 + d * 5) % 7) not in (0, 1);
+      v_tp := ((i + d) % 3) + 1;
+      v_status := case when d >= 14 then 'pending'
+                       else (array['approved', 'rejected', 'cancelled', 'pending', 'pending', 'pending', 'approved', 'pending', 'pending', 'pending'])[1 + (i + d) % 10] end;
       v_asg := null;
-      if t.status = 'approved' then
+      if v_status = 'approved' then
         insert into public.shift_assignments (branch_id, user_id, work_date, template_id, name, start_at, end_at, created_by)
-        values (v_branch, v_staff[t.ix], v_next + t.d, v_tpl[t.tp], v_n,
-                public.shift_start_at(v_next + t.d, v_s), public.shift_end_at(v_next + t.d, v_s, v_e), v_admin)
+        values (v_branch, v_staff[i], v_day, v_tpl[v_tp], v_tname[v_tp],
+                public.shift_start_at(v_day, v_tstart[v_tp]), public.shift_end_at(v_day, v_tstart[v_tp], v_tend[v_tp]), v_admin)
         returning id into v_asg;
       end if;
       insert into public.shift_requests (
         branch_id, user_id, user_name, work_date, template_id, name, start_at, end_at, status, assignment_id,
         decided_by, decided_by_name, decided_at, decision_note, note)
       values (
-        v_branch, v_staff[t.ix], '[MOCK] ' || v_names[t.ix], v_next + t.d, v_tpl[t.tp], v_n,
-        public.shift_start_at(v_next + t.d, v_s), public.shift_end_at(v_next + t.d, v_s, v_e), t.status, v_asg,
-        case when t.status in ('approved', 'rejected') then v_admin end,
-        case when t.status in ('approved', 'rejected') then 'Quản lý' end,
-        case when t.status in ('approved', 'rejected') then now() end,
-        case when t.status = 'rejected' then t.note end,
-        case when t.status <> 'rejected' then t.note end);
-    end;
+        v_branch, v_staff[i], v_names[i], v_day, v_tpl[v_tp], v_tname[v_tp],
+        public.shift_start_at(v_day, v_tstart[v_tp]), public.shift_end_at(v_day, v_tstart[v_tp], v_tend[v_tp]), v_status, v_asg,
+        case when v_status in ('approved', 'rejected') then v_admin end,
+        case when v_status in ('approved', 'rejected') then 'Quản lý' end,
+        case when v_status in ('approved', 'rejected') then now() - (i || ' hours')::interval end,
+        case when v_status = 'rejected' then 'Đã đủ người ca này' end,
+        case when v_status = 'pending' and (i + d) % 4 = 0 then 'Mong được xếp ca này' end);
+    end loop;
   end loop;
 end;
 $seed$;

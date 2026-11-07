@@ -1,5 +1,5 @@
 -- Removes exactly what mock-shift-seed.sql created: the MOCKCA branch (its templates, shifts,
--- requests and settings go with it) and the five mock-ca-N@mock.invalid accounts.
+-- requests and settings go with it) and the ten mock-ca-N@mock.invalid accounts.
 -- Existing rows are untouched. One transaction.
 begin;
 
