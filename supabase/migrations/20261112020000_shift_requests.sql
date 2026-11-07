@@ -303,12 +303,19 @@ begin
         raise exception 'weekly limit reached' using errcode = 'P0001', hint = 'over_weekly_limit';
       end if;
 
-      insert into public.shift_requests (
-        branch_id, user_id, user_name, work_date, template_id, name, start_at, end_at, break_minutes, note
-      ) values (
-        p_branch, v_me, public.staff_display_name(v_me), v_date, v_tpl, v_t.name, v_start_at, v_end_at,
-        v_t.break_minutes, v_note
-      ) returning id into v_id;
+      begin
+        insert into public.shift_requests (
+          branch_id, user_id, user_name, work_date, template_id, name, start_at, end_at, break_minutes, note
+        ) values (
+          p_branch, v_me, public.staff_display_name(v_me), v_date, v_tpl, v_t.name, v_start_at, v_end_at,
+          v_t.break_minutes, v_note
+        ) returning id into v_id;
+      exception
+        when exclusion_violation then
+          raise exception 'overlaps another pending request' using errcode = 'P0001', hint = 'request_overlap';
+        when unique_violation then
+          raise exception 'already requested' using errcode = 'P0001', hint = 'duplicate';
+      end;
       v_count := v_count + 1;
 
       v_warning := case
@@ -318,10 +325,6 @@ begin
       v_created := v_created || jsonb_strip_nulls(jsonb_build_object(
         'id', v_id, 'work_date', v_date, 'template_id', v_tpl, 'warning', v_warning));
     exception
-      when exclusion_violation then
-        v_skipped := v_skipped || jsonb_build_object('work_date', v_item ->> 'work_date', 'template_id', v_item ->> 'template_id', 'hint', 'request_overlap');
-      when unique_violation then
-        v_skipped := v_skipped || jsonb_build_object('work_date', v_item ->> 'work_date', 'template_id', v_item ->> 'template_id', 'hint', 'duplicate');
       when others then
         get stacked diagnostics v_hint = pg_exception_hint;
         v_skipped := v_skipped || jsonb_build_object(
