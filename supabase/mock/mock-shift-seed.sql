@@ -11,6 +11,9 @@
 -- week and this week (about 4 days each, never on a day the person blocked); requests for next
 -- week (pending, approved, rejected, cancelled) and the week after (pending). Some pending
 -- requests land on blocked days on purpose so the warnings show.
+-- Publishing is switched on (deadline 3 days before Monday = Friday 00:00): last week and this week are
+-- published, next week stays a draft; the first person without a request next week declared "no shifts",
+-- the others without one show up as "not registered"; the first user gets two sample notifications.
 -- One transaction; running it twice is refused.
 begin;
 
@@ -45,8 +48,8 @@ begin
 
   insert into public.branches (code, name) values ('MOCKCA', 'Chi nhánh mẫu ca làm (MOCKCA)') returning id into v_branch;
 
-  insert into public.shift_registration_settings (branch_id, is_open, weeks_ahead, close_days_before, max_shifts_per_week, staff_note, updated_by)
-  values (v_branch, true, 3, 1, 5, 'Cuối tuần cần ít nhất 3 người. Đăng ký trước 0h ngày Chủ nhật.', v_admin);
+  insert into public.shift_registration_settings (branch_id, is_open, weeks_ahead, close_days_before, max_shifts_per_week, staff_note, updated_by, require_publish)
+  values (v_branch, true, 3, 3, 5, 'Cuối tuần cần ít nhất 3 người. Đăng ký trước 0h thứ Sáu.', v_admin, true);
 
   for i in 1..3 loop
     insert into public.shift_templates (branch_id, name, start_time, end_time, color, sort_order)
@@ -102,6 +105,8 @@ begin
     for d in 7..20 loop
       v_day := v_monday + d;
       continue when ((i * 3 + d * 5) % 7) not in (0, 1);
+      -- The last two people send nothing for next week: one declares it below, the other is "not registered".
+      continue when i in (9, 10) and d < 14;
       v_tp := ((i + d) % 3) + 1;
       v_status := case when d >= 14 then 'pending'
                        else (array['approved', 'rejected', 'cancelled', 'pending', 'pending', 'pending', 'approved', 'pending', 'pending', 'pending'])[1 + (i + d) % 10] end;
@@ -125,6 +130,26 @@ begin
         case when v_status = 'pending' and (i + d) % 4 = 0 then 'Mong được xếp ca này' end);
     end loop;
   end loop;
+
+  -- Publishing: the past and the running week are published, next week is a draft.
+  insert into public.schedule_weeks (branch_id, week_monday, status, published_at, published_by, published_by_name)
+  values (v_branch, v_monday - 7, 'published', now() - interval '9 days', v_admin, 'Quản lý'),
+         (v_branch, v_monday, 'published', now() - interval '2 days', v_admin, 'Quản lý');
+
+  -- The first person with no request next week said they are not working; the others stay "not registered".
+  insert into public.shift_registration_submissions (branch_id, user_id, week_monday, reason)
+  select v_branch, u, v_next, 'Về quê'
+  from unnest(v_staff) as u
+  where not exists (select 1 from public.shift_requests r
+                    where r.user_id = u and r.work_date between v_next and v_next + 6 and r.status <> 'cancelled')
+  limit 1;
+
+  perform public.notify_user(v_admin, v_branch, 'publish_reminder', 'Lịch tuần ' || to_char(v_next, 'DD/MM') || ' chưa phát hành',
+    'Tuần sau nhân viên chưa thấy lịch. Mở lịch ca để phát hành.', jsonb_build_object('name', 'attendanceRoster', 'query', '{}'::jsonb),
+    jsonb_build_object('week_monday', v_next));
+  perform public.notify_user(v_admin, v_branch, 'registration_missing', 'Có người chưa đăng ký ca tuần ' || to_char(v_next, 'DD/MM'),
+    'Đã hết hạn đăng ký. Mở lịch ca để xem ai chưa đăng ký.', jsonb_build_object('name', 'attendanceRoster', 'query', '{}'::jsonb),
+    jsonb_build_object('week_monday', v_next));
 end;
 $seed$;
 

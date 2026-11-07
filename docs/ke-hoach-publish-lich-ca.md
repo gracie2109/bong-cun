@@ -379,4 +379,27 @@ Phụ thuộc: N2 cần N1; H1 độc lập với N1 (nhưng làm sau N1 để s
 
 ## 16. Đã làm
 
-(Thread coding điền sau mỗi PR.)
+Xong ngày 2026-11-07. Migration `20261113010000`–`040000` chạy qua workflow "Supabase migrate" khi merge.
+
+| PR | Nội dung |
+| --- | --- |
+| S0 | Plan (#253) |
+| N1 (migration 010000) | Bảng `notifications`, `notify_user`, gộp "lịch đổi" chưa đọc, `my_notifications`, đếm chưa đọc, đánh dấu đã đọc, cron dọn thông báo cũ |
+| N2 | Chuông thông báo trên header, trang `/admin/notifications`, mở thông báo đưa tới đúng trang |
+| H1 (migration 020000) | `schedule_history` chỉ thêm (chặn sửa/xóa), trigger ghi lịch sử ca/đơn/tuần/khai báo, `p_reason` cho 5 hàm xếp ca |
+| H2 | Popup xác nhận có ô lý do ở mọi thao tác sửa lịch, trang "Lịch sử lịch ca", nút "Lịch sử ca này" |
+| P1 (migration 030000, #258) | `require_publish` theo chi nhánh (mặc định tắt), `schedule_weeks`, khai báo "tuần này không làm", miễn đăng ký, "ai chưa đăng ký", phát hành (từ chối đơn chờ + thông báo), khóa đăng ký/hủy sau khi phát hành, ẩn tuần nháp với nhân viên, thông báo khi sửa tuần đã phát hành |
+| P2 (#259) | Nhãn Nháp/Đã phát hành + nút Phát hành trên Lịch ca, nút/ngăn "Chưa đăng ký (N)" kèm "Xếp như tuần trước", cảnh báo thông báo khi sửa tuần đã phát hành, trang đăng ký khóa sau phát hành + ô "Đã gửi" + khai báo không đăng ký, Cài đặt: công tắc phát hành + thẻ miễn đăng ký, "Ca của tôi" mở đúng tuần từ thông báo |
+| P3 (migration 040000, #260) | Nhắc đăng ký 24 giờ trước hạn, báo quản lý sau hạn, nhắc phát hành tối Chủ nhật, tự phát hành tuần đã bắt đầu 00:05 thứ Hai |
+| P4 | Dữ liệu mẫu (chi nhánh MOCKCA bật phát hành) và mục này |
+
+Lệch so với plan:
+- Nhắc và tự phát hành chỉ chạy cho chi nhánh **đã bật** `require_publish` (tắt thì không có gì đổi, đúng nguyên tắc P-Q1).
+- `run_registration_reminders(p_now)` nhận thời điểm để test; cron gọi không tham số.
+- Tuần đã bắt đầu mà trống thì tự phát hành chỉ đánh dấu, không gửi thông báo.
+- Khai báo "tuần này không làm" dùng popup xác nhận có ô lý do, không có dialog riêng.
+- Màn đăng ký: đơn đã duyệt/từ chối hiện "Đã gửi" cho tới khi phát hành (nhân viên không thấy kết quả sớm).
+
+Chưa làm: gửi email/Zalo (chưa có tích hợp), bỏ phát hành (unpublish), R7 nhu cầu nhân sự.
+
+**Việc grace cần làm:** vào Cài đặt > Đăng ký ca bật "Phát hành lịch trước khi nhân viên thấy" (giữ tick "Phát hành luôn các tuần đã có ca"), đặt "Chốt trước thứ Hai" = 3, tick quyền "Nhân sự" (xem, tạo, sửa, xóa, cài đặt; mục Lịch sử cần quyền xem) cho vai trò quản lý, rồi làm 9 bước ở mục 15. Giao diện chỉ qua type-check, build và test, **chưa bấm thử trên trình duyệt**.
