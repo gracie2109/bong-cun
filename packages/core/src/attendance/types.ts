@@ -54,6 +54,35 @@ export type Roster = {
   templates: ShiftTemplate[];
   assignments: RosterAssignment[];
   leaves: RosterLeave[];
+  /** Pending shift requests, drawn dashed in the grid. */
+  requests: RosterRequest[];
+  /** Weekly availability of the branch's staff. */
+  availability: RosterAvailability[];
+};
+
+export type RosterRequest = {
+  id: string;
+  userId: string;
+  workDate: string;
+  templateId: string | null;
+  name: string;
+  color: ShiftColor;
+  startAt: string;
+  endAt: string;
+  note: string | null;
+  /** The shift already started, so it can no longer be approved. */
+  expired: boolean;
+  /** The person marked this time as unavailable or preferred. */
+  availability: "unavailable" | "preferred" | null;
+  onLeave: boolean;
+};
+
+export type RosterAvailability = {
+  userId: string;
+  weekday: number;
+  kind: "unavailable" | "preferred";
+  startTime: string | null;
+  endTime: string | null;
 };
 
 // ---------------------------------------------------------------- clock

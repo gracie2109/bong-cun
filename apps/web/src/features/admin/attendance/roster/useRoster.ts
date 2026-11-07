@@ -3,7 +3,7 @@ import { useShiftRoster } from "@/features/admin/attendance/queries";
 import type { Roster } from "@bongcun/core/attendance";
 import { buildRosterGrid } from "./rosterGrid";
 
-const EMPTY: Roster = { staff: [], templates: [], assignments: [], leaves: [] };
+const EMPTY: Roster = { staff: [], templates: [], assignments: [], leaves: [], requests: [], availability: [] };
 
 /** The roster of one branch for the week shown, as the grid's rows. */
 export const useRoster = (branchId: Ref<string | undefined>, monday: Ref<string>, sunday: Ref<string>, days: Ref<string[]>) => {

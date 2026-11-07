@@ -93,7 +93,8 @@
       "duplicate": "Bạn đã đăng ký ca này rồi.",
       "already_on_roster": "Ca này đã có trong lịch của bạn.",
       "request_overlap": "Ca này trùng giờ với một đăng ký đang chờ của bạn.",
-      "over_weekly_limit": "Bạn đã đăng ký đủ số ca tối đa trong tuần."
+      "over_weekly_limit": "Bạn đã đăng ký đủ số ca tối đa trong tuần.",
+      "too_late": "Ca này đã bắt đầu nên không duyệt được, chỉ từ chối."
     },
     "roster": {
       "title": "Lịch ca",

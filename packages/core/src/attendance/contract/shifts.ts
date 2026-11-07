@@ -1,6 +1,7 @@
 // Contract of the shift functions (templates, settings, roster). Inputs are camel case and say what a
 // caller sends; result schemas describe the `jsonb` the database answers with, key for key.
 import { z } from "zod";
+import { availabilityKindSchema } from "./availability";
 import { SHIFT_COLORS } from "../types";
 
 const uuid = z.string().uuid();
@@ -97,6 +98,32 @@ export type ShiftTemplateRow = z.infer<typeof shiftTemplateRowSchema>;
 export const assignShiftResultSchema = z.object({ id: uuid, warning: z.literal("on_leave").optional() });
 export const copyWeekResultSchema = z.object({ copied: z.number(), skipped: z.number() });
 
+/** A pending request drawn on the roster grid. */
+export const rosterRequestSchema = z.object({
+  id: uuid,
+  user_id: uuid,
+  work_date: date,
+  template_id: uuid.nullable(),
+  name: z.string(),
+  color: shiftColorSchema,
+  start_at: z.string(),
+  end_at: z.string(),
+  note: z.string().nullable(),
+  expired: z.boolean(),
+  availability: availabilityKindSchema.nullable(),
+  on_leave: z.boolean(),
+});
+export type RosterRequestRow = z.infer<typeof rosterRequestSchema>;
+
+export const rosterAvailabilitySchema = z.object({
+  user_id: uuid,
+  weekday: z.number().int().min(1).max(7),
+  kind: availabilityKindSchema,
+  start_time: z.string().nullish(),
+  end_time: z.string().nullish(),
+});
+export type RosterAvailabilityRow = z.infer<typeof rosterAvailabilitySchema>;
+
 export const rosterSchema = z.object({
   staff: z.array(z.object({ user_id: uuid, name: z.string(), role: z.string(), photo_url: z.string().nullable() })),
   templates: z.array(shiftTemplateRowSchema),
@@ -124,5 +151,8 @@ export const rosterSchema = z.object({
       leave_type: leaveTypeSchema,
     })
   ),
+  /** Pending shift requests and the availability of the branch's staff; absent until migration 20261112030000 ran. */
+  requests: z.array(rosterRequestSchema).optional(),
+  availability: z.array(rosterAvailabilitySchema).optional(),
 });
 export type RosterRow = z.infer<typeof rosterSchema>;

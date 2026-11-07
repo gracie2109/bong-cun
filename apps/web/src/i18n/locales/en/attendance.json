@@ -93,7 +93,8 @@
       "duplicate": "You already asked for this shift.",
       "already_on_roster": "This shift is already on your roster.",
       "request_overlap": "This overlaps another pending request of yours.",
-      "over_weekly_limit": "You reached the weekly shift limit."
+      "over_weekly_limit": "You reached the weekly shift limit.",
+      "too_late": "This shift already started, so it can only be rejected."
     },
     "roster": {
       "title": "Roster",

@@ -4240,6 +4240,90 @@ $$;
 ALTER FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean, "p_note" "text", "p_type" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me       uuid := (select auth.uid());
+  v_name     text := public.staff_display_name((select auth.uid()));
+  v_note     text := nullif(btrim(p_note), '');
+  v_id       uuid;
+  v_req      public.shift_requests;
+  v_assign   uuid;
+  v_hint     text;
+  v_approved integer := 0;
+  v_rejected integer := 0;
+  v_failed   jsonb := '[]'::jsonb;
+begin
+  if v_me is null then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_ids is null or cardinality(p_ids) not between 1 and 200 or p_approve is null or length(coalesce(v_note, '')) > 300 then
+    raise exception 'invalid request' using errcode = '22023', hint = 'bad_input';
+  end if;
+
+  foreach v_id in array p_ids loop
+    begin
+      select * into v_req from public.shift_requests where id = v_id for update;
+      if not found then
+        raise exception 'request not found' using errcode = 'P0001', hint = 'not_found';
+      end if;
+      if not public.can_attendance('CREATE', v_req.branch_id) then
+        raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+      end if;
+      if v_req.status <> 'pending' then
+        raise exception 'the request was already decided' using errcode = 'P0001', hint = 'not_pending';
+      end if;
+      if v_req.user_id = v_me and not public.is_super_admin() then
+        raise exception 'you cannot decide your own request' using errcode = 'P0001', hint = 'own_request';
+      end if;
+
+      v_assign := null;
+      if p_approve then
+        if v_req.start_at <= now() then
+          raise exception 'the shift already started' using errcode = 'P0001', hint = 'too_late';
+        end if;
+        if not exists (select 1 from public.staff_branches where user_id = v_req.user_id and branch_id = v_req.branch_id) then
+          raise exception 'this person no longer works at the branch' using errcode = 'P0001', hint = 'not_branch_staff';
+        end if;
+        -- The manager may have put this person on the same shift by hand already.
+        select a.id into v_assign from public.shift_assignments a
+        where a.user_id = v_req.user_id and a.branch_id = v_req.branch_id and a.work_date = v_req.work_date
+          and a.template_id is not distinct from v_req.template_id and a.start_at = v_req.start_at and a.end_at = v_req.end_at
+        limit 1;
+        if v_assign is null then
+          begin
+            insert into public.shift_assignments (
+              branch_id, user_id, work_date, template_id, name, start_at, end_at, break_minutes, note, created_by
+            ) values (
+              v_req.branch_id, v_req.user_id, v_req.work_date, v_req.template_id, v_req.name, v_req.start_at,
+              v_req.end_at, v_req.break_minutes, v_req.note, v_me
+            ) returning id into v_assign;
+          exception when exclusion_violation then
+            raise exception 'this person already has a shift at that time' using errcode = 'P0001', hint = 'shift_overlap';
+          end;
+        end if;
+      end if;
+
+      update public.shift_requests set
+        status = case when p_approve then 'approved' else 'rejected' end,
+        assignment_id = v_assign, decided_by = v_me, decided_by_name = v_name, decided_at = now(), decision_note = v_note
+      where id = v_id;
+      if p_approve then v_approved := v_approved + 1; else v_rejected := v_rejected + 1; end if;
+    exception when others then
+      get stacked diagnostics v_hint = pg_exception_hint;
+      v_failed := v_failed || jsonb_build_object('id', v_id, 'hint', coalesce(v_hint, 'bad_input'));
+    end;
+  end loop;
+  return jsonb_build_object('approved', v_approved, 'rejected', v_rejected, 'failed', v_failed);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."delete_care_log"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -7279,6 +7363,47 @@ $$;
 ALTER FUNCTION "public"."list_product_groups"("p_search" "text", "p_include_archived" boolean, "p_limit" integer, "p_offset" integer, "p_category" "uuid", "p_brand" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."list_shift_requests"("p_branch" "uuid" DEFAULT NULL::"uuid", "p_status" "text" DEFAULT 'pending'::"text", "p_from" "date" DEFAULT NULL::"date", "p_to" "date" DEFAULT NULL::"date", "p_search" "text" DEFAULT NULL::"text", "p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 20) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_branches uuid[] := public.attendance_branch_ids(p_branch, 'VIEW');
+  v_size     integer := least(greatest(coalesce(p_page_size, 20), 1), 100);
+  v_offset   integer := (greatest(coalesce(p_page, 1), 1) - 1) * v_size;
+  v_total    integer;
+  v_rows     jsonb;
+begin
+  if p_status is not null and p_status not in ('all', 'pending', 'approved', 'rejected', 'cancelled') then
+    raise exception 'invalid status' using errcode = '22023', hint = 'bad_input';
+  end if;
+
+  with picked as (
+    select r.id, r.work_date, r.start_at, r.created_at
+    from public.shift_requests r
+    where r.branch_id = any (v_branches)
+      and (p_status is null or p_status = 'all' or r.status = p_status)
+      and (p_from is null or r.work_date >= p_from)
+      and (p_to is null or r.work_date <= p_to)
+      and (nullif(btrim(coalesce(p_search, '')), '') is null or r.user_name ilike '%' || btrim(p_search) || '%')
+  ),
+  page as (
+    select id from picked order by work_date, start_at, created_at limit v_size offset v_offset
+  )
+  select (select count(*) from picked),
+         coalesce((select jsonb_agg(public.shift_request_row(r, b.name) order by r.work_date, r.start_at, r.created_at)
+                   from public.shift_requests r
+                   join public.branches b on b.id = r.branch_id
+                   where r.id in (select id from page)), '[]'::jsonb)
+    into v_total, v_rows;
+  return jsonb_build_object('rows', v_rows, 'total', v_total);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."list_shift_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."list_shift_templates"("p_branch" "uuid", "p_include_inactive" boolean DEFAULT false) RETURNS SETOF "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -9496,6 +9621,22 @@ $$;
 
 
 ALTER FUNCTION "public"."pending_leave_count"("p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."pending_shift_request_count"("p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS integer
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select count(*)::int
+  from public.shift_requests r
+  where r.status = 'pending' and r.start_at > now()
+    and r.user_id <> (select auth.uid())
+    and public.can_attendance('CREATE', r.branch_id)
+    and (p_branch is null or r.branch_id = p_branch);
+$$;
+
+
+ALTER FUNCTION "public"."pending_shift_request_count"("p_branch" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."pet_deceased_cleanup"("p_pet" "uuid") RETURNS "void"
@@ -14664,6 +14805,63 @@ $$;
 ALTER FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."shift_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "user_name" "text" DEFAULT ''::"text" NOT NULL,
+    "work_date" "date" NOT NULL,
+    "template_id" "uuid",
+    "name" "text" NOT NULL,
+    "start_at" timestamp with time zone NOT NULL,
+    "end_at" timestamp with time zone NOT NULL,
+    "break_minutes" integer DEFAULT 0 NOT NULL,
+    "note" "text",
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "assignment_id" "uuid",
+    "decided_by" "uuid",
+    "decided_by_name" "text",
+    "decided_at" timestamp with time zone,
+    "decision_note" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "shift_requests_break_minutes_check" CHECK (("break_minutes" >= 0)),
+    CONSTRAINT "shift_requests_decision_note_check" CHECK ((("decision_note" IS NULL) OR ("length"("decision_note") <= 300))),
+    CONSTRAINT "shift_requests_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 300))),
+    CONSTRAINT "shift_requests_span" CHECK ((("end_at" > "start_at") AND (("end_at" - "start_at") <= '16:00:00'::interval))),
+    CONSTRAINT "shift_requests_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"])))
+);
+
+
+ALTER TABLE "public"."shift_requests" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."shift_request_row"("r" "public"."shift_requests", "p_branch_name" "text") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select jsonb_build_object(
+    'id', r.id, 'branch_id', r.branch_id, 'branch_name', p_branch_name,
+    'user_id', r.user_id, 'user_name', r.user_name, 'work_date', r.work_date,
+    'template_id', r.template_id, 'name', r.name,
+    'color', coalesce((select t.color from public.shift_templates t where t.id = r.template_id), 'slate'),
+    'start_at', r.start_at, 'end_at', r.end_at, 'break_minutes', r.break_minutes, 'note', r.note,
+    'status', r.status, 'assignment_id', r.assignment_id,
+    'decided_by_name', r.decided_by_name, 'decided_at', r.decided_at, 'decision_note', r.decision_note,
+    'created_at', r.created_at,
+    'expired', r.status = 'pending' and r.start_at <= now(),
+    'on_leave', public.shift_on_leave(r.user_id, r.start_at),
+    'availability', public.availability_conflict(r.user_id, r.start_at, r.end_at),
+    'overlaps_assignment', r.status = 'pending' and exists (
+      select 1 from public.shift_assignments a
+      where a.user_id = r.user_id and tstzrange(a.start_at, a.end_at, '[)') && tstzrange(r.start_at, r.end_at, '[)')),
+    'on_roster', r.assignment_id is not null and exists (select 1 from public.shift_assignments a where a.id = r.assignment_id));
+$$;
+
+
+ALTER FUNCTION "public"."shift_request_row"("r" "public"."shift_requests", "p_branch_name" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."shift_roster"("p_branch" "uuid", "p_from" "date", "p_to" "date") RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -14705,7 +14903,19 @@ begin
       from public.shift_assignments a
       left join public.shift_templates t on t.id = a.template_id
       where a.branch_id = p_branch and a.work_date between p_from and p_to), '[]'::jsonb),
-    'leaves', public.roster_leaves(p_branch, p_from, p_to)
+    'leaves', public.roster_leaves(p_branch, p_from, p_to),
+    'requests', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', r.id, 'user_id', r.user_id, 'work_date', r.work_date, 'template_id', r.template_id,
+        'name', r.name, 'color', coalesce(t.color, 'slate'), 'start_at', r.start_at, 'end_at', r.end_at,
+        'note', r.note, 'expired', r.start_at <= now(),
+        'availability', public.availability_conflict(r.user_id, r.start_at, r.end_at),
+        'on_leave', public.shift_on_leave(r.user_id, r.start_at))
+        order by r.start_at, r.created_at)
+      from public.shift_requests r
+      left join public.shift_templates t on t.id = r.template_id
+      where r.branch_id = p_branch and r.status = 'pending' and r.work_date between p_from and p_to), '[]'::jsonb),
+    'availability', public.roster_availability(p_branch)
   );
 end;
 $$;
@@ -17894,37 +18104,6 @@ CREATE TABLE IF NOT EXISTS "public"."shift_registration_settings" (
 
 
 ALTER TABLE "public"."shift_registration_settings" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."shift_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "branch_id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "user_name" "text" DEFAULT ''::"text" NOT NULL,
-    "work_date" "date" NOT NULL,
-    "template_id" "uuid",
-    "name" "text" NOT NULL,
-    "start_at" timestamp with time zone NOT NULL,
-    "end_at" timestamp with time zone NOT NULL,
-    "break_minutes" integer DEFAULT 0 NOT NULL,
-    "note" "text",
-    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
-    "assignment_id" "uuid",
-    "decided_by" "uuid",
-    "decided_by_name" "text",
-    "decided_at" timestamp with time zone,
-    "decision_note" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "shift_requests_break_minutes_check" CHECK (("break_minutes" >= 0)),
-    CONSTRAINT "shift_requests_decision_note_check" CHECK ((("decision_note" IS NULL) OR ("length"("decision_note") <= 300))),
-    CONSTRAINT "shift_requests_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 300))),
-    CONSTRAINT "shift_requests_span" CHECK ((("end_at" > "start_at") AND (("end_at" - "start_at") <= '16:00:00'::interval))),
-    CONSTRAINT "shift_requests_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"])))
-);
-
-
-ALTER TABLE "public"."shift_requests" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."shift_templates" (
@@ -22667,6 +22846,12 @@ GRANT ALL ON FUNCTION "public"."decide_leave"("p_id" "uuid", "p_approve" boolean
 
 
 
+REVOKE ALL ON FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "service_role";
@@ -23100,6 +23285,12 @@ GRANT ALL ON FUNCTION "public"."list_product_groups"("p_search" "text", "p_inclu
 
 
 
+REVOKE ALL ON FUNCTION "public"."list_shift_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."list_shift_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."list_shift_requests"("p_branch" "uuid", "p_status" "text", "p_from" "date", "p_to" "date", "p_search" "text", "p_page" integer, "p_page_size" integer) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."list_shift_templates"("p_branch" "uuid", "p_include_inactive" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."list_shift_templates"("p_branch" "uuid", "p_include_inactive" boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."list_shift_templates"("p_branch" "uuid", "p_include_inactive" boolean) TO "service_role";
@@ -23468,6 +23659,12 @@ GRANT ALL ON FUNCTION "public"."pay_pickup_shop_order"("p_id" "uuid", "p_payment
 REVOKE ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."pending_leave_count"("p_branch" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."pending_shift_request_count"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."pending_shift_request_count"("p_branch" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."pending_shift_request_count"("p_branch" "uuid") TO "service_role";
 
 
 
@@ -24049,6 +24246,16 @@ GRANT ALL ON FUNCTION "public"."shift_registration_rules_raw"("p_branch" "uuid")
 
 REVOKE ALL ON FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."shift_requests" TO "service_role";
+GRANT SELECT ON TABLE "public"."shift_requests" TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."shift_request_row"("r" "public"."shift_requests", "p_branch_name" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."shift_request_row"("r" "public"."shift_requests", "p_branch_name" "text") TO "service_role";
 
 
 
@@ -24687,11 +24894,6 @@ GRANT SELECT ON TABLE "public"."shift_assignments" TO "authenticated";
 
 GRANT ALL ON TABLE "public"."shift_registration_settings" TO "service_role";
 GRANT SELECT ON TABLE "public"."shift_registration_settings" TO "authenticated";
-
-
-
-GRANT ALL ON TABLE "public"."shift_requests" TO "service_role";
-GRANT SELECT ON TABLE "public"."shift_requests" TO "authenticated";
 
 
 
