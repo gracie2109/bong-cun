@@ -14,3 +14,5 @@ export * from "./registrationMappers";
 export * from "./review";
 export * from "./historyMappers";
 export * from "./history";
+export * from "./publishMappers";
+export * from "./publish";

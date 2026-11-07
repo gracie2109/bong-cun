@@ -15,6 +15,7 @@ import type {
   SubmitResultRow,
 } from "@bongcun/core/attendance";
 import { toAvailabilityItem } from "./availabilityMappers";
+import { toWeekStatus } from "./publishMappers";
 
 type RequestRow = RegistrationBoardRow["requests"][number];
 
@@ -24,6 +25,7 @@ export const toRegistrationRules = (row: RegistrationRulesRow): RegistrationRule
   closeDaysBefore: row.close_days_before,
   maxShiftsPerWeek: row.max_shifts_per_week,
   staffNote: row.staff_note,
+  requirePublish: row.require_publish,
 });
 
 export const toMyShiftRequest = (row: RequestRow): MyShiftRequest => ({
@@ -73,6 +75,8 @@ export const toRegistrationBoard = (row: RegistrationBoardRow): RegistrationBoar
   leaves: row.leaves.map((l) => ({ fromDate: l.from_date, toDate: l.to_date, part: l.part, leaveType: l.leave_type })),
   availability: row.availability.map(toAvailabilityItem),
   needs: row.needs.map((n) => ({ templateId: n.template_id, weekday: n.weekday, minStaff: n.min_staff, assigned: n.assigned, pending: n.pending })),
+  week: toWeekStatus(row.week),
+  submission: row.submission ? { reason: row.submission.reason } : null,
 });
 
 export const toSubmitResult = (row: SubmitResultRow): SubmitResult => ({

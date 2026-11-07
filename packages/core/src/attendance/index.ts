@@ -5,6 +5,8 @@ export * from "./week";
 export * from "./rules";
 export * from "./availability";
 export * from "./registrationTypes";
+export * from "./publishTypes";
+export * from "./publish";
 export * from "./historyTypes";
 export * from "./history";
 export * from "./contract";

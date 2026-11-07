@@ -39,6 +39,10 @@ export const saveRegistrationSettings = async (client: Client, branchId: string,
             close_days_before: input.closeDaysBefore,
             max_shifts_per_week: input.maxShiftsPerWeek,
             staff_note: input.staffNote,
+            // Left out, they keep what the branch has now.
+            require_publish: input.requirePublish,
+            publish_existing: input.publishExisting,
+            reason: input.reason ?? undefined,
           },
         })
       )
