@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { computed, ref, watch } from "vue";
 import { useCancelShiftRequest, useClockStatus, useRegistrationBoard, useSubmitShiftRequests } from "@/features/admin/attendance/queries";
 import type { SubmitResult } from "@bongcun/core/attendance";
@@ -24,6 +26,7 @@ export const useRegisterPage = () => {
   const quota = computed(() => (board.value && branchId.value ? remainingQuota(board.value, branchId.value) : null));
   const overQuota = computed(() => quota.value !== null && selection.count.value > quota.value);
 
+  const confirm = useConfirmAction();
   const submit = useSubmitShiftRequests();
   const cancel = useCancelShiftRequest();
   const result = ref<SubmitResult | null>(null);
@@ -58,7 +61,15 @@ export const useRegisterPage = () => {
     quota,
     overQuota,
     sending: submit.isPending,
-    cancel: (id: string) => cancel.mutate(id),
+    confirm,
+    cancel: async (id: string) => {
+      const answer = await confirm.ask({
+        title: i18n.global.t("attendance.confirm.cancelRequest.title"),
+        message: i18n.global.t("attendance.confirm.cancelRequest.message"),
+        danger: true,
+      });
+      if (answer.ok) cancel.mutate(id);
+    },
     send,
     result,
     resultOpen,

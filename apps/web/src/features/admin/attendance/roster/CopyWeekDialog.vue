@@ -23,11 +23,15 @@
       </label>
     </form>
   </AppDialog>
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -37,6 +41,8 @@ import { addDays, isoWeekday } from "@bongcun/core/attendance";
 const props = defineProps<{ open: boolean; branchId: string | undefined; toMonday: string }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
+const { t } = useI18n();
+const confirm = useConfirmAction();
 const mutation = useCopyWeek();
 const fromMonday = ref("");
 const overwrite = ref(false);
@@ -55,8 +61,21 @@ watch(
 
 const submit = async () => {
   if (!props.branchId || !fromMonday.value || !fromIsMonday.value || fromMonday.value === props.toMonday) return;
+  // Overwriting deletes shifts that are already there, so it asks first.
+  let reason: string | null = null;
+  if (overwrite.value) {
+    const answer = await confirm.ask({
+      title: t("attendance.confirm.overwriteWeek.title"),
+      message: t("attendance.confirm.overwriteWeek.message", { from: fromMonday.value, to: props.toMonday }),
+      okText: t("attendance.roster.copyOk"),
+      danger: true,
+      reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },
+    });
+    if (!answer.ok) return;
+    reason = answer.reason;
+  }
   try {
-    await mutation.mutateAsync({ branchId: props.branchId, fromMonday: fromMonday.value, toMonday: props.toMonday, overwrite: overwrite.value });
+    await mutation.mutateAsync({ branchId: props.branchId, fromMonday: fromMonday.value, toMonday: props.toMonday, overwrite: overwrite.value, reason });
     emit("update:open", false);
   } catch {
     // the mutation already showed the failure toast

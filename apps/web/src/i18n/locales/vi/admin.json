@@ -588,7 +588,8 @@
     "medicalQueue": "Hàng chờ khám",
     "medicalVisits": "Lượt khám",
     "medicalReminders": "Nhắc lịch",
-    "medicalWard": "Nội trú"
+    "medicalWard": "Nội trú",
+    "attendanceHistory": "Lịch sử lịch ca"
   },
   "pos": {
     "title": "Bán tại quầy",

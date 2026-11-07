@@ -8,7 +8,8 @@
       "settings": "Settings",
       "me": "Mine",
       "register": "Register shifts",
-      "requests": "Review requests"
+      "requests": "Review requests",
+      "history": "History"
     },
     "settings": {
       "title": "Attendance settings",
@@ -438,6 +439,100 @@
         "preferred": "Prefers this shift",
         "overlap": "Overlaps another shift",
         "removed": "Removed from the roster"
+      }
+    },
+    "history": {
+      "title": "Schedule history",
+      "cellTitle": "History of this shift",
+      "empty": "No changes yet",
+      "noDetails": "No details",
+      "details": "Show details",
+      "by": "By {name}",
+      "reason": "Reason: {reason}",
+      "afterPublish": "After publishing",
+      "from": "From",
+      "to": "To",
+      "person": "Staff member",
+      "allPeople": "Everyone",
+      "kind": "Kind",
+      "allKinds": "All kinds",
+      "publishedOnly": "Only edits after publishing",
+      "history": "History of this shift",
+      "actions": {
+        "insert": "Added",
+        "update": "Edited",
+        "delete": "Deleted",
+        "submit": "Submitted",
+        "cancel": "Cancelled",
+        "approve": "Approved",
+        "reject": "Rejected",
+        "publish": "Published",
+        "auto_publish": "Auto-published",
+        "declare_none": "Declared off",
+        "replace": "Saved"
+      },
+      "entities": {
+        "assignment": "Roster shift",
+        "request": "Shift request",
+        "week": "Week",
+        "submission": "Week declaration",
+        "settings": "Settings",
+        "exemption": "Exemption",
+        "availability": "Availability"
+      },
+      "fields": {
+        "name": "Shift",
+        "work_date": "Date",
+        "start_at": "Start",
+        "end_at": "End",
+        "break_minutes": "Break (min)",
+        "note": "Note",
+        "template_id": "Template",
+        "status": "Status",
+        "decision_note": "Decision note",
+        "decided_by_name": "Decided by",
+        "assignment_id": "Created shift"
+      }
+    },
+    "confirm": {
+      "reasonLabel": "Reason (optional)",
+      "reasonHint": "e.g. swapped with Anna",
+      "recorded": "This action is saved in the history.",
+      "updateShift": {
+        "title": "Save changes to this shift?",
+        "message": "Edit the shift of {name} on {date}. The change is saved in the history."
+      },
+      "removeShift": {
+        "title": "Delete this shift?",
+        "message": "Delete the shift of {name} on {date}. The deletion is saved in the history."
+      },
+      "overwriteWeek": {
+        "title": "Overwrite this week?",
+        "message": "Shifts already in week {to} for the people who overlap will be deleted and replaced by those of week {from}. This is saved in the history."
+      },
+      "cancelRequest": {
+        "title": "Cancel this request?",
+        "message": "The shift request will be cancelled. You can register again while the window is open."
+      },
+      "archiveTemplate": {
+        "title": "Stop using this template?",
+        "message": "Template \"{name}\" will no longer be offered when assigning. Assigned shifts stay."
+      },
+      "restoreTemplate": {
+        "title": "Use this template again?",
+        "message": "Template \"{name}\" can be picked again when assigning."
+      },
+      "updateTemplate": {
+        "title": "Save template changes?",
+        "message": "Template \"{name}\" changes for future assignments; assigned shifts stay as they are."
+      },
+      "saveAvailability": {
+        "title": "Save availability?",
+        "message": "The weekly availability will be replaced by this one. The change is saved in the history."
+      },
+      "saveRegistration": {
+        "title": "Save registration settings?",
+        "message": "The new settings apply at once to the branch's staff. The change is saved in the history."
       }
     }
   }

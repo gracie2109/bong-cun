@@ -588,7 +588,8 @@
     "medicalQueue": "Exam queue",
     "medicalVisits": "Visits",
     "medicalReminders": "Reminders",
-    "medicalWard": "Ward"
+    "medicalWard": "Ward",
+    "attendanceHistory": "Schedule history"
   },
   "pos": {
     "title": "Point of sale",

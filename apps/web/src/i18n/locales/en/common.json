@@ -134,7 +134,8 @@
     "medicalVisitDetail": "Exam page",
     "medicalReminders": "Reminders",
     "accountPetHealth": "Health book",
-    "medicalWard": "Ward"
+    "medicalWard": "Ward",
+    "attendanceHistory": "Schedule history"
   },
   "seo": {
     "description": "Food and accessories for dogs and cats, plus pet care appointments."

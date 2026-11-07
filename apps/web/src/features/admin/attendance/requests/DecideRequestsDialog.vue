@@ -11,6 +11,7 @@
       <div class="space-y-1">
         <Label for="dr-note">{{ $t("attendance.requests.note") }}</Label>
         <Input id="dr-note" v-model="note" maxlength="300" />
+        <p class="text-xs text-muted-foreground">{{ $t("attendance.confirm.recorded") }}</p>
       </div>
 
       <ul v-if="failed.length" class="space-y-1 rounded-lg border border-destructive/40 bg-red-50 p-3 text-sm text-red-900">

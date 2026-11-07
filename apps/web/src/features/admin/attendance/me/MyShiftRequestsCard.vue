@@ -25,17 +25,21 @@
         <span v-if="request.expired" class="text-xs text-muted-foreground">{{ $t("attendance.requests.flags.expired") }}</span>
         <span v-if="request.status === 'approved' && !request.assignmentId" class="text-xs text-muted-foreground">{{ $t("attendance.requests.flags.removed") }}</span>
         <span v-if="request.decisionNote" class="w-full text-xs text-muted-foreground">{{ request.decisionNote }}</span>
-        <Button v-if="request.status === 'pending' && !request.expired" type="button" size="sm" variant="ghost" class="ml-auto min-h-9" :disabled="cancelling" @click="cancel.mutate(request.id)">
+        <Button v-if="request.status === 'pending' && !request.expired" type="button" size="sm" variant="ghost" class="ml-auto min-h-9" :disabled="cancelling" @click="cancelRequest(request.id)">
           {{ $t("attendance.register.cancel") }}
         </Button>
       </li>
     </ul>
   </section>
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import { CalendarPlus } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Button } from "@/components/ui/button";
 import { useCancelShiftRequest, useMyShiftRequests } from "@/features/admin/attendance/queries";
 import { dayMonth, timeOf } from "@/features/admin/attendance/shared/attendanceFormat";
@@ -49,4 +53,14 @@ const query = useMyShiftRequests(from, addDays(from, 28));
 const requests = computed(() => (query.data.value ?? []).filter((request) => request.status !== "cancelled"));
 const cancel = useCancelShiftRequest();
 const cancelling = cancel.isPending;
+const { t } = useI18n();
+const confirm = useConfirmAction();
+const cancelRequest = async (id: string) => {
+  const answer = await confirm.ask({
+    title: t("attendance.confirm.cancelRequest.title"),
+    message: t("attendance.confirm.cancelRequest.message"),
+    danger: true,
+  });
+  if (answer.ok) cancel.mutate(id);
+};
 </script>
