@@ -4,3 +4,4 @@ export * from "./leave";
 export * from "./report";
 export * from "./availability";
 export * from "./registration";
+export * from "./review";

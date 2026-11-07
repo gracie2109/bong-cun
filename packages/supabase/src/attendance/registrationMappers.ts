@@ -7,6 +7,10 @@ import type {
   RegistrationBoardRow,
   RegistrationRules,
   RegistrationRulesRow,
+  ShiftRequest,
+  ShiftRequestList,
+  ShiftRequestListRow,
+  ShiftRequestRowRecord,
   SubmitResult,
   SubmitResultRow,
 } from "@bongcun/core/attendance";
@@ -75,3 +79,33 @@ export const toSubmitResult = (row: SubmitResultRow): SubmitResult => ({
   created: row.created.map((c) => ({ id: c.id, workDate: c.work_date, templateId: c.template_id, warning: c.warning ?? null })),
   skipped: row.skipped.map((s) => ({ workDate: s.work_date ?? null, templateId: s.template_id ?? null, hint: s.hint })),
 });
+
+// ----------------------------------------------------------- manager review
+export const toShiftRequest = (row: ShiftRequestRowRecord): ShiftRequest => ({
+  id: row.id,
+  branchId: row.branch_id,
+  branchName: row.branch_name,
+  userId: row.user_id,
+  userName: row.user_name,
+  workDate: row.work_date,
+  templateId: row.template_id,
+  name: row.name,
+  color: row.color,
+  startAt: row.start_at,
+  endAt: row.end_at,
+  breakMinutes: row.break_minutes,
+  note: row.note,
+  status: row.status,
+  assignmentId: row.assignment_id,
+  decidedByName: row.decided_by_name,
+  decidedAt: row.decided_at,
+  decisionNote: row.decision_note,
+  createdAt: row.created_at,
+  expired: row.expired,
+  onLeave: row.on_leave,
+  availability: row.availability,
+  overlapsAssignment: row.overlaps_assignment,
+  onRoster: row.on_roster,
+});
+
+export const toShiftRequestList = (row: ShiftRequestListRow): ShiftRequestList => ({ rows: row.rows.map(toShiftRequest), total: row.total });

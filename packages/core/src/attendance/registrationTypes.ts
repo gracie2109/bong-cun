@@ -70,3 +70,38 @@ export type SubmitResult = {
   created: { id: string; workDate: string; templateId: string; warning: SubmitWarning | null }[];
   skipped: { workDate: string | null; templateId: string | null; hint: string }[];
 };
+
+// ----------------------------------------------------------- manager review
+export type ShiftRequest = {
+  id: string;
+  branchId: string;
+  branchName: string;
+  userId: string;
+  userName: string;
+  workDate: string;
+  templateId: string | null;
+  name: string;
+  color: ShiftColor;
+  startAt: string;
+  endAt: string;
+  breakMinutes: number;
+  note: string | null;
+  status: ShiftRequestStatus;
+  assignmentId: string | null;
+  decidedByName: string | null;
+  decidedAt: string | null;
+  decisionNote: string | null;
+  createdAt: string;
+  /** Pending and the shift already started: it can only be rejected. */
+  expired: boolean;
+  onLeave: boolean;
+  availability: "unavailable" | "preferred" | null;
+  /** Pending and the person already has a shift at that time. */
+  overlapsAssignment: boolean;
+  /** Approved and the shift is still on the roster. */
+  onRoster: boolean;
+};
+
+export type ShiftRequestList = { rows: ShiftRequest[]; total: number };
+
+export type DecideRequestsResult = { approved: number; rejected: number; failed: { id: string; hint: string }[] };

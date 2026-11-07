@@ -2675,6 +2675,23 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      pending_shift_request_count: { Args: { p_branch?: string }; Returns: number }
+      list_shift_requests: {
+        Args: {
+          p_branch?: string
+          p_from?: string
+          p_page?: number
+          p_page_size?: number
+          p_search?: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      decide_shift_requests: {
+        Args: { p_approve: boolean; p_ids: string[]; p_note?: string }
+        Returns: Json
+      }
       my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
       my_timesheet: { Args: { p_from: string; p_to: string }; Returns: Json }

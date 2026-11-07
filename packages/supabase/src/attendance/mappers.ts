@@ -76,6 +76,27 @@ export const toRoster = (row: RosterRow): Roster => ({
     part: l.part,
     leaveType: l.leave_type,
   })),
+  requests: (row.requests ?? []).map((r) => ({
+    id: r.id,
+    userId: r.user_id,
+    workDate: r.work_date,
+    templateId: r.template_id,
+    name: r.name,
+    color: r.color,
+    startAt: r.start_at,
+    endAt: r.end_at,
+    note: r.note,
+    expired: r.expired,
+    availability: r.availability,
+    onLeave: r.on_leave,
+  })),
+  availability: (row.availability ?? []).map((a) => ({
+    userId: a.user_id,
+    weekday: a.weekday,
+    kind: a.kind,
+    startTime: a.start_time ?? null,
+    endTime: a.end_time ?? null,
+  })),
 });
 
 // ---------------------------------------------------------------- clock

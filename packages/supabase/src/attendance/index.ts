@@ -11,3 +11,4 @@ export * from "./availability";
 export * from "./availabilityMappers";
 export * from "./registration";
 export * from "./registrationMappers";
+export * from "./review";
