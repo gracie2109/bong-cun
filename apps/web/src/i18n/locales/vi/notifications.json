@@ -1,0 +1,16 @@
+{
+  "notifications": {
+    "title": "Thông báo",
+    "empty": "Chưa có thông báo nào",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "seeAll": "Xem tất cả",
+    "all": "Tất cả",
+    "unread": "Chưa đọc ({n})",
+    "ago": {
+      "now": "Vừa xong",
+      "minutes": "{n} phút trước",
+      "hours": "{n} giờ trước",
+      "days": "{n} ngày trước"
+    }
+  }
+}

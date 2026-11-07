@@ -1,0 +1,16 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all as read",
+    "seeAll": "See all",
+    "all": "All",
+    "unread": "Unread ({n})",
+    "ago": {
+      "now": "Just now",
+      "minutes": "{n} min ago",
+      "hours": "{n} h ago",
+      "days": "{n} d ago"
+    }
+  }
+}
