@@ -46,7 +46,8 @@ export const useAssignShift = () =>
 
 export const useUpdateShift = () => useRosterMutation((input: UpdateShiftInput) => updateShiftAssignment(supabaseClient(), input), "update");
 
-export const useRemoveShift = () => useRosterMutation((id: string) => removeShiftAssignment(supabaseClient(), id), "delete");
+export const useRemoveShift = () =>
+  useRosterMutation((input: { id: string; reason?: string | null }) => removeShiftAssignment(supabaseClient(), input.id, input.reason), "delete");
 
 export const useCopyWeek = () =>
   useRosterMutation(

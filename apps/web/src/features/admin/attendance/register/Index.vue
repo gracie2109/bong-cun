@@ -28,6 +28,7 @@
   </ContentWrap>
 
   <RegisterResultDialog v-model:open="resultOpen" :result="result" :templates="board?.templates ?? []" />
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
@@ -38,6 +39,7 @@ import { BranchPicker } from "@/features/admin/pos";
 import AttendanceNav from "../AttendanceNav.vue";
 import RegisterDayList from "./RegisterDayList.vue";
 import RegisterGrid from "./RegisterGrid.vue";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
 import RegisterResultDialog from "./RegisterResultDialog.vue";
 import RegisterSubmitBar from "./RegisterSubmitBar.vue";
 import RegisterToolbar from "./RegisterToolbar.vue";
@@ -45,5 +47,5 @@ import RegisterWindowNotice from "./RegisterWindowNotice.vue";
 import { useRegisterPage } from "./useRegisterPage";
 
 const narrow = useMediaQuery("(max-width: 767px)");
-const { branches, branchId, selectBranch, week, query, board, selection, note, quota, overQuota, sending, cancel, send, result, resultOpen } = useRegisterPage();
+const { branches, branchId, selectBranch, week, query, board, selection, note, quota, overQuota, sending, cancel, confirm, send, result, resultOpen } = useRegisterPage();
 </script>

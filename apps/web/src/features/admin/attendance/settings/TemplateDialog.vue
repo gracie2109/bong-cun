@@ -37,11 +37,15 @@
       <p v-if="draft.name && error" class="text-sm text-destructive">{{ $t(`attendance.templates.errors.${error}`) }}</p>
     </form>
   </AppDialog>
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSaveShiftTemplate } from "@/features/admin/attendance/queries";
@@ -53,6 +57,8 @@ import { draftFromTemplate, emptyTemplateDraft, templateDraftError, templateInpu
 const props = defineProps<{ open: boolean; branchId: string | undefined; template: ShiftTemplate | null }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
+const { t } = useI18n();
+const confirm = useConfirmAction();
 const mutation = useSaveShiftTemplate();
 const draft = ref(emptyTemplateDraft());
 const error = computed(() => templateDraftError(draft.value));
@@ -69,6 +75,13 @@ watch(
 
 const submit = async () => {
   if (error.value || !props.branchId) return;
+  if (props.template) {
+    const answer = await confirm.ask({
+      title: t("attendance.confirm.updateTemplate.title"),
+      message: t("attendance.confirm.updateTemplate.message", { name: props.template.name }),
+    });
+    if (!answer.ok) return;
+  }
   try {
     await mutation.mutateAsync({ branchId: props.branchId, input: templateInputFromDraft(draft.value, props.template?.id) });
     emit("update:open", false);

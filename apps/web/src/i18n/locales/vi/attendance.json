@@ -8,7 +8,8 @@
       "settings": "Cài đặt",
       "me": "Của tôi",
       "register": "Đăng ký ca",
-      "requests": "Duyệt đăng ký"
+      "requests": "Duyệt đăng ký",
+      "history": "Lịch sử"
     },
     "settings": {
       "title": "Cài đặt chấm công",
@@ -438,6 +439,100 @@
         "preferred": "Thích ca này",
         "overlap": "Trùng ca khác",
         "removed": "Đã gỡ khỏi lịch"
+      }
+    },
+    "history": {
+      "title": "Lịch sử lịch ca",
+      "cellTitle": "Lịch sử của ca này",
+      "empty": "Chưa có thay đổi nào",
+      "noDetails": "Không có chi tiết",
+      "details": "Xem chi tiết",
+      "by": "Người làm: {name}",
+      "reason": "Lý do: {reason}",
+      "afterPublish": "Sau khi phát hành",
+      "from": "Từ ngày",
+      "to": "Đến ngày",
+      "person": "Nhân viên",
+      "allPeople": "Tất cả nhân viên",
+      "kind": "Loại",
+      "allKinds": "Tất cả loại",
+      "publishedOnly": "Chỉ sửa sau phát hành",
+      "history": "Lịch sử ca này",
+      "actions": {
+        "insert": "Thêm",
+        "update": "Sửa",
+        "delete": "Xóa",
+        "submit": "Gửi đăng ký",
+        "cancel": "Hủy đăng ký",
+        "approve": "Duyệt",
+        "reject": "Từ chối",
+        "publish": "Phát hành",
+        "auto_publish": "Tự phát hành",
+        "declare_none": "Báo không làm",
+        "replace": "Lưu"
+      },
+      "entities": {
+        "assignment": "Ca đã xếp",
+        "request": "Đăng ký ca",
+        "week": "Tuần",
+        "submission": "Khai báo tuần",
+        "settings": "Cài đặt",
+        "exemption": "Miễn đăng ký",
+        "availability": "Lịch rảnh"
+      },
+      "fields": {
+        "name": "Tên ca",
+        "work_date": "Ngày",
+        "start_at": "Bắt đầu",
+        "end_at": "Kết thúc",
+        "break_minutes": "Nghỉ (phút)",
+        "note": "Ghi chú",
+        "template_id": "Ca mẫu",
+        "status": "Trạng thái",
+        "decision_note": "Ghi chú duyệt",
+        "decided_by_name": "Người duyệt",
+        "assignment_id": "Ca được tạo"
+      }
+    },
+    "confirm": {
+      "reasonLabel": "Lý do (không bắt buộc)",
+      "reasonHint": "VD: đổi ca giúp bạn A",
+      "recorded": "Thao tác này sẽ được ghi vào lịch sử.",
+      "updateShift": {
+        "title": "Lưu thay đổi ca?",
+        "message": "Sửa ca của {name} ngày {date}. Thay đổi được ghi vào lịch sử."
+      },
+      "removeShift": {
+        "title": "Xóa ca này?",
+        "message": "Xóa ca của {name} ngày {date}. Việc xóa được ghi vào lịch sử."
+      },
+      "overwriteWeek": {
+        "title": "Ghi đè tuần này?",
+        "message": "Ca đã có trong tuần {to} của những người trùng sẽ bị xóa và thay bằng ca của tuần {from}. Việc này được ghi vào lịch sử."
+      },
+      "cancelRequest": {
+        "title": "Hủy đăng ký này?",
+        "message": "Đăng ký ca sẽ bị hủy. Bạn có thể đăng ký lại nếu còn hạn."
+      },
+      "archiveTemplate": {
+        "title": "Ngừng dùng ca mẫu?",
+        "message": "Ca mẫu \"{name}\" sẽ không còn để chọn khi xếp ca. Ca đã xếp vẫn giữ nguyên."
+      },
+      "restoreTemplate": {
+        "title": "Dùng lại ca mẫu?",
+        "message": "Ca mẫu \"{name}\" sẽ chọn được trở lại khi xếp ca."
+      },
+      "updateTemplate": {
+        "title": "Lưu thay đổi ca mẫu?",
+        "message": "Ca mẫu \"{name}\" sẽ đổi cho những lần xếp ca sau; ca đã xếp không đổi."
+      },
+      "saveAvailability": {
+        "title": "Lưu lịch rảnh?",
+        "message": "Lịch rảnh hằng tuần sẽ được thay bằng bản này. Thay đổi được ghi vào lịch sử."
+      },
+      "saveRegistration": {
+        "title": "Lưu cài đặt đăng ký ca?",
+        "message": "Cài đặt mới áp dụng ngay cho nhân viên của chi nhánh. Thay đổi được ghi vào lịch sử."
       }
     }
   }

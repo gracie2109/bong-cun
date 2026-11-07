@@ -24,12 +24,16 @@
       <p v-if="issue" class="text-sm text-destructive">{{ $t(`attendance.availability.errors.${issue}`) }}</p>
     </form>
   </AppDialog>
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { toRef } from "vue";
 import { Plus } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Button } from "@/components/ui/button";
 import AvailabilityRowEditor from "./AvailabilityRowEditor.vue";
 import { useAvailabilityForm } from "./useAvailabilityForm";
@@ -42,7 +46,10 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{ "update:open": [boolean] }>();
 
+const { t } = useI18n();
+const confirm = useConfirmAction();
 const { rows, issue, busy, loading, add, remove, submit } = useAvailabilityForm({
+  confirm: async () => (await confirm.ask({ title: t("attendance.confirm.saveAvailability.title"), message: t("attendance.confirm.saveAvailability.message") })).ok,
   open: toRef(props, "open"),
   userId: toRef(props, "userId"),
   onDone: () => emit("update:open", false),

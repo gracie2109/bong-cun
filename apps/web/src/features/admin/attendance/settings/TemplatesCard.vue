@@ -25,12 +25,16 @@
     </p>
 
     <TemplateDialog v-model:open="dialogOpen" :branch-id="branchId" :template="editing" />
+    <ConfirmReasonDialog :confirm="confirm" />
   </section>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { Plus } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useSetShiftTemplateActive, useShiftTemplates } from "@/features/admin/attendance/queries";
@@ -56,5 +60,15 @@ const openEdit = (item: ShiftTemplate) => {
   editing.value = item;
   dialogOpen.value = true;
 };
-const toggle = (item: ShiftTemplate) => activeMutation.mutate({ id: item.id, active: !item.isActive });
+const { t } = useI18n();
+const confirm = useConfirmAction();
+const toggle = async (item: ShiftTemplate) => {
+  const key = item.isActive ? "archiveTemplate" : "restoreTemplate";
+  const answer = await confirm.ask({
+    title: t(`attendance.confirm.${key}.title`),
+    message: t(`attendance.confirm.${key}.message`, { name: item.name }),
+    danger: item.isActive,
+  });
+  if (answer.ok) activeMutation.mutate({ id: item.id, active: !item.isActive });
+};
 </script>

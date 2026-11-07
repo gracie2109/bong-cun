@@ -2,10 +2,10 @@ import { computed, ref, watch, type Ref } from "vue";
 import { useAvailability, useSaveAvailability } from "@/features/admin/attendance/queries";
 import { draftIssue, fromDraftRows, newDraftRow, toDraftRows } from "./availabilityDraft";
 
-type Options = { open: Ref<boolean>; userId: Ref<string | undefined>; onDone: () => void };
+type Options = { open: Ref<boolean>; userId: Ref<string | undefined>; onDone: () => void; confirm?: () => Promise<boolean> };
 
 /** Editing the weekly pattern: load when the dialog opens, add and remove rows, save everything at once. */
-export const useAvailabilityForm = ({ open, userId, onDone }: Options) => {
+export const useAvailabilityForm = ({ open, userId, onDone, confirm }: Options) => {
   const query = useAvailability(userId);
   const save = useSaveAvailability();
   const rows = ref(toDraftRows([]));
@@ -30,6 +30,7 @@ export const useAvailabilityForm = ({ open, userId, onDone }: Options) => {
   const submit = async () => {
     submitted.value = true;
     if (draftIssue(rows.value)) return;
+    if (confirm && !(await confirm())) return;
     try {
       await save.mutateAsync({ userId: userId.value, items: fromDraftRows(rows.value) });
       onDone();

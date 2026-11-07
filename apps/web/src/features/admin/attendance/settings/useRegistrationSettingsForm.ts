@@ -21,7 +21,7 @@ export const toRegistrationInput = (form: Form): RegistrationSettingsInput => ({
 });
 
 /** Form state of the registration window of a branch: starts from the database, tracks changes, saves. */
-export const useRegistrationSettingsForm = (branchId: Ref<string | undefined>) => {
+export const useRegistrationSettingsForm = (branchId: Ref<string | undefined>, confirm?: () => Promise<boolean>) => {
   const query = useRegistrationRules(branchId);
   const mutation = useSaveRegistrationSettings();
   const form = ref<Form | null>(null);
@@ -47,8 +47,9 @@ export const useRegistrationSettingsForm = (branchId: Ref<string | undefined>) =
 
   const dirty = computed(() => JSON.stringify(form.value) !== saved.value);
   const valid = computed(() => !!form.value && registrationFormValid(form.value));
-  const save = () => {
+  const save = async () => {
     if (!branchId.value || !form.value || !valid.value) return;
+    if (confirm && !(await confirm())) return;
     mutation.mutate({ branchId: branchId.value, input: toRegistrationInput(form.value) });
   };
 

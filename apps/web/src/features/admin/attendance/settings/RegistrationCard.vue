@@ -46,11 +46,15 @@
     <p v-else-if="!loading" class="px-4 py-6 text-center text-sm text-muted-foreground">{{ $t("attendance.rules.unavailable") }}</p>
     <p v-if="form && !valid" class="px-4 pb-4 text-sm text-destructive">{{ $t("attendance.errors.bad_input") }}</p>
   </section>
+  <ConfirmReasonDialog :confirm="confirm" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import { Loader2 } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,5 +62,10 @@ import { Switch } from "@/components/ui/switch";
 import { useRegistrationSettingsForm } from "./useRegistrationSettingsForm";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean }>();
-const { form, dirty, valid, save, saving, loading } = useRegistrationSettingsForm(computed(() => props.branchId));
+const { t } = useI18n();
+const confirm = useConfirmAction();
+const { form, dirty, valid, save, saving, loading } = useRegistrationSettingsForm(
+  computed(() => props.branchId),
+  async () => (await confirm.ask({ title: t("attendance.confirm.saveRegistration.title"), message: t("attendance.confirm.saveRegistration.message") })).ok
+);
 </script>

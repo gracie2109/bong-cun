@@ -61,24 +61,34 @@
 
       <p v-if="error" class="text-sm text-destructive">{{ $t(`attendance.roster.errors.${error}`) }}</p>
 
+      <Button v-if="assignment" type="button" variant="outline" class="mr-2" @click="historyOpen = true">
+        <History class="mr-1 size-4" />
+        {{ $t("attendance.history.history") }}
+      </Button>
       <Button v-if="assignment && canDelete" type="button" variant="outline" class="text-destructive" :disabled="busy || locked" @click="remove">
         <Trash2 class="mr-1 size-4" />
         {{ $t("attendance.roster.removeShift") }}
       </Button>
     </form>
   </AppDialog>
+  <ConfirmReasonDialog :confirm="confirm" />
+  <CellHistoryDialog v-model:open="historyOpen" entity="assignment" :entity-id="assignment?.id" :description="`${staff?.name ?? ''} · ${date}`" />
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { Trash2 } from "lucide-vue-next";
+import { History, Trash2 } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
+import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
+import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAssignShift, useRemoveShift, useUpdateShift } from "@/features/admin/attendance/queries";
 import { SHIFT_COLOR_CLASS } from "@/features/admin/attendance/shared/shiftColors";
 import type { RosterAssignment, RosterAvailability, RosterStaff, ShiftTemplate } from "@bongcun/core/attendance";
+import CellHistoryDialog from "../history/CellHistoryDialog.vue";
 import AvailabilityHint from "./AvailabilityHint.vue";
 import { applyTemplate, assignDraftError, assignInputFromDraft, draftFromAssignment, emptyAssignDraft, updateInputFromDraft } from "./assignDraft";
 
@@ -94,6 +104,9 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
+const { t } = useI18n();
+const historyOpen = ref(false);
+const confirm = useConfirmAction();
 const assign = useAssignShift();
 const update = useUpdateShift();
 const removal = useRemoveShift();
@@ -117,7 +130,15 @@ watch(
 const submit = async () => {
   if (error.value || locked.value || !props.branchId || !props.staff) return;
   try {
-    if (props.assignment) await update.mutateAsync(updateInputFromDraft(draft.value, props.assignment.id));
+    if (props.assignment) {
+      const answer = await confirm.ask({
+        title: t("attendance.confirm.updateShift.title"),
+        message: t("attendance.confirm.updateShift.message", { name: props.staff.name, date: props.date }),
+        reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },
+      });
+      if (!answer.ok) return;
+      await update.mutateAsync({ ...updateInputFromDraft(draft.value, props.assignment.id), reason: answer.reason });
+    }
     else await assign.mutateAsync(assignInputFromDraft(draft.value, { branchId: props.branchId, userId: props.staff.userId, workDate: props.date }));
     emit("update:open", false);
   } catch {
@@ -127,8 +148,16 @@ const submit = async () => {
 
 const remove = async () => {
   if (!props.assignment) return;
+  const answer = await confirm.ask({
+    title: t("attendance.confirm.removeShift.title"),
+    message: t("attendance.confirm.removeShift.message", { name: props.staff?.name ?? "", date: props.date }),
+    okText: t("attendance.roster.removeShift"),
+    danger: true,
+    reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },
+  });
+  if (!answer.ok) return;
   try {
-    await removal.mutateAsync(props.assignment.id);
+    await removal.mutateAsync({ id: props.assignment.id, reason: answer.reason });
     emit("update:open", false);
   } catch {
     // the mutation already showed the failure toast
