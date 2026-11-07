@@ -6,7 +6,7 @@
     </h1>
   </Header>
 
-  <ContentWrap fill>
+  <ContentWrap fill wide>
     <div class="flex min-h-0 flex-1 flex-col gap-4">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <AttendanceNav />
