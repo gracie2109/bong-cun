@@ -1,7 +1,7 @@
 import i18n from "@/i18n";
 import { useConfirmAction } from "@/components/common/useConfirmAction";
 import { computed, ref, watch } from "vue";
-import { useCancelShiftRequest, useClockStatus, useRegistrationBoard, useSubmitShiftRequests } from "@/features/admin/attendance/queries";
+import { useCancelShiftRequest, useClockStatus, useDeclareNoShifts, useRegistrationBoard, useSubmitShiftRequests, useWithdrawNoShifts } from "@/features/admin/attendance/queries";
 import type { SubmitResult } from "@bongcun/core/attendance";
 import { remainingQuota } from "./registerGrid";
 import { useRegisterSelection } from "./useRegisterSelection";
@@ -29,6 +29,8 @@ export const useRegisterPage = () => {
   const confirm = useConfirmAction();
   const submit = useSubmitShiftRequests();
   const cancel = useCancelShiftRequest();
+  const declare = useDeclareNoShifts();
+  const withdraw = useWithdrawNoShifts();
   const result = ref<SubmitResult | null>(null);
   const resultOpen = ref(false);
 
@@ -71,6 +73,13 @@ export const useRegisterPage = () => {
       if (answer.ok) cancel.mutate(id);
     },
     send,
+    declareNone: (reason: string | null) => {
+      if (branchId.value) declare.mutate({ branchId: branchId.value, monday: week.monday.value, reason });
+    },
+    withdrawNone: () => {
+      if (branchId.value) withdraw.mutate({ branchId: branchId.value, monday: week.monday.value });
+    },
+    withdrawing: withdraw.isPending,
     result,
     resultOpen,
   };

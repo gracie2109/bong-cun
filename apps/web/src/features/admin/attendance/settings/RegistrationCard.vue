@@ -37,6 +37,7 @@
         <Input id="reg-max" v-model.number="form.maxShiftsPerWeek" type="number" min="1" max="21" step="1" inputmode="numeric" :disabled="!canEdit || !form.limited" />
         <p class="text-xs text-muted-foreground">{{ $t("attendance.registrationSettings.maxShiftsHint") }}</p>
       </div>
+      <PublishSettingsFields :form="form" :can-edit="canEdit" :switching-on="switchingOn" :weeks="weeksWithShifts" />
       <div class="space-y-1">
         <Label for="reg-note">{{ $t("attendance.registrationSettings.staffNote") }}</Label>
         <Input id="reg-note" v-model="form.staffNote" maxlength="300" :disabled="!canEdit" />
@@ -59,13 +60,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useWeeksWithShifts } from "@/features/admin/attendance/queries";
+import PublishSettingsFields from "./PublishSettingsFields.vue";
 import { useRegistrationSettingsForm } from "./useRegistrationSettingsForm";
 
 const props = defineProps<{ branchId: string | undefined; canEdit: boolean }>();
 const { t } = useI18n();
 const confirm = useConfirmAction();
-const { form, dirty, valid, save, saving, loading } = useRegistrationSettingsForm(
-  computed(() => props.branchId),
+const branch = computed(() => props.branchId);
+const { form, switchingOn, dirty, valid, save, saving, loading } = useRegistrationSettingsForm(
+  branch,
   async () => (await confirm.ask({ title: t("attendance.confirm.saveRegistration.title"), message: t("attendance.confirm.saveRegistration.message") })).ok
 );
+const weeksQuery = useWeeksWithShifts(branch, switchingOn);
+const weeksWithShifts = computed(() => weeksQuery.data.value ?? []);
 </script>

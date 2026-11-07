@@ -10,7 +10,7 @@
     <div class="flex min-h-0 flex-1 flex-col gap-4">
       <AttendanceNav />
       <div class="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto xl:grid-cols-2">
-        <MyScheduleList :shifts="upcoming" :leaves="leaves" />
+        <MyScheduleList :shifts="upcoming" :leaves="leaves" :focus-monday="focusMonday" />
         <MyEntriesTable :entries="entries" />
         <MyTimesheetCard />
         <MyLeaveCard />
@@ -33,5 +33,5 @@ import MyShiftRequestsCard from "./MyShiftRequestsCard.vue";
 import MyScheduleList from "./MyScheduleList.vue";
 import { useMyAttendance } from "./useMySchedule";
 
-const { upcoming, entries, leaves } = useMyAttendance();
+const { upcoming, entries, leaves, focusMonday } = useMyAttendance();
 </script>

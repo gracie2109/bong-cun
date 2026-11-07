@@ -38,7 +38,7 @@ import { Switch } from "@/components/ui/switch";
 import { useCopyWeek } from "@/features/admin/attendance/queries";
 import { addDays, isoWeekday } from "@bongcun/core/attendance";
 
-const props = defineProps<{ open: boolean; branchId: string | undefined; toMonday: string }>();
+const props = defineProps<{ open: boolean; branchId: string | undefined; toMonday: string; published?: boolean }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
 const { t } = useI18n();
@@ -63,10 +63,12 @@ const submit = async () => {
   if (!props.branchId || !fromMonday.value || !fromIsMonday.value || fromMonday.value === props.toMonday) return;
   // Overwriting deletes shifts that are already there, so it asks first.
   let reason: string | null = null;
-  if (overwrite.value) {
+  if (overwrite.value || props.published) {
     const answer = await confirm.ask({
       title: t("attendance.confirm.overwriteWeek.title"),
-      message: t("attendance.confirm.overwriteWeek.message", { from: fromMonday.value, to: props.toMonday }),
+      message:
+        t("attendance.confirm.overwriteWeek.message", { from: fromMonday.value, to: props.toMonday }) +
+        (props.published ? ` ${t("attendance.publish.editNotice")}` : ""),
       okText: t("attendance.roster.copyOk"),
       danger: true,
       reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },

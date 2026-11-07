@@ -101,6 +101,8 @@ const props = defineProps<{
   templates: ShiftTemplate[];
   canDelete: boolean;
   availability: RosterAvailability[];
+  /** The week is already published: staff hear about every change. */
+  published?: boolean;
 }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
 
@@ -127,19 +129,33 @@ watch(
   { immediate: true }
 );
 
+const publishedNotice = computed(() => (props.published ? ` ${t("attendance.publish.editNotice")}` : ""));
+
 const submit = async () => {
   if (error.value || locked.value || !props.branchId || !props.staff) return;
   try {
     if (props.assignment) {
       const answer = await confirm.ask({
         title: t("attendance.confirm.updateShift.title"),
-        message: t("attendance.confirm.updateShift.message", { name: props.staff.name, date: props.date }),
+        message: t("attendance.confirm.updateShift.message", { name: props.staff.name, date: props.date }) + publishedNotice.value,
         reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },
       });
       if (!answer.ok) return;
       await update.mutateAsync({ ...updateInputFromDraft(draft.value, props.assignment.id), reason: answer.reason });
     }
-    else await assign.mutateAsync(assignInputFromDraft(draft.value, { branchId: props.branchId, userId: props.staff.userId, workDate: props.date }));
+    else {
+      let reason: string | null = null;
+      if (props.published) {
+        const answer = await confirm.ask({
+          title: t("attendance.publish.confirmAdd.title"),
+          message: t("attendance.publish.confirmAdd.message", { name: props.staff.name, date: props.date }),
+          reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },
+        });
+        if (!answer.ok) return;
+        reason = answer.reason;
+      }
+      await assign.mutateAsync({ ...assignInputFromDraft(draft.value, { branchId: props.branchId, userId: props.staff.userId, workDate: props.date }), reason });
+    }
     emit("update:open", false);
   } catch {
     // the mutation already showed the failure toast
@@ -150,7 +166,7 @@ const remove = async () => {
   if (!props.assignment) return;
   const answer = await confirm.ask({
     title: t("attendance.confirm.removeShift.title"),
-    message: t("attendance.confirm.removeShift.message", { name: props.staff?.name ?? "", date: props.date }),
+    message: t("attendance.confirm.removeShift.message", { name: props.staff?.name ?? "", date: props.date }) + publishedNotice.value,
     okText: t("attendance.roster.removeShift"),
     danger: true,
     reason: { label: t("attendance.confirm.reasonLabel"), placeholder: t("attendance.confirm.reasonHint") },

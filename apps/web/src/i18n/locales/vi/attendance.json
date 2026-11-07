@@ -409,7 +409,19 @@
         "rejected": "Bị từ chối",
         "onRoster": "Đã có ca",
         "leave": "Nghỉ phép",
-        "overlap": "Trùng giờ"
+        "overlap": "Trùng giờ",
+        "submitted": "Đã gửi"
+      },
+      "weekPublished": "Lịch tuần này đã phát hành, bạn không đăng ký hay huỷ đơn được nữa.",
+      "declared": "Bạn đã báo không đăng ký ca tuần này.",
+      "withdrawDeclared": "Thu hồi",
+      "declare": "Tuần này tôi không đăng ký ca",
+      "declareHint": "Không muốn làm tuần này? Báo để quản lý biết.",
+      "declareConfirm": {
+        "title": "Báo không đăng ký ca tuần này?",
+        "message": "Quản lý sẽ thấy bạn không đăng ký chứ không phải quên.",
+        "reason": "Lý do (không bắt buộc)",
+        "reasonHint": "Ví dụ: Đi thi."
       }
     },
     "registrationSettings": {
@@ -538,6 +550,58 @@
       "saveRegistration": {
         "title": "Lưu cài đặt đăng ký ca?",
         "message": "Cài đặt mới áp dụng ngay cho nhân viên của chi nhánh. Thay đổi được ghi vào lịch sử."
+      }
+    },
+    "publish": {
+      "draft": "Bản nháp",
+      "published": "Đã phát hành",
+      "auto": "tự động",
+      "button": "Phát hành lịch",
+      "done": "Đã phát hành lịch: báo cho {notified} người, đóng {rejected} đơn chưa duyệt.",
+      "editNotice": "Tuần này đã phát hành nên nhân viên sẽ nhận thông báo về thay đổi này.",
+      "confirm": {
+        "title": "Phát hành lịch tuần này?",
+        "message": "Nhân viên sẽ thấy lịch và nhận thông báo; sau đó họ không đăng ký hay huỷ đơn được nữa.",
+        "noteLabel": "Lời nhắn cho đơn bị đóng (không bắt buộc)",
+        "noteHint": "Ví dụ: Tuần này đủ người rồi."
+      },
+      "confirmAdd": {
+        "title": "Thêm ca vào tuần đã phát hành?",
+        "message": "{name} sẽ nhận thông báo về ca ngày {date}."
+      },
+      "warning": {
+        "empty": "Tuần này chưa có ca nào.",
+        "pending": "Còn {pending} đơn chưa duyệt, sẽ bị từ chối khi phát hành.",
+        "missing": "{missing} người chưa đăng ký."
+      },
+      "missing": {
+        "button": "Chưa đăng ký ({count})",
+        "title": "Ai chưa đăng ký ca",
+        "hint": "Những người phải đăng ký nhưng chưa gửi đơn hay báo không đăng ký.",
+        "closes": "Đóng đăng ký lúc {at}",
+        "empty": "Không có ai.",
+        "likeLastWeek": "Xếp như tuần trước",
+        "state": {
+          "missing": "Chưa đăng ký",
+          "submitted": "Đã gửi {count} đơn",
+          "declared_none": "Báo không đăng ký ca",
+          "exempt": "Được miễn đăng ký",
+          "manager": "Quản lý"
+        }
+      },
+      "settings": {
+        "require": "Phát hành lịch trước khi nhân viên thấy",
+        "requireHint": "Bật thì lịch từng tuần là bản nháp cho tới khi quản lý bấm Phát hành. Tắt thì mọi thứ như cũ.",
+        "switchOnWarning": "Bật xong, các tuần sắp tới chưa phát hành sẽ ẩn với nhân viên.",
+        "weekLine": "Tuần {week}: {shifts} ca",
+        "publishExisting": "Phát hành luôn các tuần đã có ca (không gửi thông báo)"
+      },
+      "exemptions": {
+        "title": "Miễn đăng ký ca",
+        "hint": "Người được miễn không bị tính là chưa đăng ký (ví dụ làm cố định ca).",
+        "manager": "(quản lý)",
+        "toggle": "Miễn đăng ký cho {name}",
+        "empty": "Chưa có nhân viên."
       }
     }
   }

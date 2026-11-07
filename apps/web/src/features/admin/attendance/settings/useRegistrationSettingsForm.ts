@@ -2,7 +2,7 @@ import { computed, ref, watch, type Ref } from "vue";
 import { useRegistrationRules, useSaveRegistrationSettings } from "@/features/admin/attendance/queries";
 import type { RegistrationSettingsInput } from "@bongcun/core/attendance";
 
-type Form = { isOpen: boolean; weeksAhead: number; closeDaysBefore: number; limited: boolean; maxShiftsPerWeek: number; staffNote: string };
+type Form = { isOpen: boolean; weeksAhead: number; closeDaysBefore: number; limited: boolean; maxShiftsPerWeek: number; staffNote: string; requirePublish: boolean; publishExisting: boolean };
 
 const inRange = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max;
 
@@ -18,6 +18,9 @@ export const toRegistrationInput = (form: Form): RegistrationSettingsInput => ({
   closeDaysBefore: form.closeDaysBefore,
   maxShiftsPerWeek: form.limited ? form.maxShiftsPerWeek : null,
   staffNote: form.staffNote.trim() || null,
+  requirePublish: form.requirePublish,
+  // Only meaningful while switching publishing on.
+  publishExisting: form.requirePublish && form.publishExisting,
 });
 
 /** Form state of the registration window of a branch: starts from the database, tracks changes, saves. */
@@ -38,12 +41,17 @@ export const useRegistrationSettingsForm = (branchId: Ref<string | undefined>, c
             limited: rules.maxShiftsPerWeek !== null,
             maxShiftsPerWeek: rules.maxShiftsPerWeek ?? 5,
             staffNote: rules.staffNote ?? "",
+            requirePublish: rules.requirePublish,
+            publishExisting: true,
           }
         : null;
       saved.value = JSON.stringify(form.value);
     },
     { immediate: true }
   );
+
+  /** Publishing is being switched on by this edit (it was off in the database). */
+  const switchingOn = computed(() => !!form.value && form.value.requirePublish && query.data.value?.requirePublish === false);
 
   const dirty = computed(() => JSON.stringify(form.value) !== saved.value);
   const valid = computed(() => !!form.value && registrationFormValid(form.value));
@@ -53,5 +61,5 @@ export const useRegistrationSettingsForm = (branchId: Ref<string | undefined>, c
     mutation.mutate({ branchId: branchId.value, input: toRegistrationInput(form.value) });
   };
 
-  return { form, dirty, valid, save, saving: mutation.isPending, loading: query.isPending };
+  return { form, switchingOn, dirty, valid, save, saving: mutation.isPending, loading: query.isPending };
 };
