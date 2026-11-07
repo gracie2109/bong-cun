@@ -50,7 +50,7 @@ describe("Attendance shift RPCs match the app's contract", () => {
       const copy = copyWeekResultSchema.parse(
         await db.scalar("select public.copy_roster_week($1, $2::date, $2::date + 7)", [a.branch, a.monday])
       );
-      expect(copy).toEqual({ copied: 2, skipped: 0 });
+      expect(copy).toEqual({ copied: 2, skipped: 0, skipped_past: 0 });
 
       await db.rows("select public.remove_shift_assignment($1)", [first.id]);
       const after = rosterSchema.parse(

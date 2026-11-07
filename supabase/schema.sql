@@ -592,6 +592,21 @@ $$;
 ALTER FUNCTION "public"."admit_inpatient"("p_visit" "uuid", "p" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."assert_schedule_day_editable"("p_date" "date") RETURNS "void"
+    LANGUAGE "plpgsql" STABLE
+    SET "search_path" TO ''
+    AS $$
+begin
+  if p_date < public.vn_today() then
+    raise exception 'past days cannot be changed' using errcode = 'P0001', hint = 'past_date';
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."assert_schedule_day_editable"("p_date" "date") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -647,6 +662,7 @@ begin
   if p_user is null or p_date is null then
     raise exception 'user and date are required' using errcode = '22023', hint = 'bad_input';
   end if;
+  perform public.assert_schedule_day_editable(p_date);
   if not exists (select 1 from public.staff_branches where user_id = p_user and branch_id = p_branch) then
     raise exception 'this person does not work at the branch' using errcode = 'P0001', hint = 'not_branch_staff';
   end if;
@@ -3608,10 +3624,11 @@ CREATE OR REPLACE FUNCTION "public"."copy_roster_week"("p_branch" "uuid", "p_fro
     SET "search_path" TO ''
     AS $$
 declare
-  r        public.shift_assignments;
-  v_shift  int;
-  v_copied int := 0;
-  v_skipped int := 0;
+  v_shift   int;
+  v_today   date := public.vn_today();
+  v_total   int;
+  v_copied  int;
+  v_past    int;
 begin
   perform set_config('app.schedule_reason', left(coalesce(nullif(btrim(p_reason), ''), ''), 300), true);
   perform set_config('app.schedule_source', 'copy_roster_week', true);
@@ -3622,42 +3639,49 @@ begin
      or extract(isodow from p_from_monday) <> 1 or extract(isodow from p_to_monday) <> 1 then
     raise exception 'both dates must be different Mondays' using errcode = '22023', hint = 'bad_input';
   end if;
+  perform public.assert_schedule_day_editable(p_to_monday + 6);
   v_shift := p_to_monday - p_from_monday;
 
-  for r in
-    select * from public.shift_assignments
-    where branch_id = p_branch and work_date >= p_from_monday and work_date < p_from_monday + 7
-    order by start_at
-  loop
-    if not exists (select 1 from public.staff_branches where user_id = r.user_id and branch_id = p_branch) then
-      v_skipped := v_skipped + 1;
-      continue;
-    end if;
-    if exists (select 1 from public.shift_assignments
-               where branch_id = p_branch and user_id = r.user_id and work_date = r.work_date + v_shift) then
-      if not coalesce(p_overwrite, false) then
-        v_skipped := v_skipped + 1;
-        continue;
-      end if;
-      delete from public.shift_assignments a
-      where a.branch_id = p_branch and a.user_id = r.user_id and a.work_date = r.work_date + v_shift
-        and not public.assignment_has_entry(a.id);
-    end if;
-    begin
-      insert into public.shift_assignments (
-        branch_id, user_id, work_date, template_id, name, start_at, end_at, break_minutes, note, created_by
-      ) values (
-        p_branch, r.user_id, r.work_date + v_shift, r.template_id, r.name,
-        ((r.start_at at time zone 'Asia/Ho_Chi_Minh') + v_shift * interval '1 day') at time zone 'Asia/Ho_Chi_Minh',
-        ((r.end_at at time zone 'Asia/Ho_Chi_Minh') + v_shift * interval '1 day') at time zone 'Asia/Ho_Chi_Minh',
-        r.break_minutes, r.note, (select auth.uid())
-      );
-      v_copied := v_copied + 1;
-    exception when exclusion_violation then
-      v_skipped := v_skipped + 1;
-    end;
-  end loop;
-  return jsonb_build_object('copied', v_copied, 'skipped', v_skipped);
+  select count(*) into v_total
+  from public.shift_assignments
+  where branch_id = p_branch and work_date >= p_from_monday and work_date < p_from_monday + 7;
+
+  select count(*) into v_past
+  from public.shift_assignments
+  where branch_id = p_branch and work_date >= p_from_monday and work_date < p_from_monday + 7
+    and work_date + v_shift < v_today;
+
+  -- Overwrite: clear the days that will be refilled (never a shift that already has a clock-in).
+  if coalesce(p_overwrite, false) then
+    delete from public.shift_assignments a
+    where a.branch_id = p_branch
+      and a.work_date >= p_to_monday + greatest(0, v_today - p_to_monday) and a.work_date < p_to_monday + 7
+      and not public.assignment_has_entry(a.id)
+      and exists (
+        select 1 from public.shift_assignments s
+        join public.staff_branches sb on sb.user_id = s.user_id and sb.branch_id = p_branch
+        where s.branch_id = p_branch and s.user_id = a.user_id and s.work_date + v_shift = a.work_date);
+  end if;
+
+  insert into public.shift_assignments (
+    branch_id, user_id, work_date, template_id, name, start_at, end_at, break_minutes, note, created_by
+  )
+  select p_branch, s.user_id, s.work_date + v_shift, s.template_id, s.name,
+         ((s.start_at at time zone 'Asia/Ho_Chi_Minh') + v_shift * interval '1 day') at time zone 'Asia/Ho_Chi_Minh',
+         ((s.end_at at time zone 'Asia/Ho_Chi_Minh') + v_shift * interval '1 day') at time zone 'Asia/Ho_Chi_Minh',
+         s.break_minutes, s.note, (select auth.uid())
+  from public.shift_assignments s
+  where s.branch_id = p_branch and s.work_date >= p_from_monday and s.work_date < p_from_monday + 7
+    and s.work_date + v_shift >= v_today
+    and exists (select 1 from public.staff_branches sb where sb.user_id = s.user_id and sb.branch_id = p_branch)
+    and not exists (
+      select 1 from public.shift_assignments t
+      where t.branch_id = p_branch and t.user_id = s.user_id and t.work_date = s.work_date + v_shift)
+  order by s.start_at
+  on conflict do nothing;
+  get diagnostics v_copied = row_count;
+
+  return jsonb_build_object('copied', v_copied, 'skipped', v_total - v_copied, 'skipped_past', v_past);
 end;
 $$;
 
@@ -11208,16 +11232,18 @@ CREATE OR REPLACE FUNCTION "public"."remove_shift_assignment"("p_id" "uuid", "p_
     AS $$
 declare
   v_branch uuid;
+  v_date   date;
 begin
   perform set_config('app.schedule_reason', left(coalesce(nullif(btrim(p_reason), ''), ''), 300), true);
   perform set_config('app.schedule_source', 'remove_shift_assignment', true);
-  select branch_id into v_branch from public.shift_assignments where id = p_id;
+  select branch_id, work_date into v_branch, v_date from public.shift_assignments where id = p_id;
   if v_branch is null then
     raise exception 'shift not found' using errcode = 'P0001', hint = 'not_found';
   end if;
   if not public.can_attendance('DELETE', v_branch) then
     raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
   end if;
+  perform public.assert_schedule_day_editable(v_date);
   if public.assignment_has_entry(p_id) then
     raise exception 'this shift already has a clock-in' using errcode = 'P0001', hint = 'has_entry';
   end if;
@@ -17760,6 +17786,7 @@ begin
   if jsonb_typeof(p) is distinct from 'object' then
     raise exception 'bad shift' using errcode = '22023', hint = 'bad_input';
   end if;
+  perform public.assert_schedule_day_editable(v_row.work_date);
 
   v_note := case when p ? 'note' then nullif(btrim(p ->> 'note'), '') else v_row.note end;
   if public.assignment_has_entry(p_id) then
@@ -17780,6 +17807,7 @@ begin
     raise exception 'bad shift' using errcode = '22023', hint = 'bad_input';
   end;
   v_name := v_row.name;
+  perform public.assert_schedule_day_editable(v_date);
 
   if p ? 'template_id' and v_tpl_id is not null then
     select * into v_tpl from public.shift_templates where id = v_tpl_id and branch_id = v_row.branch_id and is_active;
@@ -23845,6 +23873,12 @@ GRANT ALL ON FUNCTION "public"."address_json"("a" "public"."customer_addresses")
 REVOKE ALL ON FUNCTION "public"."admit_inpatient"("p_visit" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."admit_inpatient"("p_visit" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admit_inpatient"("p_visit" "uuid", "p" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."assert_schedule_day_editable"("p_date" "date") TO "anon";
+GRANT ALL ON FUNCTION "public"."assert_schedule_day_editable"("p_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."assert_schedule_day_editable"("p_date" "date") TO "service_role";
 
 
 

@@ -49,10 +49,10 @@ select is((select count(*)::int from public.schedule_history where action = 'del
 select is((select reason from public.schedule_history where action = 'delete' and entity_id = (select shift_id::text from ctx)), null, 'a call without a reason stores none');
 
 -- Copy a week over an existing one.
-select public.assign_shift((select ba from ctx), (select s1 from ctx), (select monday - 7 from ctx), (select tpl_a from ctx));
-select public.copy_roster_week((select ba from ctx), (select monday - 7 from ctx), (select monday from ctx), false, 'copy');
+select public.assign_shift((select ba from ctx), (select s1 from ctx), (select monday + 21 from ctx), (select tpl_a from ctx));
+select public.copy_roster_week((select ba from ctx), (select monday + 21 from ctx), (select monday from ctx), false, 'copy');
 select is((select count(*)::int from public.schedule_history where source = 'copy_roster_week' and action = 'insert'), 1, 'copying a week logs the new shift with the RPC name');
-select public.copy_roster_week((select ba from ctx), (select monday - 7 from ctx), (select monday from ctx), true, 'again');
+select public.copy_roster_week((select ba from ctx), (select monday + 21 from ctx), (select monday from ctx), true, 'again');
 select is((select count(*)::int from public.schedule_history where source = 'copy_roster_week' and action = 'delete'), 1, 'overwriting logs the delete');
 
 -- Requests: submit, approve, cancel.

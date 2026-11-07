@@ -100,7 +100,7 @@ export const shiftTemplateRowSchema = z.object({
 export type ShiftTemplateRow = z.infer<typeof shiftTemplateRowSchema>;
 
 export const assignShiftResultSchema = z.object({ id: uuid, warning: z.literal("on_leave").optional() });
-export const copyWeekResultSchema = z.object({ copied: z.number(), skipped: z.number() });
+export const copyWeekResultSchema = z.object({ copied: z.number(), skipped: z.number(), skipped_past: z.number().optional() });
 
 /** A pending request drawn on the roster grid. */
 export const rosterRequestSchema = z.object({

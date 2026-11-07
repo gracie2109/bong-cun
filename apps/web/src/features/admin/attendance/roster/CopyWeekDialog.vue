@@ -10,9 +10,15 @@
   >
     <form id="copy-week-form" class="space-y-4" @submit.prevent="submit">
       <div class="space-y-1">
-        <Label for="cw-from">{{ $t("attendance.roster.copyFrom") }}</Label>
-        <Input id="cw-from" v-model="fromMonday" type="date" />
-        <p v-if="!fromIsMonday" class="text-xs text-destructive">{{ $t("attendance.roster.errors.monday") }}</p>
+        <Label>{{ $t("attendance.roster.copyFrom") }}</Label>
+        <WeekRangePicker
+          :monday="fromMonday"
+          :label="fromLabel"
+          @previous="fromMonday = addDays(fromMonday, -7)"
+          @next="fromMonday = addDays(fromMonday, 7)"
+          @select="(value) => (fromMonday = value)"
+        />
+        <p v-if="fromMonday === toMonday" class="text-xs text-destructive">{{ $t("attendance.roster.errors.sameWeek") }}</p>
       </div>
       <label class="flex items-start justify-between gap-3 rounded-lg border p-3">
         <span>
@@ -32,11 +38,11 @@ import { useI18n } from "vue-i18n";
 import AppDialog from "@/components/common/AppDialog.vue";
 import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
 import { useConfirmAction } from "@/components/common/useConfirmAction";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useCopyWeek } from "@/features/admin/attendance/queries";
-import { addDays, isoWeekday } from "@bongcun/core/attendance";
+import { addDays } from "@bongcun/core/attendance";
+import WeekRangePicker from "../shared/WeekRangePicker.vue";
 
 const props = defineProps<{ open: boolean; branchId: string | undefined; toMonday: string; published?: boolean }>();
 const emit = defineEmits<{ "update:open": [value: boolean] }>();
@@ -46,7 +52,10 @@ const confirm = useConfirmAction();
 const mutation = useCopyWeek();
 const fromMonday = ref("");
 const overwrite = ref(false);
-const fromIsMonday = computed(() => !fromMonday.value || isoWeekday(fromMonday.value) === 1);
+const fromLabel = computed(() => {
+  const sunday = addDays(fromMonday.value, 6);
+  return `${fromMonday.value.slice(8)}/${fromMonday.value.slice(5, 7)} – ${sunday.slice(8)}/${sunday.slice(5, 7)}/${sunday.slice(0, 4)}`;
+});
 
 // The week before the one shown is the usual source.
 watch(
@@ -60,7 +69,7 @@ watch(
 );
 
 const submit = async () => {
-  if (!props.branchId || !fromMonday.value || !fromIsMonday.value || fromMonday.value === props.toMonday) return;
+  if (!props.branchId || !fromMonday.value || fromMonday.value === props.toMonday) return;
   // Overwriting deletes shifts that are already there, so it asks first.
   let reason: string | null = null;
   if (overwrite.value || props.published) {

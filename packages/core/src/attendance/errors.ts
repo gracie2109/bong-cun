@@ -7,6 +7,7 @@ export const ATTENDANCE_ERROR_HINTS = [
   "not_branch_staff",
   "shift_overlap",
   "has_entry",
+  "past_date",
   "invalid_range",
   "range_too_long",
   "already_in",
