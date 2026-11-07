@@ -308,3 +308,9 @@ export const dashboardKeys = {
   layout: (userId: string | undefined, dashboardKey: string) =>
     [...dashboardKeys.all, "layout", userId ?? "anonymous", dashboardKey] as const,
 };
+
+export const notificationKeys = {
+  all: ["notifications"] as const,
+  list: (page: number, pageSize: number, unreadOnly: boolean) => [...notificationKeys.all, "list", page, pageSize, unreadOnly] as const,
+  unread: () => [...notificationKeys.all, "unread"] as const,
+};

@@ -4,6 +4,7 @@ import SwitchLang from "@/components/common/SwitchLang.vue";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ClockButton } from "@/features/admin/attendance";
 import { DashboardBell } from "@/features/admin/dashboard";
+import { NotificationBell } from "@/features/admin/notifications";
 </script>
 
 <template>
@@ -18,6 +19,7 @@ import { DashboardBell } from "@/features/admin/dashboard";
     </div>
     <div class="flex items-center gap-4">
       <ClockButton />
+      <NotificationBell />
       <DashboardBell />
       <SwitchLang />
       <BaseAvatar />
