@@ -332,6 +332,30 @@ export type Database = {
         }
         Relationships: []
       }
+      schedule_history: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string
+          after: Json | null
+          before: Json | null
+          branch_id: string | null
+          changed_fields: string[]
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: number
+          reason: string | null
+          source: string | null
+          target_user_id: string | null
+          target_user_name: string | null
+          was_published: boolean
+          week_monday: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -2645,6 +2669,7 @@ export type Database = {
           p_start?: string
           p_template?: string
           p_user: string
+          p_reason?: string
         }
         Returns: Json
       }
@@ -2670,6 +2695,7 @@ export type Database = {
           p_from_monday: string
           p_overwrite?: boolean
           p_to_monday: string
+          p_reason?: string
         }
         Returns: Json
       }
@@ -2726,6 +2752,20 @@ export type Database = {
       }
       unread_notification_count: { Args: never; Returns: number }
       mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
+      schedule_history_list: {
+        Args: {
+          p_branch?: string
+          p_entity?: string
+          p_from?: string
+          p_page?: number
+          p_page_size?: number
+          p_published_only?: boolean
+          p_to?: string
+          p_user?: string
+        }
+        Returns: Json
+      }
+      schedule_history_of: { Args: { p_entity: string; p_entity_id: string }; Returns: Json }
       pending_shift_request_count: { Args: { p_branch?: string }; Returns: number }
       list_shift_requests: {
         Args: {
@@ -2740,14 +2780,14 @@ export type Database = {
         Returns: Json
       }
       decide_shift_requests: {
-        Args: { p_approve: boolean; p_ids: string[]; p_note?: string }
+        Args: { p_approve: boolean; p_ids: string[]; p_note?: string; p_reason?: string }
         Returns: Json
       }
       my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
       my_timesheet: { Args: { p_from: string; p_to: string }; Returns: Json }
       pending_leave_count: { Args: { p_branch?: string }; Returns: number }
-      remove_shift_assignment: { Args: { p_id: string }; Returns: undefined }
+      remove_shift_assignment: { Args: { p_id: string; p_reason?: string }; Returns: undefined }
       report_timesheet: {
         Args: {
           p_branch?: string | null
@@ -3151,7 +3191,7 @@ export type Database = {
       update_medical_item: { Args: { p: Json; p_id: string }; Returns: Json }
       remove_medical_item: { Args: { p_id: string }; Returns: undefined }
       update_shift_assignment: {
-        Args: { p: Json; p_id: string }
+        Args: { p: Json; p_id: string; p_reason?: string }
         Returns: undefined
       }
       vaccine_lots: { Args: { p_branch: string; p_vaccine_type: string }; Returns: Json }

@@ -46,6 +46,8 @@ export const assignShiftInput = z.object({
   endTime: time.nullish(),
   breakMinutes: z.number().int().min(0).nullish(),
   note: z.string().max(300).nullish(),
+  /** Why the manager did it; kept in the schedule history. */
+  reason: z.string().max(300).nullish(),
 });
 export type AssignShiftInput = z.infer<typeof assignShiftInput>;
 
@@ -58,6 +60,7 @@ export const updateShiftInput = z.object({
   endTime: time.optional(),
   breakMinutes: z.number().int().min(0).optional(),
   note: z.string().max(300).nullable().optional(),
+  reason: z.string().max(300).nullish(),
 });
 export type UpdateShiftInput = z.infer<typeof updateShiftInput>;
 
@@ -66,6 +69,7 @@ export const copyWeekInput = z.object({
   fromMonday: date,
   toMonday: date,
   overwrite: z.boolean().optional(),
+  reason: z.string().max(300).nullish(),
 });
 export type CopyWeekInput = z.infer<typeof copyWeekInput>;
 

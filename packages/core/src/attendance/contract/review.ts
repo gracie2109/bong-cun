@@ -22,6 +22,7 @@ export const decideRequestsInput = z.object({
   ids: z.array(uuid).min(1).max(200),
   approve: z.boolean(),
   note: z.string().max(300).nullable(),
+  reason: z.string().max(300).nullish(),
 });
 export type DecideRequestsInput = z.infer<typeof decideRequestsInput>;
 
