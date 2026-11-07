@@ -14217,6 +14217,16 @@ begin
     end if;
   end if;
 
+  if v_name not in ('admin', 'superAdmin', 'super_admin')
+     and exists (
+       select 1 from jsonb_array_elements(coalesce(p -> 'permissions', '[]'::jsonb)) as t(e)
+       where e ->> 'id' = 'attendance'
+         and jsonb_array_length(coalesce(e -> 'methods', '[]'::jsonb)) > 0
+     ) then
+    raise exception 'attendance permission is only for admin roles'
+      using errcode = '42501', hint = 'attendance_admin_only';
+  end if;
+
   delete from public.role_permissions where role = v_name;
   insert into public.role_permissions (role, permission, methods)
   select
