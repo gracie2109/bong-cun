@@ -8,18 +8,11 @@
         <Button variant="ghost" class="min-w-52 gap-2 px-2 text-sm font-semibold tabular-nums">
           <CalendarIcon class="size-4 text-muted-foreground" />
           {{ label }}
+          <span class="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">{{ $t("attendance.roster.weekBadge", { week: isoWeekOf(monday).week }) }}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0" align="start">
-        <RangeCalendar
-          :model-value="range"
-          :placeholder="placeholder"
-          :week-starts-on="1"
-          :locale="locale"
-          prevent-deselect
-          @update:model-value="onSelect"
-          @update:placeholder="(value) => (placeholder = value)"
-        />
+        <WeekCalendar :monday="monday" @select="onSelect" />
       </PopoverContent>
     </Popover>
     <Button size="icon" variant="ghost" class="size-10" :aria-label="$t('attendance.roster.nextWeek')" @click="emit('next')">
@@ -29,30 +22,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { ref } from "vue";
 import { CalendarDays as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-vue-next";
-import type { DateValue } from "@internationalized/date";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RangeCalendar } from "@/components/ui/range-calendar";
-import { useWeekRange } from "./useWeekRange";
+import { isoWeekOf } from "@bongcun/core/attendance";
+import WeekCalendar from "./WeekCalendar.vue";
 
-/** Shows the week as a Monday to Sunday range; picking any day in the calendar snaps to that day's week. */
-const props = defineProps<{ monday: string; label: string }>();
+/** Shows the week as a Monday to Sunday range; the calendar picks a whole week at a time. */
+defineProps<{ monday: string; label: string }>();
 const emit = defineEmits<{ previous: []; next: []; select: [monday: string] }>();
 
-const { locale: appLocale } = useI18n();
-const locale = computed(() => (appLocale.value === "en" ? "en-US" : "vi-VN"));
 const open = ref(false);
-const { range, placeholder, pick } = useWeekRange(() => props.monday);
-
-const onSelect = (value: { start?: DateValue }) => {
-  const monday = pick(value.start);
-  if (!monday) return;
+const onSelect = (monday: string) => {
   emit("select", monday);
   open.value = false;
 };
-
-watch(open, (value) => value && (placeholder.value = range.value.start));
 </script>

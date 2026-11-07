@@ -10,6 +10,7 @@
     <div class="flex min-h-0 flex-1 flex-col gap-4">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <AttendanceNav />
+        <RosterViewToggle v-model="view" />
         <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
       </div>
 
@@ -37,7 +38,9 @@
         <router-link :to="{ name: 'attendanceSettings' }" class="font-semibold text-primary underline">{{ $t("attendance.nav.settings") }}</router-link>
       </p>
 
+      <ShiftBoard v-if="view === 'shift'" :roster="roster" :days="days" :can-create="canCreate" :can-open="canUpdate" @add="dialog.add" @edit="dialog.edit" />
       <RosterGrid
+        v-else
         :rows="rows"
         :days="days"
         :can-create="canCreate"
@@ -57,6 +60,7 @@
     :staff="dialog.staff.value"
     :date="dialog.date.value"
     :assignment="dialog.assignment.value"
+    :preset-template-id="dialog.templateId.value"
     :templates="templates"
     :can-delete="canDelete"
     :availability="availability"
@@ -84,6 +88,8 @@ import AssignShiftDialog from "./AssignShiftDialog.vue";
 import CopyWeekDialog from "./CopyWeekDialog.vue";
 import RosterGrid from "./RosterGrid.vue";
 import RosterToolbar from "./RosterToolbar.vue";
+import RosterViewToggle, { type RosterView } from "./RosterViewToggle.vue";
+import ShiftBoard from "./ShiftBoard.vue";
 import { useAssignDialog } from "./useAssignDialog";
 import { useRoster } from "./useRoster";
 import { useRosterReview } from "./useRosterReview";
@@ -107,4 +113,5 @@ const label = computed(() => `${monday.value.slice(8)}/${monday.value.slice(5, 7
 const dialog = useAssignDialog();
 const { decideOpen, decideIds, decideDescription, decideNames, openDecide, availabilityOpen, availabilityUser, openAvailability } = useRosterReview(rows);
 const copyOpen = ref(false);
+const view = ref<RosterView>("staff");
 </script>
