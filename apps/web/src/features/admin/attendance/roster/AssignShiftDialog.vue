@@ -98,6 +98,8 @@ const props = defineProps<{
   staff: RosterStaff | null;
   date: string;
   assignment: RosterAssignment | null;
+  /** A new shift starts from this template (when added from a shift row). */
+  presetTemplateId?: string | null;
   templates: ShiftTemplate[];
   canDelete: boolean;
   availability: RosterAvailability[];
@@ -124,7 +126,9 @@ watch(
   () => props.open,
   (isOpen) => {
     if (!isOpen) return;
-    draft.value = props.assignment ? draftFromAssignment(props.assignment) : emptyAssignDraft(props.templates[0]);
+    draft.value = props.assignment
+      ? draftFromAssignment(props.assignment)
+      : emptyAssignDraft(props.templates.find((item) => item.id === props.presetTemplateId) ?? props.templates[0]);
   },
   { immediate: true }
 );

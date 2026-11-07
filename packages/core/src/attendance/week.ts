@@ -34,3 +34,11 @@ export const addMonths = (date: string, months: number): string => {
   value.setUTCMonth(value.getUTCMonth() + months);
   return fromUtc(value);
 };
+
+/** The ISO 8601 week number (1-53) of the week that holds `date`, and the year that week belongs to. */
+export const isoWeekOf = (date: string): { year: number; week: number } => {
+  const thursday = addDays(mondayOf(date), 3);
+  const year = Number(thursday.slice(0, 4));
+  const firstThursday = addDays(mondayOf(`${year}-01-04`), 3);
+  return { year, week: Math.round((toUtc(thursday).getTime() - toUtc(firstThursday).getTime()) / (7 * MS_PER_DAY)) + 1 };
+};
