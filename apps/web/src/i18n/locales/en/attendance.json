@@ -450,6 +450,15 @@
       "to": "To date",
       "select": "Select {name}'s request",
       "selectAll": "Select all",
+      "group": {
+        "people": "{n} registered",
+        "pending": "{n} pending",
+        "selectGroup": "Select this whole shift",
+        "showMore": "Show {n} more",
+        "showLess": "Show less",
+        "position": "Registered #{n}",
+        "registeredAt": "Registered at {time}"
+      },
       "selected": "{count} selected",
       "decide": "Approve / Reject",
       "decideTitle": "Decide {count} request(s)",

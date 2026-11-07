@@ -450,6 +450,15 @@
       "to": "Đến ngày",
       "select": "Chọn đăng ký của {name}",
       "selectAll": "Chọn tất cả",
+      "group": {
+        "people": "{n} người đăng ký",
+        "pending": "{n} chờ duyệt",
+        "selectGroup": "Chọn cả ca này",
+        "showMore": "Xem thêm {n} người",
+        "showLess": "Thu gọn",
+        "position": "Đăng ký thứ {n}",
+        "registeredAt": "Đăng ký lúc {time}"
+      },
       "selected": "Đã chọn {count}",
       "decide": "Duyệt / Từ chối",
       "decideTitle": "Xử lý {count} đăng ký",

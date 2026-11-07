@@ -31,25 +31,27 @@
         @decide="openDecide(selection.ids.value)"
       />
 
-      <ul class="min-h-0 flex-1 space-y-2 overflow-y-auto">
-        <RequestRow
-          v-for="request in rows"
-          :key="request.id"
-          :request="request"
-          :selectable="canDecide && canTick(request)"
-          :selected="selection.has(request.id)"
-          @toggle="selection.toggle(request.id)"
+      <div class="min-h-0 flex-1 space-y-3 overflow-y-auto">
+        <RequestGroup
+          v-for="group in groups"
+          :key="group.key"
+          :group="group"
+          :selectable="canDecide"
+          :is-selected="selection.has"
+          :all-ticked="group.pendingIds.length > 0 && group.pendingIds.every(selection.has)"
+          @toggle="selection.toggle"
+          @toggle-group="selection.toggleMany(group.pendingIds)"
         >
-          <template #actions>
+          <template #actions="{ request }">
             <Button v-if="canDecide && canTick(request)" type="button" size="sm" class="min-h-9" @click="openDecide([request.id])">
               {{ $t("attendance.leave.review") }}
             </Button>
           </template>
-        </RequestRow>
-        <li v-if="!rows.length && !query.isPending.value" class="rounded-lg border border-dashed bg-white px-4 py-3 text-sm text-muted-foreground">
+        </RequestGroup>
+        <p v-if="!rows.length && !query.isPending.value" class="rounded-lg border border-dashed bg-white px-4 py-3 text-sm text-muted-foreground">
           {{ $t("attendance.requests.empty") }}
-        </li>
-      </ul>
+        </p>
+      </div>
 
       <div v-if="pageCount > 1" class="flex justify-end">
         <TablePager v-model:page="page.pageIndex" :page-count="pageCount" :loading="query.isFetching.value" />
@@ -74,7 +76,8 @@ import AttendanceNav from "../AttendanceNav.vue";
 import ChoiceButton from "../leave/ChoiceButton.vue";
 import DecideRequestsDialog from "./DecideRequestsDialog.vue";
 import RequestBulkBar from "./RequestBulkBar.vue";
-import RequestRow from "./RequestRow.vue";
+import RequestGroup from "./RequestGroup.vue";
+import { groupRequests } from "./groupRequests";
 import { REQUEST_TABS, useRequestBoard } from "./useRequestBoard";
 import { canTick, useRequestSelection } from "./useRequestSelection";
 
@@ -84,6 +87,7 @@ const canDecide = computed(() => auth.can("attendance", "CREATE"));
 
 const { status, from, to, search, page, query, rows, pageCount } = useRequestBoard(branchId);
 const selection = useRequestSelection(rows, computed(() => `${status.value}|${branchId.value}`));
+const groups = computed(() => groupRequests(rows.value));
 const names = computed(() => Object.fromEntries(rows.value.map((row) => [row.id, row.userName])));
 
 const decideOpen = ref(false);

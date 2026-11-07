@@ -3,7 +3,8 @@ import { usePagedSearch } from "@/composables/usePagedSearch";
 import { useShiftRequestList } from "@/features/admin/attendance/queries";
 import type { ShiftRequestFilter } from "@bongcun/core/attendance";
 
-const PAGE_SIZE = 20;
+// Big enough that a shift with many people is rarely split across two pages (the server caps it at 100).
+const PAGE_SIZE = 100;
 
 export type RequestTab = ShiftRequestFilter["status"];
 export const REQUEST_TABS: RequestTab[] = ["pending", "approved", "rejected", "cancelled", "all"];

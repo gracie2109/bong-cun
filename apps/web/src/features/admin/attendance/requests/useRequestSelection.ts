@@ -17,6 +17,11 @@ export const useRequestSelection = (rows: Ref<ShiftRequest[]>, resetOn: Ref<unkn
   const allTicked = computed(() => tickable.value.length > 0 && tickable.value.every(has));
   const toggleAll = () => (ids.value = allTicked.value ? [] : [...tickable.value]);
   const clear = () => (ids.value = []);
+  /** Ticks every id of a group, or unticks them when all are ticked already. */
+  const toggleMany = (many: string[]) => {
+    const all = many.length > 0 && many.every(has);
+    ids.value = all ? ids.value.filter((id) => !many.includes(id)) : [...new Set([...ids.value, ...many])];
+  };
 
-  return { ids, has, toggle, toggleAll, allTicked, clear, count: computed(() => ids.value.length), tickable };
+  return { ids, has, toggle, toggleMany, toggleAll, allTicked, clear, count: computed(() => ids.value.length), tickable };
 };
