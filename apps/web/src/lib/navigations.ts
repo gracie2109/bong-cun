@@ -81,6 +81,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
       { title: "adminNav.attendanceHistory", icon: "lucide:history", name: "attendanceHistory" },
       { title: "adminNav.attendanceSettings", icon: "lucide:settings-2", name: "attendanceSettings" },
       { title: "adminNav.attendanceRegister", icon: "lucide:calendar-plus", name: "attendanceRegister" },
+      { title: "adminNav.attendanceMySchedule", icon: "lucide:calendar-days", name: "attendanceMySchedule" },
       { title: "adminNav.attendanceMe", icon: "lucide:user-round", name: "attendanceMe" },
     ],
   },

@@ -3,7 +3,7 @@
     :title="$t('dashboard.myShifts.title')"
     :icon="CalendarClock"
     :state="state"
-    :to="{ name: 'attendanceMe' }"
+    :to="{ name: 'attendanceMySchedule' }"
     :link-label="$t('dashboard.myShifts.open')"
     :empty-text="$t('dashboard.myShifts.empty')"
     @retry="refetch()"
