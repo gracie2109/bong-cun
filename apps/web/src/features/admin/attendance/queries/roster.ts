@@ -53,5 +53,10 @@ export const useCopyWeek = () =>
   useRosterMutation(
     (input: CopyWeekInput) => copyRosterWeek(supabaseClient(), input),
     "create",
-    (result) => toast.success(i18n.global.t("attendance.roster.copyDone", { copied: result.copied, skipped: result.skipped }))
+    (result) =>
+      toast.success(
+        result.skipped_past
+          ? i18n.global.t("attendance.roster.copyDonePast", { copied: result.copied, skipped: result.skipped, past: result.skipped_past })
+          : i18n.global.t("attendance.roster.copyDone", { copied: result.copied, skipped: result.skipped })
+      )
   );

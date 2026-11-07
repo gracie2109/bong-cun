@@ -1,5 +1,5 @@
 <template>
-  <td class="min-w-36 border-l p-1 align-top" :class="[leaveClass, isToday && 'bg-primary/5', cell.blocked && 'bg-[repeating-linear-gradient(135deg,transparent,transparent_6px,rgba(148,163,184,0.18)_6px,rgba(148,163,184,0.18)_12px)]']" :title="cell.blocked ? $t('attendance.roster.blockedDay') : undefined">
+  <td class="min-w-36 border-l p-1 align-top" :class="[leaveClass, isToday && 'bg-primary/5', past && 'bg-muted/40', cell.blocked && 'bg-[repeating-linear-gradient(135deg,transparent,transparent_6px,rgba(148,163,184,0.18)_6px,rgba(148,163,184,0.18)_12px)]']" :title="past ? $t('attendance.roster.pastDay') : cell.blocked ? $t('attendance.roster.blockedDay') : undefined">
     <div class="flex min-h-11 flex-col gap-1">
       <span v-if="cell.leave" class="rounded-md bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-900">
         {{ $t(`attendance.leaveType.${cell.leave.leaveType}`) }}<template v-if="cell.leave.part !== 'full'"> · {{ $t(`attendance.leavePart.${cell.leave.part}`) }}</template>
@@ -9,7 +9,7 @@
         :key="item.id"
         type="button"
         class="rounded-md border px-2 py-1 text-left text-xs font-semibold"
-        :class="SHIFT_COLOR_CLASS[item.color].chip"
+        :class="[SHIFT_COLOR_CLASS[item.color].chip, past && 'opacity-70']"
         :disabled="!canOpen"
         @click="emit('edit', item)"
       >
@@ -41,7 +41,7 @@ import type { RosterAssignment, RosterRequest } from "@bongcun/core/attendance";
 import RosterRequestChip from "./RosterRequestChip.vue";
 import type { RosterCellData } from "./rosterGrid";
 
-const props = defineProps<{ cell: RosterCellData; isToday: boolean; leaveClass?: string; canCreate: boolean; canOpen: boolean; canDecide: boolean }>();
+const props = defineProps<{ cell: RosterCellData; isToday: boolean; leaveClass?: string; canCreate: boolean; canOpen: boolean; canDecide: boolean; past?: boolean }>();
 const isEmpty = computed(() => !props.cell.leave && props.cell.assignments.length === 0 && props.cell.requests.length === 0);
 const emit = defineEmits<{ add: []; edit: [assignment: RosterAssignment]; decide: [request: RosterRequest] }>();
 </script>

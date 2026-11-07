@@ -17,6 +17,7 @@
         :monday="monday"
         :label="label"
         :is-this-week="isThisWeek"
+        :is-past-week="isPastWeek"
         :can-create="canCreate"
         :pending-count="pendingCount"
         @previous="previous"
@@ -94,7 +95,7 @@ const canCreate = computed(() => auth.can("attendance", "CREATE"));
 const canUpdate = computed(() => auth.can("attendance", "UPDATE") || canCreate.value);
 const canDelete = computed(() => auth.can("attendance", "DELETE"));
 
-const { monday, days, sunday, isThisWeek, previous, next, select, today } = useRosterWeek();
+const { monday, days, sunday, isThisWeek, isPastWeek, previous, next, select, today } = useRosterWeek();
 const { query, roster, rows, templates, availability, requests } = useRoster(branchId, monday, sunday, days);
 const weekQuery = useWeekStatus(branchId, monday);
 const week = computed(() => weekQuery.data.value);

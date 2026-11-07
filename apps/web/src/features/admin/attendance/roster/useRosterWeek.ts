@@ -9,11 +9,15 @@ export const useRosterWeek = () => {
   const sunday = computed(() => addDays(monday.value, 6));
   const isThisWeek = computed(() => monday.value === mondayOf(todayInVietnam()));
 
+  /** The whole week is behind us, so nothing in it can change any more. */
+  const isPastWeek = computed(() => sunday.value < todayInVietnam());
+
   return {
     monday,
     days,
     sunday,
     isThisWeek,
+    isPastWeek,
     previous: () => (monday.value = addDays(monday.value, -7)),
     next: () => (monday.value = addDays(monday.value, 7)),
     select: (value: string) => (monday.value = mondayOf(value)),
