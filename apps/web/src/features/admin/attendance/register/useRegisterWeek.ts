@@ -16,6 +16,7 @@ export const useRegisterWeek = () => {
     isFirstWeek: computed(() => monday.value === firstWeek()),
     previous: () => (monday.value = addDays(monday.value, -7)),
     next: () => (monday.value = addDays(monday.value, 7)),
+    select: (value: string) => (monday.value = mondayOf(value)),
     reset: () => (monday.value = firstWeek()),
   };
 };

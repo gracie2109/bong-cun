@@ -13,7 +13,7 @@
         <BranchPicker :model-value="branchId" :branches="branches" @update:model-value="selectBranch" />
       </div>
 
-      <RegisterToolbar :label="week.label.value" :is-first-week="week.isFirstWeek.value" @previous="week.previous" @next="week.next" @reset="week.reset" />
+      <RegisterToolbar :monday="week.monday.value" :label="week.label.value" :is-first-week="week.isFirstWeek.value" @previous="week.previous" @next="week.next" @select="week.select" @reset="week.reset" />
 
       <p v-if="!branches.length" class="rounded-lg border border-dashed bg-white px-4 py-3 text-sm text-muted-foreground">{{ $t("attendance.register.noBranch") }}</p>
 
