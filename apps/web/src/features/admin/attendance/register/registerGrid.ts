@@ -1,8 +1,8 @@
 // Pure: what each cell of the registration grid (a day and a shift template) looks like and whether it can be ticked.
-import { addDays, isoWeekday } from "@bongcun/core/attendance";
+import { addDays, isoWeekday, staffCanEditWeek } from "@bongcun/core/attendance";
 import type { RegistrationBoard, RegistrationTemplate } from "@bongcun/core/attendance";
 
-export type CellKind = "empty" | "pending" | "approved" | "rejected" | "onRoster" | "leave" | "overlap";
+export type CellKind = "empty" | "pending" | "submitted" | "approved" | "rejected" | "onRoster" | "leave" | "overlap";
 
 export type CellState = {
   kind: CellKind;
@@ -53,6 +53,8 @@ export const cellState = (board: RegistrationBoard, date: string, template: Regi
   const fixed = (kind: CellKind): CellState => ({ ...base, kind, selectable: false });
 
   if (request?.status === "pending") return fixed("pending");
+  // The manager decided but has not published: staff only learn that it was sent.
+  if (request?.status === "submitted") return fixed("submitted");
   if (request?.status === "approved") return fixed("approved");
   const span = templateSpan(template, date);
   const same = board.assignments.find((a) => a.workDate === date && a.templateId === template.id);
@@ -63,7 +65,7 @@ export const cellState = (board: RegistrationBoard, date: string, template: Regi
     board.requests.some((r) => r.status === "pending" && overlaps(span, r.startAt, r.endAt));
   if (clashes) return fixed("overlap");
   const kind: CellKind = request?.status === "rejected" ? "rejected" : "empty";
-  return { ...base, kind, selectable: board.window.open };
+  return { ...base, kind, selectable: board.window.open && staffCanEditWeek(board.week) };
 };
 
 /** How many ticked cells a person may still add this week: the limit minus alive requests and roster shifts at the branch. */

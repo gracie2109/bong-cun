@@ -22,7 +22,12 @@
         @next="next"
         @today="today"
         @copy="copyOpen = true"
-      />
+      >
+        <template #publish>
+          <MissingRegistrationButton :branch-id="branchId" :monday="monday" :week="week" :can-view="canCreate" :can-assign="canCreate" />
+          <PublishWeekButton :branch-id="branchId" :monday="monday" :week="week" :shifts="shiftCount" :can-publish="canCreate" />
+        </template>
+      </RosterToolbar>
 
       <p v-if="templates.length === 0 && !query.isPending.value" class="rounded-lg border border-dashed bg-white px-4 py-3 text-sm text-muted-foreground">
         {{ $t("attendance.roster.noTemplates") }}
@@ -52,8 +57,9 @@
     :templates="templates"
     :can-delete="canDelete"
     :availability="availability"
+    :published="isPublished"
   />
-  <CopyWeekDialog v-model:open="copyOpen" :branch-id="branchId" :to-monday="monday" />
+  <CopyWeekDialog v-model:open="copyOpen" :branch-id="branchId" :to-monday="monday" :published="isPublished" />
   <DecideRequestsDialog v-model:open="decideOpen" :ids="decideIds" :description="decideDescription" :names="decideNames" />
   <AvailabilityDialog v-model:open="availabilityOpen" :user-id="availabilityUser?.userId" :title="availabilityUser?.name" />
 </template>
@@ -61,6 +67,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { CalendarRange } from "lucide-vue-next";
+import { useWeekStatus } from "@/features/admin/attendance/queries";
 import { useCurrentBranch } from "@/composables/useCurrentBranch";
 import { useAuthStore } from "@/stores";
 import { ContentWrap, Header } from "@/features/admin/components";
@@ -68,6 +75,8 @@ import { BranchPicker } from "@/features/admin/pos";
 import AttendanceNav from "../AttendanceNav.vue";
 import AvailabilityDialog from "../availability/AvailabilityDialog.vue";
 import DecideRequestsDialog from "../requests/DecideRequestsDialog.vue";
+import MissingRegistrationButton from "../publish/MissingRegistrationButton.vue";
+import PublishWeekButton from "../publish/PublishWeekButton.vue";
 import AssignShiftDialog from "./AssignShiftDialog.vue";
 import CopyWeekDialog from "./CopyWeekDialog.vue";
 import RosterGrid from "./RosterGrid.vue";
@@ -84,7 +93,11 @@ const canUpdate = computed(() => auth.can("attendance", "UPDATE") || canCreate.v
 const canDelete = computed(() => auth.can("attendance", "DELETE"));
 
 const { monday, days, sunday, isThisWeek, previous, next, today } = useRosterWeek();
-const { query, rows, templates, availability, requests } = useRoster(branchId, monday, sunday, days);
+const { query, roster, rows, templates, availability, requests } = useRoster(branchId, monday, sunday, days);
+const weekQuery = useWeekStatus(branchId, monday);
+const week = computed(() => weekQuery.data.value);
+const shiftCount = computed(() => roster.value.assignments.length);
+const isPublished = computed(() => !!week.value?.requirePublish && week.value.status === "published");
 const pendingCount = computed(() => requests.value.filter((request) => !request.expired).length);
 const label = computed(() => `${monday.value.slice(8)}/${monday.value.slice(5, 7)} – ${sunday.value.slice(8)}/${sunday.value.slice(5, 7)}/${sunday.value.slice(0, 4)}`);
 

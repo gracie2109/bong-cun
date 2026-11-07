@@ -8,3 +8,4 @@ export * from "@/features/admin/attendance/queries/availability";
 export * from "@/features/admin/attendance/queries/registration";
 export * from "@/features/admin/attendance/queries/review";
 export * from "@/features/admin/attendance/queries/history";
+export * from "@/features/admin/attendance/queries/publish";

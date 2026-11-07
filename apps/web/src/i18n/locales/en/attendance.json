@@ -409,7 +409,19 @@
         "rejected": "Rejected",
         "onRoster": "On roster",
         "leave": "On leave",
-        "overlap": "Overlaps"
+        "overlap": "Overlaps",
+        "submitted": "Sent"
+      },
+      "weekPublished": "This week's schedule is published; you can no longer register or cancel requests.",
+      "declared": "You said you will not register for shifts this week.",
+      "withdrawDeclared": "Withdraw",
+      "declare": "I will not register this week",
+      "declareHint": "Not working this week? Let the manager know.",
+      "declareConfirm": {
+        "title": "Declare no shifts this week?",
+        "message": "The manager will see that you chose not to register, not that you forgot.",
+        "reason": "Reason (optional)",
+        "reasonHint": "For example: exams."
       }
     },
     "registrationSettings": {
@@ -538,6 +550,58 @@
       "saveRegistration": {
         "title": "Save registration settings?",
         "message": "The new settings apply at once to the branch's staff. The change is saved in the history."
+      }
+    },
+    "publish": {
+      "draft": "Draft",
+      "published": "Published",
+      "auto": "automatic",
+      "button": "Publish schedule",
+      "done": "Schedule published: {notified} people notified, {rejected} open requests closed.",
+      "editNotice": "This week is published, so staff will be notified of this change.",
+      "confirm": {
+        "title": "Publish this week's schedule?",
+        "message": "Staff will see the schedule and get a notice; after that they cannot register or cancel requests.",
+        "noteLabel": "Note for closed requests (optional)",
+        "noteHint": "For example: the week is full."
+      },
+      "confirmAdd": {
+        "title": "Add a shift to a published week?",
+        "message": "{name} will be notified about the shift on {date}."
+      },
+      "warning": {
+        "empty": "This week has no shifts yet.",
+        "pending": "{pending} requests are still pending and will be rejected when publishing.",
+        "missing": "{missing} people have not registered."
+      },
+      "missing": {
+        "button": "Not registered ({count})",
+        "title": "Who has not registered",
+        "hint": "People who must register but sent no request and did not say they want no shifts.",
+        "closes": "Registration closes {at}",
+        "empty": "Nobody.",
+        "likeLastWeek": "Same as last week",
+        "state": {
+          "missing": "Not registered",
+          "submitted": "Sent {count} requests",
+          "declared_none": "Declared no shifts",
+          "exempt": "Exempt from registering",
+          "manager": "Manager"
+        }
+      },
+      "settings": {
+        "require": "Publish the schedule before staff see it",
+        "requireHint": "On: each week stays a draft until a manager presses Publish. Off: everything works as before.",
+        "switchOnWarning": "Once on, upcoming weeks that are not published are hidden from staff.",
+        "weekLine": "Week {week}: {shifts} shifts",
+        "publishExisting": "Publish weeks that already have shifts (no notices)"
+      },
+      "exemptions": {
+        "title": "Exempt from registering",
+        "hint": "Exempt people are not counted as missing (for example fixed-shift staff).",
+        "manager": "(manager)",
+        "toggle": "Exempt {name} from registering",
+        "empty": "No staff yet."
       }
     }
   }

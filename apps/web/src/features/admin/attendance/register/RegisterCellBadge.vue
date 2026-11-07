@@ -6,14 +6,15 @@
 </template>
 
 <script lang="ts" setup>
-import { Ban, CalendarOff, Check, CircleX, Clock } from "lucide-vue-next";
+import { Ban, CalendarOff, Check, CircleX, Clock, Send } from "lucide-vue-next";
 import type { CellKind } from "./registerGrid";
 
 defineProps<{ kind: Exclude<CellKind, "empty"> }>();
 
-const ICON = { pending: Clock, approved: Check, rejected: CircleX, onRoster: Check, leave: CalendarOff, overlap: Ban } as const;
+const ICON = { pending: Clock, submitted: Send, approved: Check, rejected: CircleX, onRoster: Check, leave: CalendarOff, overlap: Ban } as const;
 const CELL_CLASS = {
   pending: "bg-amber-50 text-amber-800",
+  submitted: "bg-amber-50 text-amber-800",
   approved: "bg-emerald-50 text-emerald-800",
   rejected: "bg-rose-50 text-rose-800",
   onRoster: "bg-teal-50 text-teal-800",

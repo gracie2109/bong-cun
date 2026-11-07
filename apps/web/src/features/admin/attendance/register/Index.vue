@@ -19,9 +19,10 @@
 
       <div v-if="board" class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
         <RegisterWindowNotice :board="board" :quota="quota" />
+        <RegisterWeekStateBanner :board="board" :withdrawing="withdrawing" @declare="declareNone" @withdraw="withdrawNone" />
         <p v-if="!board.templates.length" class="rounded-lg border border-dashed bg-white px-4 py-3 text-sm text-muted-foreground">{{ $t("attendance.register.noTemplates") }}</p>
         <component :is="narrow ? RegisterDayList : RegisterGrid" v-else :board="board" :selection="selection" @cancel="cancel" />
-        <RegisterSubmitBar v-if="board.window.open" v-model:note="note" :count="selection.count.value" :sending="sending" :over-quota="overQuota" @send="send" @clear="selection.clear" />
+        <RegisterSubmitBar v-if="board.window.open && staffCanEditWeek(board.week)" v-model:note="note" :count="selection.count.value" :sending="sending" :over-quota="overQuota" @send="send" @clear="selection.clear" />
       </div>
       <p v-else-if="query.isPending.value && branchId" class="text-sm text-muted-foreground">…</p>
     </div>
@@ -43,9 +44,11 @@ import ConfirmReasonDialog from "@/components/common/ConfirmReasonDialog.vue";
 import RegisterResultDialog from "./RegisterResultDialog.vue";
 import RegisterSubmitBar from "./RegisterSubmitBar.vue";
 import RegisterToolbar from "./RegisterToolbar.vue";
+import RegisterWeekStateBanner from "./RegisterWeekStateBanner.vue";
 import RegisterWindowNotice from "./RegisterWindowNotice.vue";
+import { staffCanEditWeek } from "@bongcun/core/attendance";
 import { useRegisterPage } from "./useRegisterPage";
 
 const narrow = useMediaQuery("(max-width: 767px)");
-const { branches, branchId, selectBranch, week, query, board, selection, note, quota, overQuota, sending, cancel, confirm, send, result, resultOpen } = useRegisterPage();
+const { branches, branchId, selectBranch, week, query, board, selection, note, quota, overQuota, sending, cancel, confirm, send, declareNone, withdrawNone, withdrawing, result, resultOpen } = useRegisterPage();
 </script>

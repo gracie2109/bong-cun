@@ -8,7 +8,7 @@ const night: RegistrationTemplate = { id: "t-night", name: "Night", startTime: "
 const MONDAY = "2026-11-16";
 
 const board = (over: Partial<RegistrationBoard> = {}): RegistrationBoard => ({
-  rules: { isOpen: true, weeksAhead: 2, closeDaysBefore: 2, maxShiftsPerWeek: null, staffNote: null },
+  rules: { isOpen: true, weeksAhead: 2, closeDaysBefore: 2, maxShiftsPerWeek: null, staffNote: null, requirePublish: false },
   window: { open: true, closesAt: "2026-11-13T17:00:00+00:00", reason: null },
   templates: [morning, night],
   days: [MONDAY],
@@ -17,6 +17,8 @@ const board = (over: Partial<RegistrationBoard> = {}): RegistrationBoard => ({
   leaves: [],
   availability: [],
   needs: [],
+  week: { requirePublish: false, status: "draft", publishedAt: null, publishedByName: null, autoPublished: false, pendingRequests: null, missingCount: null },
+  submission: null,
   ...over,
 });
 
@@ -35,6 +37,15 @@ describe("registration grid", () => {
     expect(cellState(board({ requests: [{ ...request, status: "pending" }] }), MONDAY, morning)).toMatchObject({ kind: "pending", requestId: "r1", selectable: false });
     expect(cellState(board({ requests: [{ ...request, status: "approved" }] }), MONDAY, morning).kind).toBe("approved");
     expect(cellState(board({ requests: [{ ...request, status: "rejected" }] }), MONDAY, morning)).toMatchObject({ kind: "rejected", note: "full", selectable: true });
+  });
+
+  it("a decided request looks only 'sent' to staff until the week is published; a published week is locked", () => {
+    const request = { id: "r1", workDate: MONDAY, templateId: "t-morning", name: "Morning", note: null, decisionNote: null, assignmentId: null, startAt: "2026-11-16T01:00:00Z", endAt: "2026-11-16T05:00:00Z" };
+    expect(cellState(board({ requests: [{ ...request, status: "submitted" }] }), MONDAY, morning)).toMatchObject({ kind: "submitted", selectable: false });
+    const published = { requirePublish: true, status: "published" as const, publishedAt: "2026-11-10T00:00:00Z", publishedByName: "M", autoPublished: false, pendingRequests: null, missingCount: null };
+    expect(cellState(board({ week: published }), MONDAY, morning).selectable).toBe(false);
+    // A branch that does not publish is never locked, whatever the status says.
+    expect(cellState(board({ week: { ...published, requirePublish: false } }), MONDAY, morning).selectable).toBe(true);
   });
 
   it("marks shifts already on the roster, leave days and overlaps", () => {

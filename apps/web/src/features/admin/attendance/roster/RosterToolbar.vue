@@ -10,7 +10,10 @@
       </Button>
     </div>
     <Button variant="outline" :disabled="isThisWeek" @click="emit('today')">{{ $t("attendance.roster.thisWeek") }}</Button>
-    <RosterPendingButton :count="pendingCount" class="ml-auto" />
+    <div class="ml-auto flex flex-wrap items-center gap-2">
+      <slot name="publish" />
+      <RosterPendingButton :count="pendingCount" />
+    </div>
     <Button v-if="canCreate" variant="outline" @click="emit('copy')">
       <Copy class="mr-1 size-4" />
       {{ $t("attendance.roster.copyWeek") }}
