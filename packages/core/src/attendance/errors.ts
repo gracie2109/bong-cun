@@ -24,14 +24,11 @@ export const ATTENDANCE_ERROR_HINTS = [
   "not_cancellable",
   "not_signed_in",
   "too_many",
-<<<<<<< HEAD
   "registration_closed",
   "duplicate",
   "already_on_roster",
   "request_overlap",
   "over_weekly_limit",
-=======
->>>>>>> origin/claude/project-thread-qqvyon
 ] as const;
 export type AttendanceErrorHint = (typeof ATTENDANCE_ERROR_HINTS)[number];
 

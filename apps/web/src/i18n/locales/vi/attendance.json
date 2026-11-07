@@ -87,16 +87,12 @@
       "own_request": "Bạn không được duyệt đơn của chính mình.",
       "not_cancellable": "Đơn này không hủy được nữa.",
       "not_signed_in": "Bạn chưa đăng nhập.",
-<<<<<<< HEAD
       "too_many": "Bạn đã khai quá nhiều dòng.",
       "registration_closed": "Đăng ký ca của tuần này đang đóng.",
       "duplicate": "Bạn đã đăng ký ca này rồi.",
       "already_on_roster": "Ca này đã có trong lịch của bạn.",
       "request_overlap": "Ca này trùng giờ với một đăng ký đang chờ của bạn.",
       "over_weekly_limit": "Bạn đã đăng ký đủ số ca tối đa trong tuần."
-=======
-      "too_many": "Bạn đã khai quá nhiều dòng."
->>>>>>> origin/claude/project-thread-qqvyon
     },
     "roster": {
       "title": "Lịch ca",
