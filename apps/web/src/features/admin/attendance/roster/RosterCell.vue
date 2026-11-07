@@ -21,7 +21,8 @@
       <button
         v-if="canCreate"
         type="button"
-        class="flex min-h-11 flex-1 items-center justify-center rounded-md text-muted-foreground/50 hover:bg-muted hover:text-foreground"
+        class="flex items-center justify-center rounded-md text-muted-foreground/50 hover:bg-muted hover:text-foreground"
+        :class="isEmpty ? 'min-h-11 flex-1' : 'h-6'"
         :aria-label="$t('attendance.roster.addShift')"
         @click="emit('add')"
       >
@@ -32,6 +33,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { Lock, Plus } from "lucide-vue-next";
 import { SHIFT_COLOR_CLASS } from "@/features/admin/attendance/shared/shiftColors";
 import { timeOf } from "@/features/admin/attendance/shared/attendanceFormat";
@@ -39,6 +41,7 @@ import type { RosterAssignment, RosterRequest } from "@bongcun/core/attendance";
 import RosterRequestChip from "./RosterRequestChip.vue";
 import type { RosterCellData } from "./rosterGrid";
 
-defineProps<{ cell: RosterCellData; isToday: boolean; leaveClass?: string; canCreate: boolean; canOpen: boolean; canDecide: boolean }>();
+const props = defineProps<{ cell: RosterCellData; isToday: boolean; leaveClass?: string; canCreate: boolean; canOpen: boolean; canDecide: boolean }>();
+const isEmpty = computed(() => !props.cell.leave && props.cell.assignments.length === 0 && props.cell.requests.length === 0);
 const emit = defineEmits<{ add: []; edit: [assignment: RosterAssignment]; decide: [request: RosterRequest] }>();
 </script>
