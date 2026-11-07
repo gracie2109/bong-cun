@@ -29,6 +29,7 @@ const tabs = [
   { name: "attendanceLeave", icon: "lucide:calendar-off", label: "attendance.nav.leave", method: "VIEW" },
   { name: "attendanceTimesheet", icon: "lucide:table-properties", label: "attendance.nav.timesheet", method: "VIEW" },
   { name: "attendanceSettings", icon: "lucide:settings-2", label: "attendance.nav.settings", method: "VIEW" },
+  { name: "attendanceRegister", icon: "lucide:calendar-plus", label: "attendance.nav.register", method: null },
   { name: "attendanceMe", icon: "lucide:user-round", label: "attendance.nav.me", method: null },
 ];
 const visibleTabs = computed(() => tabs.filter((tab) => tab.method === null || auth.can("attendance", tab.method)));

@@ -6,7 +6,8 @@
       "leave": "Leave",
       "timesheet": "Timesheet",
       "settings": "Settings",
-      "me": "Mine"
+      "me": "Mine",
+      "register": "Register shifts"
     },
     "settings": {
       "title": "Attendance settings",
@@ -359,6 +360,55 @@
         "time_same": "Start and end must differ.",
         "too_many": "At most 21 rows."
       }
+    },
+    "register": {
+      "title": "Register shifts",
+      "shift": "Shift",
+      "nextWeek": "Next week",
+      "noBranch": "You do not work at any branch to register for.",
+      "noTemplates": "This branch has no shift templates to register for.",
+      "open": "Registration is open. Deadline {deadline}.",
+      "closedReason": {
+        "closed": "This branch has not opened shift registration.",
+        "past_deadline": "Registration for this week has closed ({deadline}).",
+        "too_far": "This week is not open for registration yet."
+      },
+      "limit": "At most {max} shifts a week; you can still ask for {left} more.",
+      "selected": "{count} selected",
+      "notePlaceholder": "Note for all (optional)",
+      "clear": "Clear",
+      "send": "Send",
+      "cancel": "Cancel",
+      "unavailableHint": "You marked this time as unavailable.",
+      "resultTitle": "Registration result",
+      "resultSummary": "Sent {created}, skipped {skipped}.",
+      "close": "Close",
+      "warning": {
+        "on_leave": "you have approved leave that day",
+        "unavailable": "you marked this time as unavailable"
+      },
+      "cell": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "onRoster": "On roster",
+        "leave": "On leave",
+        "overlap": "Overlaps"
+      }
+    },
+    "registrationSettings": {
+      "title": "Shift registration",
+      "hint": "Staff pick the shifts they want to work; a manager approves.",
+      "isOpen": "Open registration",
+      "isOpenHint": "When off, staff cannot register.",
+      "weeksAhead": "Open ahead (weeks)",
+      "weeksAheadHint": "Staff can register up to this many weeks ahead.",
+      "closeDaysBefore": "Close before Monday (days)",
+      "closeDaysBeforeHint": "2 = closes at 00:00 on the Saturday before that week.",
+      "maxShifts": "Weekly shift limit",
+      "maxShiftsHint": "Counts pending requests and shifts already on the roster.",
+      "staffNote": "Message for staff",
+      "staffNoteHint": "Shown on the registration page, e.g. Weekends need at least 2 people."
     }
   }
 }

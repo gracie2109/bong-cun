@@ -20,6 +20,7 @@
       <div class="grid min-h-0 flex-1 content-start gap-5 overflow-y-auto xl:grid-cols-2">
         <TemplatesCard :branch-id="branchId" :can-edit="canSetup" />
         <RulesCard :branch-id="branchId" :can-edit="canSetup" />
+        <RegistrationCard :branch-id="branchId" :can-edit="canSetup" class="xl:col-span-2" />
         <AllowancesCard :branch-id="branchId" :can-edit="canSetup" class="xl:col-span-2" />
       </div>
     </div>
@@ -35,6 +36,7 @@ import { ContentWrap, Header } from "@/features/admin/components";
 import { BranchPicker } from "@/features/admin/pos";
 import AttendanceNav from "../AttendanceNav.vue";
 import AllowancesCard from "./AllowancesCard.vue";
+import RegistrationCard from "./RegistrationCard.vue";
 import RulesCard from "./RulesCard.vue";
 import TemplatesCard from "./TemplatesCard.vue";
 

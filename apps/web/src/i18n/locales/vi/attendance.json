@@ -6,7 +6,8 @@
       "leave": "Đơn nghỉ",
       "timesheet": "Bảng công",
       "settings": "Cài đặt",
-      "me": "Của tôi"
+      "me": "Của tôi",
+      "register": "Đăng ký ca"
     },
     "settings": {
       "title": "Cài đặt chấm công",
@@ -359,6 +360,55 @@
         "time_same": "Giờ bắt đầu và kết thúc phải khác nhau.",
         "too_many": "Tối đa 21 dòng."
       }
+    },
+    "register": {
+      "title": "Đăng ký ca",
+      "shift": "Ca",
+      "nextWeek": "Tuần sau",
+      "noBranch": "Bạn chưa thuộc cơ sở nào để đăng ký ca.",
+      "noTemplates": "Cơ sở này chưa có ca mẫu để đăng ký.",
+      "open": "Đang mở đăng ký. Hạn chót {deadline}.",
+      "closedReason": {
+        "closed": "Cơ sở chưa mở đăng ký ca.",
+        "past_deadline": "Đã hết hạn đăng ký tuần này ({deadline}).",
+        "too_far": "Tuần này chưa mở đăng ký."
+      },
+      "limit": "Tối đa {max} ca mỗi tuần, bạn còn đăng ký thêm được {left} ca.",
+      "selected": "Đã chọn {count} ca",
+      "notePlaceholder": "Ghi chú chung (tùy chọn)",
+      "clear": "Bỏ chọn",
+      "send": "Gửi đăng ký",
+      "cancel": "Hủy",
+      "unavailableHint": "Bạn đã báo bận khung giờ này.",
+      "resultTitle": "Kết quả đăng ký",
+      "resultSummary": "Đã gửi {created} ca, bỏ qua {skipped} ca.",
+      "close": "Đóng",
+      "warning": {
+        "on_leave": "bạn có đơn nghỉ đã duyệt ngày này",
+        "unavailable": "bạn đã báo bận khung giờ này"
+      },
+      "cell": {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Bị từ chối",
+        "onRoster": "Đã có ca",
+        "leave": "Nghỉ phép",
+        "overlap": "Trùng giờ"
+      }
+    },
+    "registrationSettings": {
+      "title": "Đăng ký ca",
+      "hint": "Cho nhân viên tự chọn ca muốn làm; quản lý duyệt.",
+      "isOpen": "Mở đăng ký ca",
+      "isOpenHint": "Tắt thì nhân viên không đăng ký được.",
+      "weeksAhead": "Mở trước (tuần)",
+      "weeksAheadHint": "Nhân viên đăng ký được tối đa bấy nhiêu tuần tới.",
+      "closeDaysBefore": "Chốt trước thứ Hai (ngày)",
+      "closeDaysBeforeHint": "2 = đóng lúc 00:00 thứ Bảy trước tuần đó.",
+      "maxShifts": "Giới hạn ca mỗi tuần",
+      "maxShiftsHint": "Tính cả đơn chờ duyệt và ca đã xếp.",
+      "staffNote": "Lời nhắn cho nhân viên",
+      "staffNoteHint": "Hiện trên trang đăng ký, ví dụ: Cuối tuần cần ít nhất 2 người."
     }
   }
 }

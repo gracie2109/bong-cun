@@ -529,6 +529,7 @@
     "staff": "Staff",
     "attendanceToday": "Today's attendance",
     "attendanceMe": "My attendance",
+    "attendanceRegister": "Register shifts",
     "attendanceLeave": "Leave requests",
     "attendanceTimesheet": "Timesheet",
     "attendanceRoster": "Roster",
