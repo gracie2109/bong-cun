@@ -7,7 +7,7 @@ For trying the multi-branch dashboard ("all branches" scope, branch picker) befo
 | `mock-branch-seed.sql` | Creates the branch `MOCK` with sales, online orders (delivered, on the way, returned, cancelled, waiting), stock in every state, overdue vaccines and two boarding stays, plus four `[MOCK]` customers. |
 | `mock-branch-cleanup.sql` | Deletes exactly that and nothing else. |
 
-| `mock-shift-seed.sql` | Shift registration: branch `MOCKCA` with 3 shift templates, registration open, five staff accounts (`mock-ca-N@mock.invalid`, nobody can sign in as them), availability, shifts this week and next, and next week's requests (4 pending incl. ones on a blocked day, 1 approved, 1 rejected, 1 cancelled). |
+| `mock-shift-seed.sql` | Shift registration: branch `MOCKCA` with 3 shift templates, registration open, ten staff with Vietnamese names (`mock-ca-N@mock.invalid`, nobody can sign in as them), availability, 71 shifts over last and this week, and 40 requests for the next two weeks (32 pending, some on blocked days, plus approved, rejected, cancelled). |
 | `mock-shift-cleanup.sql` | Deletes exactly that and nothing else. |
 
 Neither is a migration, so nothing runs them automatically. Run one with `psql "$DATABASE_URL" -f supabase/mock/<file>.sql`
