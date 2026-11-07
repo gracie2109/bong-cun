@@ -16,6 +16,7 @@ export const useRosterWeek = () => {
     isThisWeek,
     previous: () => (monday.value = addDays(monday.value, -7)),
     next: () => (monday.value = addDays(monday.value, 7)),
+    select: (value: string) => (monday.value = mondayOf(value)),
     today: () => (monday.value = mondayOf(todayInVietnam())),
   };
 };
