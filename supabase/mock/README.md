@@ -8,6 +8,7 @@ For trying the multi-branch dashboard ("all branches" scope, branch picker) befo
 | `mock-branch-cleanup.sql` | Deletes exactly that and nothing else. |
 
 | `mock-shift-seed.sql` | Shift registration: branch `MOCKCA` with 3 shift templates, registration open, ten staff with Vietnamese names (`mock-ca-N@mock.invalid`, nobody can sign in as them), availability, 71 shifts over last and this week, and 40 requests for the next two weeks (32 pending, some on blocked days, plus approved, rejected, cancelled). Publishing is on: last and this week published, next week a draft, one person declared "no shifts", two sample notifications for the first user. |
+| `mock-shift-october.sql` | Run after `mock-shift-seed.sql`: fills October 2026 for MOCKCA with shifts, check-ins (on time, late, early out, overtime, forgotten check-out, absent), three approved leaves and an unscheduled day, so the timesheet has a full month. |
 | `mock-shift-cleanup.sql` | Deletes exactly that and nothing else. |
 
 Neither is a migration, so nothing runs them automatically. Run one with `psql "$DATABASE_URL" -f supabase/mock/<file>.sql`
