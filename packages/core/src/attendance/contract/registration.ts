@@ -1,6 +1,7 @@
 // Shift registration: the window a branch opens, the page's board, and the requests a person sends.
 import { z } from "zod";
 import { availabilityRowSchema } from "./availability";
+import { weekStatusSchema } from "./publish";
 import { leavePartSchema, leaveTypeSchema, shiftColorSchema } from "./shifts";
 
 const uuid = z.string().uuid();
@@ -11,6 +12,10 @@ const time = z.string().regex(/^\d{2}:\d{2}$/);
 export const shiftRequestStatusSchema = z.enum(["pending", "approved", "rejected", "cancelled"]);
 export type ShiftRequestStatus = z.infer<typeof shiftRequestStatusSchema>;
 
+/** What a person sees of their own request: "submitted" while the week is not published yet (the decision is hidden). */
+export const staffRequestStatusSchema = z.enum(["pending", "approved", "rejected", "cancelled", "submitted"]);
+export type StaffRequestStatus = z.infer<typeof staffRequestStatusSchema>;
+
 // ---------------------------------------------------------------- inputs
 export const registrationSettingsInput = z.object({
   isOpen: z.boolean(),
@@ -18,6 +23,11 @@ export const registrationSettingsInput = z.object({
   closeDaysBefore: z.number().int().min(0).max(14),
   maxShiftsPerWeek: z.number().int().min(1).max(21).nullable(),
   staffNote: z.string().max(300).nullable(),
+  /** The branch publishes each week before staff see it. */
+  requirePublish: z.boolean().optional(),
+  /** When switching publishing on: publish the future weeks that already have shifts, without notices. */
+  publishExisting: z.boolean().optional(),
+  reason: z.string().max(300).nullish(),
 });
 export type RegistrationSettingsInput = z.infer<typeof registrationSettingsInput>;
 
@@ -37,6 +47,7 @@ export const registrationRulesSchema = z.object({
   close_days_before: z.number(),
   max_shifts_per_week: z.number().nullable(),
   staff_note: z.string().nullable(),
+  require_publish: z.boolean(),
 });
 export type RegistrationRulesRow = z.infer<typeof registrationRulesSchema>;
 
@@ -65,7 +76,7 @@ export const boardRequestSchema = z.object({
   work_date: date,
   template_id: uuid.nullable(),
   name: z.string(),
-  status: shiftRequestStatusSchema,
+  status: staffRequestStatusSchema,
   note: z.string().nullable(),
   decision_note: z.string().nullable(),
   assignment_id: uuid.nullable(),
@@ -105,6 +116,8 @@ export const registrationBoardSchema = z.object({
   leaves: z.array(boardLeaveSchema),
   availability: z.array(availabilityRowSchema),
   needs: z.array(boardNeedSchema),
+  week: weekStatusSchema,
+  submission: z.object({ kind: z.literal("none"), reason: z.string().nullable() }).nullish(),
 });
 export type RegistrationBoardRow = z.infer<typeof registrationBoardSchema>;
 

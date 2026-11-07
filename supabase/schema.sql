@@ -697,6 +697,58 @@ $$;
 ALTER FUNCTION "public"."assign_shift"("p_branch" "uuid", "p_user" "uuid", "p_date" "date", "p_template" "uuid", "p_start" time without time zone, "p_end" time without time zone, "p_break" integer, "p_note" "text", "p_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."assign_to_previous_week"("p_branch" "uuid", "p_monday" "date", "p_user" "uuid", "p_reason" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  r         public.shift_assignments;
+  v_copied  integer := 0;
+  v_skipped integer := 0;
+begin
+  if not public.can_attendance('CREATE', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_monday is null or extract(isodow from p_monday) <> 1 or p_user is null then
+    raise exception 'invalid request' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if not exists (select 1 from public.staff_branches where user_id = p_user and branch_id = p_branch) then
+    raise exception 'this person does not work at the branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  perform set_config('app.schedule_reason', left(coalesce(nullif(btrim(p_reason), ''), ''), 300), true);
+  perform set_config('app.schedule_source', 'assign_to_previous_week', true);
+
+  for r in
+    select * from public.shift_assignments
+    where branch_id = p_branch and user_id = p_user and work_date >= p_monday - 7 and work_date < p_monday
+    order by start_at
+  loop
+    if exists (select 1 from public.shift_assignments
+               where branch_id = p_branch and user_id = p_user and work_date = r.work_date + 7) then
+      v_skipped := v_skipped + 1;
+      continue;
+    end if;
+    begin
+      insert into public.shift_assignments (
+        branch_id, user_id, work_date, template_id, name, start_at, end_at, break_minutes, note, created_by
+      ) values (
+        p_branch, p_user, r.work_date + 7, r.template_id, r.name,
+        ((r.start_at at time zone 'Asia/Ho_Chi_Minh') + interval '7 days') at time zone 'Asia/Ho_Chi_Minh',
+        ((r.end_at at time zone 'Asia/Ho_Chi_Minh') + interval '7 days') at time zone 'Asia/Ho_Chi_Minh',
+        r.break_minutes, r.note, (select auth.uid()));
+      v_copied := v_copied + 1;
+    exception when exclusion_violation then
+      v_skipped := v_skipped + 1;
+    end;
+  end loop;
+  return jsonb_build_object('copied', v_copied, 'skipped', v_skipped);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."assign_to_previous_week"("p_branch" "uuid", "p_monday" "date", "p_user" "uuid", "p_reason" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."assignment_has_entry"("p_assignment" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -2152,6 +2204,15 @@ $$;
 ALTER FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" "uuid"[]) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."branch_requires_publish"("p_branch" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$ select coalesce((select s.require_publish from public.shift_registration_settings s where s.branch_id = p_branch), false); $$;
+
+
+ALTER FUNCTION "public"."branch_requires_publish"("p_branch" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."business_date"() RETURNS "date"
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
@@ -2598,6 +2659,9 @@ begin
   end if;
   if v_row.status <> 'pending' then
     raise exception 'the request was already decided' using errcode = 'P0001', hint = 'not_pending';
+  end if;
+  if public.week_locked(v_row.branch_id, public.week_of(v_row.work_date)) then
+    raise exception 'the week was already published' using errcode = 'P0001', hint = 'week_published';
   end if;
   update public.shift_requests set status = 'cancelled' where id = p_id;
 end;
@@ -4349,6 +4413,44 @@ $$;
 ALTER FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_approve" boolean, "p_note" "text", "p_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."declare_no_shifts"("p_branch" "uuid", "p_monday" "date", "p_reason" "text" DEFAULT NULL::"text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me     uuid := (select auth.uid());
+  v_reason text := nullif(btrim(p_reason), '');
+  v_window jsonb;
+begin
+  if v_me is null or not public.is_branch_staff(p_branch) then
+    raise exception 'you do not work at this branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  if length(coalesce(v_reason, '')) > 300 then
+    raise exception 'invalid request' using errcode = '22023', hint = 'bad_input';
+  end if;
+  v_window := public.shift_registration_window(p_branch, p_monday);
+  if public.week_locked(p_branch, p_monday) then
+    raise exception 'the week was already published' using errcode = 'P0001', hint = 'week_published';
+  end if;
+  if not (v_window ->> 'open')::boolean then
+    raise exception 'registration is closed (%)', v_window ->> 'reason' using errcode = 'P0001', hint = 'registration_closed';
+  end if;
+  if exists (select 1 from public.shift_requests r
+             where r.branch_id = p_branch and r.user_id = v_me and r.work_date between p_monday and p_monday + 6
+               and r.status in ('pending', 'approved')) then
+    raise exception 'cancel your requests first' using errcode = 'P0001', hint = 'has_requests';
+  end if;
+  perform set_config('app.schedule_source', 'declare_no_shifts', true);
+  insert into public.shift_registration_submissions (branch_id, user_id, week_monday, reason)
+  values (p_branch, v_me, p_monday, v_reason)
+  on conflict (branch_id, user_id, week_monday) do update set reason = excluded.reason;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."declare_no_shifts"("p_branch" "uuid", "p_monday" "date", "p_reason" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."delete_care_log"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -4621,6 +4723,75 @@ $$;
 
 
 ALTER FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."do_publish_week"("p_branch" "uuid", "p_monday" "date", "p_auto" boolean, "p_reject_note" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me       uuid := (select auth.uid());
+  v_name     text := case when p_auto or v_me is null then 'Hệ thống' else coalesce(public.staff_display_name(v_me), 'Hệ thống') end;
+  v_week     public.schedule_weeks;
+  v_rejected integer;
+  v_shifts   integer;
+  v_notified integer := 0;
+  v_range    text := to_char(p_monday, 'DD/MM') || '–' || to_char(p_monday + 6, 'DD/MM');
+  v_branch   text := (select b.name from public.branches b where b.id = p_branch);
+  r          record;
+  v_count    integer;
+begin
+  insert into public.schedule_weeks (branch_id, week_monday) values (p_branch, p_monday) on conflict do nothing;
+  select * into v_week from public.schedule_weeks where branch_id = p_branch and week_monday = p_monday for update;
+  if v_week.status = 'published' then
+    raise exception 'the week is already published' using errcode = 'P0001', hint = 'already_published';
+  end if;
+
+  perform set_config('app.schedule_publishing', 'on', true);
+  perform set_config('app.schedule_source', case when p_auto then 'cron:auto_publish' else 'publish_schedule_week' end, true);
+
+  -- Requests nobody decided are closed with a note, so nothing stays pending after publishing.
+  update public.shift_requests set
+    status = 'rejected', decided_by = case when p_auto then null else v_me end, decided_by_name = v_name,
+    decided_at = now(), decision_note = left(p_reject_note, 300)
+  where branch_id = p_branch and work_date between p_monday and p_monday + 6 and status = 'pending';
+  get diagnostics v_rejected = row_count;
+
+  select count(*) into v_shifts from public.shift_assignments
+  where branch_id = p_branch and work_date between p_monday and p_monday + 6;
+
+  update public.schedule_weeks set
+    status = 'published', published_at = now(), published_by = case when p_auto then null else v_me end,
+    published_by_name = v_name, auto_published = coalesce(p_auto, false)
+  where branch_id = p_branch and week_monday = p_monday;
+
+  -- One notice for everyone who has shifts that week or had to register.
+  for r in
+    select sb.user_id from public.staff_branches sb
+    where sb.branch_id = p_branch
+      and (exists (select 1 from public.shift_assignments a
+                   where a.branch_id = p_branch and a.user_id = sb.user_id and a.work_date between p_monday and p_monday + 6)
+           or public.staff_must_register(p_branch, sb.user_id))
+  loop
+    select count(*) into v_count from public.shift_assignments a
+    where a.branch_id = p_branch and a.user_id = r.user_id and a.work_date between p_monday and p_monday + 6;
+    perform public.notify_user(
+      r.user_id, p_branch, 'schedule_published', 'Lịch tuần ' || v_range || ' đã phát hành',
+      case when v_count > 0 then 'Bạn có ' || v_count || ' ca tuần này' else 'Bạn không có ca nào tuần này' end
+        || coalesce(' tại ' || v_branch, '') || '.',
+      jsonb_build_object('name', 'attendanceMe', 'query', jsonb_build_object('week', p_monday)),
+      jsonb_build_object('week_monday', p_monday, 'shift_count', v_count));
+    v_notified := v_notified + 1;
+  end loop;
+
+  update public.schedule_weeks set notified_count = v_notified where branch_id = p_branch and week_monday = p_monday;
+  perform set_config('app.schedule_publishing', 'off', true);
+  return jsonb_build_object('notified', v_notified, 'rejected', v_rejected, 'shifts', v_shifts);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."do_publish_week"("p_branch" "uuid", "p_monday" "date", "p_auto" boolean, "p_reject_note" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."edit_time_entry"("p_id" "uuid", "p_in" timestamp with time zone, "p_out" timestamp with time zone, "p_assignment" "uuid", "p_reason" "text") RETURNS "void"
@@ -5302,7 +5473,7 @@ ALTER FUNCTION "public"."has_permission"("p_permission" "text", "p_method" "text
 CREATE OR REPLACE FUNCTION "public"."history_published_flag"("p_branch" "uuid", "p_monday" "date") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
-    AS $$ select false; $$;
+    AS $$ select public.week_locked(p_branch, p_monday); $$;
 
 
 ALTER FUNCTION "public"."history_published_flag"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
@@ -7397,6 +7568,25 @@ $$;
 ALTER FUNCTION "public"."list_product_groups"("p_search" "text", "p_include_archived" boolean, "p_limit" integer, "p_offset" integer, "p_category" "uuid", "p_brand" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."list_registration_exemptions"("p_branch" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not public.can_attendance('VIEW', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  return coalesce((
+    select jsonb_agg(jsonb_build_object('user_id', x.user_id, 'name', public.staff_display_name(x.user_id), 'note', x.note)
+                     order by public.staff_display_name(x.user_id))
+    from public.shift_registration_exemptions x where x.branch_id = p_branch), '[]'::jsonb);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."list_registration_exemptions"("p_branch" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."list_shift_requests"("p_branch" "uuid" DEFAULT NULL::"uuid", "p_status" "text" DEFAULT 'pending'::"text", "p_from" "date" DEFAULT NULL::"date", "p_to" "date" DEFAULT NULL::"date", "p_search" "text" DEFAULT NULL::"text", "p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 20) RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -9316,7 +9506,8 @@ begin
         'start_at', a.start_at, 'end_at', a.end_at, 'break_minutes', a.break_minutes, 'note', a.note,
         'has_entry', public.assignment_has_entry(a.id)) order by a.start_at)
       from public.shift_assignments a join public.branches b on b.id = a.branch_id
-      where a.user_id = v_user and a.work_date between p_from and p_to), '[]'::jsonb),
+      where a.user_id = v_user and a.work_date between p_from and p_to
+        and public.week_is_published(a.branch_id, public.week_of(a.work_date))), '[]'::jsonb),
     'entries', coalesce((
       select jsonb_agg(jsonb_build_object(
         'id', e.id, 'branch_id', e.branch_id, 'branch_name', b.name, 'work_date', e.work_date,
@@ -9351,8 +9542,9 @@ begin
     select jsonb_agg(jsonb_build_object(
       'id', r.id, 'branch_id', r.branch_id, 'branch_name', b.name, 'work_date', r.work_date,
       'template_id', r.template_id, 'name', r.name, 'start_at', r.start_at, 'end_at', r.end_at,
-      'status', r.status, 'note', r.note, 'decision_note', r.decision_note,
-      'expired', r.status = 'pending' and r.start_at <= now(), 'assignment_id', r.assignment_id)
+      'status', case when public.request_decision_visible(r) then r.status else 'submitted' end, 'note', r.note,
+      'decision_note', case when public.request_decision_visible(r) then r.decision_note end,
+      'expired', r.status = 'pending' and r.start_at <= now(), 'assignment_id', case when public.request_decision_visible(r) then r.assignment_id end)
       order by r.work_date, r.start_at)
     from public.shift_requests r join public.branches b on b.id = r.branch_id
     where r.user_id = (select auth.uid()) and r.work_date between p_from and p_to), '[]'::jsonb);
@@ -10621,6 +10813,57 @@ $$;
 ALTER FUNCTION "public"."product_unit_price"("p_product" "uuid", "p_branch" "uuid", "p_unit" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."publish_existing_weeks"("p_branch" "uuid") RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_n integer;
+  v_me uuid := (select auth.uid());
+begin
+  perform set_config('app.schedule_reason', 'Bật phát hành lịch', true);
+  perform set_config('app.schedule_source', 'publish_existing_weeks', true);
+  insert into public.schedule_weeks (branch_id, week_monday, status, published_at, published_by, published_by_name)
+  select p_branch, w.monday, 'published', now(), v_me, coalesce(public.staff_display_name(v_me), 'Hệ thống')
+  from (select distinct public.week_of(a.work_date) as monday from public.shift_assignments a
+        where a.branch_id = p_branch and public.week_of(a.work_date) > public.week_of(public.vn_today())) w
+  on conflict (branch_id, week_monday) do update set
+    status = 'published', published_at = now(), published_by = excluded.published_by, published_by_name = excluded.published_by_name
+  where public.schedule_weeks.status <> 'published';
+  get diagnostics v_n = row_count;
+  return v_n;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."publish_existing_weeks"("p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."publish_schedule_week"("p_branch" "uuid", "p_monday" "date", "p_reject_note" "text" DEFAULT 'Không được xếp khi phát hành lịch'::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not public.can_attendance('CREATE', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_monday is null or extract(isodow from p_monday) <> 1 then
+    raise exception 'the date must be a Monday' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if not public.branch_requires_publish(p_branch) then
+    raise exception 'publishing is switched off' using errcode = 'P0001', hint = 'publish_disabled';
+  end if;
+  if public.week_is_published(p_branch, p_monday) then
+    raise exception 'the week is already published' using errcode = 'P0001', hint = 'already_published';
+  end if;
+  return public.do_publish_week(p_branch, p_monday, false, coalesce(nullif(btrim(p_reject_note), ''), 'Không được xếp khi phát hành lịch'));
+end;
+$$;
+
+
+ALTER FUNCTION "public"."publish_schedule_week"("p_branch" "uuid", "p_monday" "date", "p_reject_note" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."refresh_appointment_status"("p_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -10761,6 +11004,60 @@ $$;
 
 
 ALTER FUNCTION "public"."register_pet"("p" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."registration_status"("p_branch" "uuid", "p_monday" "date") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_rows    jsonb;
+  v_missing integer;
+begin
+  if not public.can_attendance('VIEW', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_monday is null or extract(isodow from p_monday) <> 1 then
+    raise exception 'the date must be a Monday' using errcode = '22023', hint = 'bad_input';
+  end if;
+
+  with people as (
+    select sb.user_id,
+           public.staff_display_name(sb.user_id) as name,
+           public.user_has_attendance(sb.user_id, 'CREATE', p_branch) as is_manager,
+           exists (select 1 from public.shift_registration_exemptions x where x.branch_id = p_branch and x.user_id = sb.user_id) as is_exempt,
+           (select count(*) from public.shift_requests r
+             where r.branch_id = p_branch and r.user_id = sb.user_id and r.work_date between p_monday and p_monday + 6
+               and r.status <> 'cancelled') as request_count,
+           (select count(*) from public.shift_assignments a
+             where a.branch_id = p_branch and a.user_id = sb.user_id and a.work_date between p_monday and p_monday + 6) as assigned_count,
+           exists (select 1 from public.shift_registration_submissions x
+                    where x.branch_id = p_branch and x.user_id = sb.user_id and x.week_monday = p_monday) as declared_none
+    from public.staff_branches sb where sb.branch_id = p_branch
+  ), states as (
+    select p.*, case
+        when p.is_manager then 'manager'
+        when p.is_exempt then 'exempt'
+        when p.request_count > 0 then 'submitted'
+        when p.declared_none then 'declared_none'
+        else 'missing' end as state
+    from people p
+  )
+  select coalesce(jsonb_agg(jsonb_build_object(
+           'user_id', s.user_id, 'name', s.name, 'must_register', s.state in ('submitted', 'declared_none', 'missing'),
+           'state', s.state, 'request_count', s.request_count, 'assigned_count', s.assigned_count)
+         order by (s.state = 'missing') desc, s.name), '[]'::jsonb),
+         count(*) filter (where s.state = 'missing')
+    into v_rows, v_missing
+  from states s;
+
+  return jsonb_build_object('rows', v_rows, 'missing_count', v_missing,
+    'closes_at', public.shift_registration_window(p_branch, p_monday) -> 'closes_at');
+end;
+$$;
+
+
+ALTER FUNCTION "public"."registration_status"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."remove_boarding_extra"("p_id" "uuid") RETURNS "void"
@@ -11817,6 +12114,46 @@ $$;
 
 
 ALTER FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."shift_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "user_name" "text" DEFAULT ''::"text" NOT NULL,
+    "work_date" "date" NOT NULL,
+    "template_id" "uuid",
+    "name" "text" NOT NULL,
+    "start_at" timestamp with time zone NOT NULL,
+    "end_at" timestamp with time zone NOT NULL,
+    "break_minutes" integer DEFAULT 0 NOT NULL,
+    "note" "text",
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "assignment_id" "uuid",
+    "decided_by" "uuid",
+    "decided_by_name" "text",
+    "decided_at" timestamp with time zone,
+    "decision_note" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "shift_requests_break_minutes_check" CHECK (("break_minutes" >= 0)),
+    CONSTRAINT "shift_requests_decision_note_check" CHECK ((("decision_note" IS NULL) OR ("length"("decision_note") <= 300))),
+    CONSTRAINT "shift_requests_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 300))),
+    CONSTRAINT "shift_requests_span" CHECK ((("end_at" > "start_at") AND (("end_at" - "start_at") <= '16:00:00'::interval))),
+    CONSTRAINT "shift_requests_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"])))
+);
+
+
+ALTER TABLE "public"."shift_requests" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."request_decision_visible"("r" "public"."shift_requests") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$ select r.status in ('pending', 'cancelled') or public.week_is_published(r.branch_id, public.week_of(r.work_date)); $$;
+
+
+ALTER FUNCTION "public"."request_decision_visible"("r" "public"."shift_requests") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."request_leave"("p_branch" "uuid", "p_type" "text", "p_from" "date", "p_to" "date", "p_part" "text", "p_reason" "text") RETURNS "jsonb"
@@ -13790,6 +14127,8 @@ declare
   v_close integer;
   v_max integer;
   v_note text;
+  v_require boolean;
+  v_was boolean := public.branch_requires_publish(p_branch);
 begin
   if not public.can_attendance('SETTING', p_branch) then
     raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
@@ -13800,6 +14139,7 @@ begin
     v_close := coalesce((p ->> 'close_days_before')::integer, 2);
     v_max := nullif(p ->> 'max_shifts_per_week', '')::integer;
     v_note := nullif(btrim(p ->> 'staff_note'), '');
+    v_require := coalesce((p ->> 'require_publish')::boolean, v_was);
   exception when others then
     raise exception 'invalid settings' using errcode = '22023', hint = 'bad_input';
   end;
@@ -13808,13 +14148,19 @@ begin
     raise exception 'invalid settings' using errcode = '22023', hint = 'bad_input';
   end if;
 
+  perform set_config('app.schedule_reason', left(coalesce(nullif(btrim(p ->> 'reason'), ''), ''), 300), true);
+  perform set_config('app.schedule_source', 'save_shift_registration_settings', true);
   insert into public.shift_registration_settings
-    (branch_id, is_open, weeks_ahead, close_days_before, max_shifts_per_week, staff_note, updated_by, updated_at)
-  values (p_branch, v_open, v_weeks, v_close, v_max, v_note, (select auth.uid()), now())
+    (branch_id, is_open, weeks_ahead, close_days_before, max_shifts_per_week, staff_note, require_publish, updated_by, updated_at)
+  values (p_branch, v_open, v_weeks, v_close, v_max, v_note, v_require, (select auth.uid()), now())
   on conflict (branch_id) do update set
     is_open = excluded.is_open, weeks_ahead = excluded.weeks_ahead, close_days_before = excluded.close_days_before,
     max_shifts_per_week = excluded.max_shifts_per_week, staff_note = excluded.staff_note,
-    updated_by = excluded.updated_by, updated_at = excluded.updated_at;
+    require_publish = excluded.require_publish, updated_by = excluded.updated_by, updated_at = excluded.updated_at;
+
+  if v_require and not v_was and coalesce((p ->> 'publish_existing')::boolean, false) then
+    perform public.publish_existing_weeks(p_branch);
+  end if;
   return public.shift_registration_rules_raw(p_branch);
 end;
 $$;
@@ -14538,6 +14884,50 @@ $$;
 ALTER FUNCTION "public"."schedule_medical_visit"("p" "jsonb", "p_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."schedule_week_status"("p_branch" "uuid", "p_monday" "date") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_w       public.schedule_weeks;
+  v_require boolean := public.branch_requires_publish(p_branch);
+  v_manager boolean := public.can_attendance('VIEW', p_branch);
+  v_missing integer;
+begin
+  if not (public.is_branch_staff(p_branch) or v_manager) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_monday is null or extract(isodow from p_monday) <> 1 then
+    raise exception 'the date must be a Monday' using errcode = '22023', hint = 'bad_input';
+  end if;
+  select * into v_w from public.schedule_weeks where branch_id = p_branch and week_monday = p_monday;
+  if v_manager then
+    select count(*) into v_missing
+    from public.staff_branches sb
+    where sb.branch_id = p_branch and public.staff_must_register(p_branch, sb.user_id)
+      and not exists (select 1 from public.shift_requests r
+                      where r.branch_id = p_branch and r.user_id = sb.user_id and r.work_date between p_monday and p_monday + 6
+                        and r.status <> 'cancelled')
+      and not exists (select 1 from public.shift_registration_submissions x
+                      where x.branch_id = p_branch and x.user_id = sb.user_id and x.week_monday = p_monday);
+  end if;
+  return jsonb_build_object(
+    'require_publish', v_require,
+    'status', case when v_require and public.week_is_published(p_branch, p_monday) then 'published' else 'draft' end,
+    'published_at', v_w.published_at,
+    'published_by_name', v_w.published_by_name,
+    'auto_published', coalesce(v_w.auto_published, false),
+    'pending_requests', case when v_manager then (
+        select count(*) from public.shift_requests r
+        where r.branch_id = p_branch and r.status = 'pending' and r.work_date between p_monday and p_monday + 6) end,
+    'missing_count', v_missing);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."schedule_week_status"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."search_customers"("p_text" "text", "p_limit" integer DEFAULT 5) RETURNS TABLE("customer_id" "uuid", "user_id" "uuid", "full_name" "text", "phone" "text", "email" "text", "note" "text", "pet_count" bigint)
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -14900,6 +15290,37 @@ $$;
 ALTER FUNCTION "public"."set_product_group_clinic_only"("p_group" "uuid", "p_value" boolean) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_registration_exemption"("p_branch" "uuid", "p_user" "uuid", "p_exempt" boolean, "p_note" "text" DEFAULT NULL::"text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_note text := nullif(btrim(p_note), '');
+begin
+  if not public.can_attendance('SETTING', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  if p_user is null or p_exempt is null or length(coalesce(v_note, '')) > 300 then
+    raise exception 'invalid request' using errcode = '22023', hint = 'bad_input';
+  end if;
+  if not exists (select 1 from public.staff_branches where user_id = p_user and branch_id = p_branch) then
+    raise exception 'this person does not work at the branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  perform set_config('app.schedule_source', 'set_registration_exemption', true);
+  if p_exempt then
+    insert into public.shift_registration_exemptions (branch_id, user_id, note, created_by)
+    values (p_branch, p_user, v_note, (select auth.uid()))
+    on conflict (branch_id, user_id) do update set note = excluded.note;
+  else
+    delete from public.shift_registration_exemptions where branch_id = p_branch and user_id = p_user;
+  end if;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_registration_exemption"("p_branch" "uuid", "p_user" "uuid", "p_exempt" boolean, "p_note" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_shift_template_active"("p_id" "uuid", "p_active" boolean) RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -15009,8 +15430,10 @@ begin
     'days', (select jsonb_agg(d::date order by d) from generate_series(p_monday, p_monday + 6, interval '1 day') d),
     'requests', coalesce((
       select jsonb_agg(jsonb_build_object(
-        'id', r.id, 'work_date', r.work_date, 'template_id', r.template_id, 'name', r.name, 'status', r.status,
-        'note', r.note, 'decision_note', r.decision_note, 'assignment_id', r.assignment_id,
+        'id', r.id, 'work_date', r.work_date, 'template_id', r.template_id, 'name', r.name,
+        'status', case when public.request_decision_visible(r) then r.status else 'submitted' end,
+        'note', r.note, 'decision_note', case when public.request_decision_visible(r) then r.decision_note end,
+        'assignment_id', case when public.request_decision_visible(r) then r.assignment_id end,
         'start_at', r.start_at, 'end_at', r.end_at) order by r.work_date, r.start_at)
       from public.shift_requests r
       where r.user_id = v_me and r.branch_id = p_branch and r.work_date between p_monday and p_monday + 6
@@ -15020,7 +15443,8 @@ begin
         'id', a.id, 'branch_id', a.branch_id, 'branch_name', b.name, 'work_date', a.work_date,
         'template_id', a.template_id, 'name', a.name, 'start_at', a.start_at, 'end_at', a.end_at) order by a.start_at)
       from public.shift_assignments a join public.branches b on b.id = a.branch_id
-      where a.user_id = v_me and a.work_date between p_monday and p_monday + 6), '[]'::jsonb),
+      where a.user_id = v_me and a.work_date between p_monday and p_monday + 6
+        and public.week_is_published(a.branch_id, p_monday)), '[]'::jsonb),
     'leaves', coalesce((
       select jsonb_agg(jsonb_build_object(
         'from_date', l.from_date, 'to_date', l.to_date, 'part', l.part, 'leave_type', l.leave_type)
@@ -15028,7 +15452,11 @@ begin
       from public.leave_requests l
       where l.user_id = v_me and l.status = 'approved' and l.from_date <= p_monday + 6 and l.to_date >= p_monday), '[]'::jsonb),
     'availability', public.availability_rows(v_me),
-    'needs', '[]'::jsonb
+    'needs', '[]'::jsonb,
+    'week', public.schedule_week_status(p_branch, p_monday),
+    'submission', (select jsonb_build_object('kind', x.kind, 'reason', x.reason)
+                   from public.shift_registration_submissions x
+                   where x.branch_id = p_branch and x.user_id = v_me and x.week_monday = p_monday)
   );
 end;
 $$;
@@ -15062,7 +15490,8 @@ CREATE OR REPLACE FUNCTION "public"."shift_registration_rules_raw"("p_branch" "u
     'weeks_ahead', coalesce(s.weeks_ahead, 2),
     'close_days_before', coalesce(s.close_days_before, 2),
     'max_shifts_per_week', s.max_shifts_per_week,
-    'staff_note', s.staff_note)
+    'staff_note', s.staff_note,
+    'require_publish', coalesce(s.require_publish, false))
   from (select p_branch as branch_id) b
   left join public.shift_registration_settings s on s.branch_id = b.branch_id;
 $$;
@@ -15096,37 +15525,6 @@ $$;
 
 
 ALTER FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."shift_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "branch_id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "user_name" "text" DEFAULT ''::"text" NOT NULL,
-    "work_date" "date" NOT NULL,
-    "template_id" "uuid",
-    "name" "text" NOT NULL,
-    "start_at" timestamp with time zone NOT NULL,
-    "end_at" timestamp with time zone NOT NULL,
-    "break_minutes" integer DEFAULT 0 NOT NULL,
-    "note" "text",
-    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
-    "assignment_id" "uuid",
-    "decided_by" "uuid",
-    "decided_by_name" "text",
-    "decided_at" timestamp with time zone,
-    "decision_note" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "shift_requests_break_minutes_check" CHECK (("break_minutes" >= 0)),
-    CONSTRAINT "shift_requests_decision_note_check" CHECK ((("decision_note" IS NULL) OR ("length"("decision_note") <= 300))),
-    CONSTRAINT "shift_requests_note_check" CHECK ((("note" IS NULL) OR ("length"("note") <= 300))),
-    CONSTRAINT "shift_requests_span" CHECK ((("end_at" > "start_at") AND (("end_at" - "start_at") <= '16:00:00'::interval))),
-    CONSTRAINT "shift_requests_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"])))
-);
-
-
-ALTER TABLE "public"."shift_requests" OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."shift_request_row"("r" "public"."shift_requests", "p_branch_name" "text") RETURNS "jsonb"
@@ -16196,6 +16594,19 @@ $$;
 ALTER FUNCTION "public"."staff_display_name"("p_user" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."staff_must_register"("p_branch" "uuid", "p_user" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select exists (select 1 from public.staff_branches sb where sb.user_id = p_user and sb.branch_id = p_branch)
+     and not public.user_has_attendance(p_user, 'CREATE', p_branch)
+     and not exists (select 1 from public.shift_registration_exemptions x where x.branch_id = p_branch and x.user_id = p_user);
+$$;
+
+
+ALTER FUNCTION "public"."staff_must_register"("p_branch" "uuid", "p_user" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."staff_shop_order_json"("o" "public"."shop_orders") RETURNS "jsonb"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -16478,6 +16889,9 @@ begin
     raise exception 'you do not work at this branch' using errcode = 'P0001', hint = 'not_branch_staff';
   end if;
   v_window := public.shift_registration_window(p_branch, p_monday);
+  if public.week_locked(p_branch, p_monday) then
+    raise exception 'the week was already published' using errcode = 'P0001', hint = 'week_published';
+  end if;
   if not (v_window ->> 'open')::boolean then
     raise exception 'registration is closed (%)', v_window ->> 'reason' using errcode = 'P0001', hint = 'registration_closed';
   end if;
@@ -16558,6 +16972,10 @@ begin
           'work_date', v_item ->> 'work_date', 'template_id', v_item ->> 'template_id', 'hint', coalesce(v_hint, 'bad_input'));
     end;
   end loop;
+  -- Having asked for shifts replaces an earlier "no shifts this week".
+  if jsonb_array_length(v_created) > 0 then
+    delete from public.shift_registration_submissions where branch_id = p_branch and user_id = v_me and week_monday = p_monday;
+  end if;
   return jsonb_build_object('created', v_created, 'skipped', v_skipped);
 end;
 $$;
@@ -16741,6 +17159,67 @@ $$;
 ALTER FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."trg_log_exemption"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if tg_op = 'DELETE' then
+    perform public.log_schedule_change(old.branch_id, null, 'exemption', old.branch_id::text || ':' || old.user_id::text,
+      'delete', old.user_id, to_jsonb(old), null);
+  else
+    perform public.log_schedule_change(new.branch_id, null, 'exemption', new.branch_id::text || ':' || new.user_id::text,
+      case when tg_op = 'INSERT' then 'insert' else 'update' end, new.user_id,
+      case when tg_op = 'UPDATE' then to_jsonb(old) end, to_jsonb(new));
+  end if;
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."trg_log_exemption"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."trg_log_registration_settings"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_old jsonb := case when tg_op = 'UPDATE' then to_jsonb(old) - 'updated_at' - 'updated_by' end;
+  v_new jsonb := to_jsonb(new) - 'updated_at' - 'updated_by';
+begin
+  if tg_op = 'UPDATE' and v_old is not distinct from v_new then
+    return null;
+  end if;
+  perform public.log_schedule_change(new.branch_id, null, 'settings', new.branch_id::text,
+    case when tg_op = 'INSERT' then 'insert' else 'update' end, null, v_old, v_new);
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."trg_log_registration_settings"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."trg_log_schedule_week"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if new.status = 'published' and (tg_op = 'INSERT' or old.status is distinct from 'published') then
+    perform public.log_schedule_change(
+      new.branch_id, new.week_monday, 'week', new.branch_id::text || ':' || new.week_monday::text,
+      case when new.auto_published then 'auto_publish' else 'publish' end, null,
+      case when tg_op = 'UPDATE' then to_jsonb(old) - 'updated_at' end, to_jsonb(new) - 'updated_at');
+  end if;
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."trg_log_schedule_week"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."trg_log_shift_assignment"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -16793,6 +17272,58 @@ $$;
 
 
 ALTER FUNCTION "public"."trg_log_shift_request"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."trg_log_submission"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if tg_op = 'DELETE' then
+    perform public.log_schedule_change(old.branch_id, old.week_monday, 'submission',
+      old.branch_id::text || ':' || old.user_id::text || ':' || old.week_monday::text, 'delete', old.user_id, to_jsonb(old), null);
+  else
+    perform public.log_schedule_change(new.branch_id, new.week_monday, 'submission',
+      new.branch_id::text || ':' || new.user_id::text || ':' || new.week_monday::text, 'declare_none', new.user_id,
+      case when tg_op = 'UPDATE' then to_jsonb(old) end, to_jsonb(new));
+  end if;
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."trg_log_submission"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."trg_notify_shift_change"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_reason text := nullif(btrim(coalesce(current_setting('app.schedule_reason', true), '')), '');
+begin
+  if coalesce(current_setting('app.schedule_publishing', true), '') = 'on' then
+    return null;
+  end if;
+  if tg_op = 'UPDATE' and to_jsonb(old) - 'updated_at' is not distinct from to_jsonb(new) - 'updated_at' then
+    return null;
+  end if;
+  if tg_op in ('UPDATE', 'DELETE') and public.week_locked(old.branch_id, public.week_of(old.work_date)) then
+    perform public.notify_schedule_changed(old.user_id, old.branch_id, public.week_of(old.work_date), v_reason);
+  end if;
+  if tg_op in ('INSERT', 'UPDATE') and public.week_locked(new.branch_id, public.week_of(new.work_date)) then
+    if tg_op = 'UPDATE' and old.user_id = new.user_id and public.week_of(old.work_date) = public.week_of(new.work_date)
+       and public.week_locked(old.branch_id, public.week_of(old.work_date)) then
+      return null; -- the old side already notified this person for this week
+    end if;
+    perform public.notify_schedule_changed(new.user_id, new.branch_id, public.week_of(new.work_date), v_reason);
+  end if;
+  return null;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."trg_notify_shift_change"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."unread_notification_count"() RETURNS integer
@@ -17105,6 +17636,22 @@ $$;
 ALTER FUNCTION "public"."update_shift_assignment"("p_id" "uuid", "p" "jsonb", "p_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."user_has_attendance"("p_user" "uuid", "p_method" "text", "p_branch" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select coalesce((select u.role in ('admin', 'superAdmin') from public.users u where u.id = p_user), false)
+      or exists (
+        select 1 from public.staff_branches sb
+        join public.role_permissions rp on rp.role = sb.role
+        where sb.user_id = p_user and sb.branch_id = p_branch
+          and rp.permission = 'attendance' and rp.methods && array[upper(p_method), 'ALL']);
+$$;
+
+
+ALTER FUNCTION "public"."user_has_attendance"("p_user" "uuid", "p_method" "text", "p_branch" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."vaccine_lots"("p_branch" "uuid", "p_vaccine_type" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -17132,6 +17679,15 @@ $$;
 
 
 ALTER FUNCTION "public"."vaccine_lots"("p_branch" "uuid", "p_vaccine_type" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."vn_today"() RETURNS "date"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$ select (now() at time zone 'Asia/Ho_Chi_Minh')::date; $$;
+
+
+ALTER FUNCTION "public"."vn_today"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."void_vaccination"("p_id" "uuid", "p_reason" "text" DEFAULT NULL::"text") RETURNS "void"
@@ -17170,6 +17726,29 @@ $$;
 ALTER FUNCTION "public"."void_vaccination"("p_id" "uuid", "p_reason" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."week_is_published"("p_branch" "uuid", "p_monday" "date") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select not public.branch_requires_publish(p_branch)
+      or p_monday <= public.week_of(public.vn_today())
+      or exists (select 1 from public.schedule_weeks w
+                 where w.branch_id = p_branch and w.week_monday = p_monday and w.status = 'published');
+$$;
+
+
+ALTER FUNCTION "public"."week_is_published"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."week_locked"("p_branch" "uuid", "p_monday" "date") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$ select public.branch_requires_publish(p_branch) and public.week_is_published(p_branch, p_monday); $$;
+
+
+ALTER FUNCTION "public"."week_locked"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."week_of"("p_date" "date") RETURNS "date"
     LANGUAGE "sql" IMMUTABLE
     SET "search_path" TO ''
@@ -17177,6 +17756,54 @@ CREATE OR REPLACE FUNCTION "public"."week_of"("p_date" "date") RETURNS "date"
 
 
 ALTER FUNCTION "public"."week_of"("p_date" "date") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."weeks_with_shifts"("p_branch" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  if not public.can_attendance('SETTING', p_branch) then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  return coalesce((
+    select jsonb_agg(jsonb_build_object('week_monday', w.monday, 'shifts', w.shifts) order by w.monday)
+    from (select public.week_of(a.work_date) as monday, count(*) as shifts
+          from public.shift_assignments a
+          where a.branch_id = p_branch and public.week_of(a.work_date) > public.week_of(public.vn_today())
+          group by 1) w), '[]'::jsonb);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."weeks_with_shifts"("p_branch" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."withdraw_no_shifts"("p_branch" "uuid", "p_monday" "date") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me     uuid := (select auth.uid());
+  v_window jsonb;
+begin
+  if v_me is null or not public.is_branch_staff(p_branch) then
+    raise exception 'you do not work at this branch' using errcode = 'P0001', hint = 'not_branch_staff';
+  end if;
+  v_window := public.shift_registration_window(p_branch, p_monday);
+  if public.week_locked(p_branch, p_monday) then
+    raise exception 'the week was already published' using errcode = 'P0001', hint = 'week_published';
+  end if;
+  if not (v_window ->> 'open')::boolean then
+    raise exception 'registration is closed (%)', v_window ->> 'reason' using errcode = 'P0001', hint = 'registration_closed';
+  end if;
+  perform set_config('app.schedule_source', 'withdraw_no_shifts', true);
+  delete from public.shift_registration_submissions where branch_id = p_branch and user_id = v_me and week_monday = p_monday;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."withdraw_no_shifts"("p_branch" "uuid", "p_monday" "date") OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."appointment_items" (
@@ -18471,6 +19098,24 @@ ALTER TABLE "public"."schedule_history" ALTER COLUMN "id" ADD GENERATED ALWAYS A
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."schedule_weeks" (
+    "branch_id" "uuid" NOT NULL,
+    "week_monday" "date" NOT NULL,
+    "status" "text" DEFAULT 'draft'::"text" NOT NULL,
+    "published_at" timestamp with time zone,
+    "published_by" "uuid",
+    "published_by_name" "text",
+    "auto_published" boolean DEFAULT false NOT NULL,
+    "notified_count" integer DEFAULT 0 NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "schedule_weeks_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'published'::"text"]))),
+    CONSTRAINT "schedule_weeks_week_monday_check" CHECK ((EXTRACT("isodow" FROM "week_monday") = (1)::numeric))
+);
+
+
+ALTER TABLE "public"."schedule_weeks" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."service_providers" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
@@ -18517,6 +19162,19 @@ CREATE TABLE IF NOT EXISTS "public"."shift_assignments" (
 ALTER TABLE "public"."shift_assignments" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."shift_registration_exemptions" (
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "note" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "shift_registration_exemptions_note_check" CHECK ((("note" IS NULL) OR ("char_length"("note") <= 300)))
+);
+
+
+ALTER TABLE "public"."shift_registration_exemptions" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."shift_registration_settings" (
     "branch_id" "uuid" NOT NULL,
     "is_open" boolean DEFAULT false NOT NULL,
@@ -18526,6 +19184,7 @@ CREATE TABLE IF NOT EXISTS "public"."shift_registration_settings" (
     "staff_note" "text",
     "updated_by" "uuid",
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "require_publish" boolean DEFAULT false NOT NULL,
     CONSTRAINT "shift_registration_settings_close_days_before_check" CHECK ((("close_days_before" >= 0) AND ("close_days_before" <= 14))),
     CONSTRAINT "shift_registration_settings_max_shifts_per_week_check" CHECK ((("max_shifts_per_week" IS NULL) OR (("max_shifts_per_week" >= 1) AND ("max_shifts_per_week" <= 21)))),
     CONSTRAINT "shift_registration_settings_staff_note_check" CHECK ((("staff_note" IS NULL) OR ("length"("staff_note") <= 300))),
@@ -18534,6 +19193,22 @@ CREATE TABLE IF NOT EXISTS "public"."shift_registration_settings" (
 
 
 ALTER TABLE "public"."shift_registration_settings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."shift_registration_submissions" (
+    "branch_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "week_monday" "date" NOT NULL,
+    "kind" "text" DEFAULT 'none'::"text" NOT NULL,
+    "reason" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "shift_registration_submissions_kind_check" CHECK (("kind" = 'none'::"text")),
+    CONSTRAINT "shift_registration_submissions_reason_check" CHECK ((("reason" IS NULL) OR ("char_length"("reason") <= 300))),
+    CONSTRAINT "shift_registration_submissions_week_monday_check" CHECK ((EXTRACT("isodow" FROM "week_monday") = (1)::numeric))
+);
+
+
+ALTER TABLE "public"."shift_registration_submissions" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."shift_templates" (
@@ -19382,6 +20057,11 @@ ALTER TABLE ONLY "public"."schedule_history"
 
 
 
+ALTER TABLE ONLY "public"."schedule_weeks"
+    ADD CONSTRAINT "schedule_weeks_pkey" PRIMARY KEY ("branch_id", "week_monday");
+
+
+
 ALTER TABLE ONLY "public"."service_providers"
     ADD CONSTRAINT "service_providers_name_key" UNIQUE ("name");
 
@@ -19407,8 +20087,18 @@ ALTER TABLE ONLY "public"."shift_assignments"
 
 
 
+ALTER TABLE ONLY "public"."shift_registration_exemptions"
+    ADD CONSTRAINT "shift_registration_exemptions_pkey" PRIMARY KEY ("branch_id", "user_id");
+
+
+
 ALTER TABLE ONLY "public"."shift_registration_settings"
     ADD CONSTRAINT "shift_registration_settings_pkey" PRIMARY KEY ("branch_id");
+
+
+
+ALTER TABLE ONLY "public"."shift_registration_submissions"
+    ADD CONSTRAINT "shift_registration_submissions_pkey" PRIMARY KEY ("branch_id", "user_id", "week_monday");
 
 
 
@@ -20267,6 +20957,14 @@ CREATE OR REPLACE TRIGGER "schedule_history_no_change" BEFORE DELETE OR UPDATE O
 
 
 
+CREATE OR REPLACE TRIGGER "schedule_weeks_log" AFTER INSERT OR UPDATE ON "public"."schedule_weeks" FOR EACH ROW EXECUTE FUNCTION "public"."trg_log_schedule_week"();
+
+
+
+CREATE OR REPLACE TRIGGER "schedule_weeks_set_updated_at" BEFORE UPDATE ON "public"."schedule_weeks" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_updated_at" BEFORE UPDATE ON "public"."appointment_items" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
@@ -20431,7 +21129,23 @@ CREATE OR REPLACE TRIGGER "shift_assignments_log" AFTER INSERT OR DELETE OR UPDA
 
 
 
+CREATE OR REPLACE TRIGGER "shift_assignments_notify" AFTER INSERT OR DELETE OR UPDATE ON "public"."shift_assignments" FOR EACH ROW EXECUTE FUNCTION "public"."trg_notify_shift_change"();
+
+
+
 CREATE OR REPLACE TRIGGER "shift_assignments_updated_at" BEFORE UPDATE ON "public"."shift_assignments" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "shift_registration_exemptions_log" AFTER INSERT OR DELETE OR UPDATE ON "public"."shift_registration_exemptions" FOR EACH ROW EXECUTE FUNCTION "public"."trg_log_exemption"();
+
+
+
+CREATE OR REPLACE TRIGGER "shift_registration_settings_log" AFTER INSERT OR UPDATE ON "public"."shift_registration_settings" FOR EACH ROW EXECUTE FUNCTION "public"."trg_log_registration_settings"();
+
+
+
+CREATE OR REPLACE TRIGGER "shift_registration_submissions_log" AFTER INSERT OR DELETE OR UPDATE ON "public"."shift_registration_submissions" FOR EACH ROW EXECUTE FUNCTION "public"."trg_log_submission"();
 
 
 
@@ -21272,6 +21986,11 @@ ALTER TABLE ONLY "public"."schedule_history"
 
 
 
+ALTER TABLE ONLY "public"."schedule_weeks"
+    ADD CONSTRAINT "schedule_weeks_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."service_species"
     ADD CONSTRAINT "service_species_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "public"."pet_services"("id") ON DELETE CASCADE;
 
@@ -21302,6 +22021,21 @@ ALTER TABLE ONLY "public"."shift_assignments"
 
 
 
+ALTER TABLE ONLY "public"."shift_registration_exemptions"
+    ADD CONSTRAINT "shift_registration_exemptions_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."shift_registration_exemptions"
+    ADD CONSTRAINT "shift_registration_exemptions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."shift_registration_exemptions"
+    ADD CONSTRAINT "shift_registration_exemptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."shift_registration_settings"
     ADD CONSTRAINT "shift_registration_settings_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
 
@@ -21309,6 +22043,16 @@ ALTER TABLE ONLY "public"."shift_registration_settings"
 
 ALTER TABLE ONLY "public"."shift_registration_settings"
     ADD CONSTRAINT "shift_registration_settings_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."shift_registration_submissions"
+    ADD CONSTRAINT "shift_registration_submissions_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."shift_registration_submissions"
+    ADD CONSTRAINT "shift_registration_submissions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -21960,6 +22704,10 @@ ALTER TABLE "public"."diagnosis_terms" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."doc_sequences" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "exemptions read" ON "public"."shift_registration_exemptions" FOR SELECT TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) OR ( SELECT "public"."can_attendance"('VIEW'::"text", "shift_registration_exemptions"."branch_id") AS "can_attendance")));
+
 
 
 CREATE POLICY "history read" ON "public"."schedule_history" FOR SELECT TO "authenticated" USING (((("branch_id" IS NOT NULL) AND ( SELECT "public"."can_attendance"('VIEW'::"text", "schedule_history"."branch_id") AS "can_attendance")) OR (("branch_id" IS NULL) AND ("target_user_id" IS NOT NULL) AND ( SELECT "public"."can_view_staff"("schedule_history"."target_user_id") AS "can_view_staff"))));
@@ -22639,6 +23387,9 @@ CREATE POLICY "schedule read" ON "public"."spa_resources" FOR SELECT TO "authent
 ALTER TABLE "public"."schedule_history" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."schedule_weeks" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."service_providers" ENABLE ROW LEVEL SECURITY;
 
 
@@ -22664,7 +23415,13 @@ CREATE POLICY "shift templates read" ON "public"."shift_templates" FOR SELECT TO
 ALTER TABLE "public"."shift_assignments" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."shift_registration_exemptions" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."shift_registration_settings" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."shift_registration_submissions" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."shift_requests" ENABLE ROW LEVEL SECURITY;
@@ -22752,6 +23509,10 @@ ALTER TABLE "public"."stock_movements" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."stock_thresholds" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "submissions read" ON "public"."shift_registration_submissions" FOR SELECT TO "authenticated" USING ((("user_id" = ( SELECT "auth"."uid"() AS "uid")) OR ( SELECT "public"."can_attendance"('VIEW'::"text", "shift_registration_submissions"."branch_id") AS "can_attendance")));
+
+
+
 CREATE POLICY "super admin delete" ON "public"."permissions" FOR DELETE TO "authenticated" USING (( SELECT "public"."is_super_admin"() AS "is_super_admin"));
 
 
@@ -22824,6 +23585,10 @@ ALTER TABLE "public"."vaccinations" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."vaccine_types" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "weeks read" ON "public"."schedule_weeks" FOR SELECT TO "authenticated" USING ((( SELECT "public"."is_branch_staff"("schedule_weeks"."branch_id") AS "is_branch_staff") OR ( SELECT "public"."can_attendance"('VIEW'::"text", "schedule_weeks"."branch_id") AS "can_attendance")));
+
 
 
 ALTER TABLE "public"."weight_brackets" ENABLE ROW LEVEL SECURITY;
@@ -22910,6 +23675,12 @@ GRANT ALL ON FUNCTION "public"."assign_medical_vet"("p_id" "uuid", "p_vet" "uuid
 REVOKE ALL ON FUNCTION "public"."assign_shift"("p_branch" "uuid", "p_user" "uuid", "p_date" "date", "p_template" "uuid", "p_start" time without time zone, "p_end" time without time zone, "p_break" integer, "p_note" "text", "p_reason" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."assign_shift"("p_branch" "uuid", "p_user" "uuid", "p_date" "date", "p_template" "uuid", "p_start" time without time zone, "p_end" time without time zone, "p_break" integer, "p_note" "text", "p_reason" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."assign_shift"("p_branch" "uuid", "p_user" "uuid", "p_date" "date", "p_template" "uuid", "p_start" time without time zone, "p_end" time without time zone, "p_break" integer, "p_note" "text", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."assign_to_previous_week"("p_branch" "uuid", "p_monday" "date", "p_user" "uuid", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."assign_to_previous_week"("p_branch" "uuid", "p_monday" "date", "p_user" "uuid", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."assign_to_previous_week"("p_branch" "uuid", "p_monday" "date", "p_user" "uuid", "p_reason" "text") TO "service_role";
 
 
 
@@ -23076,6 +23847,11 @@ REVOKE ALL ON FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" 
 GRANT ALL ON FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" "uuid"[]) TO "anon";
 GRANT ALL ON FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" "uuid"[]) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."branch_prices"("p_branch" "uuid", "p_products" "uuid"[]) TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."branch_requires_publish"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."branch_requires_publish"("p_branch" "uuid") TO "service_role";
 
 
 
@@ -23366,6 +24142,12 @@ GRANT ALL ON FUNCTION "public"."decide_shift_requests"("p_ids" "uuid"[], "p_appr
 
 
 
+REVOKE ALL ON FUNCTION "public"."declare_no_shifts"("p_branch" "uuid", "p_monday" "date", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."declare_no_shifts"("p_branch" "uuid", "p_monday" "date", "p_reason" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."declare_no_shifts"("p_branch" "uuid", "p_monday" "date", "p_reason" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."delete_care_log"("p_id" "uuid") TO "service_role";
@@ -23411,6 +24193,11 @@ GRANT ALL ON FUNCTION "public"."deliver_shop_order"("p_id" "uuid") TO "service_r
 REVOKE ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."discharge_inpatient"("p_stay" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."do_publish_week"("p_branch" "uuid", "p_monday" "date", "p_auto" boolean, "p_reject_note" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."do_publish_week"("p_branch" "uuid", "p_monday" "date", "p_auto" boolean, "p_reject_note" "text") TO "service_role";
 
 
 
@@ -23801,6 +24588,12 @@ REVOKE ALL ON FUNCTION "public"."list_product_groups"("p_search" "text", "p_incl
 GRANT ALL ON FUNCTION "public"."list_product_groups"("p_search" "text", "p_include_archived" boolean, "p_limit" integer, "p_offset" integer, "p_category" "uuid", "p_brand" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."list_product_groups"("p_search" "text", "p_include_archived" boolean, "p_limit" integer, "p_offset" integer, "p_category" "uuid", "p_brand" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."list_product_groups"("p_search" "text", "p_include_archived" boolean, "p_limit" integer, "p_offset" integer, "p_category" "uuid", "p_brand" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."list_registration_exemptions"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."list_registration_exemptions"("p_branch" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."list_registration_exemptions"("p_branch" "uuid") TO "service_role";
 
 
 
@@ -24290,6 +25083,17 @@ GRANT ALL ON FUNCTION "public"."product_unit_price"("p_product" "uuid", "p_branc
 
 
 
+REVOKE ALL ON FUNCTION "public"."publish_existing_weeks"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."publish_existing_weeks"("p_branch" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."publish_schedule_week"("p_branch" "uuid", "p_monday" "date", "p_reject_note" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."publish_schedule_week"("p_branch" "uuid", "p_monday" "date", "p_reject_note" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."publish_schedule_week"("p_branch" "uuid", "p_monday" "date", "p_reject_note" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."refresh_appointment_status"("p_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."refresh_appointment_status"("p_id" "uuid") TO "service_role";
 
@@ -24308,6 +25112,12 @@ GRANT ALL ON FUNCTION "public"."refresh_variant_names"("p_group" "uuid") TO "ser
 REVOKE ALL ON FUNCTION "public"."register_pet"("p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."register_pet"("p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."register_pet"("p" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."registration_status"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."registration_status"("p_branch" "uuid", "p_monday" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."registration_status"("p_branch" "uuid", "p_monday" "date") TO "service_role";
 
 
 
@@ -24416,6 +25226,16 @@ GRANT ALL ON FUNCTION "public"."report_timesheet_grid"("p_branch" "uuid", "p_mon
 REVOKE ALL ON FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."report_top_items"("p_branch" "uuid", "p_from" "date", "p_to" "date", "p_kind" "text", "p_search" "text", "p_sort" "text", "p_limit" integer, "p_offset" integer) TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."shift_requests" TO "service_role";
+GRANT SELECT ON TABLE "public"."shift_requests" TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."request_decision_visible"("r" "public"."shift_requests") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."request_decision_visible"("r" "public"."shift_requests") TO "service_role";
 
 
 
@@ -24686,6 +25506,12 @@ GRANT ALL ON FUNCTION "public"."schedule_medical_visit"("p" "jsonb", "p_id" "uui
 
 
 
+REVOKE ALL ON FUNCTION "public"."schedule_week_status"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."schedule_week_status"("p_branch" "uuid", "p_monday" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."schedule_week_status"("p_branch" "uuid", "p_monday" "date") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."search_customers"("p_text" "text", "p_limit" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."search_customers"("p_text" "text", "p_limit" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."search_customers"("p_text" "text", "p_limit" integer) TO "service_role";
@@ -24758,6 +25584,12 @@ GRANT ALL ON FUNCTION "public"."set_product_group_clinic_only"("p_group" "uuid",
 
 
 
+REVOKE ALL ON FUNCTION "public"."set_registration_exemption"("p_branch" "uuid", "p_user" "uuid", "p_exempt" boolean, "p_note" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."set_registration_exemption"("p_branch" "uuid", "p_user" "uuid", "p_exempt" boolean, "p_note" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_registration_exemption"("p_branch" "uuid", "p_user" "uuid", "p_exempt" boolean, "p_note" "text") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."set_shift_template_active"("p_id" "uuid", "p_active" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."set_shift_template_active"("p_id" "uuid", "p_active" boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_shift_template_active"("p_id" "uuid", "p_active" boolean) TO "service_role";
@@ -24810,11 +25642,6 @@ GRANT ALL ON FUNCTION "public"."shift_registration_rules_raw"("p_branch" "uuid")
 
 REVOKE ALL ON FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."shift_registration_window"("p_branch" "uuid", "p_monday" "date") TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."shift_requests" TO "service_role";
-GRANT SELECT ON TABLE "public"."shift_requests" TO "authenticated";
 
 
 
@@ -24988,6 +25815,11 @@ GRANT ALL ON FUNCTION "public"."staff_display_name"("p_user" "uuid") TO "service
 
 
 
+REVOKE ALL ON FUNCTION "public"."staff_must_register"("p_branch" "uuid", "p_user" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."staff_must_register"("p_branch" "uuid", "p_user" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."staff_shop_order_json"("o" "public"."shop_orders") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."staff_shop_order_json"("o" "public"."shop_orders") TO "service_role";
 
@@ -25065,6 +25897,21 @@ GRANT ALL ON FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries"
 
 
 
+REVOKE ALL ON FUNCTION "public"."trg_log_exemption"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."trg_log_exemption"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."trg_log_registration_settings"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."trg_log_registration_settings"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."trg_log_schedule_week"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."trg_log_schedule_week"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."trg_log_shift_assignment"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."trg_log_shift_assignment"() TO "service_role";
 
@@ -25072,6 +25919,16 @@ GRANT ALL ON FUNCTION "public"."trg_log_shift_assignment"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."trg_log_shift_request"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."trg_log_shift_request"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."trg_log_submission"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."trg_log_submission"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."trg_notify_shift_change"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."trg_notify_shift_change"() TO "service_role";
 
 
 
@@ -25099,9 +25956,19 @@ GRANT ALL ON FUNCTION "public"."update_shift_assignment"("p_id" "uuid", "p" "jso
 
 
 
+REVOKE ALL ON FUNCTION "public"."user_has_attendance"("p_user" "uuid", "p_method" "text", "p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."user_has_attendance"("p_user" "uuid", "p_method" "text", "p_branch" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."vaccine_lots"("p_branch" "uuid", "p_vaccine_type" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."vaccine_lots"("p_branch" "uuid", "p_vaccine_type" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."vaccine_lots"("p_branch" "uuid", "p_vaccine_type" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."vn_today"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."vn_today"() TO "service_role";
 
 
 
@@ -25111,9 +25978,31 @@ GRANT ALL ON FUNCTION "public"."void_vaccination"("p_id" "uuid", "p_reason" "tex
 
 
 
+REVOKE ALL ON FUNCTION "public"."week_is_published"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."week_is_published"("p_branch" "uuid", "p_monday" "date") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."week_locked"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."week_locked"("p_branch" "uuid", "p_monday" "date") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."week_of"("p_date" "date") TO "anon";
 GRANT ALL ON FUNCTION "public"."week_of"("p_date" "date") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."week_of"("p_date" "date") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."weeks_with_shifts"("p_branch" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."weeks_with_shifts"("p_branch" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."weeks_with_shifts"("p_branch" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."withdraw_no_shifts"("p_branch" "uuid", "p_monday" "date") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."withdraw_no_shifts"("p_branch" "uuid", "p_monday" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."withdraw_no_shifts"("p_branch" "uuid", "p_monday" "date") TO "service_role";
 
 
 
@@ -25477,6 +26366,11 @@ GRANT ALL ON SEQUENCE "public"."schedule_history_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."schedule_weeks" TO "service_role";
+GRANT SELECT ON TABLE "public"."schedule_weeks" TO "authenticated";
+
+
+
 GRANT ALL ON TABLE "public"."service_providers" TO "anon";
 GRANT ALL ON TABLE "public"."service_providers" TO "authenticated";
 GRANT ALL ON TABLE "public"."service_providers" TO "service_role";
@@ -25494,8 +26388,18 @@ GRANT SELECT ON TABLE "public"."shift_assignments" TO "authenticated";
 
 
 
+GRANT ALL ON TABLE "public"."shift_registration_exemptions" TO "service_role";
+GRANT SELECT ON TABLE "public"."shift_registration_exemptions" TO "authenticated";
+
+
+
 GRANT ALL ON TABLE "public"."shift_registration_settings" TO "service_role";
 GRANT SELECT ON TABLE "public"."shift_registration_settings" TO "authenticated";
+
+
+
+GRANT ALL ON TABLE "public"."shift_registration_submissions" TO "service_role";
+GRANT SELECT ON TABLE "public"."shift_registration_submissions" TO "authenticated";
 
 
 

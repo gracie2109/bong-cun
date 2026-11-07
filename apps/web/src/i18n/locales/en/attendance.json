@@ -96,7 +96,11 @@
       "already_on_roster": "This shift is already on your roster.",
       "request_overlap": "This overlaps another pending request of yours.",
       "over_weekly_limit": "You reached the weekly shift limit.",
-      "too_late": "This shift already started, so it can only be rejected."
+      "too_late": "This shift already started, so it can only be rejected.",
+      "week_published": "This week's schedule is published and locked. Send a leave request or ask your manager to change a shift.",
+      "publish_disabled": "This branch does not use publishing.",
+      "already_published": "This week is already published.",
+      "has_requests": "Cancel your pending or approved requests for this week first."
     },
     "roster": {
       "title": "Roster",
@@ -261,7 +265,8 @@
         "pending": "Pending",
         "approved": "Approved",
         "rejected": "Rejected",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "submitted": "Sent, waiting for publishing"
       },
       "search": "Search by name",
       "empty": "No requests.",

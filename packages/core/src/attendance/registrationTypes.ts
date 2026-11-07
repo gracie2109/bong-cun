@@ -1,6 +1,7 @@
 // What the registration screens work with (camelCase). The database rows live in contract/registration.ts.
 import type { AvailabilityItem } from "./contract/availability";
-import type { RegistrationWindowReason, ShiftRequestStatus, SubmitWarning } from "./contract/registration";
+import type { RegistrationWindowReason, ShiftRequestStatus, StaffRequestStatus, SubmitWarning } from "./contract/registration";
+import type { WeekStatus } from "./publishTypes";
 import type { LeavePart, LeaveType, ShiftColor } from "./types";
 
 export type RegistrationRules = {
@@ -9,6 +10,7 @@ export type RegistrationRules = {
   closeDaysBefore: number;
   maxShiftsPerWeek: number | null;
   staffNote: string | null;
+  requirePublish: boolean;
 };
 
 export type RegistrationWindow = { open: boolean; closesAt: string; reason: RegistrationWindowReason | null };
@@ -28,7 +30,7 @@ export type MyShiftRequest = {
   workDate: string;
   templateId: string | null;
   name: string;
-  status: ShiftRequestStatus;
+  status: StaffRequestStatus;
   note: string | null;
   decisionNote: string | null;
   assignmentId: string | null;
@@ -64,6 +66,9 @@ export type RegistrationBoard = {
   leaves: RegistrationLeave[];
   availability: AvailabilityItem[];
   needs: StaffingNeed[];
+  week: WeekStatus;
+  /** The person declared "no shifts this week". */
+  submission: { reason: string | null } | null;
 };
 
 export type SubmitResult = {

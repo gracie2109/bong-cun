@@ -30,6 +30,10 @@ export const ATTENDANCE_ERROR_HINTS = [
   "request_overlap",
   "over_weekly_limit",
   "too_late",
+  "week_published",
+  "publish_disabled",
+  "already_published",
+  "has_requests",
 ] as const;
 export type AttendanceErrorHint = (typeof ATTENDANCE_ERROR_HINTS)[number];
 

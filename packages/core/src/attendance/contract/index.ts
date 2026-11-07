@@ -6,3 +6,4 @@ export * from "./availability";
 export * from "./registration";
 export * from "./review";
 export * from "./history";
+export * from "./publish";

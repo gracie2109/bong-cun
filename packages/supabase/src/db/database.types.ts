@@ -356,6 +356,54 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      schedule_weeks: {
+        Row: {
+          auto_published: boolean
+          branch_id: string
+          notified_count: number
+          published_at: string | null
+          published_by: string | null
+          published_by_name: string | null
+          status: string
+          updated_at: string
+          week_monday: string
+        }
+        Insert: {
+          auto_published?: boolean
+          branch_id: string
+          notified_count?: number
+          published_at?: string | null
+          published_by?: string | null
+          published_by_name?: string | null
+          status?: string
+          updated_at?: string
+          week_monday: string
+        }
+        Update: {
+          auto_published?: boolean
+          branch_id?: string
+          notified_count?: number
+          published_at?: string | null
+          published_by?: string | null
+          published_by_name?: string | null
+          status?: string
+          updated_at?: string
+          week_monday?: string
+        }
+        Relationships: []
+      }
+      shift_registration_submissions: {
+        Row: { branch_id: string; created_at: string; kind: string; reason: string | null; user_id: string; week_monday: string }
+        Insert: { branch_id: string; created_at?: string; kind?: string; reason?: string | null; user_id: string; week_monday: string }
+        Update: { branch_id?: string; created_at?: string; kind?: string; reason?: string | null; user_id?: string; week_monday?: string }
+        Relationships: []
+      }
+      shift_registration_exemptions: {
+        Row: { branch_id: string; created_at: string; created_by: string | null; note: string | null; user_id: string }
+        Insert: { branch_id: string; created_at?: string; created_by?: string | null; note?: string | null; user_id: string }
+        Update: { branch_id?: string; created_at?: string; created_by?: string | null; note?: string | null; user_id?: string }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -2766,6 +2814,15 @@ export type Database = {
         Returns: Json
       }
       schedule_history_of: { Args: { p_entity: string; p_entity_id: string }; Returns: Json }
+      schedule_week_status: { Args: { p_branch: string; p_monday: string }; Returns: Json }
+      registration_status: { Args: { p_branch: string; p_monday: string }; Returns: Json }
+      publish_schedule_week: { Args: { p_branch: string; p_monday: string; p_reject_note?: string }; Returns: Json }
+      declare_no_shifts: { Args: { p_branch: string; p_monday: string; p_reason?: string }; Returns: undefined }
+      withdraw_no_shifts: { Args: { p_branch: string; p_monday: string }; Returns: undefined }
+      assign_to_previous_week: { Args: { p_branch: string; p_monday: string; p_reason?: string; p_user: string }; Returns: Json }
+      list_registration_exemptions: { Args: { p_branch: string }; Returns: Json }
+      set_registration_exemption: { Args: { p_branch: string; p_exempt: boolean; p_note?: string; p_user: string }; Returns: undefined }
+      weeks_with_shifts: { Args: { p_branch: string }; Returns: Json }
       pending_shift_request_count: { Args: { p_branch?: string }; Returns: number }
       list_shift_requests: {
         Args: {
