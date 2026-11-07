@@ -31,7 +31,7 @@ export const decideShiftRequests = async (client: Client, input: DecideRequestsI
   parseRpc(
     "decide_shift_requests",
     decideRequestsResultSchema,
-    unwrap(await client.rpc("decide_shift_requests", { p_ids: input.ids, p_approve: input.approve, p_note: input.note ?? undefined }))
+    unwrap(await client.rpc("decide_shift_requests", { p_ids: input.ids, p_approve: input.approve, p_note: input.note ?? undefined, p_reason: input.reason ?? undefined }))
   );
 
 export const getPendingShiftRequestCount = async (client: Client, branchId?: string): Promise<number> =>

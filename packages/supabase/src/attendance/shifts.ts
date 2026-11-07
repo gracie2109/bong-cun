@@ -83,13 +83,14 @@ export const assignShift = async (client: Client, input: AssignShiftInput) => {
       p_end: input.endTime ?? undefined,
       p_break: input.breakMinutes ?? undefined,
       p_note: input.note ?? undefined,
+      p_reason: input.reason ?? undefined,
     })
   );
   return parseRpc("assign_shift", assignShiftResultSchema, raw);
 };
 
 export const updateShiftAssignment = async (client: Client, input: UpdateShiftInput): Promise<void> => {
-  const { id, workDate, templateId, startTime, endTime, breakMinutes, note } = input;
+  const { id, workDate, templateId, startTime, endTime, breakMinutes, note, reason } = input;
   const patch = {
     work_date: workDate,
     template_id: templateId,
@@ -100,11 +101,11 @@ export const updateShiftAssignment = async (client: Client, input: UpdateShiftIn
   };
   // Only the keys the caller set: the function reads `p ? 'key'` to tell "leave it" from "clear it".
   const p = Object.fromEntries(Object.entries(patch).filter(([, value]) => value !== undefined));
-  unwrap(await client.rpc("update_shift_assignment", { p_id: id, p }));
+  unwrap(await client.rpc("update_shift_assignment", { p_id: id, p, p_reason: reason ?? undefined }));
 };
 
-export const removeShiftAssignment = async (client: Client, id: string): Promise<void> => {
-  unwrap(await client.rpc("remove_shift_assignment", { p_id: id }));
+export const removeShiftAssignment = async (client: Client, id: string, reason?: string | null): Promise<void> => {
+  unwrap(await client.rpc("remove_shift_assignment", { p_id: id, p_reason: reason ?? undefined }));
 };
 
 export const copyRosterWeek = async (client: Client, input: CopyWeekInput) =>
@@ -117,6 +118,7 @@ export const copyRosterWeek = async (client: Client, input: CopyWeekInput) =>
         p_from_monday: input.fromMonday,
         p_to_monday: input.toMonday,
         p_overwrite: input.overwrite ?? false,
+        p_reason: input.reason ?? undefined,
       })
     )
   );
