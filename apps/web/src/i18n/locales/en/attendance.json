@@ -87,7 +87,12 @@
       "own_request": "You cannot decide your own request.",
       "not_cancellable": "This request can no longer be withdrawn.",
       "not_signed_in": "You are not signed in.",
-      "too_many": "Too many rows."
+      "too_many": "Too many rows.",
+      "registration_closed": "Registration for this week is closed.",
+      "duplicate": "You already asked for this shift.",
+      "already_on_roster": "This shift is already on your roster.",
+      "request_overlap": "This overlaps another pending request of yours.",
+      "over_weekly_limit": "You reached the weekly shift limit."
     },
     "roster": {
       "title": "Roster",

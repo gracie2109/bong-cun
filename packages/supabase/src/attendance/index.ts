@@ -9,3 +9,5 @@ export * from "./leave";
 export * from "./reports";
 export * from "./availability";
 export * from "./availabilityMappers";
+export * from "./registration";
+export * from "./registrationMappers";

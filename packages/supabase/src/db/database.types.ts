@@ -2671,6 +2671,10 @@ export type Database = {
       }
       mark_entry_reviewed: { Args: { p_id: string }; Returns: undefined }
       my_availability: { Args: never; Returns: Json }
+      my_shift_requests: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
       my_timesheet: { Args: { p_from: string; p_to: string }; Returns: Json }
@@ -2717,6 +2721,20 @@ export type Database = {
       save_my_availability: { Args: { p_items: Json }; Returns: Json }
       save_staff_availability: {
         Args: { p_items: Json; p_user: string }
+        Returns: Json
+      }
+      cancel_shift_request: { Args: { p_id: string }; Returns: undefined }
+      save_shift_registration_settings: {
+        Args: { p: Json; p_branch: string }
+        Returns: Json
+      }
+      shift_registration_board: {
+        Args: { p_branch: string; p_monday: string }
+        Returns: Json
+      }
+      shift_registration_rules: { Args: { p_branch: string }; Returns: Json }
+      submit_shift_requests: {
+        Args: { p_branch: string; p_items: Json; p_monday: string; p_note?: string }
         Returns: Json
       }
       save_attendance_settings: {

@@ -29,9 +29,11 @@ describe("Availability RPCs match the app's contract", () => {
 
       await db.signOut();
       await db.signIn(a.staff);
+      await db.rows("savepoint attempt");
       const tooMany = await db
         .scalar("select public.save_my_availability((select jsonb_agg(jsonb_build_object('weekday', 1, 'kind', 'unavailable')) from generate_series(1, 22)))")
         .catch((error: unknown) => error);
+      await db.rows("rollback to savepoint attempt");
       expect(attendanceErrorHint(tooMany)).toBe("too_many");
     });
   });
