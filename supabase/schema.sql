@@ -3210,6 +3210,25 @@ $$;
 ALTER FUNCTION "public"."check_out_boarding"("p_id" "uuid", "p_returned" "uuid"[]) OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."cleanup_notifications"() RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_n integer;
+begin
+  delete from public.notifications
+   where created_at < now() - interval '180 days'
+      or (read_at is not null and read_at < now() - interval '90 days');
+  get diagnostics v_n = row_count;
+  return v_n;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."cleanup_notifications"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text" DEFAULT NULL::"text", "p_unscheduled_ok" boolean DEFAULT false) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -7824,6 +7843,28 @@ $$;
 ALTER FUNCTION "public"."mark_no_show"("p_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."mark_notifications_read"("p_ids" "uuid"[] DEFAULT NULL::"uuid"[]) RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me uuid := (select auth.uid());
+  v_n  integer;
+begin
+  if v_me is null then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+  update public.notifications n set read_at = now()
+   where n.user_id = v_me and n.read_at is null and (p_ids is null or n.id = any (p_ids));
+  get diagnostics v_n = row_count;
+  return v_n;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."mark_notifications_read"("p_ids" "uuid"[]) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."mark_pet_deceased"("p_pet" "uuid", "p" "jsonb" DEFAULT '{}'::"jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -8944,6 +8985,44 @@ $$;
 ALTER FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."my_notifications"("p_page" integer DEFAULT 1, "p_page_size" integer DEFAULT 20, "p_unread_only" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_me     uuid := (select auth.uid());
+  v_size   integer := least(greatest(coalesce(p_page_size, 20), 1), 100);
+  v_offset integer := (greatest(coalesce(p_page, 1), 1) - 1) * v_size;
+  v_total  integer;
+  v_unread integer;
+  v_rows   jsonb;
+begin
+  if v_me is null then
+    raise exception 'not allowed' using errcode = '42501', hint = 'forbidden';
+  end if;
+
+  select count(*) filter (where not coalesce(p_unread_only, false) or n.read_at is null),
+         count(*) filter (where n.read_at is null)
+    into v_total, v_unread
+  from public.notifications n where n.user_id = v_me;
+
+  select coalesce(jsonb_agg(to_jsonb(p) order by p.created_at desc, p.id), '[]'::jsonb) into v_rows
+  from (
+    select n.id, n.branch_id, n.kind, n.title, n.body, n.link, n.data, n.read_at, n.created_at
+    from public.notifications n
+    where n.user_id = v_me and (not coalesce(p_unread_only, false) or n.read_at is null)
+    order by n.created_at desc, n.id
+    limit v_size offset v_offset
+  ) p;
+
+  return jsonb_build_object('rows', v_rows, 'total', v_total, 'unread', v_unread);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."my_notifications"("p_page" integer, "p_page_size" integer, "p_unread_only" boolean) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."my_permissions"("p_branch" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("branch_id" "uuid", "role" "text", "permission" "text", "methods" "text"[])
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''
@@ -9468,6 +9547,74 @@ $$;
 
 
 ALTER FUNCTION "public"."next_doc_code"("p_branch" "uuid", "p_type" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notify_schedule_changed"("p_user" "uuid", "p_branch" "uuid", "p_monday" "date", "p_reason" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_id      uuid;
+  v_count   integer;
+  v_reason  text := nullif(btrim(p_reason), '');
+  v_range   text := to_char(p_monday, 'DD/MM') || '–' || to_char(p_monday + 6, 'DD/MM');
+  v_branch  text := (select b.name from public.branches b where b.id = p_branch);
+  v_title   text;
+  v_body    text;
+  v_link    jsonb := jsonb_build_object('name', 'attendanceMe', 'query', jsonb_build_object('week', p_monday));
+begin
+  select n.id, coalesce((n.data ->> 'change_count')::integer, 1) + 1 into v_id, v_count
+  from public.notifications n
+  where n.user_id = p_user and n.kind = 'schedule_changed' and n.read_at is null
+    and n.branch_id is not distinct from p_branch and n.data ->> 'week_monday' = p_monday::text
+  order by n.created_at desc
+  limit 1
+  for update;
+
+  v_count := coalesce(v_count, 1);
+  v_title := left('Lịch tuần ' || v_range || ' đã thay đổi', 120);
+  v_body := left(
+    'Lịch tuần ' || v_range || coalesce(' tại ' || v_branch, '') || ' đã thay đổi'
+    || case when v_count > 1 then ' (' || v_count || ' thay đổi)' else '' end || '.'
+    || coalesce(' Lý do: ' || v_reason, ''), 500);
+
+  if v_id is null then
+    insert into public.notifications (user_id, branch_id, kind, title, body, link, data)
+    values (p_user, p_branch, 'schedule_changed', v_title, v_body, v_link,
+            jsonb_build_object('week_monday', p_monday, 'change_count', v_count, 'reason', v_reason))
+    returning id into v_id;
+  else
+    update public.notifications
+       set title = v_title, body = v_body, created_at = now(),
+           data = jsonb_build_object('week_monday', p_monday, 'change_count', v_count, 'reason',
+                                     coalesce(v_reason, data ->> 'reason'))
+     where id = v_id;
+  end if;
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."notify_schedule_changed"("p_user" "uuid", "p_branch" "uuid", "p_monday" "date", "p_reason" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."notify_user"("p_user" "uuid", "p_branch" "uuid", "p_kind" "text", "p_title" "text", "p_body" "text" DEFAULT NULL::"text", "p_link" "jsonb" DEFAULT NULL::"jsonb", "p_data" "jsonb" DEFAULT '{}'::"jsonb", "p_dedupe" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+  v_id uuid;
+begin
+  insert into public.notifications (user_id, branch_id, kind, title, body, link, data, dedupe_key)
+  values (p_user, p_branch, p_kind, p_title, p_body, p_link, coalesce(p_data, '{}'::jsonb), p_dedupe)
+  on conflict (dedupe_key) where dedupe_key is not null do nothing
+  returning id into v_id;
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."notify_user"("p_user" "uuid", "p_branch" "uuid", "p_kind" "text", "p_title" "text", "p_body" "text", "p_link" "jsonb", "p_data" "jsonb", "p_dedupe" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."open_cash_shift"("p_branch" "uuid", "p_opening_cash" numeric, "p_note" "text" DEFAULT NULL::"text") RETURNS "uuid"
@@ -16448,6 +16595,18 @@ $$;
 ALTER FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."unread_notification_count"() RETURNS integer
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select count(*)::integer from public.notifications n
+  where n.user_id = (select auth.uid()) and n.read_at is null;
+$$;
+
+
+ALTER FUNCTION "public"."unread_notification_count"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -17521,6 +17680,28 @@ CREATE TABLE IF NOT EXISTS "public"."medical_visit_items" (
 
 
 ALTER TABLE "public"."medical_visit_items" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."notifications" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "branch_id" "uuid",
+    "kind" "text" NOT NULL,
+    "title" "text" NOT NULL,
+    "body" "text",
+    "link" "jsonb",
+    "data" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "dedupe_key" "text",
+    "read_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "notifications_body_check" CHECK ((("body" IS NULL) OR ("char_length"("body") <= 500))),
+    CONSTRAINT "notifications_kind_check" CHECK (("kind" = ANY (ARRAY['schedule_published'::"text", 'schedule_changed'::"text", 'registration_reminder'::"text", 'registration_missing'::"text", 'publish_reminder'::"text"]))),
+    CONSTRAINT "notifications_title_check" CHECK ((("char_length"("title") >= 1) AND ("char_length"("title") <= 120)))
+);
+
+
+ALTER TABLE "public"."notifications" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
@@ -18772,6 +18953,11 @@ ALTER TABLE ONLY "public"."medical_visits"
 
 
 
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."order_items"
     ADD CONSTRAINT "order_items_pkey" PRIMARY KEY ("id");
 
@@ -19415,6 +19601,18 @@ CREATE INDEX "medical_visits_status_idx" ON "public"."medical_visits" USING "btr
 
 
 
+CREATE UNIQUE INDEX "notifications_dedupe_key_uidx" ON "public"."notifications" USING "btree" ("dedupe_key") WHERE ("dedupe_key" IS NOT NULL);
+
+
+
+CREATE INDEX "notifications_user_created_idx" ON "public"."notifications" USING "btree" ("user_id", "created_at" DESC);
+
+
+
+CREATE INDEX "notifications_user_unread_idx" ON "public"."notifications" USING "btree" ("user_id") WHERE ("read_at" IS NULL);
+
+
+
 CREATE INDEX "order_items_combo_idx" ON "public"."order_items" USING "btree" ("combo_id") WHERE ("combo_id" IS NOT NULL);
 
 
@@ -19780,6 +19978,10 @@ CREATE OR REPLACE TRIGGER "medical_visits_inpatient_guard" BEFORE UPDATE ON "pub
 
 
 CREATE OR REPLACE TRIGGER "medical_visits_lock" BEFORE UPDATE ON "public"."medical_visits" FOR EACH ROW EXECUTE FUNCTION "public"."medical_visits_lock"();
+
+
+
+CREATE OR REPLACE TRIGGER "notifications_set_updated_at" BEFORE UPDATE ON "public"."notifications" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
 
@@ -20559,6 +20761,16 @@ ALTER TABLE ONLY "public"."medical_visits"
 
 ALTER TABLE ONLY "public"."medical_visits"
     ADD CONSTRAINT "medical_visits_vet_id_fkey" FOREIGN KEY ("vet_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_branch_id_fkey" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -21606,6 +21818,9 @@ ALTER TABLE "public"."medical_visit_items" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."medical_visits" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."notifications" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."order_items" ENABLE ROW LEVEL SECURITY;
 
 
@@ -21617,6 +21832,10 @@ CREATE POLICY "own addresses read" ON "public"."customer_addresses" FOR SELECT T
 
 
 CREATE POLICY "own layout read" ON "public"."dashboard_layouts" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "own notifications read" ON "public"."notifications" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -22763,6 +22982,11 @@ GRANT ALL ON FUNCTION "public"."check_out_boarding"("p_id" "uuid", "p_returned" 
 
 
 
+REVOKE ALL ON FUNCTION "public"."cleanup_notifications"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."cleanup_notifications"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."clock_in"("p_branch" "uuid", "p_note" "text", "p_unscheduled_ok" boolean) TO "service_role";
@@ -23379,6 +23603,12 @@ GRANT ALL ON FUNCTION "public"."mark_no_show"("p_id" "uuid") TO "service_role";
 
 
 
+REVOKE ALL ON FUNCTION "public"."mark_notifications_read"("p_ids" "uuid"[]) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."mark_notifications_read"("p_ids" "uuid"[]) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."mark_notifications_read"("p_ids" "uuid"[]) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."mark_pet_deceased"("p_pet" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."mark_pet_deceased"("p_pet" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mark_pet_deceased"("p_pet" "uuid", "p" "jsonb") TO "service_role";
@@ -23569,6 +23799,12 @@ GRANT ALL ON FUNCTION "public"."my_leaves"("p_from" "date", "p_to" "date") TO "s
 
 
 
+REVOKE ALL ON FUNCTION "public"."my_notifications"("p_page" integer, "p_page_size" integer, "p_unread_only" boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."my_notifications"("p_page" integer, "p_page_size" integer, "p_unread_only" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."my_notifications"("p_page" integer, "p_page_size" integer, "p_unread_only" boolean) TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."my_permissions"("p_branch" "uuid") TO "service_role";
@@ -23635,6 +23871,16 @@ GRANT ALL ON FUNCTION "public"."my_timesheet"("p_from" "date", "p_to" "date") TO
 
 REVOKE ALL ON FUNCTION "public"."next_doc_code"("p_branch" "uuid", "p_type" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."next_doc_code"("p_branch" "uuid", "p_type" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notify_schedule_changed"("p_user" "uuid", "p_branch" "uuid", "p_monday" "date", "p_reason" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notify_schedule_changed"("p_user" "uuid", "p_branch" "uuid", "p_monday" "date", "p_reason" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."notify_user"("p_user" "uuid", "p_branch" "uuid", "p_kind" "text", "p_title" "text", "p_body" "text", "p_link" "jsonb", "p_data" "jsonb", "p_dedupe" "text") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notify_user"("p_user" "uuid", "p_branch" "uuid", "p_kind" "text", "p_title" "text", "p_body" "text", "p_link" "jsonb", "p_data" "jsonb", "p_dedupe" "text") TO "service_role";
 
 
 
@@ -24501,6 +24747,12 @@ GRANT ALL ON FUNCTION "public"."time_entry_snapshot"("e" "public"."time_entries"
 
 
 
+REVOKE ALL ON FUNCTION "public"."unread_notification_count"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."unread_notification_count"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."unread_notification_count"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_inpatient_order"("p_id" "uuid", "p" "jsonb") TO "service_role";
@@ -24702,6 +24954,11 @@ GRANT ALL ON TABLE "public"."medical_settings" TO "service_role";
 
 GRANT SELECT,REFERENCES,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."medical_visit_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."medical_visit_items" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."notifications" TO "service_role";
+GRANT SELECT ON TABLE "public"."notifications" TO "authenticated";
 
 
 

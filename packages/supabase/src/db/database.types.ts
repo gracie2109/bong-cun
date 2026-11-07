@@ -287,6 +287,51 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          branch_id: string | null
+          created_at: string
+          data: Json
+          dedupe_key: string | null
+          id: string
+          kind: string
+          link: Json | null
+          read_at: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          branch_id?: string | null
+          created_at?: string
+          data?: Json
+          dedupe_key?: string | null
+          id?: string
+          kind: string
+          link?: Json | null
+          read_at?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          branch_id?: string | null
+          created_at?: string
+          data?: Json
+          dedupe_key?: string | null
+          id?: string
+          kind?: string
+          link?: Json | null
+          read_at?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -2675,6 +2720,12 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      my_notifications: {
+        Args: { p_page?: number; p_page_size?: number; p_unread_only?: boolean }
+        Returns: Json
+      }
+      unread_notification_count: { Args: never; Returns: number }
+      mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
       pending_shift_request_count: { Args: { p_branch?: string }; Returns: number }
       list_shift_requests: {
         Args: {
