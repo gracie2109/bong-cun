@@ -86,7 +86,8 @@
       "not_pending": "This request was already decided.",
       "own_request": "You cannot decide your own request.",
       "not_cancellable": "This request can no longer be withdrawn.",
-      "not_signed_in": "You are not signed in."
+      "not_signed_in": "You are not signed in.",
+      "too_many": "Too many rows."
     },
     "roster": {
       "title": "Roster",
@@ -334,6 +335,24 @@
         "late": "Late (times · min)",
         "early": "Left early",
         "absent": "Absent shifts"
+      }
+    },
+    "availability": {
+      "title": "My availability",
+      "hint": "Tell your manager the days and hours you cannot work or prefer to work. No approval needed.",
+      "edit": "Edit availability",
+      "none": "You have not set your availability.",
+      "unavailable": "Unavailable",
+      "preferred": "Preferred",
+      "wholeDay": "Whole day",
+      "from": "From",
+      "to": "To",
+      "add": "Add",
+      "remove": "Remove row",
+      "errors": {
+        "time_incomplete": "Enter both start and end times, or choose whole day.",
+        "time_same": "Start and end must differ.",
+        "too_many": "At most 21 rows."
       }
     }
   }

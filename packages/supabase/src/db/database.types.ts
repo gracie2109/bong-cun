@@ -2670,6 +2670,7 @@ export type Database = {
         Returns: Json[]
       }
       mark_entry_reviewed: { Args: { p_id: string }; Returns: undefined }
+      my_availability: { Args: never; Returns: Json }
       my_leave_requests: { Args: { p_year?: number }; Returns: Json }
       my_schedule: { Args: { p_from: string; p_to: string }; Returns: Json }
       my_timesheet: { Args: { p_from: string; p_to: string }; Returns: Json }
@@ -2711,6 +2712,11 @@ export type Database = {
           p_type: string
           p_user: string
         }
+        Returns: Json
+      }
+      save_my_availability: { Args: { p_items: Json }; Returns: Json }
+      save_staff_availability: {
+        Args: { p_items: Json; p_user: string }
         Returns: Json
       }
       save_attendance_settings: {
@@ -2789,6 +2795,7 @@ export type Database = {
         Args: { p_active: boolean; p_id: string }
         Returns: undefined
       }
+      staff_availability_of: { Args: { p_user: string }; Returns: Json }
       shift_roster: {
         Args: { p_branch: string; p_from: string; p_to: string }
         Returns: Json

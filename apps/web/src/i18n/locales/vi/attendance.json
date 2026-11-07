@@ -86,7 +86,8 @@
       "not_pending": "Đơn này đã được xử lý.",
       "own_request": "Bạn không được duyệt đơn của chính mình.",
       "not_cancellable": "Đơn này không hủy được nữa.",
-      "not_signed_in": "Bạn chưa đăng nhập."
+      "not_signed_in": "Bạn chưa đăng nhập.",
+      "too_many": "Bạn đã khai quá nhiều dòng."
     },
     "roster": {
       "title": "Lịch ca",
@@ -334,6 +335,24 @@
         "late": "Đi trễ (lần · phút)",
         "early": "Về sớm",
         "absent": "Ca vắng"
+      }
+    },
+    "availability": {
+      "title": "Lịch rảnh của tôi",
+      "hint": "Cho quản lý biết ngày giờ bạn không làm được hoặc thích làm. Không cần duyệt.",
+      "edit": "Sửa lịch rảnh",
+      "none": "Bạn chưa khai lịch rảnh.",
+      "unavailable": "Bận",
+      "preferred": "Thích làm",
+      "wholeDay": "Cả ngày",
+      "from": "Từ giờ",
+      "to": "Đến giờ",
+      "add": "Thêm",
+      "remove": "Xóa dòng",
+      "errors": {
+        "time_incomplete": "Hãy nhập đủ giờ bắt đầu và kết thúc, hoặc chọn cả ngày.",
+        "time_same": "Giờ bắt đầu và kết thúc phải khác nhau.",
+        "too_many": "Tối đa 21 dòng."
       }
     }
   }

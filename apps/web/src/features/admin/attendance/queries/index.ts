@@ -4,3 +4,4 @@ export * from "@/features/admin/attendance/queries/clock";
 export * from "@/features/admin/attendance/queries/entries";
 export * from "@/features/admin/attendance/queries/leave";
 export * from "@/features/admin/attendance/queries/reports";
+export * from "@/features/admin/attendance/queries/availability";

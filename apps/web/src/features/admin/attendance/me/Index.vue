@@ -14,6 +14,7 @@
         <MyEntriesTable :entries="entries" />
         <MyTimesheetCard />
         <MyLeaveCard />
+        <MyAvailabilityCard />
       </div>
     </div>
   </ContentWrap>
@@ -23,6 +24,7 @@
 import { UserRound } from "lucide-vue-next";
 import { ContentWrap, Header } from "@/features/admin/components";
 import AttendanceNav from "../AttendanceNav.vue";
+import MyAvailabilityCard from "./MyAvailabilityCard.vue";
 import MyEntriesTable from "./MyEntriesTable.vue";
 import MyLeaveCard from "./MyLeaveCard.vue";
 import MyTimesheetCard from "./MyTimesheetCard.vue";
